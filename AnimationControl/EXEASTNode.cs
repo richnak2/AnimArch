@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    public abstract class EXEASTNode
+    public interface EXEASTNode
     {
-        public String Evaluate(EXEScope Scope)
-        {
-            //TODO
-            return null;
-        }
+        String Evaluate(EXEScope Scope);
+        void PrintPretty(string indent, bool last);
     }
 }

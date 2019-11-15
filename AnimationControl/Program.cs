@@ -11,7 +11,7 @@ namespace AnimationControl
         static void Main(string[] args)
         {
 
-            OALAnimationRepresentation Animation = new OALAnimationRepresentation();
+            /*OALAnimationRepresentation Animation = new OALAnimationRepresentation();
 
             Animation.ExecutionNameSpace.SpawnClass("Observer", new List<String>(), new List<String>(new String[] { "update", "init", "addComment" }));
             Animation.ExecutionNameSpace.SpawnClass("Subject", new List<String>(), new List<String>(new String[] { "attach", "update", "notifyObservers" }));
@@ -35,43 +35,19 @@ namespace AnimationControl
             success = Animation.AddCallToAnimation("Subject", "notifyObservers", "Observer", "update");
             Console.WriteLine(success);
             success = Animation.AddCallToAnimation("Subject", "notifyObservers", "Observer", "update");
-            Console.WriteLine(success);
+            Console.WriteLine(success);*/
 
-            /*Console.WriteLine("Declaration:");
-            Console.WriteLine(Animation.DeclarationPartCode);
+            Console.WriteLine("\n\n\n!!!!!!!!!!!!!!!!!!!!!!!");
 
-            Console.WriteLine("Declaration:");
-            Console.WriteLine(Animation.DeclarationPartCode);
+            OALCommandParser OCP = new OALCommandParser();
 
-            Console.WriteLine("Execution:");
-            Console.WriteLine(Animation.ExecutionPartCode);
-
-            Console.WriteLine("Method Definitions:");
-            foreach (CDClass Class in Animation.ExecutionNameSpace.ClassPool)
-            {
-                foreach (CDMethod Method in Class.Methods)
-                {
-                    Console.WriteLine("Definition of " + Class.Name + "." + Method.Name +" :");
-                    Console.WriteLine(Method.OALCode);
-                }
-            }*/
-
-            Console.WriteLine("------------------------------");
-            Console.WriteLine(Animation.TranslateToCode());
-
-            Console.WriteLine("------------------------------");
-            OALParser op = new OALParser();
-            //op.ParseOALFragment(Animation.TranslateToCode(), "global");
-            //Console.WriteLine(op.FilterOutComments("a.b();\nb.c();//prd\n//Ahoooj\nend if;\nc.d();"));
-
-
-            EXEScope es = op.DecomposeOALFragment(Animation.TranslateToCode());
-            Console.WriteLine("------------------------------");
-            Console.WriteLine(es.PrintSelf(true));
-            //Console.WriteLine(op.SqueezeWhiteSpace("    x kp( )  |\n"));
+            // Tokenize top level brackets did not expect something not in brackets can be on the same level
+            // Perhaps put each chunk into identificator of top level commands?
+            String command = "a.b = (15000 + 47) * 9";
+            EXEASTNode AST = OCP.ConstructAST(command);
+            AST.PrintPretty("", true);
 
             Console.ReadLine();
-
         }
     }
 }

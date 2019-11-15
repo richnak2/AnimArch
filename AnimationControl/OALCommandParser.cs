@@ -36,10 +36,11 @@ namespace AnimationControl
             EXEQueryChecker QueryChecker = new EXEQueryChecker();
 
             String ClearedExpressionCommand = EXEParseUtil.SqueezeWhiteSpace(ExpressionCommand);
-            while ("(".Equals(ClearedExpressionCommand[0]) && ")".Equals(ClearedExpressionCommand[ExpressionCommand.Length - 1]))
+            // Bollock - think about (5 + 6) * (5 + 7)
+            /*while ("(".Equals(ClearedExpressionCommand[0]) && ")".Equals(ClearedExpressionCommand[ExpressionCommand.Length - 1]))
             {
                 ClearedExpressionCommand = ClearedExpressionCommand.Substring(1, ClearedExpressionCommand.Length - 2);
-            }
+            }*/
 
             if ("\"".Equals(ClearedExpressionCommand[0]) && "\"".Equals(ClearedExpressionCommand[ExpressionCommand.Length - 1]))
             {
@@ -63,14 +64,15 @@ namespace AnimationControl
             //Then if it has operator, it is an expression and needs to be treated as such
             else if (ContainsOperator(ExpressionCommand))
             {
-                //TODO
+                AST = ConstructExpressionAST(ExpressionCommand);
             }
             //If we got here, we have leaf node -> variable/attribute/method name or literal value
+            else
+            {
+                AST = new EXEASTNodeLeaf(EXEParseUtil.SqueezeWhiteSpace(ExpressionCommand));
+            }
 
-            //TODO
-
-            return null;
-
+            return AST;
         }
 
         private EXEASTNode ConstructControlCommandAST(String Command)
@@ -106,6 +108,7 @@ namespace AnimationControl
             }
 
             String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
+            Console.WriteLine("ConstrAssign:" + SanitizedCommand + "EOL");
             String[] CommandTokens = SanitizedCommand.Split(' ');
 
             AST = new EXEASTNodeComposite("=");
@@ -118,38 +121,130 @@ namespace AnimationControl
         //We cannot get String here -> only if it is operand of something else
         private EXEASTNode ConstructExpressionAST(String Command)
         {
+            Console.WriteLine("ConstrExpress:" + Command + "EOL");
             EXEASTNode AST = null;
-            String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
-
-            if (!ContainsBrackets(SanitizedCommand))
+            if (Command.Length == 0)
             {
-                //TODO
+                return AST;
             }
 
-            //TODO
+            if (!ContainsOperator(Command))
+            {
+                AST = new EXEASTNodeLeaf(EXEParseUtil.SqueezeWhiteSpace(Command));
+                return AST;
+            }
 
-            return null;
+            String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
+            Console.WriteLine("|" + SanitizedCommand + "|");
+
+            Stack<String> TopLevelBracketChunks = TokenizeTopLevelBracketChunks(SanitizedCommand);
+
+
+            if (TopLevelBracketChunks.Count == 1)
+            {
+                Console.WriteLine("OnlyOneBracketChunk:" + TopLevelBracketChunks.Peek() + "EOL");
+                Stack<(String, int)> TopLevelOperatorStack = new Stack<(String, int)>(IdentifyTopLevelOperators(SanitizedCommand));
+                if (IsUnaryOperator(TopLevelOperatorStack.Peek().Item1))
+                {
+                    EXEASTNodeComposite ASTemp = new EXEASTNodeComposite(TopLevelOperatorStack.Peek().Item1);
+                    ASTemp.AddOperand(ConstructExpressionAST(SanitizedCommand.Substring(
+                        TopLevelOperatorStack.Peek().Item2 + TopLevelOperatorStack.Peek().Item1.Length
+                        )));
+                    AST = ASTemp;
+                }
+                else
+                {
+                    Console.WriteLine("OnlyOneBracketChunk,NotUnary:" + TopLevelBracketChunks.Peek() + "EOL");
+                    int PreviousOperatorIndex = SanitizedCommand.Length;
+                    EXEASTNode RightOperand = null;
+                    EXEASTNode LeftOperand = null;
+                    EXEASTNodeComposite ASTemp = null;
+                    (String, int) CurrentOperator = (null, 0);
+                    while (TopLevelOperatorStack.Count > 0)
+                    {
+                        CurrentOperator = TopLevelOperatorStack.Pop();
+
+                        if (RightOperand == null)
+                        {
+                            RightOperand = ConstructExpressionAST(SanitizedCommand.Substring(
+                                CurrentOperator.Item2 + CurrentOperator.Item1.Length,
+                                PreviousOperatorIndex - (CurrentOperator.Item2 + CurrentOperator.Item1.Length))
+                            );
+                        }
+                        else
+                        {
+                            LeftOperand = ConstructExpressionAST(SanitizedCommand.Substring(
+                                CurrentOperator.Item2 + CurrentOperator.Item1.Length,
+                                PreviousOperatorIndex - (CurrentOperator.Item2 + CurrentOperator.Item1.Length))
+                            );
+                            ASTemp = new EXEASTNodeComposite(CurrentOperator.Item1);
+                            ASTemp.AddOperand(LeftOperand);
+                            ASTemp.AddOperand(RightOperand);
+                            RightOperand = ASTemp;
+                        }
+
+                        PreviousOperatorIndex = CurrentOperator.Item2;
+                    }
+
+                    LeftOperand = ConstructExpressionAST(SanitizedCommand.Substring(0, PreviousOperatorIndex));
+                    ASTemp = new EXEASTNodeComposite(CurrentOperator.Item1);
+                    ASTemp.AddOperand(LeftOperand);
+                    ASTemp.AddOperand(RightOperand);
+                    AST = ASTemp;
+                }
+            }
+            else if (IsUnaryOperator(EXEParseUtil.SqueezeWhiteSpace(TopLevelBracketChunks.Pop())))
+            {
+                AST = ConstructExpressionAST(TopLevelBracketChunks.Pop());
+            }
+            else
+            {
+                while (TopLevelBracketChunks.Any())
+                {
+                    Console.WriteLine("TLBC-PeekOuter:" + TopLevelBracketChunks.Peek() + "EOL");
+                    if (AST == null)
+                    {
+                        Console.WriteLine("TLBC");
+                        Console.WriteLine("TLBC-Peek1:" + TopLevelBracketChunks.Peek() + "EOL");
+                        EXEASTNode RightOperand = ConstructExpressionAST(TopLevelBracketChunks.Pop());
+                        Console.WriteLine("TLBC2");
+                        Console.WriteLine("TLBC-Peek2:" + TopLevelBracketChunks.Peek() + "EOL");
+                        String Operator = EXEParseUtil.SqueezeWhiteSpace(TopLevelBracketChunks.Pop());
+                        EXEASTNode LeftOperand = ConstructExpressionAST(TopLevelBracketChunks.Pop());
+
+                        EXEASTNodeComposite ASTemp = new EXEASTNodeComposite(Operator);
+                        ASTemp.AddOperand(LeftOperand);
+                        ASTemp.AddOperand(RightOperand);
+                        AST = ASTemp;
+                    }
+                    else
+                    {
+                        String Operator = EXEParseUtil.SqueezeWhiteSpace(TopLevelBracketChunks.Pop());
+                        EXEASTNode LeftOperand = ConstructExpressionAST(TopLevelBracketChunks.Pop());
+
+                        EXEASTNodeComposite ASTemp = new EXEASTNodeComposite(Operator);
+                        ASTemp.AddOperand(LeftOperand);
+                        ASTemp.AddOperand(AST);
+                        AST = ASTemp;
+                    }
+                }
+            }
+
+            return AST;
         }
 
-        /* private EXEASTNode ConstructAST(List<(String, int)> TopLevelOperators, String Command, int CurrentIndex)
-         {
-             foreach ((String, int) OperatorOccurence in TopLevelOperators)
-             {
-                 if (!IsUnaryOperator(OperatorOccurence.Item1))
-                 {
-                     EXEASTNode LeftOperand = 
-                 }
-             }
-         }*/
-        public List<String> TokenizeTopLevelBracketChunks(String Command)
+        public Stack<String> TokenizeTopLevelBracketChunks(String Command)
         {
-            List<String> Result = new List<String>();
+            Console.WriteLine("TokenizeBrackets:" + Command + "EOL");
+
+            Stack<String> Result = new Stack<String>();
 
             int CurrentBracketLevel = 0;
             StringBuilder CurrentChunkBuilder = new StringBuilder();
+            String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
             Boolean InString = false;
 
-            foreach (char c in Command)
+            foreach (char c in SanitizedCommand)
             {
                 if (c == '"')
                 {
@@ -171,9 +266,9 @@ namespace AnimationControl
                     {
                         CurrentChunkBuilder.Append(c);
                     }
-                    else
+                    else if(CurrentChunkBuilder.Length != 0)
                     {
-                        Result.Add(CurrentChunkBuilder.ToString());
+                        Result.Push(CurrentChunkBuilder.ToString());
                         CurrentChunkBuilder.Clear();
                     }
                     continue;
@@ -182,13 +277,13 @@ namespace AnimationControl
                 if (c == ')')
                 {
                     CurrentBracketLevel--;
-                    if (CurrentBracketLevel > 1)
+                    if (CurrentBracketLevel > 0)
                     {
                         CurrentChunkBuilder.Append(c);
                     }
                     else
                     {
-                        Result.Add(CurrentChunkBuilder.ToString());
+                        Result.Push(CurrentChunkBuilder.ToString());
                         CurrentChunkBuilder.Clear();
                     }
                     continue;
@@ -196,10 +291,14 @@ namespace AnimationControl
 
                 CurrentChunkBuilder.Append(c);
             }
+            if (CurrentChunkBuilder.Length != 0)
+            {
+                Result.Push(CurrentChunkBuilder.ToString());
+            }
 
             return Result;
         }
-        private List<(String, int)>  IdentifyTopLevelOperators(String Command)
+        private List<(String, int)> IdentifyTopLevelOperators(String Command)
         {
             String[] DoubleQuoteTokens = Command.Split('"');
              int MinOperatorLevel = int.MaxValue;
@@ -248,6 +347,10 @@ namespace AnimationControl
         public static Boolean IsValidName(String Name)
         {
             Boolean Result = true;
+            if (Name == null)
+            {
+                return false;
+            }
             foreach (char c in Name)
             {
                 if (!VariableNameChars.Contains(c))
@@ -255,11 +358,20 @@ namespace AnimationControl
                     Result = false;
                 }
             }
+            if (Name.Length == 0)
+            {
+                Result = false;
+            }
             return Result;
         }
 
         public static Boolean IsValidRelationshipName(String Name)
         {
+            if (Name == null || Name.Length == 0)
+            {
+                return false;
+            }
+
             if (!'R'.Equals(Name[0]))
             {
                 return false;
@@ -299,9 +411,17 @@ namespace AnimationControl
 
             return Result;
         }
-        public Boolean IsOperator(String Operator)
+        public Boolean IsOperator(String String)
         {
-            Boolean Result = AllOperators.Contains(Operator);
+            Boolean Result = false;
+            foreach (String Operator in AllOperators)
+            {
+                if (String.Contains(Operator))
+                {
+                    Result = true;
+                    break;
+                }
+            }
             return Result;
         }
 

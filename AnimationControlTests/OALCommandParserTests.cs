@@ -14,8 +14,11 @@ namespace AnimationControlTests
             OALCommandParser OCP = new OALCommandParser();
 
             List<String> ExpectedOutput = new List<String>(new String[] { "6 + 12", " - ", "3 * (7 + 2) + (6)" });
+
             String Input = "(6 + 12) - (3 * (7 + 2) + (6))";
-            CollectionAssert.AreEqual(ExpectedOutput, OCP.TokenizeTopLevelBracketChunks(Input));
+            List<String> ActualOutput = OCP.TokenizeTopLevelBracketChunks(Input);
+
+            CollectionAssert.AreEqual(ExpectedOutput, ActualOutput);
         }
     }
 }

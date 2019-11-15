@@ -23,13 +23,18 @@ namespace AnimationControl
 
         public static String SqueezeWhiteSpace(String String)
         {
+            if (String.Length <= 0)
+            {
+                return String;
+            }
+
             int FirstNonWSIndex = 0;
             while (FirstNonWSIndex < String.Length && Char.IsWhiteSpace(String[FirstNonWSIndex]))
             {
                 FirstNonWSIndex++;
             }
             int LastNonWSIndex = String.Length - 1;
-            while (FirstNonWSIndex > 0 && Char.IsWhiteSpace(String[LastNonWSIndex]))
+            while (LastNonWSIndex > 0 && Char.IsWhiteSpace(String[LastNonWSIndex]))
             {
                 LastNonWSIndex--;
             }
@@ -42,8 +47,22 @@ namespace AnimationControl
 
             StringBuilder FilteredStringBuilder = new StringBuilder();
             int WhitespaceCount = 0;
+            Boolean InString = false;
             foreach (char c in TrimmedString)
             {
+                if (c == '"')
+                {
+                    InString = !InString;
+                    FilteredStringBuilder.Append(c);
+                    continue;
+                }
+
+                if (InString)
+                {
+                    FilteredStringBuilder.Append(c);
+                    continue;
+                }
+
                 if (!Char.IsWhiteSpace(c))
                 {
                     WhitespaceCount = 0;

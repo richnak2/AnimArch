@@ -19,6 +19,11 @@ namespace AnimationControl
 
         public void AddOperand(EXEASTNode Operand)
         {
+            if (Operand == null)
+            {
+                return;
+            }
+
             this.Operands.Add(Operand);
         }
 
@@ -26,6 +31,25 @@ namespace AnimationControl
         {
             //TODO
             return null;
+        }
+
+        public void PrintPretty(string indent, bool last)
+        {
+            Console.Write(indent);
+            if (last)
+            {
+                Console.Write("\\+");
+                indent += "  ";
+            }
+            else
+            {
+                Console.Write("|+");
+                indent += "| ";
+            }
+            Console.WriteLine(this.Operation);
+
+            for (int i = 0; i < this.Operands.Count; i++)
+                this.Operands[i].PrintPretty(indent, i == this.Operands.Count - 1);
         }
     }
 }
