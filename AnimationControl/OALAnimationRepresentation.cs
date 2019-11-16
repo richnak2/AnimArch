@@ -60,7 +60,7 @@ namespace AnimationControl
             return CodeConstructor.ConstructFullCode(this.DeclarationPartCode, this.RelationShipDeclarationCode, this.ExecutionPartCode,
                 MethodTupple.Item1, MethodTupple.Item2, MethodTupple.Item3);
         }
-        public Boolean AddCallToAnimation(string CallerClassName, string CallerMethodName, string CalledClassName, string CalledMethodName)
+        public Boolean AddCallToAnimation(string CallerClassName, string CallerMethodName, string RelationshipName, string CalledClassName, string CalledMethodName)
         {
             CDRelationship CallRelationship = null;
             foreach (CDRelationship Relationship in this.RelationshipSpace)
@@ -167,7 +167,7 @@ namespace AnimationControl
                 return false;
             }
 
-            CallerMethod.OALCode = this.CodeConstructor.ConstructMethodDefinitionCode(CallerMethod.OALCode, CallerMethod.CallCountInAnimation, CalledInstanceName, CalledMethodName, CalledClassName, RelationshipName);
+            CallerMethod.OALCode = this.CodeConstructor.ConstructMethodDefinitionCode(CallerMethod.OALCode, CallerMethod.CallCountInAnimation, CalledInstanceName, CallerMethodName, CalledClassName, RelationshipName);
             CallerMethod.IncementCallCount();
 
             this.ExecutionPartCode = this.CodeConstructor.ConstructExecutionPartCode(this.ExecutionPartCode, CallerInstanceName, CallerMethodName);
