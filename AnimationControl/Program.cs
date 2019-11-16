@@ -43,7 +43,7 @@ namespace AnimationControl
 
             // Tokenize top level brackets did not expect something not in brackets can be on the same level
             // Perhaps put each chunk into identificator of top level commands?
-            String command = "a.b = (15000 + 47) * 9";
+            String command = "4 * 5 + 4 + 8 + 9 + (14 * (2) - 6 * 88 + (5 * (6))) + 78 * 2";
             EXEASTNode AST = OCP.ConstructAST(command);
             AST.PrintPretty("", true);
 
