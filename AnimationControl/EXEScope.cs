@@ -10,7 +10,7 @@ namespace AnimationControl
     {
         public List<EXEPrimitiveVariable> PrimitiveVariables;
         public List<EXEClassHandle> ClassVariables;
-        public List<EXEScope> InheritedScopes;
+        public EXEScope SuperScope;
         public List<EXECommandInterface> Commands;
 
         public String OALCode { get; set; }
@@ -47,7 +47,7 @@ namespace AnimationControl
             this.ScopeType = "";
             this.PrimitiveVariables = new List<EXEPrimitiveVariable>();
             this.ClassVariables = new List<EXEClassHandle>();
-            this.InheritedScopes = new List<EXEScope>();
+            this.SuperScope = null;
             this.Commands = new List<EXECommandInterface>();
 
             this.OwningClassName = "";
@@ -66,7 +66,7 @@ namespace AnimationControl
             this.ScopeType = ScopeType;
             this.PrimitiveVariables = new List<EXEPrimitiveVariable>();
             this.ClassVariables = new List<EXEClassHandle>();
-            this.InheritedScopes = new List<EXEScope>();
+            this.SuperScope = null;
             this.Commands = new List<EXECommandInterface>();
 
             this.OwningClassName = "";
@@ -94,10 +94,7 @@ namespace AnimationControl
         {
             this.Commands.Add(Command);
         }
-        public void AddInheritedScope(EXEScope Scope)
-        {
-            this.InheritedScopes.Add(Scope);
-        }
+
         public Boolean IsMyEnding(String OALCode)
         {
             Boolean Result = false;
@@ -135,6 +132,37 @@ namespace AnimationControl
             }
 
             return SelfPrintBuilder.ToString();
+        }
+
+        public Boolean Execute(OALAnimationRepresentation ExecutionSpace, EXEScope Scope)
+        {
+            return false;
+        }
+
+        public String GetCode()
+        {
+            return this.OALCode;
+        }
+
+        public void Parse(EXEScope SuperScope)
+        {
+            Console.WriteLine("ExeScope.Parse");
+            OALParser Parser = new OALParser();
+            Parser.DecomposeOALFragment(this);
+            this.SuperScope = SuperScope;
+
+            foreach (EXECommandInterface Command in this.Commands)
+            {
+                Command.Parse(this);
+            }
+        }
+
+        public void PrintAST()
+        {
+            foreach (EXECommandInterface Command in this.Commands)
+            {
+                Command.PrintAST();
+            }
         }
     }
 }

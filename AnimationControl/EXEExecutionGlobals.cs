@@ -10,5 +10,7 @@ namespace AnimationControl
     {
         public static Boolean AllowPromotionOfIntegerToReal = true;
         public static Boolean AllowLossyAssignmentOfRealToInteger = true;
+
+        public static String UnitializedAttributeValue = "Undefined";
     }
 }

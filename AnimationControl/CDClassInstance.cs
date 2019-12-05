@@ -18,7 +18,7 @@ namespace AnimationControl
 
             foreach (CDAttribute Attribute in attributes)
             {
-                this.State.Add(Attribute.name, CDClass.Undefined);
+                this.State.Add(Attribute.name, EXEExecutionGlobals.UnitializedAttributeValue);
             }
 
             this.UniqueID = UniqueID;

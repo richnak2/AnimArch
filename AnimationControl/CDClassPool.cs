@@ -25,6 +25,63 @@ namespace AnimationControl
             return NewClass;
         }
 
+        public Boolean ClassesExist(List<String> ClassNames)
+        {
+            Boolean Result = true;
+
+            foreach (String ClassName in ClassNames)
+            {
+                if (!ClassExists(ClassName))
+                {
+                    Result = false;
+                }
+            }
+
+            return Result;
+        }
+
+        public Boolean ClassExists(String ClassName)
+        {
+            Boolean Result = false;
+
+            foreach (CDClass Class in this.ClassPool)
+            {
+                if (Class.Name.Equals(ClassName))
+                {
+                    Result = true;
+                    break;
+                }
+            }
+
+            return Result;
+        }
+
+        public Boolean MethodExists(String ClassName, String MethodName)
+        {
+            if (!ClassExists(ClassName))
+            {
+                return false;
+            }
+
+            CDClass SearchedClass = null;
+
+            foreach (CDClass Class in this.ClassPool)
+            {
+                if (Class.Name.Equals(ClassName))
+                {
+                    SearchedClass = Class;
+                    break;
+                }
+            }
+
+            if (SearchedClass == null)
+            {
+                return false;
+            }
+
+            return SearchedClass.MethodExists(MethodName);
+        }
+
         public (List<String>, List<String>, List<String>) CreateDefinedMethodsTupple()
         {
             (List<String>, List<String>, List<String>) Tupples = (new List<String>(), new List<String>(), new List<String>());

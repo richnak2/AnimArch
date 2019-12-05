@@ -16,8 +16,6 @@ namespace AnimationControl
         private long ClassIDPrefix;
         private long InstanceIDSeed;
 
-        public const String Undefined = "UNDEFINED";
-
         public CDClass(long ClassIDPrefix, String Name, List<String> AttributeNames, List<String> MethodNames)
         {
             this.ClassIDPrefix = ClassIDPrefix;
@@ -34,6 +32,7 @@ namespace AnimationControl
             foreach(String MethodName in MethodNames)
             {
                 this.Methods.Add(new CDMethod(MethodName, "NoType"));
+                this.AddMethodCallCounterAttribute(MethodName);
             }
 
             this.Instances = new List<CDClassInstance>();
@@ -41,7 +40,6 @@ namespace AnimationControl
 
         public CDClassInstance CreateClassInstance(String InstanceName)
         {
-
             long NewInstanceID = ConstructNewInstanceUniqueID();
             this.InstanceIDSeed++;
 
@@ -77,6 +75,49 @@ namespace AnimationControl
             long NewInstanceID = ClassIDPrefix * PowerOf(10, DigitCount) + InstanceIDSeed;
 
             return NewInstanceID;
+        }
+
+        public Boolean AddMethod(CDMethod NewMethod)
+        {
+            Boolean Result = true;
+            foreach (CDMethod Method in this.Methods)
+            {
+                if (Method.Name == NewMethod.Name)
+                {
+                    Result = false;
+                    break;
+                }
+            }
+            if (Result)
+            {
+                this.Methods.Add(NewMethod);
+                this.AddMethodCallCounterAttribute(NewMethod.Name);
+            }
+
+            return Result;
+        }
+
+        public Boolean MethodExists(String MethodName)
+        {
+            Boolean Result = false;
+
+            foreach (CDMethod Method in this.Methods)
+            {
+                if (Method.Name.Equals(MethodName))
+                {
+                    Result = true;
+                    break;
+                }
+            }
+
+            return Result;
+        }
+
+        private void AddMethodCallCounterAttribute(String MethodName)
+        {
+            String MockAttributeName = "call_count_" + MethodName;
+            CDAttribute Attribute = new CDAttribute(MockAttributeName, EXETypes.IntegerTypeName, true);
+            this.Attributes.Add(Attribute);
         }
 
         private int PowerOf(int x, int power)

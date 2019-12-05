@@ -9,5 +9,10 @@ namespace AnimationControl
     public interface EXECommandInterface
     {
         String PrintSelf(Boolean IsTopLevel);
+
+        void PrintAST();
+        void Parse(EXEScope SuperScope);
+        String GetCode();
+        Boolean Execute(OALAnimationRepresentation ExecutionSpace, EXEScope Scope);
     }
 }

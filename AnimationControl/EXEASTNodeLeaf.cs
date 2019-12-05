@@ -35,7 +35,7 @@ namespace AnimationControl
             this.UnknownType = false;
         }
 
-        public new String Evaluate(EXEScope Scope)
+        public String Evaluate(EXEScope Scope)
         {
             //TODO
             return null;

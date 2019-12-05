@@ -10,15 +10,18 @@ namespace AnimationControl
     {
         private static Boolean Debug = false;
 
-        public EXEScope ParseOALFragment(String OALFragment, String ScopeType)
-        {
-            DecomposeOALFragment(OALFragment);
-            return null;
-        }
         public EXEScope DecomposeOALFragment(String OALFragment)
         {
-
             EXEScope ActionScope = new EXEScope();
+            ActionScope.OALCode = OALFragment;
+            DecomposeOALFragment(ActionScope);
+
+            return ActionScope;
+        }
+        public void DecomposeOALFragment(EXEScope ActionScope)
+        {
+
+            String OALFragment = ActionScope.OALCode;
             ActionScope.OALCode = OALFragment;
 
             //Filter out comments
@@ -41,7 +44,7 @@ namespace AnimationControl
                     continue;
                 }
 
-                Console.WriteLine(WhitespaceClearedToken);
+                //Console.WriteLine(WhitespaceClearedToken);
 
                 // Start new scopes
                 if (WhitespaceClearedTokenLenght >= 2 && "if".Equals(WhitespaceClearedToken.Substring(0, 2)))
@@ -166,7 +169,7 @@ namespace AnimationControl
             }
 
             EXEScope FinalScope = ScopeStack.Pop();
-            if (ScopeStack.Count == 0)
+            /*if (ScopeStack.Count == 0)
             {
                 return FinalScope;
             }
@@ -174,7 +177,7 @@ namespace AnimationControl
             {
                 //TODO - this means error - some scopes are not properly terminated
                 return null;
-            }
+            }*/
         }
         public String FilterOutComments(String Code)
         {

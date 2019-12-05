@@ -56,12 +56,77 @@ namespace AnimationControl
 
         public String TranslateToCode()
         {
+            List<(String, String)> MockedAttributes = new List<(String, String)>();
+            foreach (CDClass Class in ExecutionNameSpace.ClassPool)
+            {
+                foreach (CDAttribute Attribute in Class.Attributes)
+                {
+                    if (Attribute.IsMockedByCompiler)
+                    {
+                        String InstanceName = Class.Instances[0].ReferencingVariables[0];
+                        String AttributeName = Attribute.name;
+                        MockedAttributes.Add((InstanceName, AttributeName));
+                    }
+                }
+            }
+
             (List<String>, List<String>, List<String>) MethodTupple = this.ExecutionNameSpace.CreateDefinedMethodsTupple();
-            return CodeConstructor.ConstructFullCode(this.DeclarationPartCode, this.RelationShipDeclarationCode, this.ExecutionPartCode,
-                MethodTupple.Item1, MethodTupple.Item2, MethodTupple.Item3);
+            String Code = CodeConstructor.ConstructFullCode(
+                this.DeclarationPartCode,
+                this.RelationShipDeclarationCode,
+                this.ExecutionPartCode,
+                MockedAttributes,
+                MethodTupple.Item1,
+                MethodTupple.Item2,
+                MethodTupple.Item3
+            );
+
+            return Code;
+        }
+
+        public String TranslateToMainCode()
+        {
+            List<(String, String)> MockedAttributes = new List<(String, String)>();
+            foreach (CDClass Class in ExecutionNameSpace.ClassPool)
+            {
+                foreach (CDAttribute Attribute in Class.Attributes)
+                {
+                    if (Attribute.IsMockedByCompiler)
+                    {
+                        String InstanceName = Class.Instances[0].ReferencingVariables[0];
+                        String AttributeName = Attribute.name;
+                        MockedAttributes.Add((InstanceName, AttributeName));
+                    }
+                }
+            }
+
+            String Code = CodeConstructor.ConstructMainCode(
+                this.DeclarationPartCode,
+                this.RelationShipDeclarationCode,
+                this.ExecutionPartCode,
+                MockedAttributes
+            );
+
+            return Code;
         }
         public Boolean AddCallToAnimation(string CallerClassName, string CallerMethodName, string RelationshipName, string CalledClassName, string CalledMethodName)
         {
+            if (
+                !this.ExecutionNameSpace.ClassExists(CallerClassName)
+                || !this.ExecutionNameSpace.ClassExists(CalledClassName)
+            )
+            {
+                return false;
+            }
+
+            if (
+                !this.ExecutionNameSpace.MethodExists(CallerClassName, CallerMethodName)
+                || !this.ExecutionNameSpace.MethodExists(CalledClassName, CalledMethodName)
+            )
+            {
+                return false;
+            }
+
             CDRelationship CallRelationship = null;
             foreach (CDRelationship Relationship in this.RelationshipSpace)
             {

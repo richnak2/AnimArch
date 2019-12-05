@@ -15,13 +15,25 @@ namespace AnimationControl
         private static string MethodCommentInfix = ".";
         private static string MethodCommentSufix = "()\n";
 
-        public String ConstructFullCode(String ObjectDeclaration, String RelationshipDeclaration, String AnimationExecution, List<String> ClassNames, List<String> MethodNames, List<String> MethodExecution)
+        public String ConstructFullCode(String ObjectDeclaration, String RelationshipDeclaration, String AnimationExecution, List<(String, String)> MockedAttributes, List<String> ClassNames, List<String> MethodNames, List<String> MethodExecution)
         {
             StringBuilder FullCodeBuilder = new StringBuilder();
+            
             FullCodeBuilder.Append(ObjectDeclarationComment);
             FullCodeBuilder.Append(ObjectDeclaration);
             FullCodeBuilder.Append(RelationshipDeclarationComment);
             FullCodeBuilder.Append(RelationshipDeclaration);
+
+            foreach ((String, String) InstanceAttributeTupple in MockedAttributes)
+            {
+                FullCodeBuilder.Append(InstanceAttributeTupple.Item1);
+                FullCodeBuilder.Append(".");
+                FullCodeBuilder.Append(InstanceAttributeTupple.Item2);
+                FullCodeBuilder.Append("=");
+                FullCodeBuilder.Append("0");
+                FullCodeBuilder.Append(";\n");
+            }
+
             FullCodeBuilder.Append(AnimationExecutionPartComment);
             FullCodeBuilder.Append(AnimationExecution);
 
@@ -34,6 +46,31 @@ namespace AnimationControl
                 FullCodeBuilder.Append(MethodCommentSufix);
                 FullCodeBuilder.Append(MethodExecution[i]);
             }
+
+            return FullCodeBuilder.ToString();
+        }
+
+        public String ConstructMainCode(String ObjectDeclaration, String RelationshipDeclaration, String AnimationExecution, List<(String, String)> MockedAttributes)
+        {
+            StringBuilder FullCodeBuilder = new StringBuilder();
+
+            FullCodeBuilder.Append(ObjectDeclarationComment);
+            FullCodeBuilder.Append(ObjectDeclaration);
+            FullCodeBuilder.Append(RelationshipDeclarationComment);
+            FullCodeBuilder.Append(RelationshipDeclaration);
+
+            foreach ((String, String) InstanceAttributeTupple in MockedAttributes)
+            {
+                FullCodeBuilder.Append(InstanceAttributeTupple.Item1);
+                FullCodeBuilder.Append(".");
+                FullCodeBuilder.Append(InstanceAttributeTupple.Item2);
+                FullCodeBuilder.Append("=");
+                FullCodeBuilder.Append("0");
+                FullCodeBuilder.Append(";\n");
+            }
+
+            FullCodeBuilder.Append(AnimationExecutionPartComment);
+            FullCodeBuilder.Append(AnimationExecution);
 
             return FullCodeBuilder.ToString();
         }

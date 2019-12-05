@@ -22,6 +22,8 @@ namespace AnimationControl
         }
         public EXEASTNodeComposite ConstructQueryAST(String Query)
         {
+            Console.WriteLine("QueryChecker: " + Query);
+
             EXEASTNodeComposite AST = null;
             if (!IsQuery(Query))
             {
@@ -94,6 +96,8 @@ namespace AnimationControl
         }
         private EXEASTNodeComposite ConstructASTRelate(String Query)
         {
+            Console.WriteLine("QueryChecker is constructing AST of relate: " + Query);
+            
             EXEASTNodeComposite AST = null;
 
             String[] Tokens = EXEParseUtil.SqueezeWhiteSpace(Query).Split(' ');
@@ -102,31 +106,37 @@ namespace AnimationControl
             {
                 return AST;
             }
+            Console.WriteLine("1");
 
             if (!OALCommandParser.IsValidName(Tokens[1]))
             {
                 return AST;
             }
+            Console.WriteLine("2");
 
             if (!"to".Equals(Tokens[2]))
             {
                 return AST;
             }
+            Console.WriteLine("3");
 
             if (!OALCommandParser.IsValidName(Tokens[3]))
             {
                 return AST;
             }
+            Console.WriteLine("4");
 
             if (!"across".Equals(Tokens[4]))
             {
                 return AST;
             }
+            Console.WriteLine("5");
 
             if (!OALCommandParser.IsValidRelationshipName(Tokens[5]))
             {
                 return AST;
             }
+            Console.WriteLine("6");
 
             AST = new EXEASTNodeComposite("relate");
             AST.AddOperand(new EXEASTNodeLeaf(Tokens[1], true, false, false));

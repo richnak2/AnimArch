@@ -41,7 +41,5 @@ namespace AnimationControl
 
             return Animation;
         }
-
-        public 
     }
 }

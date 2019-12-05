@@ -51,7 +51,9 @@ namespace AnimationControl
             //First go for query
             else if (QueryChecker.IsQuery(ClearedExpressionCommand))
             {
+                Console.WriteLine("OALCP B4Constructing Query AST:" + ExpressionCommand);
                 AST = QueryChecker.ConstructQueryAST(ClearedExpressionCommand);
+                Console.WriteLine("OALCP AfterConstructing Query AST:" + ExpressionCommand);
             }
             //Then go for top level commands -> control (return, break, continue)
             else if (IsControlCommand(ClearedExpressionCommand))
@@ -61,7 +63,9 @@ namespace AnimationControl
             //Then go for top level commands -> assign
             else if (IsAssignment(ClearedExpressionCommand))
             {
+                Console.WriteLine("OALCP B4Constructing Assignment AST:" + ExpressionCommand);
                 AST = ConstructAssignmentCommandAST(ClearedExpressionCommand);
+                Console.WriteLine("OALCP AfterConstructing Assignment AST:" + ExpressionCommand);
             }
             //Then if it has operator, it is an expression and needs to be treated as such
             else if (ContainsOperator(ClearedExpressionCommand))
@@ -80,6 +84,7 @@ namespace AnimationControl
                 AST = new EXEASTNodeLeaf(EXEParseUtil.SqueezeWhiteSpace(ClearedExpressionCommand));
             }
 
+            Console.WriteLine("OALCP:" + ExpressionCommand);
             return AST;
         }
 
@@ -117,12 +122,23 @@ namespace AnimationControl
 
             String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
             Console.WriteLine("ConstrAssign:" + SanitizedCommand + "EOL");
-            String[] CommandTokens = SanitizedCommand.Split(' ');
+
+            int SplitIndex = SanitizedCommand.IndexOf('=');
+            String Storage = SanitizedCommand.Substring(0, SplitIndex);
+            String Value = SanitizedCommand.Substring(SplitIndex + 1);
+
+            Console.WriteLine("Assigning " + Value + " to " + Storage);
+            /*String[] CommandTokens = SanitizedCommand.Split('=');
+
 
             AST = new EXEASTNodeComposite("=");
             AST.AddOperand(ConstructAST(CommandTokens[0]));
-            AST.AddOperand(ConstructAST(string.Join("", CommandTokens.Skip(2).ToArray())));
+            AST.AddOperand(ConstructAST(String.Join("", CommandTokens.Skip(2).ToArray())));*/
 
+            AST = new EXEASTNodeComposite("=");
+            AST.AddOperand(ConstructAST(Storage));
+            AST.AddOperand(ConstructAST(Value));
+            Console.WriteLine("Assigned");
             return AST;
         }
 
@@ -169,7 +185,7 @@ namespace AnimationControl
                 return false;
             }
 
-            return false;
+            return true;
         }
         public Boolean CanBeOperator(String Operator)
         {
