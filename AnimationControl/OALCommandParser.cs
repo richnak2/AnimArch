@@ -32,7 +32,7 @@ namespace AnimationControl
 
         public EXEASTNode ConstructAST(String ExpressionCommand)
         {
-            Console.WriteLine("ConstrAST:" + ExpressionCommand + "EOL");
+            //Console.WriteLine("ConstrAST:" + ExpressionCommand + "EOL");
 
             EXEASTNode AST = null;
             EXEQueryChecker QueryChecker = new EXEQueryChecker();
@@ -51,9 +51,9 @@ namespace AnimationControl
             //First go for query
             else if (QueryChecker.IsQuery(ClearedExpressionCommand))
             {
-                Console.WriteLine("OALCP B4Constructing Query AST:" + ExpressionCommand);
+               // Console.WriteLine("OALCP B4Constructing Query AST:" + ExpressionCommand);
                 AST = QueryChecker.ConstructQueryAST(ClearedExpressionCommand);
-                Console.WriteLine("OALCP AfterConstructing Query AST:" + ExpressionCommand);
+               // Console.WriteLine("OALCP AfterConstructing Query AST:" + ExpressionCommand);
             }
             //Then go for top level commands -> control (return, break, continue)
             else if (IsControlCommand(ClearedExpressionCommand))
@@ -63,9 +63,9 @@ namespace AnimationControl
             //Then go for top level commands -> assign
             else if (IsAssignment(ClearedExpressionCommand))
             {
-                Console.WriteLine("OALCP B4Constructing Assignment AST:" + ExpressionCommand);
+               // Console.WriteLine("OALCP B4Constructing Assignment AST:" + ExpressionCommand);
                 AST = ConstructAssignmentCommandAST(ClearedExpressionCommand);
-                Console.WriteLine("OALCP AfterConstructing Assignment AST:" + ExpressionCommand);
+               // Console.WriteLine("OALCP AfterConstructing Assignment AST:" + ExpressionCommand);
             }
             //Then if it has operator, it is an expression and needs to be treated as such
             else if (ContainsOperator(ClearedExpressionCommand))
@@ -84,7 +84,7 @@ namespace AnimationControl
                 AST = new EXEASTNodeLeaf(EXEParseUtil.SqueezeWhiteSpace(ClearedExpressionCommand));
             }
 
-            Console.WriteLine("OALCP:" + ExpressionCommand);
+            //Console.WriteLine("OALCP:" + ExpressionCommand);
             return AST;
         }
 
@@ -121,13 +121,13 @@ namespace AnimationControl
             }
 
             String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
-            Console.WriteLine("ConstrAssign:" + SanitizedCommand + "EOL");
+           // Console.WriteLine("ConstrAssign:" + SanitizedCommand + "EOL");
 
             int SplitIndex = SanitizedCommand.IndexOf('=');
             String Storage = SanitizedCommand.Substring(0, SplitIndex);
             String Value = SanitizedCommand.Substring(SplitIndex + 1);
 
-            Console.WriteLine("Assigning " + Value + " to " + Storage);
+          //  Console.WriteLine("Assigning " + Value + " to " + Storage);
             /*String[] CommandTokens = SanitizedCommand.Split('=');
 
 
@@ -138,7 +138,7 @@ namespace AnimationControl
             AST = new EXEASTNodeComposite("=");
             AST.AddOperand(ConstructAST(Storage));
             AST.AddOperand(ConstructAST(Value));
-            Console.WriteLine("Assigned");
+           // Console.WriteLine("Assigned");
             return AST;
         }
 
@@ -337,7 +337,7 @@ namespace AnimationControl
 
         public EXEASTNode ConstructExprASTAlt(String Expression)
         {
-            Console.WriteLine("ConsASTAlt:" + Expression + "EOL");
+            //Console.WriteLine("ConsASTAlt:" + Expression + "EOL");
 
             String ModifiedExpression = EXEParseUtil.SqueezeWhiteSpace(Expression);
             (String, int) TopLevelOperator = IdentifyFirstTopLevelOperator(ModifiedExpression);
@@ -355,7 +355,7 @@ namespace AnimationControl
                 ExprContainsOperator = ContainsOperator(ModifiedExpression);
             }
 
-            Console.WriteLine("ConsASTAlt,unbracketed:" + ModifiedExpression + "EOL");
+            //Console.WriteLine("ConsASTAlt,unbracketed:" + ModifiedExpression + "EOL");
 
             EXEASTNodeComposite AST = new EXEASTNodeComposite(TopLevelOperator.Item1);
             if (TopLevelOperator.Item2 != 0)

@@ -56,6 +56,22 @@ namespace AnimationControl
             return Result;
         }
 
+        public CDClass getClassByName(String ClassName)
+        {
+            CDClass Result = null;
+
+            foreach (CDClass Class in this.ClassPool)
+            {
+                if (Class.Name.Equals(ClassName))
+                {
+                    Result = Class;
+                    break;
+                }
+            }
+
+            return Result;
+        }
+
         public Boolean MethodExists(String ClassName, String MethodName)
         {
             if (!ClassExists(ClassName))
