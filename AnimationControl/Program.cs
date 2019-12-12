@@ -298,8 +298,6 @@ namespace AnimationControl
 
 
             System.IO.File.AppendAllText(@".\ExceptionLog.txt", "------------------------------------------------------------------------------------------------------------" + Environment.NewLine);
-
-            Console.ReadLine();
         }
     }
 }
