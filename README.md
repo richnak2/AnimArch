@@ -1,2 +1,1 @@
 # AnimArch
-Andrej je úchyl
