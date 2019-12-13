@@ -1,2 +1,2 @@
 # AnimArch
-Andrej je úchyl
+Projekt tímu ArchMages
