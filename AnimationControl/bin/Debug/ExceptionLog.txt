@@ -1,0 +1,18 @@
+02/18/2020 9:35 AM Starting new session
+02/18/2020 9:35 AM >> create animation
+02/18/2020 9:35 AM >> add class Observer
+02/18/2020 9:35 AM >> add method Observer init
+02/18/2020 9:36 AM >> add class Subject
+02/18/2020 9:36 AM >> add method attach
+02/18/2020 9:38 AM Starting new session
+02/18/2020 9:38 AM >> create animation
+02/18/2020 9:38 AM >> add class Observer
+02/18/2020 9:38 AM >> add method Observer init
+02/18/2020 9:38 AM >> add class Subject
+02/18/2020 9:39 AM >> add method Subject attach
+02/18/2020 9:39 AM >> add method detach
+02/18/2020 9:39 AM Starting new session
+02/18/2020 9:39 AM >> create animation
+02/18/2020 9:40 AM >> add class Observer init
+02/18/2020 9:40 AM >> show classes
+02/18/2020 9:40 AM >> remove class

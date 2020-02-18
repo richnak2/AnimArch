@@ -192,6 +192,13 @@ namespace AnimationControl
                 {
                     String Expression = command.Substring(11);
                     String[] Tokens = Expression.Split(' ');
+
+                    if (Tokens.Length != 2)
+                    {
+                        Console.WriteLine("You need to enter both class and method name!");
+                        continue;
+                    }
+
                     String Class = Tokens[0];
                     String Method = Tokens[1];
 
