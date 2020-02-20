@@ -10,4 +10,4 @@
 
 #Tests
 AnimArch/AnimationControlTests/bin/Debug/netcoreapp3.0/**
-AnimArch/AnimationControlTests/obj/**
+AnimationControlTests/obj/**
