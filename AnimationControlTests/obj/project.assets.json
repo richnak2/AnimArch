@@ -6893,11 +6893,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Drizzt\\Documents\\AnimControl\\v003\\AnimationControlTests\\AnimationControlTests.csproj",
+      "projectUniqueName": "C:\\Users\\Drizzt\\Documents\\AnimControl\\AnimArch\\AnimationControlTests\\AnimationControlTests.csproj",
       "projectName": "AnimationControlTests",
-      "projectPath": "C:\\Users\\Drizzt\\Documents\\AnimControl\\v003\\AnimationControlTests\\AnimationControlTests.csproj",
+      "projectPath": "C:\\Users\\Drizzt\\Documents\\AnimControl\\AnimArch\\AnimationControlTests\\AnimationControlTests.csproj",
       "packagesPath": "C:\\Users\\Drizzt\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Drizzt\\Documents\\AnimControl\\v003\\AnimationControlTests\\obj\\",
+      "outputPath": "C:\\Users\\Drizzt\\Documents\\AnimControl\\AnimArch\\AnimationControlTests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Drizzt\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -6913,8 +6913,8 @@
       "frameworks": {
         "netcoreapp3.0": {
           "projectReferences": {
-            "C:\\Users\\Drizzt\\Documents\\AnimControl\\v003\\AnimationControl\\AnimationControl.csproj": {
-              "projectPath": "C:\\Users\\Drizzt\\Documents\\AnimControl\\v003\\AnimationControl\\AnimationControl.csproj"
+            "C:\\Users\\Drizzt\\Documents\\AnimControl\\AnimArch\\AnimationControl\\AnimationControl.csproj": {
+              "projectPath": "C:\\Users\\Drizzt\\Documents\\AnimControl\\AnimArch\\AnimationControl\\AnimationControl.csproj"
             }
           }
         }
