@@ -4,3 +4,6 @@
 **/*.sln
 **/*.cache
 **/*.json
+**/AssemblyInfo.cs
+**/.csproj.FileListAbsolute.txt
+**/.exe.config
