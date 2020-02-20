@@ -7,3 +7,7 @@
 **/AssemblyInfo.cs
 **/.csproj.FileListAbsolute.txt
 **/.exe.config
+
+#Tests
+AnimArch/AnimationControlTests/bin/Debug/netcoreapp3.0/**
+AnimArch/AnimationControlTests/obj/**
