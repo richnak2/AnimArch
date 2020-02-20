@@ -27,6 +27,10 @@ namespace AnimationControl
             this.Operands.Add(Operand);
         }
 
+        public String GetNodeValue()
+        {
+            return this.Operation;
+        }
         public String Evaluate(EXEScope Scope)
         {
             //TODO

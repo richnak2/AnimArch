@@ -293,9 +293,10 @@ namespace AnimationControl
                     catch (Exception e)
                     {
                         String ExceptionText1 = "Got this exception while trying to parse expression \"" + Expression + "\"";
-                        String ExceptionText2= e.ToString();
+                        String ExceptionText2 = e.ToString();
+                        String ExceptionText3 = e.StackTrace;
 
-                        System.IO.File.AppendAllText(@".\ExceptionLog.txt", ExceptionText1 + Environment.NewLine + ExceptionText2 + Environment.NewLine);
+                        System.IO.File.AppendAllText(@".\ExceptionLog.txt", ExceptionText1 + Environment.NewLine + ExceptionText2 + Environment.NewLine + ExceptionText3 + Environment.NewLine);
 
                         Console.WriteLine("Exception occured and was logged");
                     }

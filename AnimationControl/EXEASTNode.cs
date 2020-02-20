@@ -8,7 +8,9 @@ namespace AnimationControl
 {
     public interface EXEASTNode
     {
+        String GetNodeValue();
         String Evaluate(EXEScope Scope);
         void PrintPretty(string indent, bool last);
+
     }
 }

@@ -35,6 +35,10 @@ namespace AnimationControl
             this.UnknownType = false;
         }
 
+        public String GetNodeValue()
+        {
+            return this.Value;
+        }
         public String Evaluate(EXEScope Scope)
         {
             //TODO

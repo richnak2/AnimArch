@@ -105,7 +105,7 @@ namespace AnimationControl
             }
             else if (CommandTokens[0] == "return")
             {
-                EXEASTNodeComposite TempAST = new EXEASTNodeComposite("return");
+                EXEASTNodeComposite TempAST = new EXEASTNodeComposite(CommandTokens[0]);
                 TempAST.AddOperand(ConstructAST(CommandTokens[1]));
             }
 
