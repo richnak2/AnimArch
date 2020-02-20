@@ -5,9 +5,13 @@
 **/*.cache
 **/*.json
 **/AssemblyInfo.cs
-**/.csproj.FileListAbsolute.txt
-**/.exe.config
+
+AnimationControl/bin/Debug/AnimationControl.exe.config
+
+
+AnimationControl/bin/**
+AnimationControl/obj/**
 
 #Tests
-AnimArch/AnimationControlTests/bin/Debug/netcoreapp3.0/**
+AnimationControlTests/bin/**
 AnimationControlTests/obj/**
