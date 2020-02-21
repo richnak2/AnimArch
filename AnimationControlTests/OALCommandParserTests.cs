@@ -116,5 +116,138 @@ namespace AnimationControlTests
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
+
+        [TestMethod]
+        public void IsControlCommand_Normal1()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = true;
+
+            String Input = "break";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Normal2()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = true;
+
+            String Input = "continue";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Normal3()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = true;
+
+            String Input = "return";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Malformed1()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "retur";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Malformed2()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "returned";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Malformed3()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Malformed4()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Wrong1()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "create";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Wrong2()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "while";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Wrong3()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "select";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void IsControlCommand_Wrong4()
+        {
+            OALCommandParser OCP = new OALCommandParser();
+
+            Boolean ExpectedOutput = false;
+
+            String Input = "if";
+            Boolean ActualOutput = OCP.IsControlCommand(Input);
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
     }
 }

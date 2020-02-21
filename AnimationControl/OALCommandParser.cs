@@ -223,7 +223,7 @@ namespace AnimationControl
             return Result;
         }
 
-        private Boolean IsControlCommand (String Command)
+        public Boolean IsControlCommand (String Command)
         {
             String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
             String[] CommandTokens = SanitizedCommand.Split(' ');
