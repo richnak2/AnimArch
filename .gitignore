@@ -1,0 +1,16 @@
+**/*.pdb
+**/*.exe
+**/*.vs
+**/*.sln
+**/*.cache
+**/*.json
+
+AnimationControl/bin/Debug/AnimationControl.exe.config
+
+
+AnimationControl/bin/**
+AnimationControl/obj/**
+
+#Tests
+AnimationControlTests/bin/**
+AnimationControlTests/obj/**
