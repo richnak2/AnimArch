@@ -4,7 +4,6 @@
 **/*.sln
 **/*.cache
 **/*.json
-**/AssemblyInfo.cs
 
 AnimationControl/bin/Debug/AnimationControl.exe.config
 
