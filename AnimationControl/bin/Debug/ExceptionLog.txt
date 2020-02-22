@@ -19,3 +19,8 @@ System.NullReferenceException: Object reference not set to an instance of an obj
    at AnimationControl.Program.Main(String[] args) in C:\Users\Lukawh59\Documents\AnimArch\AnimArch\AnimationControl\Program.cs:line 176
 12/12/2019 9:59 odp. >> exit
 ------------------------------------------------------------------------------------------------------------
+02/22/2020 9:00 PM Starting new session
+02/22/2020 10:26 PM Starting new session
+02/22/2020 10:30 PM Starting new session
+02/22/2020 10:33 PM Starting new session
+02/22/2020 10:33 PM >> parse x.a = 5

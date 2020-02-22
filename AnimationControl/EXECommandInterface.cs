@@ -13,6 +13,7 @@ namespace AnimationControl
         void PrintAST();
         void Parse(EXEScope SuperScope);
         String GetCode();
+        // Pass "Scope == null" if executing EXEScope
         Boolean Execute(OALAnimationRepresentation ExecutionSpace, EXEScope Scope);
     }
 }

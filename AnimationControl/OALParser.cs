@@ -49,24 +49,26 @@ namespace AnimationControl
                 // Start new scopes
                 if (WhitespaceClearedTokenLenght >= 2 && "if".Equals(WhitespaceClearedToken.Substring(0, 2)))
                 {
-                    EXEScope Scope = new EXEScope(EXEScope.ScopeTypeNameIf);
-                    String FirstCommand = ExtractControlStructureInit(Scope, SemicolonToken);
-                    if (Scope.IsMyEnding(EXEParseUtil.RemoveWhitespace(FirstCommand)))
-                    {
-                        ScopeStack.Peek().AddCommand(Scope);
-                    }
-                    else
-                    {
-                        Scope.AddCommand(new EXECommand(FirstCommand));
-                        ScopeStack.Push(Scope);
-                    }
-                    //TODO extract condition
-                    DebugPrint("STARTING IF" + WhitespaceClearedToken + "\n");
-                    continue;
+                    EXEScope Scope = new EXEScopeCondition();
+                    throw new NotImplementedException();
+                    /* String FirstCommand = ExtractControlStructureInit(Scope, SemicolonToken);
+                     if (Scope.IsMyEnding(EXEParseUtil.RemoveWhitespace(FirstCommand)))
+                     {
+                         ScopeStack.Peek().AddCommand(Scope);
+                     }
+                     else
+                     {
+                         Scope.AddCommand(new EXECommand(FirstCommand));
+                         ScopeStack.Push(Scope);
+                     }
+                     //TODO extract condition
+                     DebugPrint("STARTING IF" + WhitespaceClearedToken + "\n");
+                     continue;*/
                 }
                 if (WhitespaceClearedTokenLenght >= 5 && "while".Equals(WhitespaceClearedToken.Substring(0, 5)))
                 {
-                    EXEScope Scope = new EXEScope(EXEScope.ScopeTypeNameWhile);
+                    throw new NotImplementedException();
+                    /*EXEScope Scope = new EXEScopeLoopWhile();
                     String FirstCommand = ExtractControlStructureInit(Scope, SemicolonToken);
                     if (Scope.IsMyEnding(EXEParseUtil.RemoveWhitespace(FirstCommand)))
                     {
@@ -79,11 +81,12 @@ namespace AnimationControl
                     }
                     //TODO extract condition
                     DebugPrint("STARTING WHILE" + WhitespaceClearedToken + "\n");
-                    continue;
+                    continue;*/
                 }
                 if (WhitespaceClearedTokenLenght >= 7 && "foreach".Equals(WhitespaceClearedToken.Substring(0, 7)))
                 {
-                    EXEScope Scope = new EXEScope(EXEScope.ScopeTypeNameForeach);
+                    throw new NotImplementedException();
+                    /*EXEScope Scope = new EXEScope(EXEScope.ScopeTypeNameForeach);
                     String FirstCommand = ExtractControlStructureInit(Scope, SemicolonToken);
                     if (Scope.IsMyEnding(EXEParseUtil.RemoveWhitespace(FirstCommand)))
                     {
@@ -96,7 +99,7 @@ namespace AnimationControl
                     }
                     //TODO extract iterator/iterable initialization
                     DebugPrint("STARTING FOREACH" + WhitespaceClearedToken + "\n");
-                    continue;
+                    continue;*/
                 }
                 /*if ("elif".Equals(WhitespaceClearedToken.Substring(0, 4)))
                 {
@@ -112,7 +115,8 @@ namespace AnimationControl
                 }*/
 
                 //End current scope
-                if (WhitespaceClearedTokenLenght >= 5 && ("endif".Equals(WhitespaceClearedToken.Substring(0, 5))))
+                throw new NotImplementedException();
+               /* if (WhitespaceClearedTokenLenght >= 5 && ("endif".Equals(WhitespaceClearedToken.Substring(0, 5))))
                 {
                     if (ScopeStack.Peek().ScopeType == EXEScope.ScopeTypeNameIf)
                     {
@@ -159,7 +163,7 @@ namespace AnimationControl
                         DebugPrint("ENDING foreach WHEN WE ARE NOT IN foreach\n");
                     }
                     continue;
-                }
+                }*/
 
                 //If we are here, we have non-empty command that is not a control structure
                 EXECommand CurrentCommand = new EXECommand(SemicolonToken);
@@ -276,7 +280,7 @@ namespace AnimationControl
                     ConditionOALCode += InitOALCode[i];
                 }
 
-                Scope.ConditionOAL = ConditionOALCode;
+                //Scope.ConditionOAL = ConditionOALCode;
 
                 String FirstCommand = InitOALCode.Substring(ConditionEndIndex + 1);
                 return FirstCommand;
@@ -319,7 +323,7 @@ namespace AnimationControl
                     ConditionOALCode += InitOALCode[i];
                 }
 
-                Scope.ConditionOAL = ConditionOALCode;
+                //Scope.ConditionOAL = ConditionOALCode;
                 String FirstCommand = InitOALCode.Substring(ConditionEndIndex + 1);
                 return FirstCommand;
             }
@@ -338,8 +342,8 @@ namespace AnimationControl
                 String IteratorName = SqueezedOalCode.Substring(IndexOfIteratorName, IteratorNameLength);
                 String IterableName = SqueezedOalCode.Substring(IndexOfIterableName, IterableNameLength);
 
-                Scope.IteratorName = IteratorName;
-                Scope.IterableName = IterableName;
+                //Scope.IteratorName = IteratorName;
+                //Scope.IterableName = IterableName;
 
                 ConditionEndIndex = IndexOfIterableName + IterableNameLength;
                 String FirstCommand = InitOALCode.Substring(ConditionEndIndex + 1);

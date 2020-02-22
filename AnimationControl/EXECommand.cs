@@ -31,7 +31,7 @@ namespace AnimationControl
         }
         public Boolean Execute(OALAnimationRepresentation ExecutionSpace, EXEScope Scope)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public void Parse(EXEScope SuperScope)

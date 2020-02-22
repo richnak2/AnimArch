@@ -50,11 +50,15 @@
     <Compile Include="CDMethod.cs" />
     <Compile Include="CDParameter.cs" />
     <Compile Include="CDRelationship.cs" />
+    <Compile Include="EXEReferencingSetVariable.cs" />
+    <Compile Include="EXEReferencingVariable.cs" />
+    <Compile Include="EXEScopeCondition.cs" />
+    <Compile Include="EXEScopeForEach.cs" />
+    <Compile Include="EXEScopeLoopWhile.cs" />
     <Compile Include="OALCodeBuilder.cs" />
     <Compile Include="EXEASTNode.cs" />
     <Compile Include="EXEASTNodeComposite.cs" />
     <Compile Include="EXEASTNodeLeaf.cs" />
-    <Compile Include="EXEClassHandle.cs" />
     <Compile Include="EXECommand.cs" />
     <Compile Include="EXECommandInterface.cs" />
     <Compile Include="EXEExecutionGlobals.cs" />
@@ -63,7 +67,6 @@
     <Compile Include="EXEPrimitiveVariable.cs" />
     <Compile Include="EXEQueryChecker.cs" />
     <Compile Include="EXEScope.cs" />
-    <Compile Include="EXEScopeMethod.cs" />
     <Compile Include="EXETypes.cs" />
     <Compile Include="MethodCall.cs" />
     <Compile Include="OALCodeConstructor.cs" />
