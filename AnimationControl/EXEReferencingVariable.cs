@@ -19,6 +19,7 @@ namespace AnimationControl
             this.ReferencedInstanceId = -1;
         }
 
+        // SetUloh2
         public CDClassInstance RetrieveReferencedClassInstance(CDClassPool ExecutionSpace)
         {
             throw new NotImplementedException();

@@ -42,7 +42,7 @@ namespace AnimationControl
 
             return StringTypeName;
         }
-        public static Boolean IsValidValue(String Name, String Value, String Type)
+        public static Boolean IsValidValue(String Value, String Type)
         {
             Boolean Result = false;
             switch (Type)
@@ -57,10 +57,11 @@ namespace AnimationControl
                     Result = Boolean.TryParse(Value, out _);
                     break;
                 case "unique_ID":
-                    Result = Name == UniqueIDTypeName;
+                    //Result = Name == UniqueIDTypeName;
+                    Result = int.TryParse(Value, out _);
                     break;
                 case "date":
-                    //TODO
+                    //TODO (ak vobec)
                     break;
                 default:
                     Result = true;

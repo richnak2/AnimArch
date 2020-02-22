@@ -12,19 +12,16 @@ namespace AnimationControl
         public String ToClass { get; set; }
         public String RelationshipName { get; }
 
-        private static long RelationshipIdSeed = 1;
-
         private List<(String, String)> InstanceRelationships { get;}
 
-        public CDRelationship(String FromClass, String ToClass)
+        public CDRelationship(String FromClass, String ToClass, String Name)
         {
 
             this.FromClass = FromClass;
             this.ToClass = ToClass;
+            this.RelationshipName = Name;
             this.InstanceRelationships = new List<(String, String)>();
             
-            this.RelationshipName = "R" + RelationshipIdSeed;
-            RelationshipIdSeed++;
         }
 
         public Boolean RelationshipExists(String Instance1, String Instance2)

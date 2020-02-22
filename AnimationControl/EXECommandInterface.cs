@@ -14,6 +14,6 @@ namespace AnimationControl
         void Parse(EXEScope SuperScope);
         String GetCode();
         // Pass "Scope == null" if executing EXEScope
-        Boolean Execute(OALAnimationRepresentation ExecutionSpace, EXEScope Scope);
+        Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope);
     }
 }

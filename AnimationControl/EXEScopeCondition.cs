@@ -29,20 +29,20 @@ namespace AnimationControl
             this.ElifScopes.Add(ElifScope);
         }
 
-        // should evaluate to true only if base if is true
+        // should evaluate to true only if base "if" is true
         public Boolean EvaluateCondition()
         {
             throw new NotImplementedException();
         }
 
-        public Boolean Execute(OALAnimationRepresentation ExecutionSpace)
+        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Result = false;
             Boolean AScopeWasExecuted = false;
 
             if (this.EvaluateCondition())
             {
-                Result = base.Execute(ExecutionSpace, null);
+                Result = base.Execute(ExecutionSpace, RelationshipSpace, this);
                 AScopeWasExecuted = true;
             }
 
@@ -55,7 +55,7 @@ namespace AnimationControl
             {
                 if (CurrentElif.EvaluateCondition())
                 {
-                    Result = CurrentElif.Execute(ExecutionSpace);
+                    Result = CurrentElif.Execute(ExecutionSpace, RelationshipSpace, CurrentElif);
                     AScopeWasExecuted = true;
                     break;
                 }
@@ -66,7 +66,7 @@ namespace AnimationControl
                 return Result;
             }
 
-            Result = ElseScope.Execute(ExecutionSpace, null);
+            Result = ElseScope.Execute(ExecutionSpace, RelationshipSpace, ElseScope);
 
             return Result;
         }

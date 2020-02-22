@@ -50,6 +50,9 @@
     <Compile Include="CDMethod.cs" />
     <Compile Include="CDParameter.cs" />
     <Compile Include="CDRelationship.cs" />
+    <Compile Include="CDRelationshipPool.cs" />
+    <Compile Include="EXECommandQueryCreate.cs" />
+    <Compile Include="EXEExpressionEvaluator.cs" />
     <Compile Include="EXEReferencingSetVariable.cs" />
     <Compile Include="EXEReferencingVariable.cs" />
     <Compile Include="EXEScopeCondition.cs" />

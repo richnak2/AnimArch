@@ -41,8 +41,7 @@ namespace AnimationControl
         }
         public String Evaluate(EXEScope Scope)
         {
-            //TODO
-            return null;
+            throw new NotImplementedException();
         }
 
         //https://stackoverflow.com/questions/1649027/how-do-i-print-out-a-tree-structure

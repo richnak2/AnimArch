@@ -29,7 +29,7 @@ namespace AnimationControl
         {
             this.AST.PrintPretty("", false);
         }
-        public Boolean Execute(OALAnimationRepresentation ExecutionSpace, EXEScope Scope)
+        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             throw new NotImplementedException();
         }

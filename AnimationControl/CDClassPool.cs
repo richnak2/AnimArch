@@ -17,6 +17,11 @@ namespace AnimationControl
             this.ClassPool = new List<CDClass>();
         }
 
+        // SetUloh2
+        public CDClassInstance GetClassInstanceById(String ClassName, long id)
+        {
+            throw new NotImplementedException();
+        }
         public CDClass SpawnClass(String Name, List<String> AttributeNames, List<String> MethodNames)
         {
             long NewClassID = this.GenerateClassID();

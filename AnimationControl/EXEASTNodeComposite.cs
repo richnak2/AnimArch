@@ -33,8 +33,7 @@ namespace AnimationControl
         }
         public String Evaluate(EXEScope Scope)
         {
-            //TODO
-            return null;
+            throw new NotImplementedException();
         }
 
         public void PrintPretty(string indent, bool last)

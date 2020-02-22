@@ -25,6 +25,41 @@ namespace AnimationControl
             this.Commands = new List<EXECommandInterface>();
         }
 
+        // SetUloh1 - this method is done. Do the same with two similar methods below it
+        public EXEPrimitiveVariable FindPrimitiveVariableByName(String Name)
+        {
+            EXEPrimitiveVariable Result = null;
+            EXEScope CurrentScope = this;
+            while (CurrentScope != null)
+            {
+                foreach (EXEPrimitiveVariable CurrentVariable in this.PrimitiveVariables)
+                {
+                    if (CurrentVariable.Name == Name)
+                    {
+                        Result = CurrentVariable;
+                        break;
+                    }
+                }
+
+                if (Result != null)
+                {
+                    break;
+                }
+
+                CurrentScope = CurrentScope.SuperScope;
+            }
+
+            return Result;
+        }
+        public EXEReferencingVariable FindReferencingVariableByName(String Name)
+        {
+            throw new NotImplementedException();        
+        }
+        public EXEReferencingSetVariable FindSetReferencingVariableByName(String Name)
+        {
+            throw new NotImplementedException();
+        }
+
         public Boolean EvaluateCondition()
         {
             return true;
@@ -51,11 +86,20 @@ namespace AnimationControl
             return SelfPrintBuilder.ToString();
         }
 
-        public Boolean Execute(OALAnimationRepresentation ExecutionSpace, EXEScope Scope)
+        //"Scope" param is ignored here
+        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
-            Scope = this;
+            Boolean Success = false;
+            foreach(EXECommandInterface Command in this.Commands)
+            {
+                Success = Command.Execute(ExecutionSpace, RelationshipSpace, this);
+                if (!Success)
+                {
+                    break;
+                }
+            }
 
-            throw new NotImplementedException();
+            return Success;
         }
 
         public String GetCode()

@@ -11,6 +11,5 @@ namespace AnimationControl
         String GetNodeValue();
         String Evaluate(EXEScope Scope);
         void PrintPretty(string indent, bool last);
-
     }
 }
