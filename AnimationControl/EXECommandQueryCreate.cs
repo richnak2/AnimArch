@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    class EXECommandQueryCreate : EXECommandInterface
+    public class EXECommandQueryCreate : EXECommandInterface
     {
         private String ReferencingVariableName { get; set; }
         private String ClassName { get; set; }
 
-        public EXECommandQueryCreate(String ReferencingVariableName, String ClassName)
+        public EXECommandQueryCreate(String ClassNamem, String ReferencingVariableName)
         {
             this.ReferencingVariableName = ReferencingVariableName;
             this.ClassName = ClassName;

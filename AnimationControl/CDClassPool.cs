@@ -18,7 +18,7 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        public CDClassInstance GetClassInstanceById(String ClassName, long id)
+        public CDClassInstance GetClassInstanceById(String ClassName, long Id)
         {
             throw new NotImplementedException();
         }
