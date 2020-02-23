@@ -12,11 +12,11 @@ namespace AnimationControl
         public String ClassName { get; }
         public long ReferencedInstanceId { get; set; }
 
-        public EXEReferencingVariable()
+        public EXEReferencingVariable(String Name, String ClassName, long ReferencedInstanceId)
         {
-            this.Name = "";
-            this.ClassName = "";
-            this.ReferencedInstanceId = -1;
+            this.Name = Name;
+            this.ClassName = ClassName;
+            this.ReferencedInstanceId = ReferencedInstanceId;
         }
 
         // SetUloh2

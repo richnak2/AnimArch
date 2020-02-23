@@ -18,13 +18,24 @@ namespace AnimationControl
 
             foreach (CDAttribute Attribute in attributes)
             {
-                this.State.Add(Attribute.name, EXEExecutionGlobals.UnitializedAttributeValue);
+                this.State.Add(Attribute.Name, EXEExecutionGlobals.UnitializedAttributeValue);
             }
 
             this.UniqueID = UniqueID;
             this.State.Add("unique_ID", UniqueID.ToString());
 
             this.ReferencingVariables = new List<String>();
+        }
+
+        public String GetAttribute(String name)
+        {
+            String Result = null;
+            if (this.State.ContainsKey(name))
+            {
+                Result = this.State[name];
+            }
+
+            return Result;
         }
 
         public int SetAttribute(String name, String value)

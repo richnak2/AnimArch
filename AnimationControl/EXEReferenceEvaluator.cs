@@ -2,7 +2,7 @@
 
 namespace AnimationControl
 {
-    class EXEReferenceEvaluator
+    public class EXEReferenceEvaluator
     {
         //SetUloh1
         // We have variable name, attribute name and scope, in which to look for variable

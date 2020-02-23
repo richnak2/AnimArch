@@ -22,10 +22,10 @@ namespace AnimationControl
         {
             throw new NotImplementedException();
         }
-        public CDClass SpawnClass(String Name, List<String> AttributeNames, List<String> MethodNames)
+        public CDClass SpawnClass(String Name)
         {
             long NewClassID = this.GenerateClassID();
-            CDClass NewClass = new CDClass(NewClassID, Name, AttributeNames, MethodNames);
+            CDClass NewClass = new CDClass(NewClassID, Name);
             this.ClassPool.Add(NewClass);
             return NewClass;
         }

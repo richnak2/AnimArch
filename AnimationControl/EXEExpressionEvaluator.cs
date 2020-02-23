@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace AnimationControl
 {
-    class EXEExpressionEvaluator
+    public class EXEExpressionEvaluator
     {
 
         // SetUloh1
+        // Here you get operator and operands, and you need to return the result. Check the unit tests to see what this is about
         public String Evaluate(String Operator, List<String> Operands)
         {
             if (!this.CanBeEvaluated(Operator, Operands))
@@ -16,7 +17,7 @@ namespace AnimationControl
 
             throw new NotImplementedException();
         }
-        //What's the difference between "FAIL" and "false"
+        //What's the difference between "FAIL" and "false"?
         public Boolean CanBeEvaluated(String Operator, List<String> Params)
         {
             String Result = this.IsValid(Operator, Params.ToArray());

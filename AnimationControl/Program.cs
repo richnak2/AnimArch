@@ -173,7 +173,7 @@ namespace AnimationControl
 
                     try
                     {
-                        Animation.ExecutionNameSpace.SpawnClass(Expression, new List<String>(), new List<String>());
+                        Animation.ExecutionNameSpace.SpawnClass(Expression);
                         Console.WriteLine("Class Created");
                     }
                     catch (Exception e)
@@ -229,9 +229,11 @@ namespace AnimationControl
 
                     try
                     {
-                        CDRelationship rel = new CDRelationship(Class1, Class2);
-                        Animation.RelationshipSpace.Add(rel);
-                        Console.WriteLine("Created relationship " + rel.RelationshipName + " between " + Class1 + " and " + Class2);
+                        /* CDRelationship rel = new CDRelationship(Class1, Class2);
+                         Animation.RelationshipSpace.Add(rel);
+                         Console.WriteLine("Created relationship " + rel.RelationshipName + " between " + Class1 + " and " + Class2);*/
+
+                        throw new NotImplementedException();
                     }
                     catch (Exception e)
                     {

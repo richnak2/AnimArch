@@ -8,19 +8,19 @@ namespace AnimationControl
 {
     public class CDAttribute
     {
-        public String name { get; }
-        public String type { get; }
+        public String Name { get; }
+        public String Type { get; }
         public Boolean IsMockedByCompiler { get; }
-        public CDAttribute(String name, String type)
+        public CDAttribute(String Name, String Type)
         {
-            this.name = name;
-            this.type = type;
+            this.Name = Name;
+            this.Type = Type;
             this.IsMockedByCompiler = false;
         }
-        public CDAttribute(String name, String type, Boolean IsMockedByCompiler)
+        public CDAttribute(String Name, String Type, Boolean IsMockedByCompiler)
         {
-            this.name = name;
-            this.type = type;
+            this.Name = Name;
+            this.Type = Type;
             this.IsMockedByCompiler = IsMockedByCompiler;
         }
     }

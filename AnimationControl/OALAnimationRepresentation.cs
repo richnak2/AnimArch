@@ -64,7 +64,7 @@ namespace AnimationControl
                     if (Attribute.IsMockedByCompiler)
                     {
                         String InstanceName = Class.Instances[0].ReferencingVariables[0];
-                        String AttributeName = Attribute.name;
+                        String AttributeName = Attribute.Name;
                         MockedAttributes.Add((InstanceName, AttributeName));
                     }
                 }
@@ -94,7 +94,7 @@ namespace AnimationControl
                     if (Attribute.IsMockedByCompiler)
                     {
                         String InstanceName = Class.Instances[0].ReferencingVariables[0];
-                        String AttributeName = Attribute.name;
+                        String AttributeName = Attribute.Name;
                         MockedAttributes.Add((InstanceName, AttributeName));
                     }
                 }

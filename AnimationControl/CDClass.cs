@@ -16,24 +16,16 @@ namespace AnimationControl
         private long ClassIDPrefix;
         private long InstanceIDSeed;
 
-        public CDClass(long ClassIDPrefix, String Name, List<String> AttributeNames, List<String> MethodNames)
+        public CDClass(long ClassIDPrefix, String Name)
         {
             this.ClassIDPrefix = ClassIDPrefix;
             this.InstanceIDSeed = 0;
             this.Name = Name;
 
             this.Attributes = new List<CDAttribute>();
-            foreach(String AttributeName in AttributeNames)
-            {
-                this.Attributes.Add(new CDAttribute(AttributeName, "NoType"));
-            }
+
 
             this.Methods = new List<CDMethod>();
-            foreach(String MethodName in MethodNames)
-            {
-                this.Methods.Add(new CDMethod(MethodName, "NoType"));
-                this.AddMethodCallCounterAttribute(MethodName);
-            }
 
             this.Instances = new List<CDClassInstance>();
         }
@@ -92,6 +84,25 @@ namespace AnimationControl
             {
                 this.Methods.Add(NewMethod);
                 this.AddMethodCallCounterAttribute(NewMethod.Name);
+            }
+
+            return Result;
+        }
+
+        public Boolean AddAttribute(CDAttribute NewAttribute)
+        {
+            Boolean Result = true;
+            foreach (CDAttribute Attribute in this.Attributes)
+            {
+                if (Attribute.Name == NewAttribute.Name)
+                {
+                    Result = false;
+                    break;
+                }
+            }
+            if (Result)
+            {
+                this.Attributes.Add(NewAttribute);
             }
 
             return Result;

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AnimationControl
 {
@@ -32,7 +30,7 @@ namespace AnimationControl
             EXEScope CurrentScope = this;
             while (CurrentScope != null)
             {
-                foreach (EXEPrimitiveVariable CurrentVariable in this.PrimitiveVariables)
+                foreach (EXEPrimitiveVariable CurrentVariable in CurrentScope.PrimitiveVariables)
                 {
                     if (CurrentVariable.Name == Name)
                     {
