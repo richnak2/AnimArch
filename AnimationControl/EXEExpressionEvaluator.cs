@@ -15,6 +15,9 @@ namespace AnimationControl
                 return null;
             }
 
+
+            //EXETypes.DetermineVariableType(null, "5");
+            //EXETypes.StringTypeName;
             throw new NotImplementedException();
         }
         //What's the difference between "FAIL" and "false"?

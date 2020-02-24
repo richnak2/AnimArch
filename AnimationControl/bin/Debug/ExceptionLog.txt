@@ -26,3 +26,4 @@ System.NullReferenceException: Object reference not set to an instance of an obj
 02/22/2020 10:33 PM >> parse x.a = 5
 02/23/2020 9:01 AM Starting new session
 02/23/2020 9:16 AM Starting new session
+02/24/2020 4:15 odp. Starting new session

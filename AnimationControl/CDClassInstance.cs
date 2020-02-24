@@ -11,6 +11,7 @@ namespace AnimationControl
     {
         public long UniqueID { get; }
         public List<String> ReferencingVariables { get; set; }
+        // Attributes
         public Dictionary<string, string> State { get; }
         public CDClassInstance(long UniqueID, List<CDAttribute> attributes)
         {

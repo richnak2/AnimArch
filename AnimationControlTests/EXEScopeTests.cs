@@ -12,6 +12,8 @@ namespace AnimationControl.Tests
         // SetUloh1 Create similar tests(all 4 of them) for the methods you implemented in this class (both of them)
         // Write these tests into this class and keep the naming convention and code structure
         // If you notice test case that isn here, you can write even more tests
+
+        // Test circle of scopes
         [TestMethod]
         public void FindPrimitiveVariableByNameTest_Normal_01()
         {

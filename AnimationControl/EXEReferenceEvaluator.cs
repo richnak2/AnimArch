@@ -9,7 +9,8 @@ namespace AnimationControl
         // We need to get the value of given attribute of given variable
         // If this does not exist, return null
         // You will use EXEScope.FindReferencingVariableByName() method, but you need to implement it first
-        public String EvaluateAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope)
+        // user.name
+        public String EvaluateAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace)
         {
             throw new NotImplementedException();
         }
@@ -21,6 +22,7 @@ namespace AnimationControl
         // When you know the type of attribute, use EXETypes.IsValidValue to see if you can or cannot assign that value to that attribute
         // You assign it in Scope
         // Return if you could assign it or not
+        // EXETypes.determineVariableType()
         public Boolean SetAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace, String NewValue)
         {
             throw new NotImplementedException();
