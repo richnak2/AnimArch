@@ -15,9 +15,25 @@ namespace AnimationControl
             this.Condition = Condition;
         }
 
-        public Boolean EvaluateCondition()
+        new public Boolean EvaluateCondition()
         {
             throw new NotImplementedException();
+        }
+
+        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        {
+            Boolean Success = false;
+
+            while (this.EvaluateCondition())
+            {
+                Success = base.Execute(ExecutionSpace, RelationshipSpace, this);
+                if (!Success)
+                {
+                    break;
+                }
+            }
+
+            return Success;
         }
     }
 }

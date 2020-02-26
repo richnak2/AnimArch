@@ -84,7 +84,7 @@ namespace AnimationControl
             return SelfPrintBuilder.ToString();
         }
 
-        //"Scope" param is ignored here
+        //"Scope" param is ignored here, because this class is a scope
         public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Success = false;
