@@ -26,7 +26,7 @@ namespace AnimationControl
                 this.Iterator.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
                 Success = base.Execute(ExecutionSpace, RelationshipSpace, this);
-                if (Success)
+                if (!Success)
                 {
                     break;
                 }
