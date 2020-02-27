@@ -331,182 +331,78 @@ namespace AnimationControl
         public Boolean CanBeEvaluated(String Operator, List<String> Params)
         {
             String Result = this.IsValid(Operator, Params.ToArray());
-
-            Boolean CanBeEvaluated = EXETypes.BooleanTrue.Equals(Result) ? true : false;
-
-            return CanBeEvaluated;
+            return String.Equals(EXETypes.BooleanTrue, Result);
         }
+
         // Potentially refactor this
         private String IsValid(string oper, string[] param)
         {
-            int p1;
-            double p2;
-            bool b1 = int.TryParse(param[0], out p1);
-            bool b2 = double.TryParse(param[0], out p2);
+            if (String.IsNullOrEmpty(oper) || param == null) return EXETypes.BooleanFalse;
 
-            if (b1 || b2)
+            //get the first element type
+            String ParamType = EXETypes.DetermineVariableType(null, param[0]);
+
+           
+            //check if it is int or real number
+            if (String.Equals(ParamType, EXETypes.IntegerTypeName) || String.Equals(ParamType, EXETypes.RealTypeName))
             {
-                if (param.Length < 2)
+                if (oper == "+" || oper == "-" || oper == "*" || oper == "/" || oper == "%")
                 {
-                    return "FAIL";
+                    if (param.Length < 2) return EXETypes.BooleanFalse;
                 }
-                if (oper == ">" || oper == "<" || oper == "<=" || oper == ">=" || oper == "+" ||
-                   oper == "-" || oper == "/" || oper == "*" || oper == "==" || oper == "!=")
+                else if (oper == "==" || oper == "!=" || oper == "<" || oper == ">" || oper == "<=" || oper == ">=")
                 {
-                    foreach (string paramx in param)
-                    {
-                        if (!int.TryParse(paramx, out p1) && !double.TryParse(paramx, out p2))
-                        {
-                            return "FAIL";
-                        }
-                    }
-                    double res;
-                    switch (oper)
-                    {
-                        case ">":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                if (!(res > p2))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                                res = p2;
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "<":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                if (!(res < p2))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                                res = p2;
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "<=":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                if (!(res <= p2))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                                res = p2;
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "==":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                if (!(res == p2))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                                res = p2;
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "!=":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                if (!(res != p2))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                                res = p2;
-                            }
-                            return EXETypes.BooleanTrue;
-                        case ">=":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                if (!(res >= p2))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                                res = p2;
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "+":
-                            double.TryParse(param[0], out res);
-
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                res += p2;
-                            }
-                            return res.ToString();
-                        case "-":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                res -= p2;
-                            }
-                            return res.ToString();
-                        case "/":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                res /= p2;
-                            }
-                            return res.ToString();
-                        case "*":
-                            double.TryParse(param[0], out res);
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                double.TryParse(param[i], out p2);
-                                res *= p2;
-                            }
-                            return res.ToString();
-
-                        default:
-                            return "FAIL";
-
-                    }
+                    if (param.Length != 2) return EXETypes.BooleanFalse;
                 }
-                else if (oper == "%")
+                else if (oper == "and" || oper == "or" || oper == "not") return EXETypes.BooleanFalse;
+
+                //chcek if all parameter is integer
+                if (String.Equals(ParamType, EXETypes.IntegerTypeName))
                 {
-                    foreach (string paramx in param)
+
+                    foreach (var value in param)
                     {
-                        if (!int.TryParse(paramx, out p1))
-                        {
-                            return "FAIL";
-                        }
+                        if (!int.TryParse(value, out _)) return EXETypes.BooleanFalse;
                     }
-                    int res;
-                    int.TryParse(param[0], out res);
-                    for (int i = 1; i < param.Length; i++)
-                    {
-                        int.TryParse(param[i], out p1);
-                        res %= p1;
-                    }
-                    return res.ToString();
+                    return EXETypes.BooleanTrue;
                 }
-                return "FAIL2";
+                //chcek if all parameter is double
+                else if (String.Equals(ParamType, EXETypes.RealTypeName))
+                {
+                    foreach (var value in param)
+                    {
+                        if (!Double.TryParse(value, out _)) return EXETypes.BooleanFalse;
+                    }
+
+                    return EXETypes.BooleanTrue;
+                }
+
             }
-            else
+
+            //check if it is boolean type
+            if (String.Equals(ParamType, EXETypes.BooleanTypeName))
             {
-                foreach (string paramx in param)
+                if (oper.ToLower() == "not")
                 {
-                    if (int.TryParse(paramx, out p1) || double.TryParse(paramx, out p2))
+                    if (param.Length != 1) return EXETypes.BooleanFalse;
+                    return (Boolean.TryParse(param[0], out _)) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+                }
+
+                if (oper == "==" || oper == "!=" || oper.ToLower() == "and" || oper.ToLower() == "or")
+                {
+                    if (param.Length != 2) return EXETypes.BooleanFalse;
+
+                    foreach (var value in param)
                     {
-                        return "FAIL";
+                        if (!Boolean.TryParse(value, out _)) return EXETypes.BooleanFalse;
                     }
+                    return EXETypes.BooleanTrue;
                 }
             }
 
-            b1 = param[0][0] == '\"';
-            b2 = param[0][param[0].Length - 1] == '\"';
+            //String check
+            bool b1 = param[0][0] == '\"';
+            bool b2 = param[0][param[0].Length - 1] == '\"';
 
             if (b1 && b2)
             {
@@ -597,32 +493,6 @@ namespace AnimationControl
             }
 
 
-            bool.TryParse(param[0], out b1);
-
-            if (bool.TryParse((param[0]).ToLower(), out _))
-            {
-
-
-                //"not" have only 1 parameter
-                if (oper.ToLower() == "not")
-                {
-                    if (param.Length != 1) return EXETypes.BooleanFalse;
-                    return (Boolean.TryParse(param[0], out _)) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse  ;
-
-                }
-
-                if (oper == "==" || oper == "!=" || oper.ToLower() == "and" || oper.ToLower() == "or" || oper.ToLower() == "xor" || oper.ToLower() == "xnor")
-                {
-                    if (param.Length != 2) return EXETypes.BooleanFalse;
-
-                    foreach (var value in param)
-                    {
-                        if (!Boolean.TryParse(value, out _)) return EXETypes.BooleanFalse;
-                    }
-                    return EXETypes.BooleanTrue;
-
-                }
-            }
 
             //if (DateTime.TryParseExact(param1, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture,System.Globalization.DateTimeStyles.NoCurrentDateDefault  , out DateTime datetime) && 
             //   DateTime.TryParseExact(param2, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture,System.Globalization.DateTimeStyles.NoCurrentDateDefault  , out datetime))

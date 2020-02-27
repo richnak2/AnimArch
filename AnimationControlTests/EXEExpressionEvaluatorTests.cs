@@ -391,6 +391,84 @@ namespace AnimationControl.Tests
         }
 
         [TestMethod]
+        public void Evaluate_OR_TRUE_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_OR_TRUE_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ActualOutput, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_OR_TRUE_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanFalse, EXETypes.BooleanTrue }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ActualOutput, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_OR_FALSE()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanFalse, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ActualOutput, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_OR_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanFalse }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_OR_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_OR_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
         public void Evaluate_NOT_1()
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
