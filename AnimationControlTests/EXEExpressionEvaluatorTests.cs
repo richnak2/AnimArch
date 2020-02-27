@@ -182,7 +182,7 @@ namespace AnimationControl.Tests
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
 
-            String ActualOutput = Evaluator.Evaluate("*", new List<String>(new String[] { "78", "true" }));
+            String ActualOutput = Evaluator.Evaluate("*", new List<String>(new String[] { "78", EXETypes.BooleanTrue }));
 
             Assert.IsNull(ActualOutput);
         }
@@ -197,15 +197,217 @@ namespace AnimationControl.Tests
         }
 
         [TestMethod]
-        public void Evaluate_AND_1()
+        public void Evaluate_Normal_Equal_Integer_1()
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
 
-            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { "TRUE", "FALSE" }));
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { "11", "11" }));
             Console.WriteLine(ActualOutput);
-            String ExpectedOutput = "FALSE";
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Equal_FloatString_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { "11.456", "11.456" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Equal_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { "\"a\"", "\"a\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Equal_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { "\"asdasds\"", "\"asdasds\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Equal_Boolean_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_Equal_Boolean_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { EXETypes.BooleanFalse, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Equal_Boolean_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { EXETypes.BooleanFalse, EXETypes.BooleanTrue }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Equal_Boolean_4()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { EXETypes.BooleanTrue , EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_Equal_Boolean_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_Equal_Boolean_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_AND_TRUE()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+       
+        [TestMethod]
+        public void Evaluate_AND_FALSE_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
             Console.WriteLine(ExpectedOutput);
             Assert.AreEqual(ActualOutput, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_AND_FALSE_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanFalse, EXETypes.BooleanTrue}));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ActualOutput, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_AND_FALSE_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanFalse, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ActualOutput, ExpectedOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_AND_FALSE_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanFalse }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_AND_FALSE_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_AND_FALSE_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_NOT_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("not", new List<String>(new String[]{ EXETypes.BooleanTrue}));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_NOT_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("not", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanFalse }));
+            Assert.IsNull(ActualOutput);
         }
     }
 }
