@@ -171,7 +171,7 @@ namespace AnimationControl.Tests
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
 
-            String ActualOutput = Evaluator.Evaluate("*", new List<String>(new String[] { "36", "4"}));
+            String ActualOutput = Evaluator.Evaluate("/", new List<String>(new String[] { "36", "4"}));
 
             String ExpectedOutput = "9";
 
@@ -194,6 +194,18 @@ namespace AnimationControl.Tests
             String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "2.87", "\"2.13\"" }));
 
             Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_AND_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { "TRUE", "FALSE" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = "FALSE";
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ActualOutput, ExpectedOutput);
         }
     }
 }

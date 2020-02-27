@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AnimationControl
 {
@@ -10,10 +11,118 @@ namespace AnimationControl
         // Here you get operator and operands, and you need to return the result. Check the unit tests to see what this is about
         public String Evaluate(String Operator, List<String> Operands)
         {
-            if (!this.CanBeEvaluated(Operator, Operands))
+            if (string.IsNullOrEmpty(Operator) || Operands == null || !this.CanBeEvaluated(Operator, Operands)) return null;
+         
+
+            //get variable type
+            String VariableType = EXETypes.DetermineVariableType(null, Operands[0]);
+
+
+            switch (Operator)
             {
-                return null;
+                case "+":
+                    //true if Operands are integers
+                    if (String.Equals("integer", VariableType))
+                    {
+                        //convert to list of int
+                        List<int> IntList = Operands.Select(int.Parse).ToList();
+                        //add numbers in list and return result in string
+                        return IntList.Aggregate((a, x) => a + x).ToString();
+                    }
+                    //true if Operands are real numbers
+                    if (String.Equals("real", VariableType))
+                    {
+                        //convert to list of real numbers
+                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        //add numbers in list and return result in string
+                        return DoubleList.Aggregate((a, x) => a + x).ToString();
+                    }
+                    break;
+                case "-":
+                    //true if Operands are integers
+                    if (String.Equals("integer", VariableType))
+                    {
+                        //convert to list of int
+                        List<int> IntList = Operands.Select(int.Parse).ToList();
+                        //sub numbers in list and return result in string
+                        return IntList.Aggregate((a, x) => a - x).ToString();
+                    }
+                    //true if Operands are real numbers
+                    if (String.Equals("real", VariableType))
+                    {
+                        //convert to list of real numbers
+                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        //sub numbers in list and return result in string
+                        return DoubleList.Aggregate((a, x) => a - x).ToString();
+                    }
+                    break;
+                case "*":
+                    //true if Operands are integers
+                    if (String.Equals("integer", VariableType))
+                    {
+                        //convert to list of int
+                        List<int> IntList = Operands.Select(int.Parse).ToList();
+                        //multiply numbers in list and return result in string
+                        return IntList.Aggregate((a, x) => a * x).ToString();
+                    }
+                    //true if Operands are real numbers
+                    if (String.Equals("real", VariableType))
+                    {
+                        //convert to list of real numbers
+                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        //multiply numbers in list and return result in string
+                        return DoubleList.Aggregate((a, x) => a * x).ToString();
+                    }
+                    break;
+                case "/":
+                    //true if Operands are integers
+                    if (String.Equals("integer", VariableType))
+                    {
+                        //convert to list of int
+                        List<int> IntList = Operands.Select(int.Parse).ToList();
+                        //divide numbers in list and return result in string
+                        return IntList.Aggregate((a, x) => a / x).ToString();
+                    }
+                    //true if Operands are real numbers
+                    if (String.Equals("real", VariableType))
+                    {
+                        //convert to list of real numbers
+                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        //divide numbers in list and return result in string
+                        return DoubleList.Aggregate((a, x) => a / x).ToString();
+                    }
+                    break;
+                case "%":
+                    //true if Operands are integers
+                    if (String.Equals("integer", VariableType))
+                    {
+                        //convert to list of int
+                        List<int> IntList = Operands.Select(int.Parse).ToList();
+                        //divide numbers in list and return result in string
+                        return IntList.Aggregate((a, x) => a % x).ToString();
+                    }
+                    //true if Operands are real numbers
+                    if (String.Equals("real", VariableType))
+                    {
+                        //convert to list of real numbers
+                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        //divide numbers in list and return result in string
+                        return DoubleList.Aggregate((a, x) => a % x).ToString();
+                    }
+                    break;
+                case "and":
+                    //true if Operands are boolean
+                    if (String.Equals("boolean", VariableType))
+                    {
+                        //convert to list of int
+                        List<bool> IntList = Operands.Select(bool.Parse).ToList();
+                        //and booleans
+                        Console.WriteLine(IntList);
+                        return IntList.Aggregate((a, x) => a & x).ToString();
+                    }
+                    break;
             }
+
 
             throw new NotImplementedException();
         }
