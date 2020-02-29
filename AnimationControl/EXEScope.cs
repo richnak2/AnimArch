@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AnimationControl
 {
-    public class EXEScope : EXECommandInterface
+    public class EXEScope : EXECommand
     {
         public List<EXEPrimitiveVariable> PrimitiveVariables;
         public List<EXEReferencingVariable> ReferencingVariables;
@@ -68,7 +68,7 @@ namespace AnimationControl
             this.Commands.Add(Command);
         }
 
-        public String PrintSelf(Boolean IsTopLevel)
+        new public String PrintSelf(Boolean IsTopLevel)
         {
             StringBuilder SelfPrintBuilder = new StringBuilder();
             String Indentation = IsTopLevel ? "" : "\t";
@@ -85,7 +85,7 @@ namespace AnimationControl
         }
 
         //"Scope" param is ignored here, because this class is a scope
-        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Success = false;
             foreach(EXECommandInterface Command in this.Commands)
@@ -100,25 +100,12 @@ namespace AnimationControl
             return Success;
         }
 
-        public String GetCode()
+        new public String GetCode()
         {
             return this.OALCode;
         }
 
-        public void Parse(EXEScope SuperScope)
-        {
-            Console.WriteLine("ExeScope.Parse");
-            OALParser Parser = new OALParser();
-            Parser.DecomposeOALFragment(this);
-            this.SuperScope = SuperScope;
-
-            foreach (EXECommandInterface Command in this.Commands)
-            {
-                Command.Parse(this);
-            }
-        }
-
-        public void PrintAST()
+        new public void PrintAST()
         {
             foreach (EXECommandInterface Command in this.Commands)
             {

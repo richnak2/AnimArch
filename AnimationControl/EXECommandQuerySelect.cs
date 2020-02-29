@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    public class EXECommandQuerySelect
+    public class EXECommandQuerySelect : EXECommand
     {
         public const String CardinalityAny = "any";
         public const String CardinalityMany = "many";
@@ -27,7 +27,7 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        public bool Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public bool Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in
@@ -40,22 +40,16 @@ namespace AnimationControl
         }
 
         //Ignore all methods below this comment
-        public string GetCode()
+        new public string GetCode()
+        {
+            throw new NotImplementedException();
+        }
+        new public void PrintAST()
         {
             throw new NotImplementedException();
         }
 
-        public void Parse(EXEScope SuperScope)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PrintAST()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string PrintSelf(bool IsTopLevel)
+        new public string PrintSelf(bool IsTopLevel)
         {
             throw new NotImplementedException();
         }
