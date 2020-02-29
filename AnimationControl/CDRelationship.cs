@@ -1,35 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnimationControl
 {
     public class CDRelationship
     {
-        public String FromClass { get; set; }
-        public String ToClass { get; set; }
+        public String FromClass { get;}
+        public String ToClass { get;}
         public String RelationshipName { get; }
 
-        private List<(String, String)> InstanceRelationships { get;}
+        private List<(long, long)> InstanceRelationships { get;}
 
         public CDRelationship(String FromClass, String ToClass, String Name)
         {
-
             this.FromClass = FromClass;
             this.ToClass = ToClass;
             this.RelationshipName = Name;
-            this.InstanceRelationships = new List<(String, String)>();
-            
+            this.InstanceRelationships = new List<(long, long)>();
         }
 
-        public Boolean RelationshipExists(String Instance1, String Instance2)
+        public Boolean InstanceRelationshipExists(long Instance1Id, long Instance2Id)
         {
             Boolean Result = false;
-            foreach ((String, String) Tupple in this.InstanceRelationships)
+            foreach ((long, long) Tupple in this.InstanceRelationships)
             {
-                if (Tupple == (Instance1, Instance2) || Tupple == (Instance2, Instance1))
+                if (Tupple == (Instance1Id, Instance2Id) || Tupple == (Instance2Id, Instance1Id))
                 {
                     Result = true;
                     break;
@@ -37,16 +32,30 @@ namespace AnimationControl
             }
             return Result;
         }
-        public Boolean CreateRelationship(String InstanceName1, String InstanceName2)
+        //SetUloh3
+        //return list of all ids related to given id
+        //do not forget that relationships are bi-directional
+        //if no instances are related, return empty list
+        //create unit tests for this one (keep the naming convention as it is in other tests). Do not forget about edge cases
+        public List<long> GetRelatedInstaceIds(long Id)
         {
-            if (RelationshipExists(InstanceName1, InstanceName2))
+            throw new NotImplementedException();
+        }
+        public Boolean CreateRelationship(long Instance1Id, long Instance2Id)
+        {
+            Boolean Result = false;
+
+            if (InstanceRelationshipExists(Instance1Id, Instance2Id))
             {
-                return false;
+                Result = false;
+            }
+            else
+            {
+                this.InstanceRelationships.Add((Instance1Id, Instance2Id));
+                Result = true;
             }
 
-            this.InstanceRelationships.Add((InstanceName1, InstanceName2));
-
-            return true;
+            return Result;
         }
 
         public void ClearRelationships()

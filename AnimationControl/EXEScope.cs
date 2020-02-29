@@ -4,13 +4,13 @@ using System.Text;
 
 namespace AnimationControl
 {
-    public class EXEScope : EXECommandInterface
+    public class EXEScope : EXECommand
     {
         public List<EXEPrimitiveVariable> PrimitiveVariables;
         public List<EXEReferencingVariable> ReferencingVariables;
         public List<EXEReferencingSetVariable> SetReferencingVariables;
         public EXEScope SuperScope;
-        public List<EXECommandInterface> Commands;
+        public List<EXECommand> Commands;
 
         public String OALCode;
 
@@ -20,7 +20,7 @@ namespace AnimationControl
             this.ReferencingVariables = new List<EXEReferencingVariable>();
             this.SetReferencingVariables = new List<EXEReferencingSetVariable>();
             this.SuperScope = null;
-            this.Commands = new List<EXECommandInterface>();
+            this.Commands = new List<EXECommand>();
         }
 
         // SetUloh1 - this method is done. Do the same with two similar methods below it
@@ -63,19 +63,19 @@ namespace AnimationControl
             return true;
         }
 
-        public void AddCommand(EXECommandInterface Command)
+        public void AddCommand(EXECommand Command)
         {
             this.Commands.Add(Command);
         }
 
-        public String PrintSelf(Boolean IsTopLevel)
+        new public String PrintSelf(Boolean IsTopLevel)
         {
             StringBuilder SelfPrintBuilder = new StringBuilder();
             String Indentation = IsTopLevel ? "" : "\t";
 
 
             SelfPrintBuilder.Append(Indentation);
-            foreach (EXECommandInterface Command in this.Commands)
+            foreach (EXECommand Command in this.Commands)
             {
                 SelfPrintBuilder.Append(Indentation);
                 SelfPrintBuilder.Append(Command.PrintSelf(false));
@@ -85,10 +85,10 @@ namespace AnimationControl
         }
 
         //"Scope" param is ignored here, because this class is a scope
-        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Success = false;
-            foreach(EXECommandInterface Command in this.Commands)
+            foreach(EXECommand Command in this.Commands)
             {
                 Success = Command.Execute(ExecutionSpace, RelationshipSpace, this);
                 if (!Success)
@@ -100,27 +100,14 @@ namespace AnimationControl
             return Success;
         }
 
-        public String GetCode()
+        new public String GetCode()
         {
             return this.OALCode;
         }
 
-        public void Parse(EXEScope SuperScope)
+        new public void PrintAST()
         {
-            Console.WriteLine("ExeScope.Parse");
-            OALParser Parser = new OALParser();
-            Parser.DecomposeOALFragment(this);
-            this.SuperScope = SuperScope;
-
-            foreach (EXECommandInterface Command in this.Commands)
-            {
-                Command.Parse(this);
-            }
-        }
-
-        public void PrintAST()
-        {
-            foreach (EXECommandInterface Command in this.Commands)
+            foreach (EXECommand Command in this.Commands)
             {
                 Command.PrintAST();
             }

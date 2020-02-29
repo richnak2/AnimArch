@@ -6,40 +6,26 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    public class EXECommand : EXECommandInterface
+    public class EXECommand
     {
-        public String OALCode { get; set; }
-        public String CommandType { get; set; }
-        public EXEASTNode AST { get; set; }
-
-        public EXECommand(String OALCode)
-        {
-            this.OALCode = OALCode;
-        }
-
         public String GetCode()
         {
-            return this.OALCode;
+            //return this.OALCode;
+            throw new NotImplementedException();
         }
         public String PrintSelf(Boolean IsTopLevel)
         {
-            return this.OALCode;
+            //return this.OALCode;
+            throw new NotImplementedException();
         }
         public void PrintAST()
         {
-            this.AST.PrintPretty("", false);
+            //this.AST.PrintPretty("", false);
+            throw new NotImplementedException();
         }
         public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             throw new NotImplementedException();
-        }
-
-        public void Parse(EXEScope SuperScope)
-        {
-            Console.WriteLine("EXECommand.Parse");
-
-            OALCommandParser Parser = new OALCommandParser();
-            this.AST = Parser.ConstructAST(this.OALCode);
         }
     }
 }

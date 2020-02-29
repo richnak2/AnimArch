@@ -74,9 +74,11 @@
     <Compile Include="EXETypes.cs" />
     <Compile Include="MethodCall.cs" />
     <Compile Include="OALCodeConstructor.cs" />
+    <Compile Include="OALCodeLine.cs" />
     <Compile Include="OALCommandParser.cs" />
     <Compile Include="OALParser.cs" />
     <Compile Include="OALAnimationRepresentation.cs" />
+    <Compile Include="OALParser2.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
