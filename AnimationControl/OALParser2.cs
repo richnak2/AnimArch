@@ -8,10 +8,10 @@ namespace AnimationControl
 {
     public class OALParser2
     {
-        static void Main(string[] args)
+        /*static void Main(string[] args)
         {
             OALParser2 parser = new OALParser2();
-            String Code = "relate o to s across Observer->Subject[R46];\n";
+            String Code = "par thread x =6;y = y + 1; thread y = y + 2;\t\nthread y = y+ 3; end par;\n";
             List<String> tokens = parser.Tokenize(Code);
 
             int i = 1;
@@ -21,7 +21,7 @@ namespace AnimationControl
             }
 
             Console.ReadLine();
-        }
+        }*/
 
         public static List<String> ArithmeticOperatorList = new List<String>(new String[] { "+", "-", "*", "/", "%" });
         // Do not forget that each operator ("<=") needs to be sooner than its substrings ("<")
@@ -59,8 +59,6 @@ namespace AnimationControl
             Boolean InString = false;
             foreach (char c in Code)
             {
-                /*Console.WriteLine(c);
-                Console.WriteLine("CurrentCommand: " + CurrentCommand);*/
                 if (InString)
                 {
                     Console.WriteLine(c + " : " + CurrentCommand + " : " + CurrentCommand.Last());
@@ -78,8 +76,6 @@ namespace AnimationControl
                     continue;
                 }
 
-                //Console.WriteLine("Passed First Condition");
-
                 if (c == '"')
                 {
                     if (CurrentCommand.Any())
@@ -93,7 +89,6 @@ namespace AnimationControl
                     continue;
                 }
 
-
                 if(IsBracket(c))
                 {
                     if (CurrentCommand.Any())
@@ -106,8 +101,7 @@ namespace AnimationControl
 
                     continue;
                 }
-                //Console.WriteLine("Passed Second Condition");
-
+              
                 if (Char.IsWhiteSpace(c))
                 {
                     if (!"".Equals(CurrentCommand))
@@ -118,18 +112,12 @@ namespace AnimationControl
                     continue;
                 }
 
-                Console.WriteLine("Passed 3rd Condition");
-
                 if (!CurrentCommand.Any())
                 {
                     CurrentCommand += c;
                     continue;
                 }
 
-
-                /*Console.WriteLine("Passed 4th Condition");
-                Console.WriteLine("Perhaps I'll append " + c + " after " + CurrentCommand.Last());
-                Console.WriteLine(IsNameChar(c) + ", " + IsNameChar(CurrentCommand.Last()));*/
                 if (IsNameChar(c) != IsNameChar(CurrentCommand.Last()))
                 {
                     Tokens.Add(CurrentCommand);
@@ -142,24 +130,13 @@ namespace AnimationControl
                     continue;
                 }
 
-                //Console.WriteLine("Passed 5th Condition");
                 throw new Exception("Uknown token");
             }
 
             if (!"".Equals(CurrentCommand))
             {
                 Tokens.Add(CurrentCommand);
-                //Console.WriteLine("Appended last token");
             }
-            //Console.WriteLine("Not last token");
-
-            /*int i = 1;
-            foreach (String token in Tokens)
-            {
-                Console.WriteLine(i++ + ": " + token);
-            }
-
-            Console.ReadLine();*/
 
             return Tokens;
         }
@@ -170,19 +147,6 @@ namespace AnimationControl
         private Boolean IsNameChar(char c)
         {
             return Char.IsLetterOrDigit(c) || c == '_';
-        }
-        private List<OALCodeLine> ToLinesOfCode(String Code)
-        {
-            String[] Lines = Code.Split('\n');
-            List<OALCodeLine> Result = new List<OALCodeLine>();
-            int order = 1;
-            foreach (String Line in Lines)
-            {
-                Result.Append(new OALCodeLine(order, Line));
-                order++;
-            }
-
-            return Result;
         }
     }
 }

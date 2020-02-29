@@ -107,5 +107,44 @@ namespace AnimationControl.Tests
 
             CollectionAssert.AreEqual(ExpectedOutput, ActualOutput);
         }
+        [TestMethod]
+        public void Tokenize_Normal_09()
+        {
+            String Code = "par thread x =6;y = y + 1; thread y = y + 2;\t\nthread y = y+ 3; end par;\n";
+
+            OALParser2 Parser = new OALParser2();
+            List<String> ActualOutput = Parser.Tokenize(Code);
+
+            List<String> ExpectedOutput = new List<String>(
+                new String[] { "par", "thread", "x", "=", "6", ";", "y", "=", "y", "+", "1", ";", "thread", "y", "=", "y", "+", "2", ";", "thread", "y", "=", "y", "+", "3", ";", "end", "par", ";" });
+
+            CollectionAssert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Tokenize_Normal_10()
+        {
+            String Code = "unit.coord_x=(unit.coord_x+2)*1.2;\n";
+
+            OALParser2 Parser = new OALParser2();
+            List<String> ActualOutput = Parser.Tokenize(Code);
+
+            List<String> ExpectedOutput = new List<String>(
+                new String[] { "unit", ".", "coord_x", "=", "(", "unit", ".", "coord_x", "+", "2", ")", "*", "1", ".", "2", ";" });
+
+            CollectionAssert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Tokenize_Normal_11()
+        {
+            String Code = "select any integer related by\n\t input_reader->PrimitiveTypeUtil[R1]->Integer[R3];\n";
+
+            OALParser2 Parser = new OALParser2();
+            List<String> ActualOutput = Parser.Tokenize(Code);
+
+            List<String> ExpectedOutput = new List<String>(
+                new String[] { "select", "any", "integer", "related", "by", "input_reader", "->", "PrimitiveTypeUtil", "[", "R1", "]", "->", "Integer", "[", "R3", "]", ";" });
+
+            CollectionAssert.AreEqual(ExpectedOutput, ActualOutput);
+        }
     }
 }
