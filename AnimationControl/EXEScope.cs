@@ -10,7 +10,7 @@ namespace AnimationControl
         public List<EXEReferencingVariable> ReferencingVariables;
         public List<EXEReferencingSetVariable> SetReferencingVariables;
         public EXEScope SuperScope;
-        public List<EXECommandInterface> Commands;
+        public List<EXECommand> Commands;
 
         public String OALCode;
 
@@ -20,7 +20,7 @@ namespace AnimationControl
             this.ReferencingVariables = new List<EXEReferencingVariable>();
             this.SetReferencingVariables = new List<EXEReferencingSetVariable>();
             this.SuperScope = null;
-            this.Commands = new List<EXECommandInterface>();
+            this.Commands = new List<EXECommand>();
         }
 
         // SetUloh1 - this method is done. Do the same with two similar methods below it
@@ -63,7 +63,7 @@ namespace AnimationControl
             return true;
         }
 
-        public void AddCommand(EXECommandInterface Command)
+        public void AddCommand(EXECommand Command)
         {
             this.Commands.Add(Command);
         }
@@ -75,7 +75,7 @@ namespace AnimationControl
 
 
             SelfPrintBuilder.Append(Indentation);
-            foreach (EXECommandInterface Command in this.Commands)
+            foreach (EXECommand Command in this.Commands)
             {
                 SelfPrintBuilder.Append(Indentation);
                 SelfPrintBuilder.Append(Command.PrintSelf(false));
@@ -88,7 +88,7 @@ namespace AnimationControl
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Success = false;
-            foreach(EXECommandInterface Command in this.Commands)
+            foreach(EXECommand Command in this.Commands)
             {
                 Success = Command.Execute(ExecutionSpace, RelationshipSpace, this);
                 if (!Success)
@@ -107,7 +107,7 @@ namespace AnimationControl
 
         new public void PrintAST()
         {
-            foreach (EXECommandInterface Command in this.Commands)
+            foreach (EXECommand Command in this.Commands)
             {
                 Command.PrintAST();
             }
