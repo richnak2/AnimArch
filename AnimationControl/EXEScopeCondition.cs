@@ -30,12 +30,12 @@ namespace AnimationControl
         }
 
         // should evaluate to true only if base "if" is true
-        public Boolean EvaluateCondition()
+        new public Boolean EvaluateCondition()
         {
             throw new NotImplementedException();
         }
 
-        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Result = false;
             Boolean AScopeWasExecuted = false;

@@ -8,7 +8,7 @@ namespace AnimationControl
 {
     public class OALParser2
     {
-        /*static void Main(string[] args)
+        static void Main(string[] args)
         {
             OALParser2 parser = new OALParser2();
             String Code = "par thread x =6;y = y + 1; thread y = y + 2;\t\nthread y = y+ 3; end par;\n";
@@ -21,7 +21,7 @@ namespace AnimationControl
             }
 
             Console.ReadLine();
-        }*/
+        }
 
         public static List<String> ArithmeticOperatorList = new List<String>(new String[] { "+", "-", "*", "/", "%" });
         // Do not forget that each operator ("<=") needs to be sooner than its substrings ("<")
