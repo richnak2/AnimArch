@@ -7,12 +7,13 @@ namespace AnimationControl
     public class EXEExpressionEvaluator
     {
 
+
         // SetUloh1
         // Here you get operator and operands, and you need to return the result. Check the unit tests to see what this is about
         public String Evaluate(String Operator, List<String> Operands)
         {
-           if (!this.CanBeEvaluated(Operator, Operands)) return null;
-      
+            if (!this.CanBeEvaluated(Operator, Operands)) return null;
+
 
             //get variable type
             String VariableType = EXETypes.DetermineVariableType(null, Operands[0]);
@@ -20,13 +21,13 @@ namespace AnimationControl
 
             switch (Operator)
             {
-                case "+":
+                case "+": //int, real, string
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //add numbers in list and return result in string
+                        //add numbers in list and return result
                         return IntList.Aggregate((a, x) => a + x).ToString();
                     }
                     //true if Operands are real numbers
@@ -34,24 +35,26 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //add numbers in list and return result in string
+                        //add numbers in list and return result 
                         return DoubleList.Aggregate((a, x) => a + x).ToString();
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
-                        //add string in list and return result in string
-                        //TODO
-                       // return Operands.Aggregate((a, x) => a + x).ToString();
-                       //concate
+                        //add string in list and return result 
+                        //remove \" from Operands  
+                        List<String> StringList = Operands.Select(s => s.Replace("\"", "")).ToList();
+
+                        //add strings in list and return result
+                        return CreateEXETypeString(StringList.Aggregate((a, x) => a + x).ToString());
                     }
                     break;
-                case "-":
+                case "-": //int, real
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //sub numbers in list and return result in string
+                        //sub numbers in list and return result 
                         return IntList.Aggregate((a, x) => a - x).ToString();
                     }
                     //true if Operands are real numbers
@@ -59,24 +62,17 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //sub numbers in list and return result in string
+                        //sub numbers in list and return result
                         return DoubleList.Aggregate((a, x) => a - x).ToString();
                     }
-                    if (String.Equals(EXETypes.StringTypeName, VariableType))
-                    {
-                        //add string in list and return result in string
-                        //TODO
-                        // return Operands.Aggregate((a, x) => a + x).ToString();
-                        //
-                    }
                     break;
-                case "*":
+                case "*": //int, real
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //multiply numbers in list and return result in string
+                        //multiply numbers in list and return result
                         return IntList.Aggregate((a, x) => a * x).ToString();
                     }
                     //true if Operands are real numbers
@@ -84,18 +80,18 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //multiply numbers in list and return result in string
+                        //multiply numbers in list and return result
                         return DoubleList.Aggregate((a, x) => a * x).ToString();
                     }
-                   
+
                     break;
-                case "/":
+                case "/": //int, real
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //divide numbers in list and return result in string
+                        //divide numbers in list and return result
                         return IntList.Aggregate((a, x) => a / x).ToString();
                     }
                     //true if Operands are real numbers
@@ -103,18 +99,18 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //divide numbers in list and return result in string
+                        //divide numbers in list and return result 
                         return DoubleList.Aggregate((a, x) => a / x).ToString();
                     }
-                   
+
                     break;
-                case "%":
+                case "%": //int, real
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //divide numbers in list and return result in string
+                        //divide numbers in list and return result
                         return IntList.Aggregate((a, x) => a % x).ToString();
                     }
                     //true if Operands are real numbers
@@ -122,187 +118,184 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //divide numbers in list and return result in string
+                        //divide numbers in list and return result 
                         return DoubleList.Aggregate((a, x) => a % x).ToString();
                     }
-                    
+
                     break;
-                case "==":
+                case "==": //int, real, string, booelan, unique ID 
+                    //return bool
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //compare 2 numbers in list (equals) and return result in string
-                        return (int.Equals(IntList[0], IntList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse);
-                        
+                        //compare 2 numbers in list (equals) and return result 
+                        return int.Equals(IntList[0], IntList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+
                     }
                     //true if Operands are real numbers
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //compare 2 numbers in list (equals) and return result in string
-                        return (Double.Equals(DoubleList[0], DoubleList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse);
+                        //compare 2 numbers in list (equals) and return result 
+                        return Double.Equals(DoubleList[0], DoubleList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
-                        //compare 2 string in list (equals) and return result in string
-                        return (String.Equals(Operands[0], Operands[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse);
+                        //compare 2 string in list (equals) and return result 
+                        return String.Equals(Operands[0], Operands[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
-                    //true if Operands are boolean
+
                     //only 2 operands
                     if (String.Equals(EXETypes.BooleanTypeName, VariableType))
                     {
                         //convert to list of int
                         List<bool> BooleanList = Operands.Select(bool.Parse).ToList();
-                        //compare 2 boolean in list (equals) and return result in string
-                        return (Boolean.Equals(BooleanList[0],BooleanList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse);
+                        //compare 2 boolean in list (equals) and return result 
+                        return Boolean.Equals(BooleanList[0], BooleanList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     break;
-                case "!=":
+                case "!=": //int, real, string, booelan, unique ID
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //compare numbers in list (not equals) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare 2 numbers in list (equals) and return result 
+                        return !int.Equals(IntList[0], IntList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     //true if Operands are real numbers
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //compare numbers in list (not equals) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare 2 numbers in list (equals) and return result
+                        return !Double.Equals(DoubleList[0], DoubleList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
-                        //add string in list and return result in string
-                        //TODO
-                        // return Operands.Aggregate((a, x) => a + x).ToString();
+                        //compare 2 string in list (equals) and return result 
+                        return !String.Equals(Operands[0], Operands[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     //true if Operands are boolean
                     if (String.Equals(EXETypes.BooleanTypeName, VariableType))
                     {
-                        //convert to list of int
-                        List<bool> IntList = Operands.Select(bool.Parse).ToList();
-                        //and booleans
-                        Console.WriteLine(IntList);
-                        //return TRUE or FALSE
-                        return EXETypes.BooleanTrue;
+                        //convert to list of boolean
+                        List<bool> BooleanList = Operands.Select(bool.Parse).ToList();
+                        //compare 2 boolean in list (not equals) and return result 
+                        return !Boolean.Equals(BooleanList[0], BooleanList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     break;
-                    //only 2 operands
-                case "<":
+                //only 2 operands
+                case "<": //int, real, string
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //compare numbers in list (less then) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (less then) and return result 
+                        return IntList[0] < IntList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+
                     }
                     //true if Operands are real numbers
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //compare numbers in list (less then) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (less then) and return result
+                        return DoubleList[0] < DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
-                        //add string in list and return result in string
-                        //TODO
-                        // return Operands.Aggregate((a, x) => a + x).ToString();
+                        //compare 2 strings in list (less then) and return result
+                        return String.Compare(Operands[0], Operands[1]) < 0 ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     break;
-                case ">":
+                case ">": //int, real, string
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //compare numbers in list (greater then) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (greater then) and return result 
+                        return IntList[0] > IntList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+
                     }
                     //true if Operands are real numbers
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //compare numbers in list (greater then) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (greater then) and return result 
+                        return DoubleList[0] > DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
-                        //add string in list and return result in string
-                        //TODO
-                        // return Operands.Aggregate((a, x) => a + x).ToString();
+                        //add string in list and return result 
+                        return String.Compare(Operands[0], Operands[1]) > 0 ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     break;
-                case "<=":
+                case "<=": //int, real, string
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //compare numbers in list (less then or equals to) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (less then or equals to) and return result 
+                        return IntList[0] <= IntList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     //true if Operands are real numbers
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //compare numbers in list (less then or equals to) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (less then or equals to) and return result
+                        return DoubleList[0] <= DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
-                        //add string in list and return result in string
-                        //TODO
-                        // return Operands.Aggregate((a, x) => a + x).ToString();
+                        //compare strings in list (less then or equals to) and return result
+                        return String.Compare(Operands[0], Operands[1]) <= 0 ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+
                     }
                     break;
-                case ">=":
+                case ">=": //int, real, string
                     //true if Operands are integers
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
-                        //compare numbers in list (greater then or equals to) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (greater then or equals to) and return result 
+                        return IntList[0] >= IntList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     //true if Operands are real numbers
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         List<double> DoubleList = Operands.Select(double.Parse).ToList();
-                        //compare numbers in list (greater then or equals to) and return result in string
-                        return EXETypes.BooleanTrue;
+                        //compare numbers in list (greater then or equals to) and return result 
+                        return DoubleList[0] >= DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
-                        //add string in list and return result in string
-                        //TODO
-                        // return Operands.Aggregate((a, x) => a + x).ToString();
+                        //compare numbers in list (greater then or equals to) and return result
+                        return String.Compare(Operands[0], Operands[1]) >= 0 ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+
                     }
                     break;
-                case "and":
+                case "and": //only boolean
                     //true if Operands are boolean
                     if (String.Equals(EXETypes.BooleanTypeName, VariableType))
                     {
                         //convert to list of int
                         List<bool> BooleanList = Operands.Select(bool.Parse).ToList();
-                        //and booleans
-                        //return TRUE or FALSE
                         return (BooleanList[0] && BooleanList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
                     break;
-                case "or":
+                case "or": //only boolean
                     //true if Operands are boolean
                     if (String.Equals(EXETypes.BooleanTypeName, VariableType))
                     {
@@ -312,14 +305,14 @@ namespace AnimationControl
 
                     }
                     break;
-                    //only 1 operand
-                case "not":
+                //only 1 operand
+                case "not": //only boolean
                     //true if Operands are boolean
                     Console.WriteLine(VariableType);
                     if (String.Equals(EXETypes.BooleanTypeName, VariableType))
                     {
                         //return TRUE or FALSE
-                        return (String.Equals(Operands[0], EXETypes.BooleanTrue) ? EXETypes.BooleanFalse : EXETypes.BooleanTrue) ;
+                        return String.Equals(Operands[0], EXETypes.BooleanTrue) ? EXETypes.BooleanFalse : EXETypes.BooleanTrue;
                     }
                     break;
             }
@@ -342,7 +335,7 @@ namespace AnimationControl
             //get the first element type
             String ParamType = EXETypes.DetermineVariableType(null, param[0]);
 
-           
+
             //check if it is int or real number
             if (String.Equals(ParamType, EXETypes.IntegerTypeName) || String.Equals(ParamType, EXETypes.RealTypeName))
             {
@@ -364,6 +357,7 @@ namespace AnimationControl
                     {
                         if (!int.TryParse(value, out _)) return EXETypes.BooleanFalse;
                     }
+
                     return EXETypes.BooleanTrue;
                 }
                 //chcek if all parameter is double
@@ -376,6 +370,8 @@ namespace AnimationControl
 
                     return EXETypes.BooleanTrue;
                 }
+
+                return EXETypes.BooleanFalse;
 
             }
 
@@ -398,108 +394,65 @@ namespace AnimationControl
                     }
                     return EXETypes.BooleanTrue;
                 }
+
+                return EXETypes.BooleanFalse;
+
             }
 
-            //String check
-            bool b1 = param[0][0] == '\"';
-            bool b2 = param[0][param[0].Length - 1] == '\"';
-
-            if (b1 && b2)
+            //check if it is boolean type
+            if (String.Equals(ParamType, EXETypes.StringTypeName))
             {
-                if (param.Length < 2)
-                {
-                    return "FAIL";
-                }
                 if (oper == ">" || oper == "<" || oper == "<=" || oper == ">=" || oper == "==" || oper == "!=")
                 {
-                    foreach (string paramx in param)
+                    if (param.Length != 2) return EXETypes.BooleanFalse;
+
+                    foreach (String value in param)
                     {
-                        if (!(paramx[paramx.Length - 1] == '\"') || !(paramx[0] == '\"'))
-                        {
-                            return "FAIL";
-                        }
+                        if (!IsValidEXETypeString(value)) return EXETypes.BooleanFalse;
                     }
-                    switch (oper)
-                    {
-                        case "<":
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                if (!((param[i - 1]).Length < (param[i]).Length))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                            }
-                            return EXETypes.BooleanTrue;
-                        case ">":
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                if (!((param[i - 1]).Length > (param[i]).Length))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "<=":
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                if (!((param[i - 1]).Length <= (param[i]).Length))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                            }
-                            return EXETypes.BooleanTrue;
-                        case ">=":
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                if (!((param[i - 1]).Length >= (param[i]).Length))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "==":
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                if (!(param[i - 1] == param[i]))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                            }
-                            return EXETypes.BooleanTrue;
-                        case "!=":
-                            for (int i = 1; i < param.Length; i++)
-                            {
-                                if (!(param[i - 1] != param[i]))
-                                {
-                                    return EXETypes.BooleanFalse;
-                                }
-                            }
-                            return EXETypes.BooleanTrue;
-                        default:
-                            return "FAIL";
-                    }
+
+                    return EXETypes.BooleanTrue;
                 }
-                return "FAIL";
-            }
-            else
-            {
-                foreach (string paramx in param)
+
+                if (oper == "+")
                 {
-                    if (paramx[paramx.Length - 1] == '\"' || paramx[0] == '\"')
+                    if (param.Length < 2) return EXETypes.BooleanFalse;
+
+                    foreach (String value in param)
                     {
-                        return "FAIL";
+                        if (!IsValidEXETypeString(value)) return EXETypes.BooleanFalse;
                     }
+
+                    return EXETypes.BooleanTrue;
+
                 }
+
+                return EXETypes.BooleanFalse;
+
             }
 
+            return EXETypes.BooleanFalse;
+        }
 
 
-            //if (DateTime.TryParseExact(param1, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture,System.Globalization.DateTimeStyles.NoCurrentDateDefault  , out DateTime datetime) && 
-            //   DateTime.TryParseExact(param2, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture,System.Globalization.DateTimeStyles.NoCurrentDateDefault  , out datetime))
-            //{
-            //	return true;
-            //}		
-            return "FAIL";
+        //return "clear" string without \" 
+        public String GetClearStringFromEXETypeString(String str)
+        {
+            return str.Substring(1, str.Length - 2);
+        }
+
+        //create EXEType string with \" from clear string
+        public String CreateEXETypeString(String str)
+        {
+            return '\"' + str + '\"';
+        }
+
+        //check if string is valid EXETypeString
+        public Boolean IsValidEXETypeString(String str)
+        {
+            return (str.Substring(0, 1) == "\"") && (str.Substring(str.Length - 1, 1) == "\"");
         }
     }
+
+
 }

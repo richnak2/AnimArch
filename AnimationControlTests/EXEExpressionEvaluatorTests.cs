@@ -23,6 +23,7 @@ namespace AnimationControl.Tests
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
+
         [TestMethod]
         public void Evaluate_Normal_Plus_Integer_02()
         {
@@ -67,7 +68,98 @@ namespace AnimationControl.Tests
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
+  
+
+
         [TestMethod]
+        public void Evaluate_Normal_Plus_String_01()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "\"abc\"", "\"def\"" }));
+
+            String ExpectedOutput = "\"abcdef\"";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Plus_String_02()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "\"asdasdasdbbc\"", "\"123\"" }));
+
+            String ExpectedOutput = "\"asdasdasdbbc123\"";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Plus_String_03()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "\"34567\"", "\"123\"" }));
+
+            String ExpectedOutput = "\"34567123\"";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Plus_String_04()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "\"34567\"", "\"123\"", "\"34567\"", "\"34567\"" }));
+
+            String ExpectedOutput = "\"345671233456734567\"";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Plus_String_01()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "34567", "\"123\"" }));
+            
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Plus_String_02()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "\"34567", "123" }));
+
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Plus_String_03()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "\"34567\"" }));
+
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Plus_String_04()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("+", new List<String>(new String[] { "\"34567\"", "\"34567\"", "\"34567\"", "\"34567" }));
+
+            Assert.IsNull(ActualOutput);
+        }
+
+
         public void Evaluate_Normal_Minus_Integer_01()
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
@@ -313,6 +405,981 @@ namespace AnimationControl.Tests
         }
 
         [TestMethod]
+        public void Evaluate_Normal_NOT_Equal_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { "11", "13" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_NOT_Equal_FloatString_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { "1.456", "3.670" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Not_Equal_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { "\"3\"", "\"b\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Not_Equal_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { "\"xzy\"", "\"asdasds\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Not_Equal_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { "\"xzy\"", "\"xzy\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Bad_Not_Equal_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { "\"xzy\"", "\"sda\"", "10" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Not_Equal_Boolean_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_Not_Equal_Boolean_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Not_Equal_Boolean_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { EXETypes.BooleanFalse, EXETypes.BooleanFalse }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Not_Equal_Boolean_4()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_Not_Equal_Boolean_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("!=", new List<String>(new String[] { EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_BAD_Not_Equal_Boolean_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("==", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "13", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Integer_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25", "13" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25", "25", "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Integer_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"25", "25" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "13.4", "25.9" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25.5", "13.23" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25.6", "25.6" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25.5", "25.5", "25.5" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"25.67", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "25.677" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"abcdef\"", "\"xzy\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"xyz\"", "\"abcdef\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"xyz\"", "\"xyz\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"abc\"", "\"abc\"", "\"abc\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"25.67\"", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<", new List<String>(new String[] { "\"25.677\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "34", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Integer_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "13", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "25", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "25", "25", "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Integer_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"25", "25" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "25.8", "12.3" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "13.233", "25.55" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "25.6", "25.6" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "25.5", "25.5", "25.5" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"25.67", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "25.677" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"xzy\"", "\"abcdef\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"abcdef\"", "\"xzy\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"xyz\"", "\"xyz\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"abc\"", "\"abc\"", "\"abc\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"25.67\"", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">", new List<String>(new String[] { "\"25.677\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "13", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_Integer_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "13", "13" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "25", "13" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "25", "25", "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Integer_Or_Equal_To_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"25", "25" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "13.4", "25.9" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "25.5", "13.23" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "25.6", "25.6" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "25.5", "25.5", "25.5" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"25.67", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "25.677" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"abcdef\"", "\"xzy\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"xyz\"", "\"abcdef\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Less_Than_Or_Equal_To_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"xyz\"", "\"xyz\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"abc\"", "\"abc\"", "\"abc\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"25.67\"", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Less_Than_Or_Equal_To_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate("<=", new List<String>(new String[] { "\"25.677\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Or_Equal_To_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "34", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Or_Equal_To_Integer_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "13", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Or_Equal_To_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "25", "25" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_Integer_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "25", "25", "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_Integer_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"25", "25" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_Integer_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "25" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Or_Equal_To_Than_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "25.8", "12.3" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Or_Equal_To_Than_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "13.233", "25.55" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Or_Equal_To_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "25.6", "25.6" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_Real_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "25.5", "25.5", "25.5" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_Real_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"25.67", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_Real_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "25.677" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Or_Equal_To_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"xzy\"", "\"abcdef\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Or_Equal_To_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"abcdef\"", "\"xzy\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Normal_Greater_Than_Or_Equal_To_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"xyz\"", "\"xyz\"" }));
+            Console.WriteLine(ActualOutput);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+            Console.WriteLine(ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_String_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"abc\"", "\"abc\"", "\"abc\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_String_2()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"25.67\"", "25.88" }));
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Evaluate_Bad_Greater_Than_Or_Equal_To_String_3()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.Evaluate(">=", new List<String>(new String[] { "\"25.677\"" }));
+            Assert.IsNull(ActualOutput);
+
+        }
+
+
+        [TestMethod]
         public void Evaluate_AND_TRUE()
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
@@ -486,6 +1553,26 @@ namespace AnimationControl.Tests
 
             String ActualOutput = Evaluator.Evaluate("not", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanFalse }));
             Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void Normal_Clear_String_Test_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.GetClearStringFromEXETypeString("\"abcasdasdasdasdasdasdasdasd\"");
+            String ExpectedOutput = "abcasdasdasdasdasdasdasdasd";
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void Normal_CreateEXETypeString_Test()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.CreateEXETypeString("a123bcasdasdasdasdasdasdasdasd");
+            String ExpectedOutput = "\"a123bcasdasdasdasdasdasdasdasd\"";
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
     }
 }
