@@ -15,6 +15,9 @@ namespace AnimationControl
         public const String DateTypeName = "date";
         public const String UniqueIDTypeName = "unique_ID";
 
+        public const String BooleanTrue = "TRUE";
+        public const String BooleanFalse = "FALSE";
+
         public static String DetermineVariableType(String name, String value)
         {
             if (name == UniqueIDTypeName)
@@ -32,7 +35,7 @@ namespace AnimationControl
                 return RealTypeName;
             }
 
-            if (value == "TRUE" || value == "FALSE")
+            if (value == EXETypes.BooleanTrue || value == EXETypes.BooleanFalse)
             {
                 return BooleanTypeName;
             }
