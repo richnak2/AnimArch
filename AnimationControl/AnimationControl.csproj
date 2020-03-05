@@ -52,6 +52,7 @@
     <Compile Include="CDRelationship.cs" />
     <Compile Include="CDRelationshipPool.cs" />
     <Compile Include="EXECommandQueryCreate.cs" />
+    <Compile Include="EXECommandQueryRelate.cs" />
     <Compile Include="EXECommandQuerySelect.cs" />
     <Compile Include="EXEExpressionEvaluator.cs" />
     <Compile Include="EXEReferenceEvaluator.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="EXEScopeCondition.cs" />
     <Compile Include="EXEScopeForEach.cs" />
     <Compile Include="EXEScopeLoopWhile.cs" />
+    <Compile Include="EXEScopeParallel.cs" />
+    <Compile Include="OALCall.cs" />
     <Compile Include="OALCodeBuilder.cs" />
     <Compile Include="EXEASTNode.cs" />
     <Compile Include="EXEASTNodeComposite.cs" />
@@ -73,11 +76,9 @@
     <Compile Include="EXEScope.cs" />
     <Compile Include="EXETypes.cs" />
     <Compile Include="MethodCall.cs" />
-    <Compile Include="OALCodeConstructor.cs" />
+    <Compile Include="OALCodeLine.cs" />
     <Compile Include="OALCommandParser.cs" />
-    <Compile Include="OALParser.cs" />
-    <Compile Include="OALAnimationRepresentation.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="OALParser2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

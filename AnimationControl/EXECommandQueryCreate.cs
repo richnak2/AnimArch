@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    public class EXECommandQueryCreate : EXECommandInterface
+    public class EXECommandQueryCreate : EXECommand
     {
         private String ReferencingVariableName { get; set; }
         private String ClassName { get; set; }
@@ -24,7 +24,7 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        public bool Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public bool Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             //Create an instance of given class -> will affect ExecutionSpace.
             //If ReferencingVariableName is provided (is not ""), create a referencing variable pointing to this instance -> will affect scope
@@ -32,22 +32,17 @@ namespace AnimationControl
         }
 
         //Ignore all methods below this comment
-        public string GetCode()
+        new public string GetCode()
         {
             throw new NotImplementedException();
         }
 
-        public void Parse(EXEScope SuperScope)
+        new public void PrintAST()
         {
             throw new NotImplementedException();
         }
 
-        public void PrintAST()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string PrintSelf(bool IsTopLevel)
+        new public string PrintSelf(bool IsTopLevel)
         {
             throw new NotImplementedException();
         }

@@ -29,7 +29,7 @@ namespace AnimationControl.Tests
             Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user", "Nick", Scope);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user", "Nick", Scope, ExecutionSpace);
 
             String ExpectedOutput = "\"Jano245\"";
 
@@ -75,7 +75,7 @@ namespace AnimationControl.Tests
             Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user2", "LastName", Scope);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user2", "LastName", Scope, ExecutionSpace);
 
             String ExpectedOutput = "\"Cirova\"";
 

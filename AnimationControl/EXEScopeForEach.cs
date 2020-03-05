@@ -16,7 +16,7 @@ namespace AnimationControl
             this.Iterator = null;
             this.Iterable = null;
         }
-        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Success = false;
             
@@ -26,7 +26,7 @@ namespace AnimationControl
                 this.Iterator.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
                 Success = base.Execute(ExecutionSpace, RelationshipSpace, this);
-                if (Success)
+                if (!Success)
                 {
                     break;
                 }

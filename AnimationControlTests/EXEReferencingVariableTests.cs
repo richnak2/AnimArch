@@ -27,8 +27,6 @@ namespace AnimationControl.Tests
             CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
             Inst4.SetAttribute("Nick", "Samo");
 
-            CDRelationshipPool RelationshipSpace = null;
-
             EXEScope Scope = new EXEScope();
 
             EXEReferencingVariable ReferencingVariable = new EXEReferencingVariable("user1", "User", Inst2.UniqueID);
@@ -57,8 +55,6 @@ namespace AnimationControl.Tests
             CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
             Inst4.SetAttribute("Nick", "Samo");
 
-            CDRelationshipPool RelationshipSpace = null;
-
             EXEScope Scope = new EXEScope();
 
             EXEReferencingVariable ReferencingVariable = new EXEReferencingVariable("user1", "User", Inst4.UniqueID + 1);
@@ -83,8 +79,6 @@ namespace AnimationControl.Tests
             Inst3.SetAttribute("Nick", "Mato");
             CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
             Inst4.SetAttribute("Nick", "Samo");
-
-            CDRelationshipPool RelationshipSpace = null;
 
             EXEScope Scope = new EXEScope();
 
