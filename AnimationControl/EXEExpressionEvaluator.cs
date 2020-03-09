@@ -7,8 +7,13 @@ namespace AnimationControl
 {
     public class EXEExpressionEvaluator
     {
-       
 
+        private static List<String> SimpleOperators = new List<String>(new String[] { "-", "+", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "and", "or", "not"});
+
+        public bool IsSimpleOperator(String Operator)
+        {
+            return SimpleOperators.Contains(Operator);
+        }
         // SetUloh1
         // Here you get operator and operands, and you need to return the result. Check the unit tests to see what this is about
         public String Evaluate(String Operator, List<String> Operands)
@@ -36,12 +41,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -75,12 +80,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -105,12 +110,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -136,12 +141,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -167,12 +172,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -200,12 +205,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -244,12 +249,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -289,12 +294,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -326,12 +331,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -361,12 +366,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -397,12 +402,12 @@ namespace AnimationControl
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
-                        List<double> DoubleList = new List<double>();
+                        List<decimal> DoubleList = new List<decimal>();
                         foreach (String Operand in Operands)
                         {
                             try
                             {
-                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                                DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
                             }
                             catch (Exception e)
                             {
@@ -585,6 +590,4 @@ namespace AnimationControl
             return (str.Substring(0, 1) == "\"") && (str.Substring(str.Length - 1, 1) == "\"");
         }
     }
-
-
 }
