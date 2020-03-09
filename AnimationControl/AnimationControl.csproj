@@ -51,9 +51,11 @@
     <Compile Include="CDParameter.cs" />
     <Compile Include="CDRelationship.cs" />
     <Compile Include="CDRelationshipPool.cs" />
+    <Compile Include="EXECommandAssignment.cs" />
     <Compile Include="EXECommandQueryCreate.cs" />
     <Compile Include="EXECommandQueryRelate.cs" />
     <Compile Include="EXECommandQuerySelect.cs" />
+    <Compile Include="EXEEvaluatorHandleOperators.cs" />
     <Compile Include="EXEExpressionEvaluator.cs" />
     <Compile Include="EXEReferenceEvaluator.cs" />
     <Compile Include="EXEReferencingSetVariable.cs" />
@@ -68,7 +70,6 @@
     <Compile Include="EXEASTNodeComposite.cs" />
     <Compile Include="EXEASTNodeLeaf.cs" />
     <Compile Include="EXECommand.cs" />
-    <Compile Include="EXECommandInterface.cs" />
     <Compile Include="EXEExecutionGlobals.cs" />
     <Compile Include="EXEParseUtil.cs" />
     <Compile Include="EXEPrimitiveVariable.cs" />
