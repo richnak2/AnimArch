@@ -53,6 +53,7 @@
     <Compile Include="CDRelationshipPool.cs" />
     <Compile Include="EXECommandAssignment.cs" />
     <Compile Include="EXECommandQueryCreate.cs" />
+    <Compile Include="EXECommandQueryDelete.cs" />
     <Compile Include="EXECommandQueryRelate.cs" />
     <Compile Include="EXECommandQuerySelect.cs" />
     <Compile Include="EXEEvaluatorHandleOperators.cs" />
