@@ -140,6 +140,24 @@ namespace AnimationControl
             return SelfPrintBuilder.ToString();
         }
 
+        public bool UnsetReferencingVariables(String ClassName, long InstanceID)
+        {
+            bool Result = true;
+            foreach (EXEReferencingVariable Variable in this.ReferencingVariables)
+            {
+                if (Variable.Name == ClassName && Variable.ReferencedInstanceId == InstanceID)
+                {
+                    Variable.ReferencedInstanceId = -1;
+                }
+            }
+            if (this.SuperScope != null)
+            {
+                Result &= this.SuperScope.UnsetReferencingVariables(ClassName, InstanceID);
+            }
+
+            return Result;
+        }
+
         //"Scope" param is ignored here, because this class is a scope
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {

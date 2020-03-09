@@ -125,5 +125,25 @@ namespace AnimationControl
 
             return NewClassID;
         }
+
+        public bool DestroyInstance(String ClassName, long InstanceId)
+        {
+            bool Result = false;
+            CDClass Class = this.getClassByName(ClassName);
+            if (Class != null)
+            {
+                int RemovedCount = Class.Instances.RemoveAll(x => x.UniqueID == InstanceId);
+                if (RemovedCount == 1)
+                {
+                    Result = true;
+                }
+                else if (RemovedCount > 1)
+                {
+                    throw new Exception("We removed more than 1 instance of class " + ClassName + " with given ID (" + InstanceId.ToString() + "), something must have gone terribly wrong");
+                }
+            }
+
+            return Result;
+        }
     }
 }

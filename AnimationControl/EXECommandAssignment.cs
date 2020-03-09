@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnimationControl
 {
@@ -47,6 +43,7 @@ namespace AnimationControl
                     Result = Variable.AssignValue("", AssignedValue);
                 }
                 // Variable exists and is not primitive. What to do, what to do?
+                // We do nothing, we CANNOT ASIGN TO HANDLES!!!
             }
             // We are assigning to an attribute of a variable
             else
