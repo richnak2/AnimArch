@@ -49,11 +49,9 @@ namespace AnimationControl
                 Result = Evaluator.Evaluate(this.Operation, EvaluatedOperands);
                 if (EXETypes.RealTypeName.Equals(EXETypes.DetermineVariableType("", Result)))
                 {
-                    Result = FormatDouble(Result);//FormatDouble(Result);
+                    Result = FormatDouble(Result);
                 }
             }
-            
-
             return Result;
         }
 

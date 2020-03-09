@@ -10,22 +10,42 @@ namespace AnimationControl
     public class CDClassInstance
     {
         public long UniqueID { get; }
+
+        public bool Initialized { get; set; }
         public List<String> ReferencingVariables { get; set; }
         // Attributes
         public Dictionary<string, string> State { get; }
+        public CDClassInstance(List<CDAttribute> attributes)
+        {
+            this.State = new Dictionary<string, string>();
+
+            foreach (CDAttribute Attribute in attributes)
+            {
+                this.State.Add(Attribute.Name, EXETypes.UnitializedName);
+            }
+
+            this.UniqueID = -1;
+            this.State.Add("unique_ID", UniqueID.ToString());
+
+            this.ReferencingVariables = new List<String>();
+
+            this.Initialized = false;
+        }
         public CDClassInstance(long UniqueID, List<CDAttribute> attributes)
         {
            this.State = new Dictionary<string, string>();
 
             foreach (CDAttribute Attribute in attributes)
             {
-                this.State.Add(Attribute.Name, EXEExecutionGlobals.UnitializedAttributeValue);
+                this.State.Add(Attribute.Name, EXETypes.UnitializedName);
             }
 
             this.UniqueID = UniqueID;
             this.State.Add("unique_ID", UniqueID.ToString());
 
             this.ReferencingVariables = new List<String>();
+
+            this.Initialized = true;
         }
 
         public String GetAttribute(String name)

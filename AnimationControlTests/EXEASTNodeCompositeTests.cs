@@ -10,6 +10,84 @@ namespace AnimationControl.Tests
     public class EXEASTNodeCompositeTests
     {
         [TestMethod]
+        public void Evaluate_Normal_Bool_01()
+        {
+            EXEScope Scope = new EXEScope();
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("i", "0"));
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("count", "15"));
+
+            EXEASTNodeComposite AST1 = new EXEASTNodeComposite("and");
+
+            EXEASTNodeComposite AST2 = new EXEASTNodeComposite("<");
+            AST2.AddOperand(new EXEASTNodeLeaf("i"));
+            AST2.AddOperand(new EXEASTNodeLeaf("count"));
+
+            AST1.AddOperand(AST2);
+
+            EXEASTNodeComposite AST3 = new EXEASTNodeComposite("not");
+            AST3.AddOperand(new EXEASTNodeLeaf("Over"));
+
+            AST1.AddOperand(AST3);
+
+            String ActualOutput = AST1.Evaluate(Scope);
+            String ExpectedOutput = EXETypes.BooleanTrue;
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_Bool_02()
+        {
+            EXEScope Scope = new EXEScope();
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("Over", EXETypes.BooleanTrue));
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("i", "0"));
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("count", "15"));
+
+            EXEASTNodeComposite AST1 = new EXEASTNodeComposite("and");
+
+            EXEASTNodeComposite AST2 = new EXEASTNodeComposite("<");
+            AST2.AddOperand(new EXEASTNodeLeaf("i"));
+            AST2.AddOperand(new EXEASTNodeLeaf("count"));
+
+            AST1.AddOperand(AST2);
+
+            EXEASTNodeComposite AST3 = new EXEASTNodeComposite("not");
+            AST3.AddOperand(new EXEASTNodeLeaf("Over"));
+
+            AST1.AddOperand(AST3);
+
+            String ActualOutput = AST1.Evaluate(Scope);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_Bool_03()
+        {
+            EXEScope Scope = new EXEScope();
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("i", "15"));
+            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("count", "15"));
+
+            EXEASTNodeComposite AST1 = new EXEASTNodeComposite("and");
+
+            EXEASTNodeComposite AST2 = new EXEASTNodeComposite("<");
+            AST2.AddOperand(new EXEASTNodeLeaf("i"));
+            AST2.AddOperand(new EXEASTNodeLeaf("count"));
+
+            AST1.AddOperand(AST2);
+
+            EXEASTNodeComposite AST3 = new EXEASTNodeComposite("not");
+            AST3.AddOperand(new EXEASTNodeLeaf("Over"));
+
+            AST1.AddOperand(AST3);
+
+            String ActualOutput = AST1.Evaluate(Scope);
+            String ExpectedOutput = EXETypes.BooleanFalse;
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
         public void Evaluate_Normal_String_01()
         {
             EXEScope Scope = new EXEScope();

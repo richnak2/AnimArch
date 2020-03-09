@@ -20,6 +20,8 @@ namespace AnimationControl
         public const String BooleanTrue = "TRUE";
         public const String BooleanFalse = "FALSE";
 
+        public static String UnitializedName = "UNDEFINED";
+
         public static String DetermineVariableType(String name, String value)
         {
             if (name == UniqueIDTypeName)
