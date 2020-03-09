@@ -15,7 +15,7 @@ namespace AnimationControl
         {
             return this.Value;
         }
-        public String Evaluate(EXEScope Scope)
+        public String Evaluate(EXEScope Scope, CDClassPool ExecutionSpace)
         {
             String Result = null;
             // If we have simple value, e.g. 5, 3.14, "hi Madelyn", we are good

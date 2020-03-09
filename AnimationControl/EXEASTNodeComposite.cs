@@ -32,10 +32,12 @@ namespace AnimationControl
         {
             return this.Operation;
         }
-        public String Evaluate(EXEScope Scope)
+        public String Evaluate(EXEScope Scope, CDClassPool ExecutionSpace)
         {
             String Result = null;
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+            EXEEvaluatorHandleOperators HandleEvaluator = new EXEEvaluatorHandleOperators();
+            EXEReferenceEvaluator AccessEvaluator = new EXEReferenceEvaluator();
 
             // If we just calculate with ints, reals, bools, strings
             if (Evaluator.IsSimpleOperator(this.Operation))
@@ -43,13 +45,35 @@ namespace AnimationControl
                 List<String> EvaluatedOperands = new List<String>();
                 foreach (EXEASTNode Operand in this.Operands)
                 {
-                    EvaluatedOperands.Add(Operand.Evaluate(Scope));
+                    EvaluatedOperands.Add(Operand.Evaluate(Scope, ExecutionSpace));
                 }
 
+                //If we are returning real number, let's format it so that we don't have trouble with precision
                 Result = Evaluator.Evaluate(this.Operation, EvaluatedOperands);
                 if (EXETypes.RealTypeName.Equals(EXETypes.DetermineVariableType("", Result)))
                 {
                     Result = FormatDouble(Result);
+                }
+            }
+            // If we have handle operators
+            else if (HandleEvaluator.IsHandleOperator(this.Operation))
+            {
+                Result = HandleEvaluator.Evaluate(this.Operation, this.Operands.Select(x => ((EXEASTNodeLeaf)x).Value).ToList(), Scope);
+            }
+            // If we have access operator - we either access attribute or have decimal number. There are always 2 operands
+            else if (".".Equals(this.Operation) && this.Operands.Count == 2)
+            {
+                if (EXETypes.IntegerTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[0].Evaluate(Scope, ExecutionSpace)))
+                    && EXETypes.IntegerTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[1].Evaluate(Scope, ExecutionSpace)))
+                )
+                {
+                    Result = this.Operands[0].Evaluate(Scope, ExecutionSpace) + "." + this.Operands[1].Evaluate(Scope, ExecutionSpace);
+                }
+                else if (EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[0].Evaluate(Scope, ExecutionSpace)))
+                    && EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[1].Evaluate(Scope, ExecutionSpace)))
+                )
+                {
+                    Result = AccessEvaluator.EvaluateAttributeValue(this.Operands[0].Evaluate(Scope, ExecutionSpace), this.Operands[0].Evaluate(Scope, ExecutionSpace), Scope, ExecutionSpace);
                 }
             }
             return Result;

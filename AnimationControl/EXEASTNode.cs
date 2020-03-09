@@ -9,7 +9,7 @@ namespace AnimationControl
     public interface EXEASTNode
     {
         String GetNodeValue();
-        String Evaluate(EXEScope Scope);
+        String Evaluate(EXEScope Scope, CDClassPool ExecutionSpace);
         void PrintPretty(string indent, bool last);
     }
 }

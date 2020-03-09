@@ -12,6 +12,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Bool_01()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
             Scope.AddVariable(new EXEPrimitiveVariable("i", "0"));
@@ -30,7 +31,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanTrue;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -38,6 +39,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Bool_02()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanTrue));
             Scope.AddVariable(new EXEPrimitiveVariable("i", "0"));
@@ -56,7 +58,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanFalse;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -64,6 +66,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Bool_03()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
             Scope.AddVariable(new EXEPrimitiveVariable("i", "15"));
@@ -82,7 +85,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanFalse;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -90,12 +93,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_01()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("+");
             AST1.AddOperand(new EXEASTNodeLeaf("\"ahoj \""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"Marisa\""));
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "\"ahoj Marisa\"";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -103,13 +107,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_02()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("+");
             AST1.AddOperand(new EXEASTNodeLeaf("\"ahoj \""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"Marisa \""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"ako sa mas?\""));
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "\"ahoj Marisa ako sa mas?\"";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -117,12 +122,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_03()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("<");
             AST1.AddOperand(new EXEASTNodeLeaf("\"ahoj\""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"Marisa\""));
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanTrue;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -130,6 +136,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_04()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("<");
 
@@ -144,7 +151,7 @@ namespace AnimationControl.Tests
             AST1.AddOperand(AST2);
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanFalse;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -152,12 +159,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_01()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("+");
             AST1.AddOperand(new EXEASTNodeLeaf("5"));
             AST1.AddOperand(new EXEASTNodeLeaf("7"));
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "12";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -165,6 +173,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_02()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("*");
             AST1.AddOperand(new EXEASTNodeLeaf("5"));
@@ -175,7 +184,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "30";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -183,6 +192,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_03()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("x", "10"));
             Scope.AddVariable(new EXEPrimitiveVariable("y", "4"));
@@ -196,7 +206,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "80";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -205,6 +215,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_04()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("x", "10"));
             Scope.AddVariable(new EXEPrimitiveVariable("y", "4"));
@@ -223,7 +234,7 @@ namespace AnimationControl.Tests
             AST2.AddOperand(AST3);
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "6";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -231,6 +242,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Real_01()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("x", "2.0"));
             Scope.AddVariable(new EXEPrimitiveVariable("y", "2.2"));
@@ -244,7 +256,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "13.2";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -252,14 +264,81 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Real_02()
         {
+            CDClassPool ExecutionSpace = new CDClassPool();
             EXEScope Scope = new EXEScope();
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("*");
             AST1.AddOperand(new EXEASTNodeLeaf("1.2"));
             AST1.AddOperand(new EXEASTNodeLeaf("1.2"));
 
-            String ActualOutput = AST1.Evaluate(Scope);
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
             String ExpectedOutput = "1.44";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_BuildReal_01()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+            EXEScope Scope = new EXEScope();
+
+            EXEASTNodeComposite AST1 = new EXEASTNodeComposite(".");
+            AST1.AddOperand(new EXEASTNodeLeaf("1"));
+            AST1.AddOperand(new EXEASTNodeLeaf("1"));
+
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
+            String ExpectedOutput = "1.1";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_BuildReal_02()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+            EXEScope Scope = new EXEScope();
+
+            EXEASTNodeComposite AST1 = new EXEASTNodeComposite(".");
+            AST1.AddOperand(new EXEASTNodeLeaf("16"));
+            AST1.AddOperand(new EXEASTNodeLeaf("0"));
+
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
+            String ExpectedOutput = "16.0";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_BuildReal_03()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+            EXEScope Scope = new EXEScope();
+
+            EXEASTNodeComposite AST1 = new EXEASTNodeComposite(".");
+            AST1.AddOperand(new EXEASTNodeLeaf("0"));
+            AST1.AddOperand(new EXEASTNodeLeaf("2345"));
+
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
+            String ExpectedOutput = "0.2345";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Evaluate_Normal_Access_01()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+            CDClass C1 = ExecutionSpace.SpawnClass("Dog");
+            C1.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
+            CDClassInstance C1I1 = C1.CreateClassInstance("");
+            C1I1.SetAttribute("name", "Dunco");
+
+            EXEScope Scope = new EXEScope();
+            Scope.AddVariable(new EXEReferencingVariable("dog1", "Dog", C1I1.UniqueID));
+
+            EXEASTNodeComposite AST1 = new EXEASTNodeComposite(".");
+            AST1.AddOperand(new EXEASTNodeLeaf("dog1"));
+            AST1.AddOperand(new EXEASTNodeLeaf("name"));
+
+            String ActualOutput = AST1.Evaluate(Scope, ExecutionSpace);
+            String ExpectedOutput = "Dunco";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
