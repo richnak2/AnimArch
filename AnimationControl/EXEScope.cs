@@ -158,6 +158,35 @@ namespace AnimationControl
             return Result;
         }
 
+        public int VariablePrimitiveCount()
+        {
+            return this.PrimitiveVariables.Count;
+        }
+        public int ValidVariableReferencingCountRecursive()
+        {
+            int Result = 0;
+            foreach (EXEReferencingVariable Var in this.ReferencingVariables)
+            {
+                if (Var.IsInitialized())
+                {
+                    ++Result;
+                }
+            }
+            if (this.SuperScope != null)
+            {
+                Result += this.SuperScope.ValidVariableReferencingCountRecursive();
+            }
+            return Result;
+        }
+        public int VariableReferencingCount()
+        {
+            return this.ReferencingVariables.Count;
+        }
+        public int VariableSetReferencingCount()
+        {
+            return this.SetReferencingVariables.Count;
+        }
+
         //"Scope" param is ignored here, because this class is a scope
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {

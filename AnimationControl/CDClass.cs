@@ -10,9 +10,9 @@ namespace AnimationControl
     public class CDClass
     {
         public string Name { get; set; }
-        public List<CDAttribute> Attributes { get; set; }
-        public List<CDMethod> Methods { get; set; }
-        public List<CDClassInstance> Instances { get; set; }
+        private List<CDAttribute> Attributes { get; }
+        private List<CDMethod> Methods { get; }
+        private List<CDClassInstance> Instances { get; }
         private long ClassIDPrefix;
         private long InstanceIDSeed;
 
@@ -24,42 +24,20 @@ namespace AnimationControl
 
             this.Attributes = new List<CDAttribute>();
 
-
             this.Methods = new List<CDMethod>();
 
             this.Instances = new List<CDClassInstance>();
         }
 
-        public CDClassInstance CreateClassInstance(String InstanceName)
+        public CDClassInstance CreateClassInstance()
         {
             long NewInstanceID = ConstructNewInstanceUniqueID();
             this.InstanceIDSeed++;
 
             CDClassInstance Instance = new CDClassInstance(NewInstanceID, this.Attributes);
-            Instance.AddReferencingVariable(InstanceName);
             this.Instances.Add(Instance);
 
             return Instance;
-        }
-        public CDClassInstance FindInstanceByName(String InstanceName)
-        {
-            CDClassInstance SearchedInstance = null;
-            foreach (CDClassInstance Instance in this.Instances)
-            {
-                foreach (String VariableName in Instance.ReferencingVariables)
-                {
-                    if (VariableName == InstanceName)
-                    {
-                        SearchedInstance = Instance;
-                        break;
-                    }
-                }
-                if (SearchedInstance != null)
-                {
-                    break;
-                }
-            }
-            return SearchedInstance;
         }
         private long ConstructNewInstanceUniqueID()
         {
@@ -67,6 +45,23 @@ namespace AnimationControl
             long NewInstanceID = ClassIDPrefix * PowerOf(10, DigitCount) + InstanceIDSeed;
 
             return NewInstanceID;
+        }
+
+        public bool DestroyInstance(long InstanceId)
+        {
+            bool Result = false;
+
+            int RemovedCount = this.Instances.RemoveAll(x => x.UniqueID == InstanceId);
+            if (RemovedCount == 1)
+            {
+                Result = true;
+            }
+            else if (RemovedCount > 1)
+            {
+                throw new Exception("We removed more than 1 instance of class " + this.Name + " with given ID (" + InstanceId.ToString() + "), something must have gone terribly wrong");
+            }
+
+            return Result;
         }
 
         public Boolean AddMethod(CDMethod NewMethod)
@@ -83,7 +78,6 @@ namespace AnimationControl
             if (Result)
             {
                 this.Methods.Add(NewMethod);
-                this.AddMethodCallCounterAttribute(NewMethod.Name);
             }
 
             return Result;
@@ -124,11 +118,9 @@ namespace AnimationControl
             return Result;
         }
 
-        private void AddMethodCallCounterAttribute(String MethodName)
+        public int InstanceCount()
         {
-            String MockAttributeName = "call_count_" + MethodName;
-            CDAttribute Attribute = new CDAttribute(MockAttributeName, EXETypes.IntegerTypeName, true);
-            this.Attributes.Add(Attribute);
+            return this.Instances.Count;
         }
 
         private int PowerOf(int x, int power)

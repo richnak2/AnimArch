@@ -18,13 +18,13 @@ namespace AnimationControl.Tests
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
 
-            CDClassInstance Inst1 = UserClass.CreateClassInstance("x");
+            CDClassInstance Inst1 = UserClass.CreateClassInstance();
             Inst1.SetAttribute("Nick", "Alex");
-            CDClassInstance Inst2 = UserClass.CreateClassInstance("y");
+            CDClassInstance Inst2 = UserClass.CreateClassInstance();
             Inst2.SetAttribute("Nick", "Miso");
-            CDClassInstance Inst3 = UserClass.CreateClassInstance("z");
+            CDClassInstance Inst3 = UserClass.CreateClassInstance();
             Inst3.SetAttribute("Nick", "Mato");
-            CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
+            CDClassInstance Inst4 = UserClass.CreateClassInstance();
             Inst4.SetAttribute("Nick", "Samo");
 
             EXEScope Scope = new EXEScope();
@@ -46,13 +46,13 @@ namespace AnimationControl.Tests
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
 
-            CDClassInstance Inst1 = UserClass.CreateClassInstance("x");
+            CDClassInstance Inst1 = UserClass.CreateClassInstance();
             Inst1.SetAttribute("Nick", "Alex");
-            CDClassInstance Inst2 = UserClass.CreateClassInstance("y");
+            CDClassInstance Inst2 = UserClass.CreateClassInstance();
             Inst2.SetAttribute("Nick", "Miso");
-            CDClassInstance Inst3 = UserClass.CreateClassInstance("z");
+            CDClassInstance Inst3 = UserClass.CreateClassInstance();
             Inst3.SetAttribute("Nick", "Mato");
-            CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
+            CDClassInstance Inst4 = UserClass.CreateClassInstance();
             Inst4.SetAttribute("Nick", "Samo");
 
             EXEScope Scope = new EXEScope();
@@ -71,13 +71,13 @@ namespace AnimationControl.Tests
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
 
-            CDClassInstance Inst1 = UserClass.CreateClassInstance("x");
+            CDClassInstance Inst1 = UserClass.CreateClassInstance();
             Inst1.SetAttribute("Nick", "Alex");
-            CDClassInstance Inst2 = UserClass.CreateClassInstance("y");
+            CDClassInstance Inst2 = UserClass.CreateClassInstance();
             Inst2.SetAttribute("Nick", "Miso");
-            CDClassInstance Inst3 = UserClass.CreateClassInstance("z");
+            CDClassInstance Inst3 = UserClass.CreateClassInstance();
             Inst3.SetAttribute("Nick", "Mato");
-            CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
+            CDClassInstance Inst4 = UserClass.CreateClassInstance();
             Inst4.SetAttribute("Nick", "Samo");
 
             EXEScope Scope = new EXEScope();

@@ -20,8 +20,8 @@ namespace AnimationControl.Tests
             CDClass Class2 = ClassPool.SpawnClass("Subject");
             CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
 
-            CDClassInstance Class1Inst = Class1.CreateClassInstance("");
-            CDClassInstance Class2Inst = Class2.CreateClassInstance("");
+            CDClassInstance Class1Inst = Class1.CreateClassInstance();
+            CDClassInstance Class2Inst = Class2.CreateClassInstance();
             Rel.CreateRelationship(Class1Inst.UniqueID, Class2Inst.UniqueID);
 
             EXEScope Scope = new EXEScope();

@@ -22,7 +22,7 @@ namespace AnimationControl.Tests
             CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
 
-            CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance("x");
+            CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance();
             ClassInstance.SetAttribute("Nick", "\"Jano245\"");
 
             EXEScope Scope = new EXEScope();
@@ -51,19 +51,19 @@ namespace AnimationControl.Tests
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
 
-            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance();
             ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
             ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
             ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
             ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
 
-            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance();
             ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
             ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
             ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
             ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
 
-            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance();
             ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
             ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
             ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
@@ -90,7 +90,7 @@ namespace AnimationControl.Tests
             CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
 
-            CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance("x");
+            CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance();
             ClassInstance.SetAttribute("Nick", "\"Jano245\"");
 
             EXEScope Scope = new EXEScope();
@@ -120,19 +120,19 @@ namespace AnimationControl.Tests
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
 
-            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance();
             ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
             ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
             ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
             ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
 
-            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance();
             ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
             ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
             ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
             ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
 
-            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance();
             ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
             ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
             ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");

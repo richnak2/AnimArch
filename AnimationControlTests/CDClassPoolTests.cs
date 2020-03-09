@@ -18,7 +18,7 @@ namespace AnimationControl.Tests
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance("originator1");
+            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance();
             Class1_Instance1.SetAttribute("coord_x", "17.65");
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
@@ -39,17 +39,17 @@ namespace AnimationControl.Tests
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance("originator1");
+            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance();
             Class1_Instance1.SetAttribute("coord_x", "17.65");
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
 
-            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance("originator2");
+            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance();
             Class1_Instance2.SetAttribute("coord_x", "0.564738291");
             Class1_Instance2.SetAttribute("coord_y", "-503.14");
             Class1_Instance2.SetAttribute("coord_z", "22.458");
 
-            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance("originator3");
+            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance();
             Class1_Instance3.SetAttribute("coord_x", "350.47");
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");
@@ -70,17 +70,17 @@ namespace AnimationControl.Tests
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance("originator1");
+            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance();
             Class1_Instance1.SetAttribute("coord_x", "17.65");
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
 
-            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance("originator2");
+            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance();
             Class1_Instance2.SetAttribute("coord_x", "0.564738291");
             Class1_Instance2.SetAttribute("coord_y", "-503.14");
             Class1_Instance2.SetAttribute("coord_z", "22.458");
 
-            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance("originator3");
+            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance();
             Class1_Instance3.SetAttribute("coord_x", "350.47");
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");
@@ -101,17 +101,17 @@ namespace AnimationControl.Tests
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance("originator1");
+            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance();
             Class1_Instance1.SetAttribute("coord_x", "17.65");
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
 
-            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance("originator2");
+            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance();
             Class1_Instance2.SetAttribute("coord_x", "0.564738291");
             Class1_Instance2.SetAttribute("coord_y", "-503.14");
             Class1_Instance2.SetAttribute("coord_z", "22.458");
 
-            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance("originator3");
+            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance();
             Class1_Instance3.SetAttribute("coord_x", "350.47");
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");
@@ -132,7 +132,7 @@ namespace AnimationControl.Tests
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance("originator1");
+            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance();
             Class1_Instance1.SetAttribute("coord_x", "17.65");
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
@@ -150,17 +150,17 @@ namespace AnimationControl.Tests
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance("originator1");
+            CDClassInstance Class1_Instance1 = Class1.CreateClassInstance();
             Class1_Instance1.SetAttribute("coord_x", "17.65");
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
 
-            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance("originator2");
+            CDClassInstance Class1_Instance2 = Class1.CreateClassInstance();
             Class1_Instance2.SetAttribute("coord_x", "0.564738291");
             Class1_Instance2.SetAttribute("coord_y", "-503.14");
             Class1_Instance2.SetAttribute("coord_z", "22.458");
 
-            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance("originator3");
+            CDClassInstance Class1_Instance3 = Class1.CreateClassInstance();
             Class1_Instance3.SetAttribute("coord_x", "350.47");
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");

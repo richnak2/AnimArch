@@ -327,7 +327,7 @@ namespace AnimationControl.Tests
             CDClassPool ExecutionSpace = new CDClassPool();
             CDClass C1 = ExecutionSpace.SpawnClass("Dog");
             C1.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
-            CDClassInstance C1I1 = C1.CreateClassInstance("");
+            CDClassInstance C1I1 = C1.CreateClassInstance();
             C1I1.SetAttribute("name", "Dunco");
 
             EXEScope Scope = new EXEScope();

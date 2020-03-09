@@ -103,21 +103,6 @@ namespace AnimationControl
             return SearchedClass.MethodExists(MethodName);
         }
 
-        public (List<String>, List<String>, List<String>) CreateDefinedMethodsTupple()
-        {
-            (List<String>, List<String>, List<String>) Tupples = (new List<String>(), new List<String>(), new List<String>());
-            foreach (CDClass Class in this.ClassPool)
-            {
-                foreach (CDMethod Method in Class.Methods)
-                {
-                    Tupples.Item1.Add(Class.Name);
-                    Tupples.Item2.Add(Method.Name);
-                    Tupples.Item3.Add(Method.OALCode);
-                }
-            }
-            return Tupples;
-        }
-
         private long GenerateClassID()
         {
             long NewClassID = this.ClassIDPrefix;
@@ -132,15 +117,7 @@ namespace AnimationControl
             CDClass Class = this.getClassByName(ClassName);
             if (Class != null)
             {
-                int RemovedCount = Class.Instances.RemoveAll(x => x.UniqueID == InstanceId);
-                if (RemovedCount == 1)
-                {
-                    Result = true;
-                }
-                else if (RemovedCount > 1)
-                {
-                    throw new Exception("We removed more than 1 instance of class " + ClassName + " with given ID (" + InstanceId.ToString() + "), something must have gone terribly wrong");
-                }
+                Result = Class.DestroyInstance(InstanceId);
             }
 
             return Result;

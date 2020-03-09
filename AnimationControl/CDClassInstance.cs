@@ -10,8 +10,6 @@ namespace AnimationControl
     public class CDClassInstance
     {
         public long UniqueID { get; }
-
-        public List<String> ReferencingVariables { get; set; }
         // Attributes
         public Dictionary<string, string> State { get; }
 
@@ -26,8 +24,6 @@ namespace AnimationControl
 
             this.UniqueID = UniqueID;
             this.State.Add("unique_ID", UniqueID.ToString());
-
-            this.ReferencingVariables = new List<String>();
         }
 
         public String GetAttribute(String name)
@@ -51,19 +47,6 @@ namespace AnimationControl
             }
 
             return success;
-        }
-
-        public void AddReferencingVariable(String Name)
-        {
-            this.ReferencingVariables.Add(Name);
-        }
-        public Boolean RemoveReferencingVariables(String Name)
-        {
-            return this.ReferencingVariables.Remove(Name);
-        }
-        public int ReferenceCount()
-        {
-            return this.ReferencingVariables.Count;
         }
     }
 }
