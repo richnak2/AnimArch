@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace AnimationControl
 {
     public class EXEExpressionEvaluator
     {
-
+       
 
         // SetUloh1
         // Here you get operator and operands, and you need to return the result. Check the unit tests to see what this is about
@@ -34,7 +35,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //add numbers in list and return result 
                         return DoubleList.Aggregate((a, x) => a + x).ToString();
                     }
@@ -61,7 +74,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //sub numbers in list and return result
                         return DoubleList.Aggregate((a, x) => a - x).ToString();
                     }
@@ -79,7 +104,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //multiply numbers in list and return result
                         return DoubleList.Aggregate((a, x) => a * x).ToString();
                     }
@@ -98,7 +135,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //divide numbers in list and return result 
                         return DoubleList.Aggregate((a, x) => a / x).ToString();
                     }
@@ -117,7 +166,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.IntegerTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //divide numbers in list and return result 
                         return DoubleList.Aggregate((a, x) => a % x).ToString();
                     }
@@ -138,7 +199,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //compare 2 numbers in list (equals) and return result 
                         return Double.Equals(DoubleList[0], DoubleList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
@@ -170,7 +243,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //compare 2 numbers in list (equals) and return result
                         return !Double.Equals(DoubleList[0], DoubleList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
@@ -203,7 +288,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //compare numbers in list (less then) and return result
                         return DoubleList[0] < DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
 
@@ -228,7 +325,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //compare numbers in list (greater then) and return result 
                         return DoubleList[0] > DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
@@ -251,7 +360,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //compare numbers in list (less then or equals to) and return result
                         return DoubleList[0] <= DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
@@ -275,7 +396,19 @@ namespace AnimationControl
                     if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
-                        List<double> DoubleList = Operands.Select(double.Parse).ToList();
+                        // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
+                        List<double> DoubleList = new List<double>();
+                        foreach (String Operand in Operands)
+                        {
+                            try
+                            {
+                                DoubleList.Add(double.Parse(Operand, CultureInfo.InvariantCulture));
+                            }
+                            catch (Exception e)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
                         //compare numbers in list (greater then or equals to) and return result 
                         return DoubleList[0] >= DoubleList[1] ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                     }
@@ -328,13 +461,12 @@ namespace AnimationControl
         }
 
         // Potentially refactor this
-        private String IsValid(string oper, string[] param)
+        public String IsValid(string oper, string[] param)
         {
             if (String.IsNullOrEmpty(oper) || param == null) return EXETypes.BooleanFalse;
 
             //get the first element type
             String ParamType = EXETypes.DetermineVariableType(null, param[0]);
-
 
             //check if it is int or real number
             if (String.Equals(ParamType, EXETypes.IntegerTypeName) || String.Equals(ParamType, EXETypes.RealTypeName))
@@ -355,7 +487,7 @@ namespace AnimationControl
 
                     foreach (var value in param)
                     {
-                        if (!int.TryParse(value, out _)) return EXETypes.BooleanFalse;
+                        if (!EXETypes.IsValidValue(value, EXETypes.IntegerTypeName)) return EXETypes.BooleanFalse;
                     }
 
                     return EXETypes.BooleanTrue;
@@ -365,7 +497,7 @@ namespace AnimationControl
                 {
                     foreach (var value in param)
                     {
-                        if (!Double.TryParse(value, out _)) return EXETypes.BooleanFalse;
+                        if (!EXETypes.IsValidValue(value, EXETypes.RealTypeName)) return EXETypes.BooleanFalse;
                     }
 
                     return EXETypes.BooleanTrue;

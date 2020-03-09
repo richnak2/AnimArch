@@ -1400,7 +1400,7 @@ namespace AnimationControl.Tests
             Console.WriteLine(ActualOutput);
             String ExpectedOutput = EXETypes.BooleanFalse;
             Console.WriteLine(ExpectedOutput);
-            Assert.AreEqual(ActualOutput, ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
 
         [TestMethod]
@@ -1412,7 +1412,7 @@ namespace AnimationControl.Tests
             Console.WriteLine(ActualOutput);
             String ExpectedOutput = EXETypes.BooleanFalse;
             Console.WriteLine(ExpectedOutput);
-            Assert.AreEqual(ActualOutput, ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
 
         [TestMethod]
@@ -1424,7 +1424,7 @@ namespace AnimationControl.Tests
             Console.WriteLine(ActualOutput);
             String ExpectedOutput = EXETypes.BooleanFalse;
             Console.WriteLine(ExpectedOutput);
-            Assert.AreEqual(ActualOutput, ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
 
         [TestMethod]
@@ -1478,7 +1478,7 @@ namespace AnimationControl.Tests
             Console.WriteLine(ActualOutput);
             String ExpectedOutput = EXETypes.BooleanTrue;
             Console.WriteLine(ExpectedOutput);
-            Assert.AreEqual(ActualOutput, ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
 
         [TestMethod]
@@ -1490,7 +1490,7 @@ namespace AnimationControl.Tests
             Console.WriteLine(ActualOutput);
             String ExpectedOutput = EXETypes.BooleanTrue;
             Console.WriteLine(ExpectedOutput);
-            Assert.AreEqual(ActualOutput, ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
 
         [TestMethod]
@@ -1502,7 +1502,7 @@ namespace AnimationControl.Tests
             Console.WriteLine(ActualOutput);
             String ExpectedOutput = EXETypes.BooleanFalse;
             Console.WriteLine(ExpectedOutput);
-            Assert.AreEqual(ActualOutput, ExpectedOutput);
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
 
         [TestMethod]
@@ -1572,6 +1572,17 @@ namespace AnimationControl.Tests
 
             String ActualOutput = Evaluator.CreateEXETypeString("a123bcasdasdasdasdasdasdasdasd");
             String ExpectedOutput = "\"a123bcasdasdasdasdasdasdasdasd\"";
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void IsValid_Normal_Equal_FloatString_1()
+        {
+            EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
+
+            String ActualOutput = Evaluator.IsValid("==", new String[] { "11.456", "11.456" });
+            String ExpectedOutput = EXETypes.BooleanTrue;
+
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
     }

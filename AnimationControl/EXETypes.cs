@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace AnimationControl
         public const String StringTypeName = "string";
         public const String DateTypeName = "date";
         public const String UniqueIDTypeName = "unique_ID";
+        public const String ReferenceTypeName = "reference";
 
         public const String BooleanTrue = "TRUE";
         public const String BooleanFalse = "FALSE";
@@ -30,9 +32,13 @@ namespace AnimationControl
                 return IntegerTypeName;
             }
 
-            if (double.TryParse(value, out _))
+            try
             {
+                double.Parse(value, CultureInfo.InvariantCulture);
                 return RealTypeName;
+            }
+            catch (Exception e)
+            {
             }
 
             if (value == EXETypes.BooleanTrue || value == EXETypes.BooleanFalse)
@@ -40,10 +46,13 @@ namespace AnimationControl
                 return BooleanTypeName;
             }
 
-            //TODO Date
+            if (value[0] == '"' && value[value.Length-1] == '"')
+            {
+                return StringTypeName;
+            }
 
 
-            return StringTypeName;
+            return ReferenceTypeName;
         }
         public static Boolean IsValidValue(String Value, String Type)
         {
@@ -54,7 +63,15 @@ namespace AnimationControl
                     Result = int.TryParse(Value, out _);
                     break;
                 case "real":
-                    Result = double.TryParse(Value, out _);
+                    try
+                    {
+                        double.Parse(Value, CultureInfo.InvariantCulture);
+                        Result = true;
+                    }
+                    catch (Exception e)
+                    {
+                        Result = false;
+                    }
                     break;
                 case "boolean":
                     Result = Boolean.TryParse(Value, out _);
@@ -67,7 +84,7 @@ namespace AnimationControl
                     //TODO (ak vobec)
                     break;
                 default:
-                    Result = true;
+                    Result = false;
                     break;
             }
 

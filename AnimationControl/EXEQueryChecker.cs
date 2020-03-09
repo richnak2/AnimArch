@@ -102,9 +102,11 @@ namespace AnimationControl
                 return AST;
             }
 
-            AST = new EXEASTNodeComposite("create");
+            /*AST = new EXEASTNodeComposite("create");
             AST.AddOperand(new EXEASTNodeLeaf(Tokens[3], true, false, false));
-            AST.AddOperand(new EXEASTNodeLeaf(Tokens[5], false, true, false));
+            AST.AddOperand(new EXEASTNodeLeaf(Tokens[5], false, true, false));*/
+
+            throw new NotImplementedException();
 
             return AST;
         }
@@ -150,10 +152,12 @@ namespace AnimationControl
                 return AST;
             }
 
-            AST = new EXEASTNodeComposite("relate");
-            AST.AddOperand(new EXEASTNodeLeaf(Tokens[1], true, false, false));
-            AST.AddOperand(new EXEASTNodeLeaf(Tokens[3], true, false, false));
-            AST.AddOperand(new EXEASTNodeLeaf(Tokens[5], false, false, true));
+            /*AST = new EXEASTNodeComposite("relate");
+             AST.AddOperand(new EXEASTNodeLeaf(Tokens[1], true, false, false));
+             AST.AddOperand(new EXEASTNodeLeaf(Tokens[3], true, false, false));
+             AST.AddOperand(new EXEASTNodeLeaf(Tokens[5], false, false, true));*/
+
+            throw new NotImplementedException();
 
             return AST;
         }
@@ -216,11 +220,13 @@ namespace AnimationControl
 
             Console.WriteLine("retrieved tricky parts");
 
-            AST = new EXEASTNodeComposite("select any related by");
+            /*AST = new EXEASTNodeComposite("select any related by");
             AST.AddOperand(new EXEASTNodeLeaf(Tokens[2], true, false, false));
             AST.AddOperand(new EXEASTNodeLeaf(ReferingInstanceName, true, false, false));
             AST.AddOperand(new EXEASTNodeLeaf(ReferedClassName, false, true, false));
-            AST.AddOperand(new EXEASTNodeLeaf(RelationshipName, false, false, true));
+            AST.AddOperand(new EXEASTNodeLeaf(RelationshipName, false, false, true));*/
+
+            throw new NotImplementedException();
 
             Console.WriteLine("created AST");
 

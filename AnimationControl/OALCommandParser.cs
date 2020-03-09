@@ -32,6 +32,8 @@ namespace AnimationControl
 
         public EXEASTNode ConstructAST(String ExpressionCommand)
         {
+            throw new NotImplementedException();
+
             //Console.WriteLine("ConstrAST:" + ExpressionCommand + "EOL");
 
             EXEASTNode AST = null;
@@ -46,7 +48,7 @@ namespace AnimationControl
 
             if ("\"".Equals(ClearedExpressionCommand[0]) && "\"".Equals(ClearedExpressionCommand[ExpressionCommand.Length - 1]))
             {
-                AST = new EXEASTNodeLeaf(ExpressionCommand, false, false, false);
+               // AST = new EXEASTNodeLeaf(ExpressionCommand, false, false, false);
             }
             //First go for query
             else if (QueryChecker.IsQuery(ClearedExpressionCommand))
@@ -90,6 +92,8 @@ namespace AnimationControl
 
         private EXEASTNode ConstructControlCommandAST(String Command)
         {
+            throw new NotImplementedException();
+
             EXEASTNode AST = null;
             if (!IsControlCommand(Command))
             {
@@ -101,7 +105,7 @@ namespace AnimationControl
 
             if (CommandTokens[0] == "continue" || CommandTokens[0] == "break")
             {
-                AST = new EXEASTNodeLeaf(CommandTokens[0], false, false, false);
+                //AST = new EXEASTNodeLeaf(CommandTokens[0], false, false, false);
             }
             else if (CommandTokens[0] == "return")
             {
