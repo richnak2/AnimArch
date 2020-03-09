@@ -9,7 +9,7 @@ namespace AnimationControl.Tests
     [TestClass]
     public class EXECommandQuerySelectTests
     {
-        [TestMethod]
+       /* [TestMethod]
         public void Execute_Normal_Any_01()
         {
             CDClassPool ExecutionSpace = new CDClassPool();
@@ -45,8 +45,8 @@ namespace AnimationControl.Tests
             Boolean Success = ExecutionSuccess && VariableCreationSuccess && CorrectId;
 
             Assert.IsTrue(Success);
-        }
-        [TestMethod]
+        }*/
+        /*[TestMethod]
         public void Execute_Normal_Many_01()
         {
             CDClassPool ExecutionSpace = new CDClassPool();
@@ -87,7 +87,7 @@ namespace AnimationControl.Tests
             Boolean Success = ExecutionSuccess && VariableCreationSuccess && CorrectIds;
 
             Assert.IsTrue(Success);
-        }
+        }*/
 
         private Boolean CompareLists(List<long> List1, List<long> List2)
         {

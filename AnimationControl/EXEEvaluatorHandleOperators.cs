@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    class EXEEvaluatorHandleOperators
+    public class EXEEvaluatorHandleOperators
     {
-        private static List<String> ValidOperators = new List<String>(new String[] { "empty", "not_empty", "cardinality"});
+        private static readonly List<String> ValidOperators = new List<String>(new String[] { "empty", "not_empty", "cardinality"});
 
         public bool IsHandleOperator(String Operator)
         {
             return ValidOperators.Contains(Operator);
         }
 
-        public String Evaluate(String Operator, List<String> Operands, EXEScope Scope, CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace)
+        public String Evaluate(String Operator, List<String> Operands, EXEScope Scope)
         {
             String Result = null;
 
@@ -33,22 +31,21 @@ namespace AnimationControl
             {
                 switch (Operator) {
                     case "empty":
-                        Result = EvaluateEmpty(Operands.First(), Scope, ExecutionSpace, RelationshipSpace);
+                        Result = EvaluateEmpty(Operands.First(), Scope);
                         break;
                     case "not_empty":
-                        Result = EvaluateNotEmpty(Operands.First(), Scope, ExecutionSpace, RelationshipSpace);
+                        Result = EvaluateNotEmpty(Operands.First(), Scope);
                         break;
                     case "cardinality":
-                        Result = EvaluateCardinality(Operands.First(), Scope, ExecutionSpace, RelationshipSpace);
+                        Result = EvaluateCardinality(Operands.First(), Scope);
                         break;
                 }
-                    
             }
 
             return Result;
         }
 
-        public String EvaluateEmpty(String Operand, EXEScope Scope, CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace)
+        public String EvaluateEmpty(String Operand, EXEScope Scope)
         {
             String Result = null;
 
@@ -61,8 +58,7 @@ namespace AnimationControl
             EXEReferencingVariable SingleInstanceVariable = Scope.FindReferencingVariableByName(Operand);
             if (SingleInstanceVariable != null)
             {
-                CDClassInstance SingleInstance = SingleInstanceVariable.RetrieveReferencedClassInstance(ExecutionSpace);
-                if (SingleInstance.Initialized)
+                if (SingleInstanceVariable.IsInitialized())
                 {
                     Result = EXETypes.BooleanFalse;
                 }
@@ -92,10 +88,10 @@ namespace AnimationControl
             return Result;
         }
 
-        public String EvaluateNotEmpty(String Operand, EXEScope Scope, CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace)
+        public String EvaluateNotEmpty(String Operand, EXEScope Scope)
         {
             String Result = null;
-            String TempResult = EvaluateEmpty(Operand, Scope, ExecutionSpace, RelationshipSpace);
+            String TempResult = EvaluateEmpty(Operand, Scope);
 
             if (EXETypes.BooleanTrue.Equals(TempResult))
             {
@@ -108,7 +104,7 @@ namespace AnimationControl
 
             return Result;
         }
-        public String EvaluateCardinality(String Operand, EXEScope Scope, CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace)
+        public String EvaluateCardinality(String Operand, EXEScope Scope)
         {
             String Result = null;
 
@@ -121,8 +117,7 @@ namespace AnimationControl
             EXEReferencingVariable SingleInstanceVariable = Scope.FindReferencingVariableByName(Operand);
             if (SingleInstanceVariable != null)
             {
-                CDClassInstance SingleInstance = SingleInstanceVariable.RetrieveReferencedClassInstance(ExecutionSpace);
-                if (SingleInstance.Initialized)
+                if (SingleInstanceVariable.IsInitialized())
                 {
                     Result = "1";
                 }

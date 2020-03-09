@@ -6,9 +6,9 @@ namespace AnimationControl
 {
     public class EXEScope : EXECommand
     {
-        public List<EXEPrimitiveVariable> PrimitiveVariables;
-        public List<EXEReferencingVariable> ReferencingVariables;
-        public List<EXEReferencingSetVariable> SetReferencingVariables;
+        private List<EXEPrimitiveVariable> PrimitiveVariables;
+        private List<EXEReferencingVariable> ReferencingVariables;
+        private List<EXEReferencingSetVariable> SetReferencingVariables;
         public EXEScope SuperScope;
         public List<EXECommand> Commands;
 
@@ -21,6 +21,62 @@ namespace AnimationControl
             this.SetReferencingVariables = new List<EXEReferencingSetVariable>();
             this.SuperScope = null;
             this.Commands = new List<EXECommand>();
+        }
+
+        public bool AddVariable(EXEPrimitiveVariable Variable)
+        {
+            bool Result = false;
+
+            if (!VariableNameExists(Variable.Name))
+            {
+                this.PrimitiveVariables.Add(Variable);
+                Result = true;
+            }
+
+            return Result;
+        }
+        public bool AddVariable(EXEReferencingVariable Variable)
+        {
+            bool Result = false;
+
+            if (!VariableNameExists(Variable.Name))
+            {
+                this.ReferencingVariables.Add(Variable);
+                Result = true;
+            }
+
+            return Result;
+        }
+        public bool AddVariable(EXEReferencingSetVariable Variable)
+        {
+            bool Result = false;
+
+            if (!VariableNameExists(Variable.Name))
+            {
+                this.SetReferencingVariables.Add(Variable);
+                Result = true;
+            }
+
+            return Result;
+        }
+
+        public bool VariableNameExists(String VariableName)
+        {
+            bool Result = false;
+            if (FindPrimitiveVariableByName(VariableName) != null)
+            {
+                Result = true;
+            }
+            else if (FindReferencingVariableByName(VariableName) != null)
+            {
+                Result = true;
+            }
+            else if (FindSetReferencingVariableByName(VariableName) != null)
+            {
+                Result = true;
+            }
+
+            return Result;
         }
 
         // SetUloh1 - this method is done. Do the same with two similar methods below it

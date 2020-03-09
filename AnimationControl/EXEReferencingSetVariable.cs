@@ -9,20 +9,15 @@ namespace AnimationControl
         public String ClassName { get; }
         private List<EXEReferencingVariable> ReferencingVariables;
 
-        public EXEReferencingSetVariable()
+        public EXEReferencingSetVariable(String Name, String Class)
         {
-            this.Name = "";
-            this.ClassName = "";
-            this.ReferencingVariables = null;
+            this.Name = Name;
+            this.ClassName = Class;
+            this.ReferencingVariables = new List<EXEReferencingVariable>(); ;
         }
 
         public void AddReferencingVariable(EXEReferencingVariable NewReferencingVariable)
         {
-            if (this.ReferencingVariables == null)
-            {
-                this.ReferencingVariables = new List<EXEReferencingVariable>();
-            }
-
             this.ReferencingVariables.Add(NewReferencingVariable);
         }
 

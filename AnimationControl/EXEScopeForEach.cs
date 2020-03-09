@@ -19,8 +19,10 @@ namespace AnimationControl
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
             Boolean Success = false;
-            
-            this.ReferencingVariables.Add(this.Iterator);
+
+            //this.ReferencingVariables.Add(this.Iterator);
+
+            throw new NotImplementedException();
             foreach (EXEReferencingVariable CurrentItem in this.Iterable.GetReferencingVariables())
             {
                 this.Iterator.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;

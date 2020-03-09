@@ -18,12 +18,12 @@ namespace AnimationControl.Tests
         public void FindPrimitiveVariableByNameTest_Normal_01()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("x", "15"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("y", "6"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("z", "-4"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("a", "\"ahoj\""));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("b", "\"nazdar\""));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "6"));
+            Scope.AddVariable(new EXEPrimitiveVariable("z", "-4"));
+            Scope.AddVariable(new EXEPrimitiveVariable("a", "\"ahoj\""));
+            Scope.AddVariable(new EXEPrimitiveVariable("b", "\"nazdar\""));
+            Scope.AddVariable(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
 
             EXEPrimitiveVariable SeekedVariable =  Scope.FindPrimitiveVariableByName("a");
             (String, String) ActualOutput = (SeekedVariable.Name, SeekedVariable.Value);
@@ -36,18 +36,18 @@ namespace AnimationControl.Tests
         public void FindPrimitiveVariableByNameTest_Normal_02()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("x", "15"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("y", "6"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("z", "-4"));
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "6"));
+            Scope.AddVariable(new EXEPrimitiveVariable("z", "-4"));
 
             EXEScope ScopeIn1 = new EXEScope();
-            ScopeIn1.PrimitiveVariables.Add(new EXEPrimitiveVariable("a", "\"ahoj\""));
-            ScopeIn1.PrimitiveVariables.Add(new EXEPrimitiveVariable("b", "\"nazdar\""));
-            ScopeIn1.PrimitiveVariables.Add(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
+            ScopeIn1.AddVariable(new EXEPrimitiveVariable("a", "\"ahoj\""));
+            ScopeIn1.AddVariable(new EXEPrimitiveVariable("b", "\"nazdar\""));
+            ScopeIn1.AddVariable(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
             Scope.SuperScope = ScopeIn1;
 
             EXEScope ScopeIn2 = new EXEScope();
-            ScopeIn2.PrimitiveVariables.Add(new EXEPrimitiveVariable("nejake_cislo", "59.59"));
+            ScopeIn2.AddVariable(new EXEPrimitiveVariable("nejake_cislo", "59.59"));
             ScopeIn1.SuperScope = ScopeIn2;
 
             EXEPrimitiveVariable SeekedVariable = Scope.FindPrimitiveVariableByName("nejake_cislo");
@@ -62,12 +62,12 @@ namespace AnimationControl.Tests
         public void FindPrimitiveVariableByNameTest_Bad_01()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("x", "15"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("y", "6"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("z", "-4"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("a", "\"ahoj\""));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("b", "\"nazdar\""));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "6"));
+            Scope.AddVariable(new EXEPrimitiveVariable("z", "-4"));
+            Scope.AddVariable(new EXEPrimitiveVariable("a", "\"ahoj\""));
+            Scope.AddVariable(new EXEPrimitiveVariable("b", "\"nazdar\""));
+            Scope.AddVariable(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
 
             EXEPrimitiveVariable SeekedVariable = Scope.FindPrimitiveVariableByName("neznama_premenna");
 
@@ -78,18 +78,18 @@ namespace AnimationControl.Tests
         public void FindPrimitiveVariableByNameTest_Bad_02()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("x", "15"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("y", "6"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("z", "-4"));
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "6"));
+            Scope.AddVariable(new EXEPrimitiveVariable("z", "-4"));
 
             EXEScope ScopeIn1 = new EXEScope();
-            ScopeIn1.PrimitiveVariables.Add(new EXEPrimitiveVariable("a", "\"ahoj\""));
-            ScopeIn1.PrimitiveVariables.Add(new EXEPrimitiveVariable("b", "\"nazdar\""));
-            ScopeIn1.PrimitiveVariables.Add(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
+            ScopeIn1.AddVariable(new EXEPrimitiveVariable("a", "\"ahoj\""));
+            ScopeIn1.AddVariable(new EXEPrimitiveVariable("b", "\"nazdar\""));
+            ScopeIn1.AddVariable(new EXEPrimitiveVariable("c", "\"caaaaaau\""));
             Scope.SuperScope = ScopeIn1;
 
             EXEScope ScopeIn2 = new EXEScope();
-            ScopeIn2.PrimitiveVariables.Add(new EXEPrimitiveVariable("nejaky_float", "59.59"));
+            ScopeIn2.AddVariable(new EXEPrimitiveVariable("nejaky_float", "59.59"));
             ScopeIn1.SuperScope = ScopeIn2;
 
             EXEPrimitiveVariable SeekedVariable = Scope.FindPrimitiveVariableByName("nejaky_integer");

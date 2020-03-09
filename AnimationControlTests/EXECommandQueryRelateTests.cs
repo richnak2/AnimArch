@@ -25,8 +25,8 @@ namespace AnimationControl.Tests
             Rel.CreateRelationship(Class1Inst.UniqueID, Class2Inst.UniqueID);
 
             EXEScope Scope = new EXEScope();
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("o", "Observer", Class1Inst.UniqueID));
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("s", "Subject", Class2Inst.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("o", "Observer", Class1Inst.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("s", "Subject", Class2Inst.UniqueID));
 
             //prepare the tested object
             EXECommandQueryRelate Command = new EXECommandQueryRelate("o", "s", Rel.RelationshipName, "Observer", "Subject");

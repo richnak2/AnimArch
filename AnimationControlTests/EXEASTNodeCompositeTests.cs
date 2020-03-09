@@ -13,9 +13,9 @@ namespace AnimationControl.Tests
         public void Evaluate_Normal_Bool_01()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("i", "0"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("count", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
+            Scope.AddVariable(new EXEPrimitiveVariable("i", "0"));
+            Scope.AddVariable(new EXEPrimitiveVariable("count", "15"));
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("and");
 
@@ -39,9 +39,9 @@ namespace AnimationControl.Tests
         public void Evaluate_Normal_Bool_02()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("Over", EXETypes.BooleanTrue));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("i", "0"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("count", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanTrue));
+            Scope.AddVariable(new EXEPrimitiveVariable("i", "0"));
+            Scope.AddVariable(new EXEPrimitiveVariable("count", "15"));
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("and");
 
@@ -65,9 +65,9 @@ namespace AnimationControl.Tests
         public void Evaluate_Normal_Bool_03()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("i", "15"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("count", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
+            Scope.AddVariable(new EXEPrimitiveVariable("i", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("count", "15"));
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("and");
 
@@ -184,8 +184,8 @@ namespace AnimationControl.Tests
         public void Evaluate_Normal_Int_03()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("x", "10"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("y", "4"));
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "10"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "4"));
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("*");
             AST1.AddOperand(new EXEASTNodeLeaf("x"));
@@ -206,9 +206,9 @@ namespace AnimationControl.Tests
         public void Evaluate_Normal_Int_04()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("x", "10"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("y", "4"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("z", "3"));
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "10"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "4"));
+            Scope.AddVariable(new EXEPrimitiveVariable("z", "3"));
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("-");
             AST1.AddOperand(new EXEASTNodeLeaf("x"));
@@ -232,8 +232,8 @@ namespace AnimationControl.Tests
         public void Evaluate_Normal_Real_01()
         {
             EXEScope Scope = new EXEScope();
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("x", "2.0"));
-            Scope.PrimitiveVariables.Add(new EXEPrimitiveVariable("y", "2.2"));
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "2.0"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "2.2"));
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("*");
             AST1.AddOperand(new EXEASTNodeLeaf("x"));

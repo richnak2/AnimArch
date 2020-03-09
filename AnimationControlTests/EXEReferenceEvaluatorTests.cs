@@ -26,7 +26,7 @@ namespace AnimationControl.Tests
             ClassInstance.SetAttribute("Nick", "\"Jano245\"");
 
             EXEScope Scope = new EXEScope();
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             String ActualOutput = Evaluator.EvaluateAttributeValue("new_user", "Nick", Scope, ExecutionSpace);
@@ -70,9 +70,9 @@ namespace AnimationControl.Tests
             ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
 
             EXEScope Scope = new EXEScope();
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             String ActualOutput = Evaluator.EvaluateAttributeValue("new_user2", "LastName", Scope, ExecutionSpace);
@@ -94,7 +94,7 @@ namespace AnimationControl.Tests
             ClassInstance.SetAttribute("Nick", "\"Jano245\"");
 
             EXEScope Scope = new EXEScope();
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             Evaluator.SetAttributeValue("new_user", "Nick", Scope, ExecutionSpace, "\"Jano69\"");
@@ -139,9 +139,9 @@ namespace AnimationControl.Tests
             ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
 
             EXEScope Scope = new EXEScope();
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
-            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             Evaluator.SetAttributeValue("new_user1", "FirstName", Scope, ExecutionSpace, "\"Ivan\"");
