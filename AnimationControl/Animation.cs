@@ -1,4 +1,6 @@
-﻿namespace AnimationControl
+﻿using System.Threading;
+
+namespace AnimationControl
 {
     class Animation
     {
@@ -34,6 +36,10 @@
             {
                 if (!ContinuousExecution)
                 {
+                    while (AllowedStepCount <= 0)
+                    {
+                        Monitor.Wait(StepCountLock);
+                    }
                     --AllowedStepCount;
                 }
             }
@@ -43,6 +49,7 @@
             lock (StepCountLock)
             {
                 ++AllowedStepCount;
+                Monitor.PulseAll(StepCountLock);
             }
         }
         public void ToggleContinuousExecution()
