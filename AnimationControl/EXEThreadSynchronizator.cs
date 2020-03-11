@@ -36,6 +36,7 @@ namespace AnimationControl
             lock (this.Syncer)
             {
                 ChangeQueue.Add(-1);
+                Monitor.PulseAll(this.Syncer);
             }
         }
         public void RequestStep()

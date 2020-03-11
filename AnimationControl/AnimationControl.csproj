@@ -66,6 +66,7 @@
     <Compile Include="EXEScopeForEach.cs" />
     <Compile Include="EXEScopeLoopWhile.cs" />
     <Compile Include="EXEScopeParallel.cs" />
+    <Compile Include="EXEThreadSynchronizator.cs" />
     <Compile Include="OALCall.cs" />
     <Compile Include="OALCodeBuilder.cs" />
     <Compile Include="EXEASTNode.cs" />
