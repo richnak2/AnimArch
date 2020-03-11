@@ -24,7 +24,7 @@ namespace AnimationControl.Tests
 
             lock (OverLocker)
             {
-                while (endedCount != 0)
+                while (endedCount != 3)
                 {
                     Monitor.Wait(OverLocker);
                 }
@@ -48,7 +48,7 @@ namespace AnimationControl.Tests
 
             lock (OverLocker)
             {
-                while (endedCount != 0)
+                while (endedCount != 3)
                 {
                     Monitor.Wait(OverLocker);
                 }
@@ -72,7 +72,7 @@ namespace AnimationControl.Tests
 
             lock (OverLocker)
             {
-                while (endedCount != 0)
+                while (endedCount != 3)
                 {
                     Monitor.Wait(OverLocker);
                 }
@@ -96,7 +96,7 @@ namespace AnimationControl.Tests
 
             lock (OverLocker)
             {
-                while (endedCount != 0)
+                while (endedCount != 3)
                 {
                     Monitor.Wait(OverLocker);
                 }
@@ -114,13 +114,13 @@ namespace AnimationControl.Tests
             string ActualResult = "";
             object OverLocker = new object();
             int endedCount = 0;
-            new Thread(() => { for (int i = 0; i < 1000000; i++) { Syncer.RequestStep(); lock (Locker) { ActualResult += "A"; } } lock (OverLocker) { endedCount++; Monitor.Pulse(OverLocker); } }).Start();
-            new Thread(() => { for (int i = 0; i < 1000000; i++) { Syncer.RequestStep(); lock (Locker) { ActualResult += "B"; } } lock (OverLocker) { endedCount++; Monitor.Pulse(OverLocker); } }).Start();
-            new Thread(() => { for (int i = 0; i < 1000000; i++) { Syncer.RequestStep(); lock (Locker) { ActualResult += "C"; } } lock (OverLocker) { endedCount++; Monitor.Pulse(OverLocker); } }).Start();
+            new Thread(() => { for (int i = 0; i < 100000; i++) { Console.Write("A" + i + "\n");  Syncer.RequestStep(); lock (Locker) { ActualResult += "A"; } } lock (OverLocker) { endedCount++; Monitor.Pulse(OverLocker); } }).Start();
+            new Thread(() => { for (int i = 0; i < 100000; i++) { Console.Write("B" + i + "\n");  Syncer.RequestStep(); lock (Locker) { ActualResult += "B"; } } lock (OverLocker) { endedCount++; Monitor.Pulse(OverLocker); } }).Start();
+            new Thread(() => { for (int i = 0; i < 100000; i++) { Console.Write("C" + i + "\n");  Syncer.RequestStep(); lock (Locker) { ActualResult += "C"; } } lock (OverLocker) { endedCount++; Monitor.Pulse(OverLocker); } }).Start();
 
             lock (OverLocker)
             {
-                while (endedCount != 0)
+                while (endedCount != 3)
                 {
                     Monitor.Wait(OverLocker);
                 }
