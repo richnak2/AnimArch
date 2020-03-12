@@ -33,8 +33,8 @@ namespace AnimationControl
 
             String ExeType = EXETypes.DetermineVariableType(null, AttributeName);
             if (!EXETypes.IsValidValue(ExeType, NewValue)) return false;
-            int result = ClassInstance.SetAttribute(AttributeName, NewValue);
-            return result == 0; 
+            return ClassInstance.SetAttribute(AttributeName, NewValue);
+
         }
     }
 }
