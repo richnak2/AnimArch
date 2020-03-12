@@ -51,11 +51,53 @@ namespace AnimationControl
         }
         public EXEReferencingVariable FindReferencingVariableByName(String Name)
         {
-            throw new NotImplementedException();        
+            EXEReferencingVariable Result = null;
+            EXEScope CurrentScope = this;
+
+            while (CurrentScope != null) {
+                foreach (EXEReferencingVariable CurrentVariable in CurrentScope.ReferencingVariables)
+                {
+                    if (String.Equals(CurrentVariable.Name, Name)){
+                        Result = CurrentVariable;
+                        break;
+                    }
+
+                }
+               
+                if (Result != null)
+                {
+                    break;
+                }
+
+                CurrentScope = CurrentScope.SuperScope;
+            }
+            return Result;
         }
         public EXEReferencingSetVariable FindSetReferencingVariableByName(String Name)
         {
-            throw new NotImplementedException();
+
+            EXEReferencingSetVariable Result = null;
+            EXEScope CurrentScope = this;
+
+            while (CurrentScope != null)
+            {
+                foreach (EXEReferencingSetVariable CurrentVariable in CurrentScope.SetReferencingVariables)
+                {
+                    if (String.Equals(CurrentVariable.Name, Name)){
+                        Result = CurrentVariable;
+                        break;
+                    }
+
+                }
+
+                if (Result != null)
+                {
+                    break;
+                }
+
+                CurrentScope = CurrentScope.SuperScope;
+            }
+            return Result;
         }
 
         public Boolean EvaluateCondition()

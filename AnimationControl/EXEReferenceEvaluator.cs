@@ -10,9 +10,12 @@ namespace AnimationControl
         // If this does not exist, return null
         // You will use EXEScope.FindReferencingVariableByName() method, but you need to implement it first
         // user.name
+
         public String EvaluateAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace)
         {
-            throw new NotImplementedException();
+            EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
+            CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
+            return ClassInstance.GetAttribute(AttributeName);
         }
 
         //SetUloh1
@@ -25,7 +28,13 @@ namespace AnimationControl
         // EXETypes.determineVariableType()
         public Boolean SetAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace, String NewValue)
         {
-            throw new NotImplementedException();
+            EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
+            CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
+
+            String ExeType = EXETypes.DetermineVariableType(null, AttributeName);
+            if (!EXETypes.IsValidValue(ExeType, NewValue)) return false;
+            int result = ClassInstance.SetAttribute(AttributeName, NewValue);
+            return result == 0; 
         }
     }
 }

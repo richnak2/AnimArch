@@ -146,7 +146,7 @@ namespace AnimationControl.Tests
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             Evaluator.SetAttributeValue("new_user1", "FirstName", Scope, ExecutionSpace, "\"Ivan\"");
 
-            String ActualOutput = ClassInstance1.GetAttribute("FírstName");
+            String ActualOutput = ClassInstance1.GetAttribute("FirstName");
 
             String ExpectedOutput = "\"Ivan\"";
 
