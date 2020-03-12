@@ -83,6 +83,258 @@ namespace AnimationControl.Tests
         }
 
         [TestMethod]
+        public void EvaluateAttributeValue_Normal_03()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            CDClassInstance ClassInstance4 = UserAccountClass.CreateClassInstance("");
+            ClassInstance4.SetAttribute("Nick", "\"PPP\"");
+            ClassInstance4.SetAttribute("FirstName", "\"Pepe\"");
+            ClassInstance4.SetAttribute("LastName", "\"Peen\"");
+            ClassInstance4.SetAttribute("Email", "\"pp@gmail.com\"");
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEScope SuperScope = new EXEScope();
+            SuperScope.ReferencingVariables.Add(new EXEReferencingVariable("new_user4", "UserAccount", ClassInstance4.UniqueID));
+            Scope.SuperScope = SuperScope;
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Email", Scope, ExecutionSpace);
+
+            String ExpectedOutput = "\"pp@gmail.com\"";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+
+        [TestMethod]
+        public void EvaluateAttributeValue_Bad_01()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "LastName", Scope, ExecutionSpace);
+
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void EvaluateAttributeValue_Bad_02()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user3", "Age", Scope, ExecutionSpace);
+
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void EvaluateAttributeValue_Bad_03()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            CDClassInstance ClassInstance4 = UserAccountClass.CreateClassInstance("");
+            ClassInstance4.SetAttribute("Nick", "\"PPP\"");
+            ClassInstance4.SetAttribute("FirstName", "\"Pepe\"");
+            ClassInstance4.SetAttribute("LastName", "\"Peen\"");
+            ClassInstance4.SetAttribute("Email", "\"pp@gmail.com\"");
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEScope SuperScope = new EXEScope();
+            SuperScope.ReferencingVariables.Add(new EXEReferencingVariable("new_user4", "UserAccount", ClassInstance4.UniqueID));
+            Scope.SuperScope = SuperScope;
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user5", "Email", Scope, ExecutionSpace);
+
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
+        public void EvaluateAttributeValue_Bad_04()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            CDClassInstance ClassInstance4 = UserAccountClass.CreateClassInstance("");
+            ClassInstance4.SetAttribute("Nick", "\"PPP\"");
+            ClassInstance4.SetAttribute("FirstName", "\"Pepe\"");
+            ClassInstance4.SetAttribute("LastName", "\"Peen\"");
+            ClassInstance4.SetAttribute("Email", "\"pp@gmail.com\"");
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEScope SuperScope = new EXEScope();
+            SuperScope.ReferencingVariables.Add(new EXEReferencingVariable("new_user4", "UserAccount", ClassInstance4.UniqueID));
+            Scope.SuperScope = SuperScope;
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Age", Scope, ExecutionSpace);
+
+            Assert.IsNull(ActualOutput);
+        }
+
+        [TestMethod]
         public void SetAttributeValue_Normal_01()
         {
             CDClassPool ExecutionSpace = new CDClassPool();

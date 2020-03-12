@@ -14,7 +14,15 @@ namespace AnimationControl
         public String EvaluateAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace)
         {
             EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
+            if (ReferencingVariable == null)
+            {
+                return null;
+            }
             CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
+            if (ClassInstance == null)
+            {
+                return null;
+            }
             return ClassInstance.GetAttribute(AttributeName);
         }
 
@@ -32,7 +40,10 @@ namespace AnimationControl
             CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
 
             String ExeType = EXETypes.DetermineVariableType(null, AttributeName);
-            if (!EXETypes.IsValidValue(ExeType, NewValue)) return false;
+            if (!EXETypes.IsValidValue(ExeType, NewValue))
+            {
+                return false;
+            }
             return ClassInstance.SetAttribute(AttributeName, NewValue);
 
         }
