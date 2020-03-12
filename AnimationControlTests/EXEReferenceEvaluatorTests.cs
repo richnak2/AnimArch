@@ -404,5 +404,241 @@ namespace AnimationControl.Tests
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
+        [TestMethod]
+        public void SetAttributeValue_Bad_01()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            List<(String, String, String, String)> ExpectedState =
+                new List<(string, string, string, string)>(new (string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"))
+            });
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            bool Success = Evaluator.SetAttributeValue("new_user4", "FirstName", Scope, ExecutionSpace, "\"Ivan\"");
+
+            List<(String, String, String, String)> ActualState =
+                new List<(string, string, string, string)>(new (string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"))
+            });
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEqual(ExpectedState, ActualState);
+        }
+        [TestMethod]
+        public void SetAttributeValue_Bad_02()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            List<(String, String, String, String)> ExpectedState =
+                new List<(string, string, string, string)>(new (string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"))
+            });
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            bool Success = Evaluator.SetAttributeValue("new_user3", "Age", Scope, ExecutionSpace, "\"Ivan\"");
+
+            List<(String, String, String, String)> ActualState =
+                new List<(string, string, string, string)>(new (string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"))
+            });
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEqual(ExpectedState, ActualState);
+        }
+        [TestMethod]
+        public void SetAttributeValue_Bad_03()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+
+            List<(String, String, String, String)> ExpectedState =
+                new List<(string, string, string, string)>(new (string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"))
+            });
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            bool Success = Evaluator.SetAttributeValue("new_user3", "Nick", Scope, ExecutionSpace, "52");
+
+            List<(String, String, String, String)> ActualState =
+                new List<(string, string, string, string)>(new (string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"))
+            });
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEqual(ExpectedState, ActualState);
+        }
+        [TestMethod]
+        public void SetAttributeValue_Bad_04()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass GameClass = ExecutionSpace.SpawnClass("Game");
+            GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
+            GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
+            UserAccountClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
+
+            CDClassInstance ClassInstance1 = UserAccountClass.CreateClassInstance("x");
+            ClassInstance1.SetAttribute("Nick", "\"Jano245\"");
+            ClassInstance1.SetAttribute("FirstName", "\"Jano\"");
+            ClassInstance1.SetAttribute("LastName", "\"Podnozka\"");
+            ClassInstance1.SetAttribute("Email", "\"jano.podnozka17@gmail.com\"");
+            ClassInstance1.SetAttribute("Age", "22");
+
+            CDClassInstance ClassInstance2 = UserAccountClass.CreateClassInstance("y");
+            ClassInstance2.SetAttribute("Nick", "\"sexica2521\"");
+            ClassInstance2.SetAttribute("FirstName", "\"Maria\"");
+            ClassInstance2.SetAttribute("LastName", "\"Cirova\"");
+            ClassInstance2.SetAttribute("Email", "\"majka.cajka@azet.sk\"");
+            ClassInstance1.SetAttribute("Age", "17");
+
+            CDClassInstance ClassInstance3 = UserAccountClass.CreateClassInstance("z");
+            ClassInstance3.SetAttribute("Nick", "\"MedievalCollectibles\"");
+            ClassInstance3.SetAttribute("FirstName", "\"Anne\"");
+            ClassInstance3.SetAttribute("LastName", "\"Vazziereth\"");
+            ClassInstance3.SetAttribute("Email", "\"medieval.collectibles@gmail.com\"");
+            ClassInstance1.SetAttribute("Age", "34");
+
+            List<(String, String, String, String, String)> ExpectedState =
+                new List<(string, string, string, string, string)>(new (string, string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email"),ClassInstance1.GetAttribute("Age")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email"),ClassInstance2.GetAttribute("Age")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"),ClassInstance3.GetAttribute("Age"))
+            });
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user1", "UserAccount", ClassInstance1.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user2", "UserAccount", ClassInstance2.UniqueID));
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            bool Success = Evaluator.SetAttributeValue("new_user3", "Age", Scope, ExecutionSpace, EXETypes.BooleanFalse);
+
+            List<(String, String, String, String, String)> ActualState =
+                new List<(string, string, string, string, string)>(new (string, string, string, string, string)[] {
+                    (ClassInstance1.GetAttribute("Nick"), ClassInstance1.GetAttribute("FirstName"),ClassInstance1.GetAttribute("LastName"),ClassInstance1.GetAttribute("Email"),ClassInstance1.GetAttribute("Age")),
+                    (ClassInstance2.GetAttribute("Nick"), ClassInstance2.GetAttribute("FirstName"),ClassInstance2.GetAttribute("LastName"),ClassInstance2.GetAttribute("Email"),ClassInstance2.GetAttribute("Age")),
+                    (ClassInstance3.GetAttribute("Nick"), ClassInstance3.GetAttribute("FirstName"),ClassInstance3.GetAttribute("LastName"),ClassInstance3.GetAttribute("Email"),ClassInstance3.GetAttribute("Age"))
+            });
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEqual(ExpectedState, ActualState);
+        }
     }
 }

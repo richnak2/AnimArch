@@ -96,6 +96,5 @@ namespace AnimationControl.Tests
 
             Assert.IsNull(SeekedVariable);
         }
-
     }
 }

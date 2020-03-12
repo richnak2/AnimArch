@@ -39,6 +39,7 @@ namespace AnimationControl
             EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
             CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
 
+            // Posuvas zly argument metode DetermineVariableType
             String ExeType = EXETypes.DetermineVariableType(null, AttributeName);
             if (!EXETypes.IsValidValue(ExeType, NewValue))
             {
