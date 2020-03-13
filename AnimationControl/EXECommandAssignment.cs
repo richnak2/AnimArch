@@ -2,7 +2,7 @@
 
 namespace AnimationControl
 {
-    class EXECommandAssignment : EXECommand
+    public class EXECommandAssignment : EXECommand
     {
         private String VariableName { get; }
         private String AttributeName { get; }

@@ -23,6 +23,23 @@ namespace AnimationControl
             this.Commands = new List<EXECommand>();
         }
 
+        public Dictionary<String, String> GetStateDictRecursive()
+        {
+            Dictionary<String, String> Result = new Dictionary<String, String>();
+            EXEScope CurrentScope = this;
+            while (CurrentScope != null)
+            {
+                foreach (EXEPrimitiveVariable CurrentVariable in CurrentScope.PrimitiveVariables)
+                {
+                    Result[CurrentVariable.Name] = CurrentVariable.Value;
+                }
+
+                CurrentScope = CurrentScope.SuperScope;
+            }
+
+            return Result;
+        }
+
         public bool AddVariable(EXEPrimitiveVariable Variable)
         {
             bool Result = false;
