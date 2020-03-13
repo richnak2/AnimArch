@@ -105,6 +105,15 @@ namespace AnimationControl
 
             return Result;
         }
+        public EXEReferenceHandle FindReferenceHandleByName(String Name)
+        {
+            EXEReferenceHandle Result = FindReferencingVariableByName(Name);
+            if (Result == null)
+            {
+                Result = FindSetReferencingVariableByName(Name);
+            }
+            return Result;
+        }
         public EXEReferencingVariable FindReferencingVariableByName(String Name)
         {
             throw new NotImplementedException();        
@@ -150,6 +159,21 @@ namespace AnimationControl
                     Variable.ReferencedInstanceId = -1;
                 }
             }
+            foreach (EXEReferencingSetVariable SetVariable in this.SetReferencingVariables)
+            {
+                if (SetVariable.ClassName != ClassName)
+                {
+                    continue;
+                }
+
+                foreach (EXEReferencingVariable Variable in SetVariable.GetReferencingVariables())
+                {
+                    if (Variable.ReferencedInstanceId == InstanceID)
+                    {
+                        Variable.ReferencedInstanceId = -1;
+                    }
+                }
+            }
             if (this.SuperScope != null)
             {
                 Result &= this.SuperScope.UnsetReferencingVariables(ClassName, InstanceID);
@@ -185,6 +209,26 @@ namespace AnimationControl
         public int VariableSetReferencingCount()
         {
             return this.SetReferencingVariables.Count;
+        }
+
+        public Boolean DestroyReferencingVariable(String VariableName)
+        {
+            Boolean Result = false;
+
+            int i = 0;
+            foreach (EXEReferencingVariable CurrentVariable in this.ReferencingVariables)
+            {
+                if (String.Equals(CurrentVariable.Name, VariableName))
+                {
+                    this.ReferencingVariables.RemoveAt(i);
+                    Result = true;
+                    break;
+                }
+
+                i++;
+            }
+
+            return Result;
         }
 
         //"Scope" param is ignored here, because this class is a scope

@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    public class EXEReferencingVariable
+    public class EXEReferencingVariable : EXEReferenceHandle
     {
-        public String Name { get; }
-        public String ClassName { get; }
         public long ReferencedInstanceId { get; set; }
 
-        public EXEReferencingVariable(String Name, String ClassName, long ReferencedInstanceId)
+        public EXEReferencingVariable(String Name, String ClassName, long ReferencedInstanceId) : base(Name, ClassName)
         {
-            this.Name = Name;
-            this.ClassName = ClassName;
             this.ReferencedInstanceId = ReferencedInstanceId;
         }
 
@@ -28,6 +24,10 @@ namespace AnimationControl
         public CDClassInstance RetrieveReferencedClassInstance(CDClassPool ExecutionSpace)
         {
             throw new NotImplementedException();
+        }
+        new public List<long> GetReferencedIds()
+        {
+            return new List<long>(new long[] { ReferencedInstanceId }).FindAll(x => x >= 0).ToList();
         }
     }
 }

@@ -18,20 +18,6 @@ namespace AnimationControl
             this.RelationshipName = Name;
             this.InstanceRelationships = new List<(long, long)>();
         }
-
-        public Boolean InstanceRelationshipExists(long Instance1Id, long Instance2Id)
-        {
-            Boolean Result = false;
-            foreach ((long, long) Tupple in this.InstanceRelationships)
-            {
-                if (Tupple == (Instance1Id, Instance2Id) || Tupple == (Instance2Id, Instance1Id))
-                {
-                    Result = true;
-                    break;
-                }
-            }
-            return Result;
-        }
         //SetUloh3
         //return list of all ids related to given id
         //do not forget that relationships are bi-directional
@@ -39,7 +25,19 @@ namespace AnimationControl
         //create unit tests for this one (keep the naming convention as it is in other tests). Do not forget about edge cases
         public List<long> GetRelatedInstaceIds(long Id)
         {
-            throw new NotImplementedException();
+            List<long> Result = new List<long>();
+            foreach ((long, long) IdTupple in this.InstanceRelationships)
+            {
+                if (IdTupple.Item1 == Id)
+                {
+                    Result.Add(IdTupple.Item2);
+                }
+                else if (IdTupple.Item2 == Id)
+                {
+                    Result.Add(IdTupple.Item1);
+                }
+            }
+            return Result;
         }
         public Boolean CreateRelationship(long Instance1Id, long Instance2Id)
         {
@@ -57,7 +55,35 @@ namespace AnimationControl
 
             return Result;
         }
+        public Boolean InstanceRelationshipExists(long Instance1Id, long Instance2Id)
+        {
+            Boolean Result = false;
+            foreach ((long, long) Tupple in this.InstanceRelationships)
+            {
+                if (Tupple == (Instance1Id, Instance2Id) || Tupple == (Instance2Id, Instance1Id))
+                {
+                    Result = true;
+                    break;
+                }
+            }
+            return Result;
+        }
+        public Boolean DestroyRelationship(long Instance1Id, long Instance2Id)
+        {
+            Boolean Result = false;
 
+            for (int i = 0; i < this.InstanceRelationships.Count; i++)
+            {
+                if ((Instance1Id, Instance2Id) == this.InstanceRelationships[i] || (Instance2Id, Instance1Id) == this.InstanceRelationships[i])
+                {
+                    this.InstanceRelationships.RemoveAt(i);
+                    Result = true;
+                    break;
+                }
+            }
+
+            return Result;
+        }
         public void ClearRelationships()
         {
             this.InstanceRelationships.Clear();

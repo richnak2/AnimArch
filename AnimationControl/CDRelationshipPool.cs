@@ -22,19 +22,83 @@ namespace AnimationControl
 
             return NewRelationship;
         }
-        //SetUloh3
-        //Relationships are bi-directional -> do not mind the order of classes
-        public Boolean RelationshipExists(String Class1Name, String Class2Name)
+        public CDRelationship GetRelationship(String RelationshipName, String Class1, String Class2)
         {
-            throw new NotImplementedException();
+            CDRelationship Result = null;
+            foreach (CDRelationship Relationship in this.RelationshipPool)
+            {
+                if (Relationship.RelationshipName == RelationshipName && (Relationship.FromClass == Class1 && Relationship.ToClass == Class2) || (Relationship.FromClass == Class2 && Relationship.ToClass == Class1))
+                {
+                    Result = Relationship;
+                    break;
+                }
+            }
+            return Result;
         }
-        //SetUloh3
-        // use previous method to check if that relationship exists at all
-        // if it does not, return null
-        // create unit tests for this one (keep the naming convention as it is in other tests)
+        public CDRelationship GetRelationshipByName(String RelationshipName)
+        {
+            CDRelationship Result = null;
+            foreach (CDRelationship Relationship in this.RelationshipPool)
+            {
+                if (Relationship.RelationshipName == RelationshipName)
+                {
+                    Result = Relationship;
+                    break;
+                }
+            }
+            return Result;
+        }
         public CDRelationship GetRelationshipByClasses(String Class1, String Class2)
         {
-            throw new NotImplementedException();
+            CDRelationship Result = null;
+            foreach (CDRelationship Relationship in this.RelationshipPool)
+            {
+                if ((Relationship.FromClass == Class1 && Relationship.ToClass == Class2) || (Relationship.FromClass == Class2 && Relationship.ToClass == Class1))
+                {
+                    Result = Relationship;
+                    break;
+                }
+            }
+            return Result;
+        }
+        public Boolean RelationshipExists(String RelationshipName, String Class1, String Class2)
+        {
+            Boolean Result = false;
+            foreach (CDRelationship Relationship in this.RelationshipPool)
+            {
+                if (Relationship.RelationshipName == RelationshipName && (Relationship.FromClass == Class1 && Relationship.ToClass == Class2) || (Relationship.FromClass == Class2 && Relationship.ToClass == Class1))
+                {
+                    Result = true;
+                    break;
+                }
+            }
+            return Result;
+        }
+        public Boolean RelationshipExistsByName(String RelationshipName)
+        {
+            Boolean Result = false;
+            foreach (CDRelationship Relationship in this.RelationshipPool)
+            {
+                if (Relationship.RelationshipName == RelationshipName)
+                {
+                    Result = true;
+                    break;
+                }
+            }
+            return Result;
+        }
+        public Boolean RelationshipExistsByClasses(String Class1, String Class2)
+        {
+            Boolean Result = false;
+            foreach (CDRelationship Relationship in this.RelationshipPool)
+            {
+                if ((Relationship.FromClass == Class1 && Relationship.ToClass == Class2) || (Relationship.FromClass == Class2 && Relationship.ToClass == Class1))
+                {
+                    Result = true;
+                    break;
+                }
+            }
+            return Result;
         }
     }
 }

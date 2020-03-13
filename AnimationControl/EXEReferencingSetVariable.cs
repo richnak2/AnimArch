@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AnimationControl
 {
-    public class EXEReferencingSetVariable
+    public class EXEReferencingSetVariable : EXEReferenceHandle
     {
-        public String Name { get; }
-        public String ClassName { get; }
         private List<EXEReferencingVariable> ReferencingVariables;
-
-        public EXEReferencingSetVariable(String Name, String Class)
+        public EXEReferencingSetVariable(String Name, String ClassName) : base(Name, ClassName)
         {
-            this.Name = Name;
-            this.ClassName = Class;
             this.ReferencingVariables = new List<EXEReferencingVariable>(); ;
         }
 
@@ -24,6 +20,11 @@ namespace AnimationControl
         public List<EXEReferencingVariable> GetReferencingVariables()
         {
             return this.ReferencingVariables;
+        }
+
+        new public List<long> GetReferencedIds()
+        {
+            return this.ReferencingVariables.Select(x => { return x.ReferencedInstanceId; }).ToList().FindAll(x => x >= 0).ToList();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace AnimationControl.Tests
             CDRelationship Rel = RelPool.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = RelPool.RelationshipExists("Fortress", "Soldier");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Fortress", "Soldier");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
@@ -23,7 +23,7 @@ namespace AnimationControl.Tests
             CDRelationship Rel = RelPool.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = RelPool.RelationshipExists("Soldier", "Fortress");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Soldier", "Fortress");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
@@ -33,7 +33,7 @@ namespace AnimationControl.Tests
             CDRelationship Rel = RelPool.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = RelPool.RelationshipExists("Fortress", "Soldier");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Fortress", "Soldier");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
@@ -43,7 +43,7 @@ namespace AnimationControl.Tests
             CDRelationship Rel = RelPool.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = RelPool.RelationshipExists("Soldier", "Fortress");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Soldier", "Fortress");
             Assert.IsTrue(ActualResult);
         }
         public void RelationshipExists_Normal_05()
@@ -53,7 +53,7 @@ namespace AnimationControl.Tests
             CDRelationship Rel2 = RelPool.SpawnRelationship("Shield", "Soldier");
             CDRelationship Rel3 = RelPool.SpawnRelationship("Sword", "Soldier");
 
-            Boolean ActualResult = RelPool.RelationshipExists("Sword", "Soldier");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Sword", "Soldier");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
@@ -64,7 +64,7 @@ namespace AnimationControl.Tests
             CDRelationship Rel2 = RelPool.SpawnRelationship("Shield", "Soldier");
             CDRelationship Rel3 = RelPool.SpawnRelationship("Sword", "Soldier");
 
-            Boolean ActualResult = RelPool.RelationshipExists("Soldier", "Fortress");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Soldier", "Fortress");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
@@ -72,7 +72,7 @@ namespace AnimationControl.Tests
         {
             CDRelationshipPool RelPool = new CDRelationshipPool();
 
-            Boolean ActualResult = RelPool.RelationshipExists("Fortress", "Soldier");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Fortress", "Soldier");
             Assert.IsFalse(ActualResult);
         }
         [TestMethod]
@@ -81,7 +81,7 @@ namespace AnimationControl.Tests
             CDRelationshipPool RelPool = new CDRelationshipPool();
             RelPool.SpawnRelationship("Fortress", "Soldier");
 
-            Boolean ActualResult = RelPool.RelationshipExists("Fortress", "Sword");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Fortress", "Sword");
             Assert.IsFalse(ActualResult);
         }
         [TestMethod]
@@ -92,7 +92,7 @@ namespace AnimationControl.Tests
             CDRelationship Rel2 = RelPool.SpawnRelationship("Shield", "Soldier");
             CDRelationship Rel3 = RelPool.SpawnRelationship("Sword", "Soldier");
 
-            Boolean ActualResult = RelPool.RelationshipExists("Fortress", "Sword");
+            Boolean ActualResult = RelPool.RelationshipExistsByClasses("Fortress", "Sword");
             Assert.IsFalse(ActualResult);
         }
     }
