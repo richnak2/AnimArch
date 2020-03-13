@@ -8,13 +8,13 @@ namespace AnimationControl
 {
     class EXEScopeForEach : EXEScope
     {
-        public EXEReferencingVariable Iterator { get; set; }
-        public EXEReferencingSetVariable Iterable { get; set; }
+        public String IteratorName { get; set; }
+        public String IterableName { get; set; }
 
-        public EXEScopeForEach()
+        public EXEScopeForEach(String Iterator, String Iterable)
         {
-            this.Iterator = null;
-            this.Iterable = null;
+            this.IteratorName = Iterator;
+            this.IterableName = Iterable;
         }
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
@@ -23,7 +23,7 @@ namespace AnimationControl
             //this.ReferencingVariables.Add(this.Iterator);
 
             throw new NotImplementedException();
-            foreach (EXEReferencingVariable CurrentItem in this.Iterable.GetReferencingVariables())
+            /*foreach (EXEReferencingVariable CurrentItem in this.Iterable.GetReferencingVariables())
             {
                 this.Iterator.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
@@ -34,7 +34,7 @@ namespace AnimationControl
                 }
             }
 
-            return Success;
+            return Success;*/
         }
     }
 }
