@@ -142,6 +142,37 @@ namespace AnimationControlTests
             CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
         }
         [TestMethod]
+        public void Execute_Normal_Int_05()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+            EXEScope Scope = new EXEScope();
+
+            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("-");
+            AssignedExpression.AddOperand(new EXEASTNodeLeaf("25"));
+            AssignedExpression.AddOperand(new EXEASTNodeLeaf("50"));
+            
+            EXECommandAssignment AssignCommand1 = new EXECommandAssignment("x", AssignedExpression);
+            EXECommandAssignment AssignCommand2 = new EXECommandAssignment("y", new EXEASTNodeLeaf("0"));
+            EXECommandAssignment AssignCommand3 = new EXECommandAssignment("z", new EXEASTNodeLeaf("1"));
+
+            Boolean Success1 = AssignCommand1.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success2 = AssignCommand2.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success3 = AssignCommand3.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
+                {"x","-25"},
+                {"y","0"},
+                {"z","1"}
+            };
+            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+
+            Assert.IsTrue(Success1);
+            Assert.IsTrue(Success2);
+            Assert.IsTrue(Success3);
+            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+        }
+        [TestMethod]
         public void Execute_Normal_Bool_01()
         {
             CDClassPool ExecutionSpace = new CDClassPool();

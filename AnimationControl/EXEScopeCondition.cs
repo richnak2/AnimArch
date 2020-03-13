@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    class EXEScopeCondition : EXEScope
+    public class EXEScopeCondition : EXEScope
     {
         public EXEASTNode Condition { get; set; }
         private List<EXEScopeCondition> ElifScopes;
@@ -30,9 +30,11 @@ namespace AnimationControl
         }
 
         // should evaluate to true only if base "if" is true
-        new public Boolean EvaluateCondition()
+        public Boolean EvaluateCondition(EXEScope Scope, CDClassPool ExecutionSpace)
         {
-            throw new NotImplementedException();
+            String Result = this.Condition.Evaluate(Scope, ExecutionSpace);
+
+            return EXETypes.BooleanTrue.Equals(Result) ? true : false;
         }
 
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
