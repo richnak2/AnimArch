@@ -53,13 +53,16 @@ namespace AnimationControl
                 return Result;
             }
 
-            foreach(EXEScopeCondition CurrentElif in this.ElifScopes)
+            if (this.ElifScopes != null)
             {
-                if (CurrentElif.EvaluateCondition())
+                foreach (EXEScopeCondition CurrentElif in this.ElifScopes)
                 {
-                    Result = CurrentElif.Execute(ExecutionSpace, RelationshipSpace, CurrentElif);
-                    AScopeWasExecuted = true;
-                    break;
+                    if (CurrentElif.EvaluateCondition())
+                    {
+                        Result = CurrentElif.Execute(ExecutionSpace, RelationshipSpace, CurrentElif);
+                        AScopeWasExecuted = true;
+                        break;
+                    }
                 }
             }
 
@@ -68,7 +71,10 @@ namespace AnimationControl
                 return Result;
             }
 
-            Result = ElseScope.Execute(ExecutionSpace, RelationshipSpace, ElseScope);
+            if (this.ElseScope != null)
+            {
+                Result = this.ElseScope.Execute(ExecutionSpace, RelationshipSpace, ElseScope);
+            }
 
             return Result;
         }
