@@ -19,6 +19,15 @@ namespace AnimationControl
             //this.AST.PrintPretty("", false);
             throw new NotImplementedException();
         }
+
+        public Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        {
+            Animation.AccessInstanceDatabase();
+            Boolean Success = this.Execute(Animation, Scope);
+            Animation.LeaveInstanceDatabase();
+            return Success;
+        }
+
         public Boolean Execute(Animation Animation, EXEScope Scope)
         {
             throw new NotImplementedException();

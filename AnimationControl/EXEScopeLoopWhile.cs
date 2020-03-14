@@ -25,10 +25,14 @@ namespace AnimationControl
         new public Boolean Execute(Animation Animation , EXEScope Scope)
         {
             Boolean Success = true;
+            this.Animation = Animation;
 
-            while (this.EvaluateCondition(Scope, Animation.ExecutionSpace))
+            Animation.AccessInstanceDatabase();
+            Boolean ConditionResult = this.EvaluateCondition(Scope, Animation.ExecutionSpace);
+            Animation.LeaveInstanceDatabase();
+            while (ConditionResult)
             {
-                Success = base.Execute(Animation, this);
+                Success = base.SynchronizedExecute(Animation, this);
                 if (!Success)
                 {
                     break;

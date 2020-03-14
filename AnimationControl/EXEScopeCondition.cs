@@ -39,12 +39,16 @@ namespace AnimationControl
 
         new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
+            this.Animation = Animation;
             Boolean Result = true;
             Boolean AScopeWasExecuted = false;
 
-            if (this.EvaluateCondition(Scope, Animation.ExecutionSpace))
+            Animation.AccessInstanceDatabase();
+            Boolean IfConditionResult = this.EvaluateCondition(Scope, Animation.ExecutionSpace);
+            Animation.LeaveInstanceDatabase();
+            if (IfConditionResult)
             {
-                Result = base.Execute(Animation, this);
+                Result = base.SynchronizedExecute(Animation, this);
                 AScopeWasExecuted = true;
             }
 
@@ -57,9 +61,12 @@ namespace AnimationControl
             {
                 foreach (EXEScopeCondition CurrentElif in this.ElifScopes)
                 {
-                    if (CurrentElif.EvaluateCondition(Scope, Animation.ExecutionSpace))
+                    Animation.AccessInstanceDatabase();
+                    Boolean ElifConditionResult = CurrentElif.EvaluateCondition(Scope, Animation.ExecutionSpace);
+                    Animation.LeaveInstanceDatabase();
+                    if (ElifConditionResult)
                     {
-                        Result = CurrentElif.Execute(Animation, CurrentElif);
+                        Result = CurrentElif.SynchronizedExecute(Animation, CurrentElif);
                         AScopeWasExecuted = true;
                         break;
                     }
@@ -73,7 +80,7 @@ namespace AnimationControl
 
             if (this.ElseScope != null)
             {
-                Result = this.ElseScope.Execute(Animation, ElseScope);
+                Result = this.ElseScope.SynchronizedExecute(Animation, ElseScope);
             }
 
             return Result;

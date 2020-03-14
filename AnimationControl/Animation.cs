@@ -6,13 +6,16 @@ namespace AnimationControl
     {
         public CDClassPool ExecutionSpace { get; }
         public CDRelationshipPool RelationshipSpace { get; }
+        private bool InDatabase;
+        private readonly object InstanceDatabaseLock = new object();
+
         public EXEScope SuperScope { get; }
         private int AllowedStepCount { get; set; }
         private bool ContinuousExecution { get; set; }
 
         private readonly object StepCountLock = new object();
 
-        public readonly EXEThreadSynchronizator ThreadSyncer = new EXEThreadSynchronizator();
+        public EXEThreadSynchronizator ThreadSyncer { get; }
         public Animation()
         {
             this.ExecutionSpace = new CDClassPool();
@@ -21,8 +24,30 @@ namespace AnimationControl
 
             this.AllowedStepCount = int.MaxValue;
             this.ContinuousExecution = true;
+            this.ThreadSyncer = new EXEThreadSynchronizator(this);
+
+            this.InDatabase = false;
         }
 
+        public void AccessInstanceDatabase()
+        {
+            lock (this.InstanceDatabaseLock)
+            {
+                while (this.InDatabase)
+                {
+                    Monitor.Wait(this.InstanceDatabaseLock);
+                }
+                this.InDatabase = true;
+            }
+        }
+        public void LeaveInstanceDatabase()
+        {
+            lock (this.InstanceDatabaseLock)
+            {
+                Monitor.PulseAll(this.InstanceDatabaseLock);
+                this.InDatabase = false;
+            }
+        }
         public bool Execute()
         {
             bool Result = false;

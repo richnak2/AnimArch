@@ -18,43 +18,50 @@ namespace AnimationControl
         }
         new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
+            this.Animation = Animation;
+            Animation.AccessInstanceDatabase();
+
             EXEReferencingVariable IteratorVariable = Scope.FindReferencingVariableByName(this.IteratorName);
             EXEReferencingSetVariable IterableVariable = Scope.FindSetReferencingVariableByName(this.IterableName);
 
+            Boolean Success = true;
+
             // We cannot iterate over not existing reference set
-            if (IterableVariable == null)
+            if (Success & IterableVariable == null)
             {
-                return false;
+                Success = false;
             }
 
             // If iterator already exists and its class does not match the iterable class, we cannot do this
-            if (IteratorVariable != null && !IteratorVariable.ClassName.Equals(IterableVariable.ClassName))
+            if (Success & IteratorVariable != null && !IteratorVariable.ClassName.Equals(IterableVariable.ClassName))
             {
-                return false;
+                Success = false;
             }
 
             // If iterator name is already taken for another variable, we quit again. Otherwise we create the iterator variable
-            if (IteratorVariable == null)
+            if (Success & IteratorVariable == null)
             {
                 Boolean IteratorCreationSuccess = Scope.AddVariable(new EXEReferencingVariable(this.IteratorName, IterableVariable.ClassName, -1));
                 if (!IteratorCreationSuccess)
                 {
-                    return false;
+                    Success = false;
                 }
             }
 
-
-            Boolean Success = true;
-            foreach (EXEReferencingVariable CurrentItem in IterableVariable.GetReferencingVariables())
+            if (Success)
             {
-                IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
-
-                Success = base.Execute(Animation, this);
-                if (!Success)
+                foreach (EXEReferencingVariable CurrentItem in IterableVariable.GetReferencingVariables())
                 {
-                    break;
+                    IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
+
+                    Success = base.SynchronizedExecute(Animation, this);
+                    if (!Success)
+                    {
+                        break;
+                    }
                 }
             }
+            Animation.LeaveInstanceDatabase();
 
             return Success;
         }

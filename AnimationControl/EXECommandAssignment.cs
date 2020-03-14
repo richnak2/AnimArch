@@ -23,6 +23,7 @@ namespace AnimationControl
 
         new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
+
             Boolean Result = false;
 
             String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);

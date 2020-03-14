@@ -14,7 +14,7 @@ namespace AnimationControl
 
         public String OALCode;
 
-        private Animation Animation;
+        public Animation Animation;
 
         public EXEScope()
         {
@@ -255,7 +255,7 @@ namespace AnimationControl
             Boolean Success = false;
             foreach(EXECommand Command in this.Commands)
             {
-                Success = Command.Execute(Animation, this);
+                Success = Command.SynchronizedExecute(Animation, this);
                 if (!Success)
                 {
                     break;
@@ -264,7 +264,11 @@ namespace AnimationControl
 
             return Success;
         }
-
+        new public Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        {
+            Boolean Success = this.Execute(Animation, Scope);
+            return Success;
+        }
         public void RequestNextStep()
         {
             this.Animation.RequestNextStep();

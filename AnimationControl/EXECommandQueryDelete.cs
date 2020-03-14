@@ -13,6 +13,7 @@ namespace AnimationControl
 
         new public bool Execute(Animation Animation, EXEScope Scope)
         {
+
             bool Result = false;
             EXEReferencingVariable Variable = Scope.FindReferencingVariableByName(this.VariableName);
             if (Variable != null)

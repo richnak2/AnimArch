@@ -14,7 +14,9 @@ namespace AnimationControl
         private int InLockCount { get; set; }
         private Boolean Blocked { get; set; }
         private int Change { get; set; }
-        public EXEThreadSynchronizator()
+
+        private Animation Animation { get; }
+        public EXEThreadSynchronizator(Animation Animation)
         {
             this.Syncer = new object();
             this.ThreadCount = 0;
@@ -22,6 +24,7 @@ namespace AnimationControl
             this.InLockCount = 0;
             this.Blocked = false;
             this.Change = 0;
+            this.Animation = Animation;
         }
 
         public void RegisterThread(uint count)
@@ -66,6 +69,7 @@ namespace AnimationControl
                 if (this.UntilLockResetCount == 0)
                 {
                     this.Blocked = true;
+                    Animation.RequestNextStep();
                     Monitor.PulseAll(this.Syncer);
                 }
 
@@ -80,6 +84,7 @@ namespace AnimationControl
                 }
             }
         }
+
         private void PerformThreadCountChange()
         {
             if (this.Change != 0)
