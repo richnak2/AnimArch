@@ -39,10 +39,10 @@ namespace AnimationControl
 
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
-            Boolean Result = false;
+            Boolean Result = true;
             Boolean AScopeWasExecuted = false;
 
-            if (this.EvaluateCondition())
+            if (this.EvaluateCondition(Scope, ExecutionSpace))
             {
                 Result = base.Execute(ExecutionSpace, RelationshipSpace, this);
                 AScopeWasExecuted = true;
@@ -57,7 +57,7 @@ namespace AnimationControl
             {
                 foreach (EXEScopeCondition CurrentElif in this.ElifScopes)
                 {
-                    if (CurrentElif.EvaluateCondition())
+                    if (CurrentElif.EvaluateCondition(Scope, ExecutionSpace))
                     {
                         Result = CurrentElif.Execute(ExecutionSpace, RelationshipSpace, CurrentElif);
                         AScopeWasExecuted = true;

@@ -18,14 +18,36 @@ namespace AnimationControl
         }
         new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
         {
-            Boolean Success = false;
+            EXEReferencingVariable IteratorVariable = Scope.FindReferencingVariableByName(this.IteratorName);
+            EXEReferencingSetVariable IterableVariable = Scope.FindSetReferencingVariableByName(this.IterableName);
 
-            //this.ReferencingVariables.Add(this.Iterator);
-
-            throw new NotImplementedException();
-            /*foreach (EXEReferencingVariable CurrentItem in this.Iterable.GetReferencingVariables())
+            // We cannot iterate over not existing reference set
+            if (IterableVariable == null)
             {
-                this.Iterator.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
+                return false;
+            }
+
+            // If iterator already exists and its class does not match the iterable class, we cannot do this
+            if (IteratorVariable != null && !IteratorVariable.ClassName.Equals(IterableVariable.ClassName))
+            {
+                return false;
+            }
+
+            // If iterator name is already taken for another variable, we quit again. Otherwise we create the iterator variable
+            if (IteratorVariable == null)
+            {
+                Boolean IteratorCreationSuccess = Scope.AddVariable(new EXEReferencingVariable(this.IteratorName, IterableVariable.ClassName, -1));
+                if (!IteratorCreationSuccess)
+                {
+                    return false;
+                }
+            }
+
+
+            Boolean Success = true;
+            foreach (EXEReferencingVariable CurrentItem in IterableVariable.GetReferencingVariables())
+            {
+                IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
                 Success = base.Execute(ExecutionSpace, RelationshipSpace, this);
                 if (!Success)
@@ -34,7 +56,7 @@ namespace AnimationControl
                 }
             }
 
-            return Success;*/
+            return Success;
         }
     }
 }

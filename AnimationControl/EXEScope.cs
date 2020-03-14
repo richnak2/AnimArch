@@ -140,11 +140,6 @@ namespace AnimationControl
             throw new NotImplementedException();
         }
 
-        public Boolean EvaluateCondition()
-        {
-            return true;
-        }
-
         public void AddCommand(EXECommand Command)
         {
             this.Commands.Add(Command);
