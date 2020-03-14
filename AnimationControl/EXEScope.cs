@@ -14,6 +14,8 @@ namespace AnimationControl
 
         public String OALCode;
 
+        private Animation Animation;
+
         public EXEScope()
         {
             this.PrimitiveVariables = new List<EXEPrimitiveVariable>();
@@ -21,6 +23,8 @@ namespace AnimationControl
             this.SetReferencingVariables = new List<EXEReferencingSetVariable>();
             this.SuperScope = null;
             this.Commands = new List<EXECommand>();
+
+            this.Animation = null;
         }
 
         public Dictionary<String, String> GetStateDictRecursive()
@@ -244,12 +248,14 @@ namespace AnimationControl
         }
 
         //"Scope" param is ignored here, because this class is a scope
-        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
+            this.Animation = Animation;
+
             Boolean Success = false;
             foreach(EXECommand Command in this.Commands)
             {
-                Success = Command.Execute(ExecutionSpace, RelationshipSpace, this);
+                Success = Command.Execute(Animation, this);
                 if (!Success)
                 {
                     break;
@@ -257,6 +263,11 @@ namespace AnimationControl
             }
 
             return Success;
+        }
+
+        public void RequestNextStep()
+        {
+            this.Animation.RequestNextStep();
         }
 
         new public String GetCode()

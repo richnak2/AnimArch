@@ -22,7 +22,7 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        new public bool Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public bool Execute(Animation Animation, EXEScope Scope)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in
@@ -31,7 +31,7 @@ namespace AnimationControl
             // Variable name tells us how to name the newly created referencing variable
             // Where condition tells us which instances to select from all instances of the class (just do EXEASTNode.Evaluate and return true if the result "true" and false for "false")
             // When making unit tests, do not use the "where" causule yet, because its evaluation is not yet implemented
-            // If reka
+            // If relationship selection does not exists, this is problem
             if (this.RelationshipSelection == null)
             {
                 return false;
@@ -55,7 +55,7 @@ namespace AnimationControl
             }
 
             // Evaluate relationship selection. If it fails, execution fails too
-            List<long> SelectedIds = this.RelationshipSelection.Evaluate(RelationshipSpace, Scope);
+            List<long> SelectedIds = this.RelationshipSelection.Evaluate(Animation.RelationshipSpace, Scope);
             if (SelectedIds == null)
             {
                 return false;
@@ -76,7 +76,7 @@ namespace AnimationControl
                 foreach (long Id in SelectedIds)
                 {
                     SelectedVar.ReferencedInstanceId = Id;
-                    String ConditionResult = this.WhereCondition.Evaluate(Scope, ExecutionSpace);
+                    String ConditionResult = this.WhereCondition.Evaluate(Scope, Animation.ExecutionSpace);
 
                     if(!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {

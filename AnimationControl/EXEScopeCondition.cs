@@ -37,14 +37,14 @@ namespace AnimationControl
             return EXETypes.BooleanTrue.Equals(Result) ? true : false;
         }
 
-        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
             Boolean Result = true;
             Boolean AScopeWasExecuted = false;
 
-            if (this.EvaluateCondition(Scope, ExecutionSpace))
+            if (this.EvaluateCondition(Scope, Animation.ExecutionSpace))
             {
-                Result = base.Execute(ExecutionSpace, RelationshipSpace, this);
+                Result = base.Execute(Animation, this);
                 AScopeWasExecuted = true;
             }
 
@@ -57,9 +57,9 @@ namespace AnimationControl
             {
                 foreach (EXEScopeCondition CurrentElif in this.ElifScopes)
                 {
-                    if (CurrentElif.EvaluateCondition(Scope, ExecutionSpace))
+                    if (CurrentElif.EvaluateCondition(Scope, Animation.ExecutionSpace))
                     {
-                        Result = CurrentElif.Execute(ExecutionSpace, RelationshipSpace, CurrentElif);
+                        Result = CurrentElif.Execute(Animation, CurrentElif);
                         AScopeWasExecuted = true;
                         break;
                     }
@@ -73,7 +73,7 @@ namespace AnimationControl
 
             if (this.ElseScope != null)
             {
-                Result = this.ElseScope.Execute(ExecutionSpace, RelationshipSpace, ElseScope);
+                Result = this.ElseScope.Execute(Animation, ElseScope);
             }
 
             return Result;

@@ -17,7 +17,7 @@ namespace AnimationControl
             this.Threads.Add(Thread);
         }
 
-        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
             throw new NotImplementedException();
         }

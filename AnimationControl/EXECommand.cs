@@ -19,7 +19,7 @@ namespace AnimationControl
             //this.AST.PrintPretty("", false);
             throw new NotImplementedException();
         }
-        public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        public Boolean Execute(Animation Animation, EXEScope Scope)
         {
             throw new NotImplementedException();
         }

@@ -16,7 +16,7 @@ namespace AnimationControl
             this.IteratorName = Iterator;
             this.IterableName = Iterable;
         }
-        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
             EXEReferencingVariable IteratorVariable = Scope.FindReferencingVariableByName(this.IteratorName);
             EXEReferencingSetVariable IterableVariable = Scope.FindSetReferencingVariableByName(this.IterableName);
@@ -49,7 +49,7 @@ namespace AnimationControl
             {
                 IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
-                Success = base.Execute(ExecutionSpace, RelationshipSpace, this);
+                Success = base.Execute(Animation, this);
                 if (!Success)
                 {
                     break;

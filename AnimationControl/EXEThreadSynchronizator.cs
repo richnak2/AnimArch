@@ -12,30 +12,30 @@ namespace AnimationControl
         private int ThreadCount { get; set; }
         private int UntilLockResetCount { get; set; }
         private int InLockCount { get; set; }
-        private Boolean blocked { get; set; }
-        private List<int> ChangeQueue { get; }
+        private Boolean Blocked { get; set; }
+        private int Change { get; set; }
         public EXEThreadSynchronizator()
         {
             this.Syncer = new object();
             this.ThreadCount = 0;
             this.UntilLockResetCount = 0;
             this.InLockCount = 0;
-            this.blocked = false;
-            this.ChangeQueue = new List<int>();
+            this.Blocked = false;
+            this.Change = 0;
         }
 
         public void RegisterThread(uint count)
         {
             lock (this.Syncer)
             {
-                ChangeQueue.Add((int)count);
+                this.Change += (int)count;
             }
         }
         public void UnregisterThread()
         {
             lock (this.Syncer)
             {
-                ChangeQueue.Add(-1);
+                this.Change -= 1;
                 Monitor.PulseAll(this.Syncer);
             }
         }
@@ -44,19 +44,13 @@ namespace AnimationControl
             lock (this.Syncer)
             {
                 //If the room has been entered previously and has not been emptied yet, we must wait until it's emptied
-                while (this.blocked)
+                while (this.Blocked)
                 {
                     Monitor.Wait(this.Syncer);
                 }
 
                 //If someone changed number of threads, let's do it
-                if (this.ChangeQueue.Any())
-                {
-                    int change = this.ChangeQueue.Sum();
-                    this.ThreadCount += change;
-                    this.UntilLockResetCount += change;
-                    ChangeQueue.Clear();
-                }
+                PerformThreadCountChange();
 
                 //Let us let know everyone of our presence
                 this.InLockCount++;
@@ -65,20 +59,13 @@ namespace AnimationControl
                 while (this.UntilLockResetCount > 0)
                 {
                     //If someone changed number of threads, let's do it
-                    if (this.ChangeQueue.Any())
-                    {
-                        int change = this.ChangeQueue.Sum();
-                        this.ThreadCount += change;
-                        this.UntilLockResetCount += change;
-                        ChangeQueue.Clear();
-                    }
-
+                    PerformThreadCountChange();
                     Monitor.Wait(this.Syncer);
                 }
                 //If we are the last thread to come, let's block the room until everyone leaves and wake everyone up
                 if (this.UntilLockResetCount == 0)
                 {
-                    this.blocked = true;
+                    this.Blocked = true;
                     Monitor.PulseAll(this.Syncer);
                 }
 
@@ -87,10 +74,24 @@ namespace AnimationControl
                 //If we are the last one leaving, unblock the room and reset counters. And wake up possible sleepers
                 if (this.InLockCount == 0)
                 {
-                    this.blocked = false;
+                    this.Blocked = false;
                     this.UntilLockResetCount = this.ThreadCount;
                     Monitor.PulseAll(this.Syncer);
                 }
+            }
+        }
+        private void PerformThreadCountChange()
+        {
+            if (this.Change != 0)
+            {
+                this.ThreadCount += this.Change;
+                this.UntilLockResetCount += this.Change;
+                this.Change = 0;
+            }
+
+            if (this.ThreadCount < 0 || this.UntilLockResetCount < 0)
+            {
+                throw new Exception();
             }
         }
     }

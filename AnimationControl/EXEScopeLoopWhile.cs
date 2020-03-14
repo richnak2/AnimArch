@@ -22,13 +22,13 @@ namespace AnimationControl
             return EXETypes.BooleanTrue.Equals(Result) ? true : false;
         }
 
-        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(Animation Animation , EXEScope Scope)
         {
             Boolean Success = true;
 
-            while (this.EvaluateCondition(Scope, ExecutionSpace))
+            while (this.EvaluateCondition(Scope, Animation.ExecutionSpace))
             {
-                Success = base.Execute(ExecutionSpace, RelationshipSpace, this);
+                Success = base.Execute(Animation, this);
                 if (!Success)
                 {
                     break;

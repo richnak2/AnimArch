@@ -27,7 +27,7 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        new public bool Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public bool Execute(Animation Animation, EXEScope Scope)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in

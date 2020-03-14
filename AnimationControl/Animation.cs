@@ -2,7 +2,7 @@
 
 namespace AnimationControl
 {
-    class Animation
+    public class Animation
     {
         public CDClassPool ExecutionSpace { get; }
         public CDRelationshipPool RelationshipSpace { get; }
@@ -11,6 +11,8 @@ namespace AnimationControl
         private bool ContinuousExecution { get; set; }
 
         private readonly object StepCountLock = new object();
+
+        public readonly EXEThreadSynchronizator ThreadSyncer = new EXEThreadSynchronizator();
         public Animation()
         {
             this.ExecutionSpace = new CDClassPool();
@@ -25,12 +27,12 @@ namespace AnimationControl
         {
             bool Result = false;
 
-            //Result = this.SuperScope.Execute(this, null);
+            Result = this.SuperScope.Execute(this, null);
 
             return Result;
         }
 
-        public void RequestExecution()
+        public void RequestNextStep()
         {
             lock (StepCountLock)
             {

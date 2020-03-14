@@ -11,13 +11,13 @@ namespace AnimationControl
             this.VariableName = VariableName;
         }
 
-        new public bool Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public bool Execute(Animation Animation, EXEScope Scope)
         {
             bool Result = false;
             EXEReferencingVariable Variable = Scope.FindReferencingVariableByName(this.VariableName);
             if (Variable != null)
             {
-                bool DestructionSuccess = ExecutionSpace.DestroyInstance(Variable.ClassName, Variable.ReferencedInstanceId);
+                bool DestructionSuccess = Animation.ExecutionSpace.DestroyInstance(Variable.ClassName, Variable.ReferencedInstanceId);
                 if(DestructionSuccess)
                 {
                     Result = Scope.UnsetReferencingVariables(Variable.ClassName, Variable.ReferencedInstanceId);

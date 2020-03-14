@@ -21,11 +21,11 @@ namespace AnimationControl
             this.AssignedExpression = AssignedExpression;
         }
 
-        new public Boolean Execute(CDClassPool ExecutionSpace, CDRelationshipPool RelationshipSpace, EXEScope Scope)
+        new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
             Boolean Result = false;
 
-            String AssignedValue = this.AssignedExpression.Evaluate(Scope, ExecutionSpace);
+            String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);
             // If we are assigning to a variable
             if (this.AttributeName == null)
             {
@@ -49,7 +49,7 @@ namespace AnimationControl
             else
             {
                 EXEReferenceEvaluator RefEvaluator = new EXEReferenceEvaluator();
-                Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, Scope, ExecutionSpace, AssignedValue);
+                Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, Scope, Animation.ExecutionSpace, AssignedValue);
             }
 
             return Result;
