@@ -16,7 +16,11 @@ namespace AnimationControl
         private readonly object StepCountLock = new object();
 
         public EXEThreadSynchronizator ThreadSyncer { get; }
-        public Animation()
+
+        public EXETestGUI Visualizer = new EXETestGUIImplementation();
+        
+        public int HighlightDuration { get; set; }
+        public Animation(int HighlightDuration)
         {
             this.ExecutionSpace = new CDClassPool();
             this.RelationshipSpace = new CDRelationshipPool();
@@ -27,6 +31,8 @@ namespace AnimationControl
             this.ThreadSyncer = new EXEThreadSynchronizator(this);
 
             this.InDatabase = false;
+
+            this.HighlightDuration = HighlightDuration;
         }
 
         public void AccessInstanceDatabase()
