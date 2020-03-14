@@ -37,14 +37,21 @@ namespace AnimationControl
         public Boolean SetAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace, String NewValue)
         {
             EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
+            if (ReferencingVariable == null) return false;
+
             CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
+            if (ClassInstance == null) return false;
 
             // Posuvas zly argument metode DetermineVariableType
-            String ExeType = EXETypes.DetermineVariableType(null, AttributeName);
-            if (!EXETypes.IsValidValue(ExeType, NewValue))
-            {
-                return false;
-            }
+            //check if attribute exist
+            String Attribute = ClassInstance.GetAttribute(AttributeName);
+            if (Attribute == null) return false;
+
+            String AttributeType = EXETypes.DetermineVariableType(null, Attribute);
+            String NewValueType = EXETypes.DetermineVariableType(null, NewValue);
+            if (!String.Equals(AttributeType, NewValueType)) return false;
+
+
             return ClassInstance.SetAttribute(AttributeName, NewValue);
 
         }
