@@ -42,8 +42,7 @@ namespace AnimationControl
             CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
             if (ClassInstance == null) return false;
 
-            // Posuvas zly argument metode DetermineVariableType
-            //check if attribute exist
+           
             String Attribute = ClassInstance.GetAttribute(AttributeName);
             if (Attribute == null) return false;
 

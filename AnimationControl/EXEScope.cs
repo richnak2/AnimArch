@@ -76,28 +76,26 @@ namespace AnimationControl
         public EXEReferencingSetVariable FindSetReferencingVariableByName(String Name)
         {
 
-            EXEReferencingSetVariable Result = null;
             EXEScope CurrentScope = this;
 
             while (CurrentScope != null)
             {
-                foreach (EXEReferencingSetVariable CurrentVariable in CurrentScope.SetReferencingVariables)
+
+                foreach (EXEReferencingSetVariable ReferencingSetVariable in CurrentScope.SetReferencingVariables)
                 {
-                    if (String.Equals(CurrentVariable.Name, Name)){
-                        Result = CurrentVariable;
-                        break;
+                    foreach (EXEReferencingVariable ReferencingVariable in ReferencingSetVariable.GetReferencingVariables())
+                    {
+                        if (String.Equals(ReferencingVariable.Name, Name))
+                        {
+                            return ReferencingSetVariable;
+                            
+                        }
                     }
 
                 }
-
-                if (Result != null)
-                {
-                    break;
-                }
-
                 CurrentScope = CurrentScope.SuperScope;
             }
-            return Result;
+            return null;
         }
 
         public Boolean EvaluateCondition()
