@@ -295,10 +295,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void FindSetReferencingVariableByNameTest_Normal_02()
         {
-            // List<EXEReferencingVariable> ReferencingVariables = new List<EXEReferencingVariable>;
-            //ReferencingVariables.Add()
+     
             EXEScope Scope = new EXEScope();
-
 
             EXEReferencingVariable ReferencingVariable1 = (new EXEReferencingVariable("Name1", "ClassName1", 10000001));
             EXEReferencingVariable ReferencingVariable2 = (new EXEReferencingVariable("Name2", "ClassName2", 10000002));
