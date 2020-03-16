@@ -405,6 +405,28 @@ namespace AnimationControl.Tests
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
         [TestMethod]
+        public void SetAttributeValue_Normal_03()
+        {
+            CDClassPool ExecutionSpace = new CDClassPool();
+
+            CDClass UserAccountClass = ExecutionSpace.SpawnClass("UserAccount");
+            UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.BooleanTypeName));
+
+            CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance("x");
+
+            EXEScope Scope = new EXEScope();
+            Scope.ReferencingVariables.Add(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
+
+            EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
+            Evaluator.SetAttributeValue("new_user", "Nick", Scope, ExecutionSpace, EXETypes.BooleanFalse);
+
+            String ActualOutput = ClassInstance.GetAttribute("Nick");
+
+            String ExpectedOutput = EXETypes.BooleanFalse;
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
         public void SetAttributeValue_Bad_01()
         {
             CDClassPool ExecutionSpace = new CDClassPool();

@@ -46,6 +46,7 @@ namespace AnimationControl
             String Attribute = ClassInstance.GetAttribute(AttributeName);
             if (Attribute == null) return false;
 
+            //Typ atributu je ulozeny v prislusnom CDClass objekte, nezistuj ho z aktualne hodnoty atributu
             String AttributeType = EXETypes.DetermineVariableType(null, Attribute);
             String NewValueType = EXETypes.DetermineVariableType(null, NewValue);
             if (!String.Equals(AttributeType, NewValueType)) return false;
