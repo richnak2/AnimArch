@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AnimationControl
 {
@@ -46,13 +50,22 @@ namespace AnimationControl
             String Attribute = ClassInstance.GetAttribute(AttributeName);
             if (Attribute == null) return false;
 
-            //Typ atributu je ulozeny v prislusnom CDClass objekte, nezistuj ho z aktualne hodnoty atributu
-            String AttributeType = EXETypes.DetermineVariableType(null, Attribute);
             String NewValueType = EXETypes.DetermineVariableType(null, NewValue);
-            if (!String.Equals(AttributeType, NewValueType)) return false;
 
 
-            return ClassInstance.SetAttribute(AttributeName, NewValue);
+            //Typ atributu je ulozeny v prislusnom CDClass objekte, nezistuj ho z aktualne hodnoty atributu
+            CDClass Cls = ExecutionSpace.getClassByName(ReferencingVariable.ClassName);
+            foreach (CDAttribute attr in Cls.Attributes)
+            {
+                if (String.Equals(attr.Type, NewValueType))
+                {
+                    //new value type is the same as the original attribute value type
+                    return ClassInstance.SetAttribute(AttributeName, NewValue);
+                }
+            }
+
+
+            return false;
 
         }
     }
