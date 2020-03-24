@@ -157,7 +157,6 @@ namespace AnimationControl.Tests
             Animation Animation = new Animation();
             CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
-            Class1.CreateClassInstance();
 
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEReferencingVariable("swamp_creature", "Creature", Inst1.UniqueID));

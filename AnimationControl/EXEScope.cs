@@ -210,7 +210,7 @@ namespace AnimationControl
             bool Result = true;
             foreach (EXEReferencingVariable Variable in this.ReferencingVariables)
             {
-                if (Variable.Name == ClassName && Variable.ReferencedInstanceId == InstanceID)
+                if (Variable.ClassName == ClassName && Variable.ReferencedInstanceId == InstanceID)
                 {
                     Variable.ReferencedInstanceId = -1;
                 }

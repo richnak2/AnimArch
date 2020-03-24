@@ -17,7 +17,7 @@ namespace AnimationControl
 
         public bool IsInitialized()
         {
-            return this.ReferencedInstanceId <= 0;
+            return this.ReferencedInstanceId >= 0;
         }
 
         // SetUloh1

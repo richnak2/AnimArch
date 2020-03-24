@@ -89,7 +89,8 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("s3", "Subject", Class2Inst3.UniqueID));
 
             EXEScope SuperScope = new EXEScope();
-            SuperScope.AddVariable(new EXEReferencingVariable("s4", "Observer", Class2Inst2.UniqueID));
+            SuperScope.AddVariable(new EXEReferencingVariable("s4", "Subject", Class2Inst2.UniqueID));
+            Scope.SuperScope = SuperScope;
 
             //prepare the tested object
             EXECommandQueryRelate Command = new EXECommandQueryRelate("o", "s4", Rel.RelationshipName);
