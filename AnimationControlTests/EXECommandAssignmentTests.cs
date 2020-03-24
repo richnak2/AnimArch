@@ -12,8 +12,7 @@ namespace AnimationControlTests
         [TestMethod]
         public void Execute_Normal_Int_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+            Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
             EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
             Scope.AddVariable(Var1);
@@ -21,7 +20,7 @@ namespace AnimationControlTests
             EXEASTNode AssignedExpression = new EXEASTNodeLeaf("15");
             EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
 
-            Boolean Success = AssignCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success = AssignCommand.Execute(Animation, Scope);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x","15"}
             };
@@ -33,8 +32,7 @@ namespace AnimationControlTests
         [TestMethod]
         public void Execute_Normal_Int_02()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+            Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
             EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
             Scope.AddVariable(Var1);
@@ -48,7 +46,7 @@ namespace AnimationControlTests
 
             EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
 
-            Boolean Success = AssignCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success = AssignCommand.Execute(Animation, Scope);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x","30"},
                 {"y","17"}
@@ -61,8 +59,8 @@ namespace AnimationControlTests
         [TestMethod]
         public void Execute_Normal_Int_03()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+
+            Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
             EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
             Var1.Value = "45";
@@ -89,7 +87,7 @@ namespace AnimationControlTests
 
             EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
 
-            Boolean Success = AssignCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success = AssignCommand.Execute(Animation, Scope);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x","350"},
                 {"y","10"},
@@ -103,8 +101,8 @@ namespace AnimationControlTests
         [TestMethod]
         public void Execute_Normal_Int_04()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Human");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Human");
             Class1.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             Class1Inst1.SetAttribute("age", "50");
@@ -132,7 +130,7 @@ namespace AnimationControlTests
 
             EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
 
-            Boolean Success = AssignCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success = AssignCommand.Execute(Animation, Scope);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x","100"}
             };
@@ -144,9 +142,7 @@ namespace AnimationControlTests
         [TestMethod]
         public void Execute_Normal_Int_05()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+            Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
 
             EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("-");
@@ -157,9 +153,9 @@ namespace AnimationControlTests
             EXECommandAssignment AssignCommand2 = new EXECommandAssignment("y", new EXEASTNodeLeaf("0"));
             EXECommandAssignment AssignCommand3 = new EXECommandAssignment("z", new EXEASTNodeLeaf("1"));
 
-            Boolean Success1 = AssignCommand1.Execute(ExecutionSpace, RelationshipSpace, Scope);
-            Boolean Success2 = AssignCommand2.Execute(ExecutionSpace, RelationshipSpace, Scope);
-            Boolean Success3 = AssignCommand3.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success1 = AssignCommand1.Execute(Animation, Scope);
+            Boolean Success2 = AssignCommand2.Execute(Animation, Scope);
+            Boolean Success3 = AssignCommand3.Execute(Animation, Scope);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x","-25"},
                 {"y","0"},
@@ -175,8 +171,8 @@ namespace AnimationControlTests
         [TestMethod]
         public void Execute_Normal_Bool_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+
+            Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
             EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
             Var1.Value = "45";
@@ -203,7 +199,7 @@ namespace AnimationControlTests
 
             EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
 
-            Boolean Success = AssignCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean Success = AssignCommand.Execute(Animation, Scope);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x", EXETypes.BooleanTrue},
                 {"y", EXETypes.BooleanFalse},

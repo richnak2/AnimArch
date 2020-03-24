@@ -20,7 +20,7 @@ namespace AnimationControl
         public EXETestGUI Visualizer = new EXETestGUIImplementation();
         
         public int HighlightDuration { get; set; }
-        public Animation(int HighlightDuration)
+        public Animation(int HighlightDuration = 5)
         {
             this.ExecutionSpace = new CDClassPool();
             this.RelationshipSpace = new CDRelationshipPool();

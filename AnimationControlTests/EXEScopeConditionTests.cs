@@ -12,8 +12,7 @@ namespace AnimationControlTests
         [TestMethod]
         public void EXEScopeCondition_Normal_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+            Animation Animation = new Animation();
             EXEScope SuperScope = new EXEScope();
             SuperScope.AddVariable(new EXEPrimitiveVariable("x", "0"));
             SuperScope.AddVariable(new EXEPrimitiveVariable("y", "0"));
@@ -27,7 +26,7 @@ namespace AnimationControlTests
             EXEASTNodeLeaf Condition = new EXEASTNodeLeaf(EXETypes.BooleanTrue);
             ConditionScope.Condition = Condition;
 
-            Boolean Success = ConditionScope.Execute(ExecutionSpace, RelationshipSpace, null);
+            Boolean Success = ConditionScope.Execute(Animation, null);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x", "0"},
                 {"y", "50"},
@@ -40,8 +39,7 @@ namespace AnimationControlTests
         [TestMethod]
         public void EXEScopeCondition_Normal_02()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
+            Animation Animation = new Animation();
             EXEScope SuperScope = new EXEScope();
             SuperScope.AddVariable(new EXEPrimitiveVariable("x", "0"));
             SuperScope.AddVariable(new EXEPrimitiveVariable("y", "0"));
@@ -55,7 +53,7 @@ namespace AnimationControlTests
             EXEASTNodeLeaf Condition = new EXEASTNodeLeaf(EXETypes.BooleanFalse);
             ConditionScope.Condition = Condition;
 
-            Boolean Success = ConditionScope.Execute(ExecutionSpace, RelationshipSpace, null);
+            Boolean Success = ConditionScope.Execute(Animation, null);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
                 {"x", "0"},
                 {"y", "0"},

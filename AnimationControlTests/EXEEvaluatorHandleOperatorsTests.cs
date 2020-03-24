@@ -69,8 +69,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateEmpty_Normal_True_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -87,8 +87,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateEmpty_Normal_True_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -106,8 +106,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateEmpty_Normal_False_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -124,8 +124,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateEmpty_Normal_False_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -144,8 +144,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateEmpty_Bad_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -163,8 +163,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateEmpty_Bad_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -179,8 +179,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateEmpty_Bad_03()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -197,8 +197,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateNotEmpty_Normal_False_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -215,8 +215,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateNotEmpty_Normal_False_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -234,8 +234,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateNotEmpty_Normal_True_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -252,8 +252,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateNotEmpty_Normal_True_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -272,8 +272,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateNotEmpty_Bad_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -291,8 +291,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateNotEmpty_Bad_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -307,8 +307,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateNotEmpty_Bad_03()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -325,8 +325,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateCardinality_Normal_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -343,8 +343,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateCardinality_Normal_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -362,8 +362,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateCardinality_Normal_03()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 
@@ -380,8 +380,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateCardinality_Normal_04()
         {
-            CDClassPool CP = new CDClassPool();
-            CDClass DogClass = CP.SpawnClass("Dog");
+            Animation Animation = new Animation();
+            CDClass DogClass = Animation.ExecutionSpace.SpawnClass("Dog");
             DogClass.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             DogClass.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
 

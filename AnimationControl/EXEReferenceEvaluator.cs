@@ -27,7 +27,7 @@ namespace AnimationControl
             {
                 return null;
             }
-            return ClassInstance.GetAttribute(AttributeName);
+            return ClassInstance.GetAttributeValue(AttributeName);
         }
 
         //SetUloh1
@@ -46,27 +46,18 @@ namespace AnimationControl
             CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
             if (ClassInstance == null) return false;
 
-           
-            String Attribute = ClassInstance.GetAttribute(AttributeName);
+            CDClass Class = ExecutionSpace.getClassByName(ReferencingVariable.ClassName);
+            if (Class == null) return false;
+
+            CDAttribute Attribute = Class.GetAttributeByName(AttributeName);
             if (Attribute == null) return false;
 
             String NewValueType = EXETypes.DetermineVariableType(null, NewValue);
+            if (!String.Equals(Attribute.Type, NewValueType)) return false;
 
+            ClassInstance.SetAttribute(AttributeName, NewValue);
 
-            //Typ atributu je ulozeny v prislusnom CDClass objekte, nezistuj ho z aktualne hodnoty atributu
-            CDClass Cls = ExecutionSpace.getClassByName(ReferencingVariable.ClassName);
-            foreach (CDAttribute attr in Cls.Attributes)
-            {
-                if (String.Equals(attr.Type, NewValueType))
-                {
-                    //new value type is the same as the original attribute value type
-                    return ClassInstance.SetAttribute(AttributeName, NewValue);
-                }
-            }
-
-
-            return false;
-
+            return true;
         }
     }
 }

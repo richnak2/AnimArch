@@ -10,12 +10,12 @@ namespace AnimationControl.Tests
         public void Execute_Normal_01()
         {
             //Set up the execution space
-            CDClassPool ClassPool = new CDClassPool();
-            CDRelationshipPool RelPool = new CDRelationshipPool();
+            
+            Animation Animation = new Animation();
 
-            CDClass Class1 = ClassPool.SpawnClass("Observer");
-            CDClass Class2 = ClassPool.SpawnClass("Subject");
-            CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             CDClassInstance Class1Inst = Class1.CreateClassInstance();
             CDClassInstance Class2Inst = Class2.CreateClassInstance();
@@ -27,9 +27,9 @@ namespace AnimationControl.Tests
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "s", Rel.RelationshipName);
-            Boolean ActionSuccess = Command.Execute(ClassPool, RelPool, Scope);
+            Boolean ActionSuccess = Command.Execute(Animation, Scope);
 
-            Boolean Success = RelPool.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
+            Boolean Success = Animation.RelationshipSpace.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
 
             Assert.IsFalse(Success);
             Assert.IsTrue(ActionSuccess);
@@ -38,12 +38,12 @@ namespace AnimationControl.Tests
         public void Execute_Normal_02()
         {
             //Set up the execution space
-            CDClassPool ClassPool = new CDClassPool();
-            CDRelationshipPool RelPool = new CDRelationshipPool();
+            
+            Animation Animation = new Animation();
 
-            CDClass Class1 = ClassPool.SpawnClass("Observer");
-            CDClass Class2 = ClassPool.SpawnClass("Subject");
-            CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             CDClassInstance Class1Inst = Class1.CreateClassInstance();
             CDClassInstance Class2Inst = Class2.CreateClassInstance();
@@ -55,9 +55,9 @@ namespace AnimationControl.Tests
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "s", Rel.RelationshipName);
-            Boolean ActionSuccess = Command.Execute(ClassPool, RelPool, Scope);
+            Boolean ActionSuccess = Command.Execute(Animation, Scope);
 
-            Boolean Success = RelPool.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class2Inst.UniqueID, Class1Inst.UniqueID);
+            Boolean Success = Animation.RelationshipSpace.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class2Inst.UniqueID, Class1Inst.UniqueID);
 
             Assert.IsFalse(Success);
             Assert.IsTrue(ActionSuccess);
@@ -66,12 +66,12 @@ namespace AnimationControl.Tests
         public void Execute_Normal_03()
         {
             //Set up the execution space
-            CDClassPool ClassPool = new CDClassPool();
-            CDRelationshipPool RelPool = new CDRelationshipPool();
+            
+            Animation Animation = new Animation();
 
-            CDClass Class1 = ClassPool.SpawnClass("Observer");
-            CDClass Class2 = ClassPool.SpawnClass("Subject");
-            CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             CDClassInstance Class1Inst = Class1.CreateClassInstance();
             CDClassInstance Class2Inst1 = Class2.CreateClassInstance();
@@ -87,9 +87,9 @@ namespace AnimationControl.Tests
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "s2", Rel.RelationshipName);
-            Boolean ActionSuccess = Command.Execute(ClassPool, RelPool, Scope);
+            Boolean ActionSuccess = Command.Execute(Animation, Scope);
 
-            Boolean Success = RelPool.GetRelationshipByName(Rel.RelationshipName).InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst2.UniqueID);
+            Boolean Success = Animation.RelationshipSpace.GetRelationshipByName(Rel.RelationshipName).InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst2.UniqueID);
 
             Assert.IsFalse(Success);
             Assert.IsTrue(ActionSuccess);
@@ -99,12 +99,12 @@ namespace AnimationControl.Tests
         public void Execute_Normal_04()
         {
             //Set up the execution space
-            CDClassPool ClassPool = new CDClassPool();
-            CDRelationshipPool RelPool = new CDRelationshipPool();
+            
+            Animation Animation = new Animation();
 
-            CDClass Class1 = ClassPool.SpawnClass("Observer");
-            CDClass Class2 = ClassPool.SpawnClass("Subject");
-            CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             CDClassInstance Class1Inst = Class1.CreateClassInstance();
             CDClassInstance Class2Inst1 = Class2.CreateClassInstance();
@@ -123,9 +123,9 @@ namespace AnimationControl.Tests
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "s4", Rel.RelationshipName);
-            Boolean ActionSuccess = Command.Execute(ClassPool, RelPool, Scope);
+            Boolean ActionSuccess = Command.Execute(Animation, Scope);
 
-            Boolean Success = RelPool.GetRelationshipByName(Rel.RelationshipName).InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst2.UniqueID);
+            Boolean Success = Animation.RelationshipSpace.GetRelationshipByName(Rel.RelationshipName).InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst2.UniqueID);
 
             Assert.IsFalse(Success);
             Assert.IsTrue(ActionSuccess);
@@ -134,12 +134,12 @@ namespace AnimationControl.Tests
         public void Execute_Bad_01()
         {
             //Set up the execution space
-            CDClassPool ClassPool = new CDClassPool();
-            CDRelationshipPool RelPool = new CDRelationshipPool();
+            
+            Animation Animation = new Animation();
 
-            CDClass Class1 = ClassPool.SpawnClass("Observer");
-            CDClass Class2 = ClassPool.SpawnClass("Subject");
-            CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             CDClassInstance Class1Inst = Class1.CreateClassInstance();
             CDClassInstance Class2Inst = Class2.CreateClassInstance();
@@ -151,9 +151,9 @@ namespace AnimationControl.Tests
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "x", Rel.RelationshipName);
-            Boolean ActionSuccess = Command.Execute(ClassPool, RelPool, Scope);
+            Boolean ActionSuccess = Command.Execute(Animation, Scope);
 
-            Boolean Success = RelPool.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
+            Boolean Success = Animation.RelationshipSpace.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
 
             Assert.IsFalse(Success);
             Assert.IsFalse(ActionSuccess);
@@ -162,12 +162,12 @@ namespace AnimationControl.Tests
         public void Execute_Bad_02()
         {
             //Set up the execution space
-            CDClassPool ClassPool = new CDClassPool();
-            CDRelationshipPool RelPool = new CDRelationshipPool();
+            
+            Animation Animation = new Animation();
 
-            CDClass Class1 = ClassPool.SpawnClass("Observer");
-            CDClass Class2 = ClassPool.SpawnClass("Subject");
-            CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             CDClassInstance Class1Inst = Class1.CreateClassInstance();
             CDClassInstance Class2Inst = Class2.CreateClassInstance();
@@ -178,7 +178,7 @@ namespace AnimationControl.Tests
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "s", Rel.RelationshipName);
-            Boolean Success = Command.Execute(ClassPool, RelPool, Scope);
+            Boolean Success = Command.Execute(Animation, Scope);
 
             Assert.IsFalse(Success);
         }
@@ -186,12 +186,12 @@ namespace AnimationControl.Tests
         public void Execute_Bad_03()
         {
             //Set up the execution space
-            CDClassPool ClassPool = new CDClassPool();
-            CDRelationshipPool RelPool = new CDRelationshipPool();
+            
+            Animation Animation = new Animation();
 
-            CDClass Class1 = ClassPool.SpawnClass("Observer");
-            CDClass Class2 = ClassPool.SpawnClass("Subject");
-            CDRelationship Rel = RelPool.SpawnRelationship("Observer", "Subject");
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             CDClassInstance Class1Inst = Class1.CreateClassInstance();
             CDClassInstance Class2Inst = Class2.CreateClassInstance();
@@ -203,9 +203,9 @@ namespace AnimationControl.Tests
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "s", "R58");
-            Boolean ActionSuccess = Command.Execute(ClassPool, RelPool, Scope);
+            Boolean ActionSuccess = Command.Execute(Animation, Scope);
 
-            Boolean Success = RelPool.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
+            Boolean Success = Animation.RelationshipSpace.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
 
             Assert.IsFalse(Success);
             Assert.IsFalse(ActionSuccess);

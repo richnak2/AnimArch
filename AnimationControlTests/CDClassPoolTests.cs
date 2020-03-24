@@ -12,8 +12,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void GetClassInstanceById_Normal_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
@@ -23,7 +23,7 @@ namespace AnimationControl.Tests
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", Class1_Instance1.UniqueID);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", Class1_Instance1.UniqueID);
 
             Dictionary<String, String> ActualOutput = FoundInstance.State;
             Dictionary<String, String> ExpectedOutput = Class1_Instance1.State;
@@ -33,8 +33,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void GetClassInstanceById_Normal_02()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
@@ -54,7 +54,7 @@ namespace AnimationControl.Tests
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", Class1_Instance1.UniqueID);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", Class1_Instance1.UniqueID);
 
             Dictionary<String, String> ActualOutput = FoundInstance.State;
             Dictionary<String, String> ExpectedOutput = Class1_Instance1.State;
@@ -64,8 +64,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void GetClassInstanceById_Normal_03()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
@@ -85,7 +85,7 @@ namespace AnimationControl.Tests
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", Class1_Instance2.UniqueID);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", Class1_Instance2.UniqueID);
 
             Dictionary<String, String> ActualOutput = FoundInstance.State;
             Dictionary<String, String> ExpectedOutput = Class1_Instance2.State;
@@ -95,8 +95,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void GetClassInstanceById_Normal_04()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
@@ -116,7 +116,7 @@ namespace AnimationControl.Tests
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", Class1_Instance3.UniqueID);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", Class1_Instance3.UniqueID);
 
             Dictionary<String, String> ActualOutput = FoundInstance.State;
             Dictionary<String, String> ExpectedOutput = Class1_Instance3.State;
@@ -126,8 +126,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void GetClassInstanceById_Bad_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
@@ -137,15 +137,15 @@ namespace AnimationControl.Tests
             Class1_Instance1.SetAttribute("coord_y", "-2.22");
             Class1_Instance1.SetAttribute("coord_z", "804.96");
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", Class1_Instance1.UniqueID + 1);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", Class1_Instance1.UniqueID + 1);
 
             Assert.IsNull(FoundInstance);
         }
         [TestMethod]
         public void GetClassInstanceById_Bad_02()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
@@ -165,60 +165,60 @@ namespace AnimationControl.Tests
             Class1_Instance3.SetAttribute("coord_y", "-920.166");
             Class1_Instance3.SetAttribute("coord_z", "202.7");
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", Class1_Instance3.UniqueID + 1);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", Class1_Instance3.UniqueID + 1);
 
             Assert.IsNull(FoundInstance);
         }
         [TestMethod]
         public void GetClassInstanceById_Bad_03()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", 1000);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", 1000);
 
             Assert.IsNull(FoundInstance);
         }
         [TestMethod]
         public void GetClassInstanceById_Bad_04()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClass Class2 = ExecutionSpace.SpawnClass("Memento");
+            CDClass Class2 = ClassPool.SpawnClass("Memento");
             Class2.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
 
-            CDClass Class3 = ExecutionSpace.SpawnClass("Pool");
+            CDClass Class3 = ClassPool.SpawnClass("Pool");
             Class3.AddAttribute(new CDAttribute("unit_count", EXETypes.IntegerTypeName));
             Class3.AddAttribute(new CDAttribute("building_count", EXETypes.IntegerTypeName));
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("Originator", 1000);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("Originator", 1000);
 
             Assert.IsNull(FoundInstance);
         }
         [TestMethod]
         public void GetClassInstanceById_Bad_05()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
-            CDClass Class1 = ExecutionSpace.SpawnClass("Originator");
+            CDClassPool ClassPool = new CDClassPool();
+            CDClass Class1 = ClassPool.SpawnClass("Originator");
             Class1.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_y", EXETypes.RealTypeName));
             Class1.AddAttribute(new CDAttribute("coord_z", EXETypes.RealTypeName));
 
-            CDClass Class2 = ExecutionSpace.SpawnClass("Memento");
+            CDClass Class2 = ClassPool.SpawnClass("Memento");
             Class2.AddAttribute(new CDAttribute("coord_x", EXETypes.RealTypeName));
 
-            CDClass Class3 = ExecutionSpace.SpawnClass("Pool");
+            CDClass Class3 = ClassPool.SpawnClass("Pool");
             Class3.AddAttribute(new CDAttribute("unit_count", EXETypes.IntegerTypeName));
             Class3.AddAttribute(new CDAttribute("building_count", EXETypes.IntegerTypeName));
 
-            CDClassInstance FoundInstance = ExecutionSpace.GetClassInstanceById("NonExistentClass", 1000);
+            CDClassInstance FoundInstance = ClassPool.GetClassInstanceById("NonExistentClass", 1000);
 
             Assert.IsNull(FoundInstance);
         }

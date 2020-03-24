@@ -123,6 +123,33 @@ namespace AnimationControl
             return this.Instances.Count;
         }
 
+        public CDClassInstance GetInstanceByID (long id)
+        {
+            CDClassInstance Result = null;
+            foreach (CDClassInstance ClassInstance in this.Instances)
+            {
+                if (ClassInstance.UniqueID == id)
+                {
+                    Result = ClassInstance;
+                }
+            }
+            return Result;
+        }
+
+        public CDAttribute GetAttributeByName(String Name)
+        {
+            CDAttribute Result = null;
+            foreach (CDAttribute Attribute in this.Attributes)
+            {
+                if (String.Equals(Attribute.Name, Name))
+                {
+                    Result = Attribute;
+                    break;
+                }
+            }
+            return Result;
+        }
+        
         private int PowerOf(int x, int power)
         {
             int result = 1;

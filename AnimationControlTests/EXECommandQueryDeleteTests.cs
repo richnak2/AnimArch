@@ -8,16 +8,15 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDRelationshipPool RP = new CDRelationshipPool();
-            CDClass Class1 = CP.SpawnClass("Creature");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
 
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEReferencingVariable("swamp_creature", "Creature", Inst1.UniqueID));
 
             EXECommandQueryDelete Query = new EXECommandQueryDelete("swamp_creature");
-            Query.Execute(CP, RP, Scope);
+            Query.Execute(Animation, Scope);
 
             int ExpectedOutput = 0;
             int ActualOutput = Class1.InstanceCount();
@@ -30,9 +29,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_02()
         {
-            CDClassPool CP = new CDClassPool();
-            CDRelationshipPool RP = new CDRelationshipPool();
-            CDClass Class1 = CP.SpawnClass("Creature");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
             CDClassInstance Inst2 = Class1.CreateClassInstance();
 
@@ -41,7 +39,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("swamp_creature_2", "Creature", Inst2.UniqueID));
 
             EXECommandQueryDelete Query = new EXECommandQueryDelete("swamp_creature");
-            Query.Execute(CP, RP, Scope);
+            Query.Execute(Animation, Scope);
 
             int ExpectedOutput = 1;
             int ActualOutput = Class1.InstanceCount();
@@ -54,9 +52,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_03()
         {
-            CDClassPool CP = new CDClassPool();
-            CDRelationshipPool RP = new CDRelationshipPool();
-            CDClass Class1 = CP.SpawnClass("Creature");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
 
             EXEScope Scope = new EXEScope();
@@ -64,7 +61,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("swamp_creature_2", "Creature", Inst1.UniqueID));
 
             EXECommandQueryDelete Query = new EXECommandQueryDelete("swamp_creature");
-            Query.Execute(CP, RP, Scope);
+            Query.Execute(Animation, Scope);
 
             int ExpectedOutput = 0;
             int ActualOutput = Class1.InstanceCount();
@@ -77,9 +74,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_04()
         {
-            CDClassPool CP = new CDClassPool();
-            CDRelationshipPool RP = new CDRelationshipPool();
-            CDClass Class1 = CP.SpawnClass("Creature");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
             CDClassInstance Inst2 = Class1.CreateClassInstance();
 
@@ -92,7 +88,7 @@ namespace AnimationControl.Tests
             Scope.SuperScope = SuperScope;
 
             EXECommandQueryDelete Query = new EXECommandQueryDelete("swamp_creature");
-            Query.Execute(CP, RP, Scope);
+            Query.Execute(Animation, Scope);
 
             int ExpectedOutput = 1;
             int ActualOutput = Class1.InstanceCount();
@@ -105,9 +101,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_05()
         {
-            CDClassPool CP = new CDClassPool();
-            CDRelationshipPool RP = new CDRelationshipPool();
-            CDClass Class1 = CP.SpawnClass("Creature");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
 
             EXEScope Scope = new EXEScope();
@@ -119,7 +114,7 @@ namespace AnimationControl.Tests
             Scope.SuperScope = SuperScope;
 
             EXECommandQueryDelete Query = new EXECommandQueryDelete("swamp_creature");
-            Query.Execute(CP, RP, Scope);
+            Query.Execute(Animation, Scope);
 
             int ExpectedOutput = 0;
             int ActualOutput = Class1.InstanceCount();
@@ -132,9 +127,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_06()
         {
-            CDClassPool CP = new CDClassPool();
-            CDRelationshipPool RP = new CDRelationshipPool();
-            CDClass Class1 = CP.SpawnClass("Creature");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
             Class1.CreateClassInstance();
 
@@ -147,7 +141,7 @@ namespace AnimationControl.Tests
             Scope.SuperScope = SuperScope;
 
             EXECommandQueryDelete Query = new EXECommandQueryDelete("swamp_creature");
-            Query.Execute(CP, RP, Scope);
+            Query.Execute(Animation, Scope);
 
             int ExpectedOutput = 1;
             int ActualOutput = Class1.InstanceCount();
@@ -160,9 +154,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_01()
         {
-            CDClassPool CP = new CDClassPool();
-            CDRelationshipPool RP = new CDRelationshipPool();
-            CDClass Class1 = CP.SpawnClass("Creature");
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Creature");
             CDClassInstance Inst1 = Class1.CreateClassInstance();
             Class1.CreateClassInstance();
 
@@ -175,7 +168,7 @@ namespace AnimationControl.Tests
             Scope.SuperScope = SuperScope;
 
             EXECommandQueryDelete Query = new EXECommandQueryDelete("swamp_creature_4");
-            Query.Execute(CP, RP, Scope);
+            Query.Execute(Animation, Scope);
 
             int ExpectedOutput = 1;
             int ActualOutput = Class1.InstanceCount();

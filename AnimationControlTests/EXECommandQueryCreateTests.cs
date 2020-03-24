@@ -12,7 +12,7 @@ namespace AnimationControl.Tests
         /*[TestMethod]
         public void Execute_Normal_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
+            Animation Animation = new Animation();
             CDClass DesiredClass = ExecutionSpace.SpawnClass("Observer");
             ExecutionSpace.SpawnClass("Subject");
             ExecutionSpace.SpawnClass("Form");
@@ -32,7 +32,7 @@ namespace AnimationControl.Tests
        /* [TestMethod]
         public void Execute_Normal_02()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
+            Animation Animation = new Animation();
             CDClass DesiredClass = ExecutionSpace.SpawnClass("Observer");
             ExecutionSpace.SpawnClass("Subject");
 
@@ -51,7 +51,7 @@ namespace AnimationControl.Tests
        /* [TestMethod]
         public void Execute_Bad_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
+            Animation Animation = new Animation();
             CDClass DesiredClass = ExecutionSpace.SpawnClass("Observer");
             ExecutionSpace.SpawnClass("Subject");
 

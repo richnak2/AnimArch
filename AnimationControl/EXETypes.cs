@@ -24,6 +24,8 @@ namespace AnimationControl
 
         public static String DetermineVariableType(String name, String value)
         {
+            Console.WriteLine("DVT:" + value);
+
             if (name == UniqueIDTypeName)
             {
                 return UniqueIDTypeName;

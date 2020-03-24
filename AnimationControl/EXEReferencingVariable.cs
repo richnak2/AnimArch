@@ -23,17 +23,14 @@ namespace AnimationControl
         // SetUloh1
         public CDClassInstance RetrieveReferencedClassInstance(CDClassPool ExecutionSpace)
         {
-            foreach(CDClass Class in ExecutionSpace.ClassPool)
+            CDClass Class = ExecutionSpace.getClassByName(this.ClassName);
+            if (Class == null)
             {
-                if (String.Equals(Class.Name, this.ClassName)) {
-                    foreach (CDClassInstance ClassInstance in Class.Instances)
-                    {
-                        if (ClassInstance.UniqueID == this.ReferencedInstanceId)  return ClassInstance;
-                    }
-                }
+                return null;
             }
+            CDClassInstance Instance = Class.GetInstanceByID(this.ReferencedInstanceId);
 
-            return null;
+            return Instance;
         }
         new public List<long> GetReferencedIds()
         {

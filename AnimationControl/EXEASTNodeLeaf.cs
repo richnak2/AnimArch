@@ -4,7 +4,7 @@ namespace AnimationControl
 {
     public class EXEASTNodeLeaf : EXEASTNode
     {
-        public String Value { get; set; }
+        private String Value { get; }
 
         public EXEASTNodeLeaf(String Value)
         {
@@ -17,6 +17,7 @@ namespace AnimationControl
         }
         public String Evaluate(EXEScope Scope, CDClassPool ExecutionSpace)
         {
+            Console.WriteLine("Leaf:"+ this.Value);
             String Result = null;
             // If we have simple value, e.g. 5, 3.14, "hi Madelyn", we are good
             if (!EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Value)))

@@ -26,7 +26,7 @@ namespace AnimationControl
             this.State.Add("unique_ID", UniqueID.ToString());
         }
 
-        public String GetAttribute(String name)
+        public String GetAttributeValue(String name)
         {
             String Result = null;
             if (this.State.ContainsKey(name))

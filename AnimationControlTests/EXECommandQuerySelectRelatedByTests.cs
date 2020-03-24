@@ -12,11 +12,10 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_01()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class2Inst1 = Class2.CreateClassInstance();
@@ -29,7 +28,7 @@ namespace AnimationControl.Tests
             EXERelationshipSelection RelSelect = new EXERelationshipSelection("subject");
             RelSelect.AddRelationshipLink(new EXERelationshipLink(RelClass12.RelationshipName, Class1.Name));
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer_of_subject", null, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             long ExpectedResult = Class1Inst1.UniqueID;
             long ActualResult = Scope.FindReferencingVariableByName("observer_of_subject").ReferencedInstanceId;
@@ -40,11 +39,10 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_02()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class1Inst2 = Class1.CreateClassInstance();
@@ -63,7 +61,7 @@ namespace AnimationControl.Tests
             EXERelationshipSelection RelSelect = new EXERelationshipSelection("subject");
             RelSelect.AddRelationshipLink(new EXERelationshipLink(RelClass12.RelationshipName, Class1.Name));
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "observers", null, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             List<long> ExpectedResult = new List<long> (new long[] { Class1Inst1.UniqueID, Class1Inst2.UniqueID, Class1Inst3.UniqueID });
             List<long> ActualResult = Scope.FindSetReferencingVariableByName("observers").GetReferencedIds();
@@ -74,12 +72,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_03()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
+            
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
             Class1.AddAttribute(new CDAttribute("Value", EXETypes.IntegerTypeName));
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class1Inst2 = Class1.CreateClassInstance();
@@ -108,7 +106,7 @@ namespace AnimationControl.Tests
             WhereCondition.AddOperand(new EXEASTNodeLeaf("15"));
 
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer", WhereCondition, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             long ExpectedResult = Class1Inst1.UniqueID;
             long ActualResult = Scope.FindReferencingVariableByName("observer").ReferencedInstanceId;
@@ -119,12 +117,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_04()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
+            
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
             Class1.AddAttribute(new CDAttribute("Value", EXETypes.IntegerTypeName));
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class1Inst2 = Class1.CreateClassInstance();
@@ -153,7 +151,7 @@ namespace AnimationControl.Tests
             WhereCondition.AddOperand(new EXEASTNodeLeaf("15"));
 
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "observer", WhereCondition, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             List<long> ExpectedResult = new List<long>(new long[] { Class1Inst2.UniqueID, Class1Inst3.UniqueID });
             List<long> ActualResult = Scope.FindSetReferencingVariableByName("observers").GetReferencedIds();
@@ -164,12 +162,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_05()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
+            
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
             Class1.AddAttribute(new CDAttribute("Value", EXETypes.IntegerTypeName));
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class1Inst2 = Class1.CreateClassInstance();
@@ -198,7 +196,7 @@ namespace AnimationControl.Tests
             WhereCondition.AddOperand(new EXEASTNodeLeaf("45"));
 
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "observer", WhereCondition, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             List<long> ExpectedResult = new List<long>();
             List<long> ActualResult = Scope.FindSetReferencingVariableByName("observers").GetReferencedIds();
@@ -209,12 +207,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_06()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
+            
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
             Class1.AddAttribute(new CDAttribute("Value", EXETypes.IntegerTypeName));
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class1Inst2 = Class1.CreateClassInstance();
@@ -243,7 +241,7 @@ namespace AnimationControl.Tests
             WhereCondition.AddOperand(new EXEASTNodeLeaf("45"));
 
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer", WhereCondition, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             long ExpectedResult = -1;
             long ActualResult = Scope.FindReferencingVariableByName("observers").ReferencedInstanceId;
@@ -254,11 +252,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_01()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class2Inst1 = Class2.CreateClassInstance();
@@ -271,7 +269,7 @@ namespace AnimationControl.Tests
             EXERelationshipSelection RelSelect = new EXERelationshipSelection("subject2");
             RelSelect.AddRelationshipLink(new EXERelationshipLink(RelClass12.RelationshipName, Class1.Name));
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer_of_subject", null, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             long ActualResult = Scope.FindReferencingVariableByName("observer_of_subject").ReferencedInstanceId;
 
@@ -281,11 +279,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_02()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class2Inst1 = Class2.CreateClassInstance();
@@ -298,7 +296,7 @@ namespace AnimationControl.Tests
             EXERelationshipSelection RelSelect = new EXERelationshipSelection("subject");
             RelSelect.AddRelationshipLink(new EXERelationshipLink(RelClass12.RelationshipName, Class2.Name));
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer_of_subject", null, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             long ActualResult = Scope.FindReferencingVariableByName("observer_of_subject").ReferencedInstanceId;
 
@@ -308,11 +306,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_03()
         {
-            CDClassPool ClassSpace = new CDClassPool();
-            CDRelationshipPool RelSpace = new CDRelationshipPool();
-            CDClass Class1 = ClassSpace.SpawnClass("Observer");
-            CDClass Class2 = ClassSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = RelSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class2Inst1 = Class2.CreateClassInstance();
@@ -325,7 +323,7 @@ namespace AnimationControl.Tests
             EXERelationshipSelection RelSelect = new EXERelationshipSelection("subject");
             RelSelect.AddRelationshipLink(new EXERelationshipLink("R4", Class1.Name));
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer_of_subject", null, RelSelect);
-            Boolean Success = Query.Execute(ClassSpace, RelSpace, Scope);
+            Boolean Success = Query.Execute(Animation, Scope);
 
             long ActualResult = Scope.FindReferencingVariableByName("observer_of_subject").ReferencedInstanceId;
 

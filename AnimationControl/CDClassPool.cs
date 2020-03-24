@@ -20,18 +20,15 @@ namespace AnimationControl
         // SetUloh2
         public CDClassInstance GetClassInstanceById(String ClassName, long Id)
         {
-            
+            CDClassInstance Result = null;
             foreach(CDClass Class in this.ClassPool)
             {
                 if (String.Equals(Class.Name, ClassName)){
-                    foreach (CDClassInstance ClassInstance in Class.Instances)
-                    {
-                        if (ClassInstance.UniqueID == Id) return ClassInstance;
-                    } 
+                    Result = Class.GetInstanceByID(Id);
                 }
             }
 
-            return null; 
+            return Result; 
         }
         public CDClass SpawnClass(String Name)
         {

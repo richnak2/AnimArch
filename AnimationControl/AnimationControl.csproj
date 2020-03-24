@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="AnimationMock.cs" />
     <Compile Include="CDAttribute.cs" />
     <Compile Include="CDClass.cs" />
     <Compile Include="CDClassInstance.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="CDRelationship.cs" />
     <Compile Include="CDRelationshipPool.cs" />
     <Compile Include="EXECommandAssignment.cs" />
+    <Compile Include="EXECommandCall.cs" />
     <Compile Include="EXECommandQueryCreate.cs" />
     <Compile Include="EXECommandQueryDelete.cs" />
     <Compile Include="EXECommandQueryRelate.cs" />
@@ -71,6 +73,8 @@
     <Compile Include="EXEScopeForEach.cs" />
     <Compile Include="EXEScopeLoopWhile.cs" />
     <Compile Include="EXEScopeParallel.cs" />
+    <Compile Include="EXETestGUI.cs" />
+    <Compile Include="EXETestGUIImplementation.cs" />
     <Compile Include="EXEThreadSynchronizator.cs" />
     <Compile Include="OALCall.cs" />
     <Compile Include="OALCodeBuilder.cs" />
@@ -89,6 +93,7 @@
     <Compile Include="OALCommandParser.cs" />
     <Compile Include="OALParser2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleAnimationControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

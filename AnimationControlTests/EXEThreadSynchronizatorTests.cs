@@ -11,7 +11,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_01()
         {
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator();
+            Animation Animation = new Animation();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -35,7 +36,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_02()
         {
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator();
+            Animation Animation = new Animation();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -59,7 +61,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_03()
         {
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator();
+            Animation Animation = new Animation();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -83,7 +86,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_04()
         {
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator();
+            Animation Animation = new Animation();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -107,7 +111,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_05()
         {
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator();
+            Animation Animation = new Animation();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
             Syncer.RegisterThread(3);
 
             object Locker = new object();

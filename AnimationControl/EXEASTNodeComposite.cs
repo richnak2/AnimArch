@@ -34,6 +34,10 @@ namespace AnimationControl
         }
         public String Evaluate(EXEScope Scope, CDClassPool ExecutionSpace)
         {
+            Console.WriteLine("OP:"+ this.Operation);
+            Console.WriteLine("1:"+ this.Operands[0].GetNodeValue());
+            Console.WriteLine("2:"+ this.Operands[1].GetNodeValue());
+
             String Result = null;
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
             EXEEvaluatorHandleOperators HandleEvaluator = new EXEEvaluatorHandleOperators();
@@ -58,7 +62,7 @@ namespace AnimationControl
             // If we have handle operators
             else if (HandleEvaluator.IsHandleOperator(this.Operation))
             {
-                Result = HandleEvaluator.Evaluate(this.Operation, this.Operands.Select(x => ((EXEASTNodeLeaf)x).Value).ToList(), Scope);
+                Result = HandleEvaluator.Evaluate(this.Operation, this.Operands.Select(x => ((EXEASTNodeLeaf)x).GetNodeValue()).ToList(), Scope);
             }
             // If we have access operator - we either access attribute or have decimal number. There are always 2 operands
             else if (".".Equals(this.Operation) && this.Operands.Count == 2)
@@ -73,7 +77,7 @@ namespace AnimationControl
                     && EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[1].Evaluate(Scope, ExecutionSpace)))
                 )
                 {
-                    Result = AccessEvaluator.EvaluateAttributeValue(this.Operands[0].Evaluate(Scope, ExecutionSpace), this.Operands[0].Evaluate(Scope, ExecutionSpace), Scope, ExecutionSpace);
+                    Result = AccessEvaluator.EvaluateAttributeValue(this.Operands[0].Evaluate(Scope, ExecutionSpace), this.Operands[1].Evaluate(Scope, ExecutionSpace), Scope, ExecutionSpace);
                 }
             }
             return Result;

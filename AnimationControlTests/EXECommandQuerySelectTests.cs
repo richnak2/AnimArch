@@ -12,7 +12,7 @@ namespace AnimationControl.Tests
        /* [TestMethod]
         public void Execute_Normal_Any_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
+            Animation Animation = new Animation();
             CDClass UserClass = ExecutionSpace.SpawnClass("User");
             UserClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
@@ -49,7 +49,7 @@ namespace AnimationControl.Tests
         /*[TestMethod]
         public void Execute_Normal_Many_01()
         {
-            CDClassPool ExecutionSpace = new CDClassPool();
+            Animation Animation = new Animation();
             CDClass UserClass = ExecutionSpace.SpawnClass("User");
             UserClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
