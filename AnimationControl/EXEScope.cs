@@ -137,11 +137,51 @@ namespace AnimationControl
         }
         public EXEReferencingVariable FindReferencingVariableByName(String Name)
         {
-            throw new NotImplementedException();        
+            EXEReferencingVariable Result = null;
+            EXEScope CurrentScope = this;
+
+            while (CurrentScope != null) {
+                foreach (EXEReferencingVariable CurrentVariable in CurrentScope.ReferencingVariables)
+                {
+                    if (String.Equals(CurrentVariable.Name, Name)){
+                        Result = CurrentVariable;
+                        break;
+                    }
+
+                }
+               
+                if (Result != null)
+                {
+                    break;
+                }
+
+                CurrentScope = CurrentScope.SuperScope;
+            }
+            return Result;
         }
         public EXEReferencingSetVariable FindSetReferencingVariableByName(String Name)
         {
-            throw new NotImplementedException();
+
+            EXEScope CurrentScope = this;
+
+            while (CurrentScope != null)
+            {
+
+                foreach (EXEReferencingSetVariable ReferencingSetVariable in CurrentScope.SetReferencingVariables)
+                {
+                    foreach (EXEReferencingVariable ReferencingVariable in ReferencingSetVariable.GetReferencingVariables())
+                    {
+                        if (String.Equals(ReferencingVariable.Name, Name))
+                        {
+                            return ReferencingSetVariable;
+                            
+                        }
+                    }
+
+                }
+                CurrentScope = CurrentScope.SuperScope;
+            }
+            return null;
         }
 
         public void AddCommand(EXECommand Command)

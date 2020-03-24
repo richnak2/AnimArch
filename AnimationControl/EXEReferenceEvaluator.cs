@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AnimationControl
 {
@@ -10,9 +14,20 @@ namespace AnimationControl
         // If this does not exist, return null
         // You will use EXEScope.FindReferencingVariableByName() method, but you need to implement it first
         // user.name
+
         public String EvaluateAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace)
         {
-            throw new NotImplementedException();
+            EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
+            if (ReferencingVariable == null)
+            {
+                return null;
+            }
+            CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
+            if (ClassInstance == null)
+            {
+                return null;
+            }
+            return ClassInstance.GetAttribute(AttributeName);
         }
 
         //SetUloh1
@@ -25,7 +40,33 @@ namespace AnimationControl
         // EXETypes.determineVariableType()
         public Boolean SetAttributeValue(String ReferencingVariableName, String AttributeName, EXEScope Scope, CDClassPool ExecutionSpace, String NewValue)
         {
-            throw new NotImplementedException();
+            EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
+            if (ReferencingVariable == null) return false;
+
+            CDClassInstance ClassInstance = ExecutionSpace.GetClassInstanceById(ReferencingVariable.ClassName, ReferencingVariable.ReferencedInstanceId);
+            if (ClassInstance == null) return false;
+
+           
+            String Attribute = ClassInstance.GetAttribute(AttributeName);
+            if (Attribute == null) return false;
+
+            String NewValueType = EXETypes.DetermineVariableType(null, NewValue);
+
+
+            //Typ atributu je ulozeny v prislusnom CDClass objekte, nezistuj ho z aktualne hodnoty atributu
+            CDClass Cls = ExecutionSpace.getClassByName(ReferencingVariable.ClassName);
+            foreach (CDAttribute attr in Cls.Attributes)
+            {
+                if (String.Equals(attr.Type, NewValueType))
+                {
+                    //new value type is the same as the original attribute value type
+                    return ClassInstance.SetAttribute(AttributeName, NewValue);
+                }
+            }
+
+
+            return false;
+
         }
     }
 }

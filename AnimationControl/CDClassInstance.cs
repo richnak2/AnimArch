@@ -37,13 +37,13 @@ namespace AnimationControl
             return Result;
         }
 
-        public int SetAttribute(String name, String value)
+        public bool SetAttribute(String name, String value)
         {
-            int success = -1;
+            bool success = false;
             if (this.State.ContainsKey(name))
             {
                 this.State[name] = value;
-                success = 0;
+                success = true;
             }
 
             return success;
