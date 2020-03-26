@@ -3,7 +3,7 @@ using System;
 
 namespace AnimationControl.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class EXECommandQueryUnrelateTests
     {
         [TestMethod]
@@ -119,7 +119,9 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("s3", "Subject", Class2Inst3.UniqueID));
 
             EXEScope SuperScope = new EXEScope();
-            SuperScope.AddVariable(new EXEReferencingVariable("s4", "Observer", Class2Inst2.UniqueID));
+            SuperScope.AddVariable(new EXEReferencingVariable("s4", "Subject", Class2Inst2.UniqueID));
+
+            Scope.SuperScope = SuperScope;
 
             //prepare the tested object
             EXECommandQueryUnrelate Command = new EXECommandQueryUnrelate("o", "s4", Rel.RelationshipName);
@@ -155,7 +157,7 @@ namespace AnimationControl.Tests
 
             Boolean Success = Animation.RelationshipSpace.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
 
-            Assert.IsFalse(Success);
+            Assert.IsTrue(Success);
             Assert.IsFalse(ActionSuccess);
         }
         [TestMethod]
@@ -207,7 +209,7 @@ namespace AnimationControl.Tests
 
             Boolean Success = Animation.RelationshipSpace.GetRelationshipByClasses("Observer", "Subject").InstanceRelationshipExists(Class1Inst.UniqueID, Class2Inst.UniqueID);
 
-            Assert.IsFalse(Success);
+            Assert.IsTrue(Success);
             Assert.IsFalse(ActionSuccess);
         }
     }

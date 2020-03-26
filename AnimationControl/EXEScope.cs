@@ -169,15 +169,10 @@ namespace AnimationControl
 
                 foreach (EXEReferencingSetVariable ReferencingSetVariable in CurrentScope.SetReferencingVariables)
                 {
-                    foreach (EXEReferencingVariable ReferencingVariable in ReferencingSetVariable.GetReferencingVariables())
+                    if (String.Equals(ReferencingSetVariable.Name, Name))
                     {
-                        if (String.Equals(ReferencingVariable.Name, Name))
-                        {
-                            return ReferencingSetVariable;
-                            
-                        }
+                        return ReferencingSetVariable;
                     }
-
                 }
                 CurrentScope = CurrentScope.SuperScope;
             }
