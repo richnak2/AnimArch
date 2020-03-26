@@ -29,6 +29,11 @@ namespace AnimationControl
                 return UniqueIDTypeName;
             }
 
+            if (value == EXETypes.UnitializedName)
+            {
+                return UnitializedName;
+            }
+
             if (long.TryParse(value, out _))
             {
                 return IntegerTypeName;

@@ -26,6 +26,12 @@ namespace AnimationControl
                 return false;
             }
 
+            if (EXETypes.UnitializedName.Equals(this.Type))
+            {
+                this.Value = NewValue;
+                return true;
+            }
+
             String NewValueType = EXETypes.DetermineVariableType(name, NewValue);
             if (NewValueType == this.Type)
             {

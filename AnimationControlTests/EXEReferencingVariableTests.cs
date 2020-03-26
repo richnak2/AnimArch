@@ -239,7 +239,6 @@ namespace AnimationControl.Tests
 
             EXEReferencingVariable SeekedVariable = Scope.FindReferencingVariableByName("notExisting");
 
-
             Assert.IsNull(SeekedVariable);
         }
 
@@ -248,8 +247,6 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void FindSetReferencingVariableByNameTest_Normal_01()
         {
-           // List<EXEReferencingVariable> ReferencingVariables = new List<EXEReferencingVariable>;
-            //ReferencingVariables.Add()
             EXEScope Scope = new EXEScope();
      
             EXEReferencingVariable ReferencingVariable1 = (new EXEReferencingVariable("Name1", "ClassName1", 10000001));
@@ -269,7 +266,6 @@ namespace AnimationControl.Tests
             SetVariable1.AddReferencingVariable(ReferencingVariable2);
             SetVariable1.AddReferencingVariable(ReferencingVariable3);
 
-
             EXEReferencingSetVariable SetVariable2 = new EXEReferencingSetVariable("Set11", "ClassName11");
             SetVariable2.AddReferencingVariable(ReferencingVariable11);
             SetVariable2.AddReferencingVariable(ReferencingVariable22);
@@ -284,16 +280,14 @@ namespace AnimationControl.Tests
             Scope.AddVariable(SetVariable2);
             Scope.AddVariable(SetVariable3);
 
-            EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Name3");
-            
+            EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Set1");
 
-            Assert.AreEqual(SetVariable1, SeekedVariable);
+            Assert.IsNotNull(SeekedVariable);
         }
 
         [TestMethod]
         public void FindSetReferencingVariableByNameTest_Normal_02()
         {
-     
             EXEScope Scope = new EXEScope();
 
             EXEReferencingVariable ReferencingVariable1 = (new EXEReferencingVariable("Name1", "ClassName1", 10000001));
@@ -313,7 +307,6 @@ namespace AnimationControl.Tests
             SetVariable1.AddReferencingVariable(ReferencingVariable2);
             SetVariable1.AddReferencingVariable(ReferencingVariable3);
 
-
             EXEReferencingSetVariable SetVariable2 = new EXEReferencingSetVariable("Set11", "ClassName11");
             SetVariable2.AddReferencingVariable(ReferencingVariable11);
             SetVariable2.AddReferencingVariable(ReferencingVariable22);
@@ -328,20 +321,15 @@ namespace AnimationControl.Tests
             Scope.AddVariable(SetVariable2);
             Scope.AddVariable(SetVariable3);
 
+            EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Set111");
 
-            EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Name22");
-
-
-            Assert.AreEqual(SetVariable2, SeekedVariable);
+            Assert.IsNotNull(SeekedVariable);
         }
 
         [TestMethod]
         public void FindSetReferencingVariableByNameTest_Normal_03()
         {
-            // List<EXEReferencingVariable> ReferencingVariables = new List<EXEReferencingVariable>;
-            //ReferencingVariables.Add()
             EXEScope Scope = new EXEScope();
-
 
             EXEReferencingVariable ReferencingVariable1 = (new EXEReferencingVariable("Name1", "ClassName1", 10000001));
             EXEReferencingVariable ReferencingVariable2 = (new EXEReferencingVariable("Name2", "ClassName1", 10000002));
@@ -371,14 +359,14 @@ namespace AnimationControl.Tests
             SetVariable3.AddReferencingVariable(ReferencingVariable333);
 
             Scope.AddVariable(SetVariable1);
-            Scope.AddVariable(SetVariable2);
-            Scope.AddVariable(SetVariable3);
+            Scope.SuperScope = new EXEScope();
+            Scope.SuperScope.AddVariable(SetVariable2);
+            Scope.SuperScope.SuperScope = new EXEScope();
+            Scope.SuperScope.SuperScope.AddVariable(SetVariable3);
 
+            EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Set111");
 
-            EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Name111");
-
-
-            Assert.AreEqual(SetVariable3, SeekedVariable);
+            Assert.IsNotNull(SeekedVariable);
         }
 
         [TestMethod]
@@ -421,6 +409,47 @@ namespace AnimationControl.Tests
 
             Assert.IsNull(SeekedVariable);
         }
+        [TestMethod]
+        public void FindSetReferencingVariableByNameTest_Bad_02()
+        {
+            EXEScope Scope = new EXEScope();
 
+            EXEReferencingVariable ReferencingVariable1 = (new EXEReferencingVariable("Name1", "ClassName1", 10000001));
+            EXEReferencingVariable ReferencingVariable2 = (new EXEReferencingVariable("Name2", "ClassName1", 10000002));
+            EXEReferencingVariable ReferencingVariable3 = (new EXEReferencingVariable("Name3", "ClassName1", 10000003));
+
+            EXEReferencingVariable ReferencingVariable11 = (new EXEReferencingVariable("Name11", "ClassName11", 100000011));
+            EXEReferencingVariable ReferencingVariable22 = (new EXEReferencingVariable("Name22", "ClassName11", 100000022));
+            EXEReferencingVariable ReferencingVariable33 = (new EXEReferencingVariable("Name33", "ClassName11", 100000033));
+
+            EXEReferencingVariable ReferencingVariable111 = (new EXEReferencingVariable("Name111", "ClassName111", 1000000111));
+            EXEReferencingVariable ReferencingVariable222 = (new EXEReferencingVariable("Name222", "ClassName111", 1000000222));
+            EXEReferencingVariable ReferencingVariable333 = (new EXEReferencingVariable("Name333", "ClassName111", 1000000333));
+
+            EXEReferencingSetVariable SetVariable1 = new EXEReferencingSetVariable("Set1", "ClassName1");
+            SetVariable1.AddReferencingVariable(ReferencingVariable1);
+            SetVariable1.AddReferencingVariable(ReferencingVariable2);
+            SetVariable1.AddReferencingVariable(ReferencingVariable3);
+
+            EXEReferencingSetVariable SetVariable2 = new EXEReferencingSetVariable("Set11", "ClassName11");
+            SetVariable2.AddReferencingVariable(ReferencingVariable11);
+            SetVariable2.AddReferencingVariable(ReferencingVariable22);
+            SetVariable2.AddReferencingVariable(ReferencingVariable33);
+
+            EXEReferencingSetVariable SetVariable3 = new EXEReferencingSetVariable("Set111", "ClassName111");
+            SetVariable3.AddReferencingVariable(ReferencingVariable111);
+            SetVariable3.AddReferencingVariable(ReferencingVariable222);
+            SetVariable3.AddReferencingVariable(ReferencingVariable333);
+
+            Scope.AddVariable(SetVariable1);
+            Scope.SuperScope = new EXEScope();
+            Scope.SuperScope.AddVariable(SetVariable2);
+            Scope.SuperScope.SuperScope = new EXEScope();
+            Scope.SuperScope.SuperScope.AddVariable(SetVariable3);
+
+            EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Set1111");
+
+            Assert.IsNull(SeekedVariable);
+        }
     }
 }

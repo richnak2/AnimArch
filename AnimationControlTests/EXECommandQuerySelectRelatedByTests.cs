@@ -150,7 +150,7 @@ namespace AnimationControl.Tests
             WhereCondition.AddOperand(AccessAST);
             WhereCondition.AddOperand(new EXEASTNodeLeaf("15"));
 
-            EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "observer", WhereCondition, RelSelect);
+            EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "observers", WhereCondition, RelSelect);
             Boolean Success = Query.Execute(Animation, Scope);
 
             List<long> ExpectedResult = new List<long>(new long[] { Class1Inst2.UniqueID, Class1Inst3.UniqueID });
@@ -195,7 +195,7 @@ namespace AnimationControl.Tests
             WhereCondition.AddOperand(AccessAST);
             WhereCondition.AddOperand(new EXEASTNodeLeaf("45"));
 
-            EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "observer", WhereCondition, RelSelect);
+            EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "observers", WhereCondition, RelSelect);
             Boolean Success = Query.Execute(Animation, Scope);
 
             List<long> ExpectedResult = new List<long>();
@@ -244,7 +244,7 @@ namespace AnimationControl.Tests
             Boolean Success = Query.Execute(Animation, Scope);
 
             long ExpectedResult = -1;
-            long ActualResult = Scope.FindReferencingVariableByName("observers").ReferencedInstanceId;
+            long ActualResult = Scope.FindReferencingVariableByName("observer").ReferencedInstanceId;
 
             Assert.IsTrue(Success);
             Assert.AreEqual(ExpectedResult, ActualResult);
@@ -271,7 +271,7 @@ namespace AnimationControl.Tests
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer_of_subject", null, RelSelect);
             Boolean Success = Query.Execute(Animation, Scope);
 
-            long ActualResult = Scope.FindReferencingVariableByName("observer_of_subject").ReferencedInstanceId;
+            EXEReferencingVariable ActualResult = Scope.FindReferencingVariableByName("observer_of_subject");
 
             Assert.IsFalse(Success);
             Assert.IsNull(ActualResult);
@@ -298,7 +298,7 @@ namespace AnimationControl.Tests
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer_of_subject", null, RelSelect);
             Boolean Success = Query.Execute(Animation, Scope);
 
-            long ActualResult = Scope.FindReferencingVariableByName("observer_of_subject").ReferencedInstanceId;
+            EXEReferencingVariable ActualResult = Scope.FindReferencingVariableByName("observer_of_subject");
 
             Assert.IsFalse(Success);
             Assert.IsNull(ActualResult);
@@ -325,7 +325,7 @@ namespace AnimationControl.Tests
             EXECommandQuerySelectRelatedBy Query = new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityAny, "observer_of_subject", null, RelSelect);
             Boolean Success = Query.Execute(Animation, Scope);
 
-            long ActualResult = Scope.FindReferencingVariableByName("observer_of_subject").ReferencedInstanceId;
+            EXEReferencingVariable ActualResult = Scope.FindReferencingVariableByName("observer_of_subject");
 
             Assert.IsFalse(Success);
             Assert.IsNull(ActualResult);

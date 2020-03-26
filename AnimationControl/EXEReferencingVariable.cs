@@ -32,9 +32,14 @@ namespace AnimationControl
 
             return Instance;
         }
-        new public List<long> GetReferencedIds()
+        public override List<long> GetReferencedIds()
         {
-            return new List<long>(new long[] { ReferencedInstanceId }).FindAll(x => x >= 0).ToList();
+            List<long> Result = new List<long>(new long[] {});
+            if (this.IsInitialized())
+            {
+                Result.Add(this.ReferencedInstanceId);
+            }
+            return Result;
         }
     }
 }

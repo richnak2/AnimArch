@@ -37,7 +37,7 @@ namespace AnimationControl
                 return false;
             }
 
-            // We need to check, if the variable already exists, it must be of corresponging type
+            // We need to check, if the variable already exists, it must be of corresponding type
             if (Scope.VariableNameExists(this.VariableName))
             {
                 try
@@ -62,7 +62,7 @@ namespace AnimationControl
             }
 
             // Now let's evaluate the condition
-            if (this.WhereCondition != null &&SelectedIds.Any())
+            if (this.WhereCondition != null && SelectedIds.Any())
             {
                 String TempSelectedVarName = "selected";
 
@@ -77,13 +77,14 @@ namespace AnimationControl
                 {
                     SelectedVar.ReferencedInstanceId = Id;
                     String ConditionResult = this.WhereCondition.Evaluate(Scope, Animation.ExecutionSpace);
+                    //Console.Write(Id + " : " + ConditionResult);
 
                     if(!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {
                         return false;
                     }
 
-                    if (EXETypes.BooleanTrue.Equals(false))
+                    if (EXETypes.BooleanTrue.Equals(ConditionResult))
                     {
                         ResultIds.Add(Id);
                     }
@@ -122,6 +123,10 @@ namespace AnimationControl
                         return false;
                     }
                 }
+            }
+            else
+            {
+                return false;
             }
 
             return true;

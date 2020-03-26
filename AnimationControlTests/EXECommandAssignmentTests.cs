@@ -14,7 +14,7 @@ namespace AnimationControlTests
         {
             Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
-            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
+            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.UnitializedName);
             Scope.AddVariable(Var1);
 
             EXEASTNode AssignedExpression = new EXEASTNodeLeaf("15");
@@ -170,6 +170,47 @@ namespace AnimationControlTests
         }
         [TestMethod]
         public void Execute_Normal_Bool_01()
+        {
+
+            Animation Animation = new Animation();
+            EXEScope Scope = new EXEScope();
+            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
+            Scope.AddVariable(Var1);
+            EXEPrimitiveVariable Var2 = new EXEPrimitiveVariable("y", EXETypes.IntegerTypeName);
+            Var2.Value = EXETypes.BooleanFalse;
+            Scope.AddVariable(Var2);
+
+            EXEScope SuperScope = new EXEScope();
+            EXEPrimitiveVariable Var3 = new EXEPrimitiveVariable("z", EXETypes.IntegerTypeName);
+            Var3.Value = EXETypes.BooleanTrue;
+            Scope.AddVariable(Var3);
+
+            Scope.SuperScope = SuperScope;
+
+            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("and");
+
+            EXEASTNodeComposite MultExpr = new EXEASTNodeComposite("not");
+            MultExpr.AddOperand(new EXEASTNodeLeaf("y"));
+
+            AssignedExpression.AddOperand(MultExpr);
+            AssignedExpression.AddOperand(new EXEASTNodeLeaf("z"));
+            AssignedExpression.AddOperand(new EXEASTNodeLeaf(EXETypes.BooleanTrue));
+
+            EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
+
+            Boolean Success = AssignCommand.Execute(Animation, Scope);
+            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
+                {"x", EXETypes.BooleanTrue},
+                {"y", EXETypes.BooleanFalse},
+                {"z", EXETypes.BooleanTrue}
+            };
+            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+        }
+        [TestMethod]
+        public void Execute_Bad_Bool_01()
         {
 
             Animation Animation = new Animation();

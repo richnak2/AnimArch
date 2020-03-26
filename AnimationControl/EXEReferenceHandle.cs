@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    public class EXEReferenceHandle
+    public abstract class EXEReferenceHandle
     {
         public String Name { get; }
         public String ClassName { get; }
@@ -15,9 +15,6 @@ namespace AnimationControl
             this.Name = Name;
             this.ClassName = ClassName;
         }
-        public List<long> GetReferencedIds()
-        {
-            return new List<long>();
-        }
+        public abstract List<long> GetReferencedIds();
     }
 }

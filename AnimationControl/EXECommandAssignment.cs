@@ -23,7 +23,6 @@ namespace AnimationControl
 
         new public Boolean Execute(Animation Animation, EXEScope Scope)
         {
-
             Boolean Result = false;
 
             String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);
@@ -34,8 +33,12 @@ namespace AnimationControl
                 // If the variable doesnt exist, we simply create it
                 if (Variable == null)
                 {
-                    Scope.AddVariable(new EXEPrimitiveVariable(this.VariableName, AssignedValue));
-                    Result = true;
+                    Result = Scope.AddVariable(new EXEPrimitiveVariable(this.VariableName, AssignedValue));
+                }
+                //If variable exists and its type is UNDEFINED
+                else if (EXETypes.UnitializedName.Equals(Variable.Type))
+                {
+                    Result = Variable.AssignValue(Variable.Name, AssignedValue);
                 }
                 // If the variable exists and is primitive
                 else if (!EXETypes.ReferenceTypeName.Equals(Variable.Type))

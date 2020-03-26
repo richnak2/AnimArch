@@ -22,7 +22,7 @@ namespace AnimationControl
             return this.ReferencingVariables;
         }
 
-        new public List<long> GetReferencedIds()
+        public override List<long> GetReferencedIds()
         {
             return this.ReferencingVariables.Select(x => { return x.ReferencedInstanceId; }).ToList().FindAll(x => x >= 0).ToList();
         }

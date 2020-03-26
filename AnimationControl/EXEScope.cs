@@ -147,7 +147,6 @@ namespace AnimationControl
                         Result = CurrentVariable;
                         break;
                     }
-
                 }
                
                 if (Result != null)
@@ -166,7 +165,6 @@ namespace AnimationControl
 
             while (CurrentScope != null)
             {
-
                 foreach (EXEReferencingSetVariable ReferencingSetVariable in CurrentScope.SetReferencingVariables)
                 {
                     if (String.Equals(ReferencingSetVariable.Name, Name))
