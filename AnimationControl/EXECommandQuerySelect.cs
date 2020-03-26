@@ -13,9 +13,7 @@ namespace AnimationControl
 
         public String Cardinality { get; set; }
         public String ClassName { get; set; }
-
         public String VariableName { get; set; }
-
         public EXEASTNode WhereCondition { get; set; }
 
         public EXECommandQuerySelect()
@@ -27,7 +25,7 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        new public bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(Animation Animation, EXEScope Scope)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in
@@ -36,21 +34,6 @@ namespace AnimationControl
             // Variable name tells us how to name the newly created referencing variable
             // Where condition tells us which instances to select from all instances of the class (just do EXEASTNode.Evaluate and return true if the result "true" and false for "false")
             // When making unit tests, do not use the "where" causule yet, because its evaluation is not yet implemented
-            throw new NotImplementedException();
-        }
-
-        //Ignore all methods below this comment
-        new public string GetCode()
-        {
-            throw new NotImplementedException();
-        }
-        new public void PrintAST()
-        {
-            throw new NotImplementedException();
-        }
-
-        new public string PrintSelf(bool IsTopLevel)
-        {
             throw new NotImplementedException();
         }
     }

@@ -23,30 +23,15 @@ namespace AnimationControl
             this.CalledClass = CalledClass;
             this.CalledMethod = CalledMethod;
         }
-        new public Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
         {
             Boolean Success = this.Execute(Animation, Scope);
             return Success;
         }
 
-        new public Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
-            //Animation.Visualizer.UnHighlightClass(this.CallerClass);
-            Animation.Visualizer.HighlightClass(this.CallerClass);
-
-            Thread.Sleep( (int) (Animation.HighlightDuration/3.0d * 1000));
-
-            Animation.Visualizer.HighlightRelationship(this.RelationshipName);
-            Animation.Visualizer.UnHighlightClass(this.CallerClass);
-
-            Thread.Sleep((int)(Animation.HighlightDuration / 3.0d * 1000));
-
-            Animation.Visualizer.HighlightClass(this.CalledClass);
-            Animation.Visualizer.UnHighlightRelationship(this.RelationshipName);
-
-            Thread.Sleep((int)(Animation.HighlightDuration / 3.0d * 1000));
-
-            Animation.Visualizer.UnHighlightClass(this.CalledClass);
+            //TODO
 
             return true;
         }

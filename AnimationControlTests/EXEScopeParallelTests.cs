@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControlTests
+namespace AnimationControl.Tests
 {
     [TestClass()]
     public class EXEScopeParallelTests

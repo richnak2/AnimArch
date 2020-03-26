@@ -182,22 +182,6 @@ namespace AnimationControl
             this.Commands.Add(Command);
         }
 
-        new public String PrintSelf(Boolean IsTopLevel)
-        {
-            StringBuilder SelfPrintBuilder = new StringBuilder();
-            String Indentation = IsTopLevel ? "" : "\t";
-
-
-            SelfPrintBuilder.Append(Indentation);
-            foreach (EXECommand Command in this.Commands)
-            {
-                SelfPrintBuilder.Append(Indentation);
-                SelfPrintBuilder.Append(Command.PrintSelf(false));
-            }
-
-            return SelfPrintBuilder.ToString();
-        }
-
         public bool UnsetReferencingVariables(String ClassName, long InstanceID)
         {
             bool Result = true;
@@ -281,7 +265,7 @@ namespace AnimationControl
         }
 
         //"Scope" param is ignored here, because this class is a scope
-        new public Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
             this.Animation = Animation;
 
@@ -297,7 +281,7 @@ namespace AnimationControl
 
             return Success;
         }
-        new public Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
         {
             Boolean Success = this.Execute(Animation, Scope);
             return Success;
@@ -305,19 +289,6 @@ namespace AnimationControl
         public void RequestNextStep()
         {
             this.Animation.RequestNextStep();
-        }
-
-        new public String GetCode()
-        {
-            return this.OALCode;
-        }
-
-        new public void PrintAST()
-        {
-            foreach (EXECommand Command in this.Commands)
-            {
-                Command.PrintAST();
-            }
         }
     }
 }

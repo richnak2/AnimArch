@@ -50,8 +50,8 @@ namespace AnimationControl
 
                 //If we are returning real number, let's format it so that we don't have trouble with precision
                 Result = Evaluator.Evaluate(this.Operation, EvaluatedOperands);
-                Console.WriteLine(this.Operation);
-                Console.WriteLine(Result);
+                Console.WriteLine("Operation: " + this.Operation);
+                Console.WriteLine("Result of operation" + (Result == null ? "null" : Result));
                 if (EXETypes.RealTypeName.Equals(EXETypes.DetermineVariableType("", Result)))
                 {
                     Result = FormatDouble(Result);

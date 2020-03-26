@@ -8,8 +8,8 @@ namespace AnimationControl
 {
     public class EXECommandQueryCreate : EXECommand
     {
-        private String ReferencingVariableName { get; set; }
-        private String ClassName { get; set; }
+        private String ReferencingVariableName { get; }
+        private String ClassName { get; }
 
         public EXECommandQueryCreate(String ClassNamem, String ReferencingVariableName)
         {
@@ -24,26 +24,10 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        new public bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(Animation Animation, EXEScope Scope)
         {
             //Create an instance of given class -> will affect ExecutionSpace.
             //If ReferencingVariableName is provided (is not ""), create a referencing variable pointing to this instance -> will affect scope
-            throw new NotImplementedException();
-        }
-
-        //Ignore all methods below this comment
-        new public string GetCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        new public void PrintAST()
-        {
-            throw new NotImplementedException();
-        }
-
-        new public string PrintSelf(bool IsTopLevel)
-        {
             throw new NotImplementedException();
         }
     }

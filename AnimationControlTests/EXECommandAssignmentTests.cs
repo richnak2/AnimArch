@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControlTests
+namespace AnimationControl.Tests
 {
     [TestClass]
     public class EXECommandAssignmentTests
@@ -14,8 +14,7 @@ namespace AnimationControlTests
         {
             Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
-            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.UnitializedName);
-            Scope.AddVariable(Var1);
+            Scope.AddVariable(new EXEPrimitiveVariable("x", EXETypes.UnitializedName));
 
             EXEASTNode AssignedExpression = new EXEASTNodeLeaf("15");
             EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
@@ -34,11 +33,8 @@ namespace AnimationControlTests
         {
             Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
-            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
-            Scope.AddVariable(Var1);
-            EXEPrimitiveVariable Var2 = new EXEPrimitiveVariable("y", EXETypes.IntegerTypeName);
-            Var2.Value = "17";
-            Scope.AddVariable(Var2);
+            Scope.AddVariable(new EXEPrimitiveVariable("x", EXETypes.UnitializedName));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "17"));
 
             EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("+");
             AssignedExpression.AddOperand(new EXEASTNodeLeaf("y"));
@@ -62,17 +58,11 @@ namespace AnimationControlTests
 
             Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
-            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
-            Var1.Value = "45";
-            Scope.AddVariable(Var1);
-            EXEPrimitiveVariable Var2 = new EXEPrimitiveVariable("y", EXETypes.IntegerTypeName);
-            Var2.Value = "10";
-            Scope.AddVariable(Var2);
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "15"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", "10"));
 
             EXEScope SuperScope = new EXEScope();
-            EXEPrimitiveVariable Var3 = new EXEPrimitiveVariable("z", EXETypes.IntegerTypeName);
-            Var3.Value = "30";
-            Scope.AddVariable(Var3);
+            Scope.AddVariable(new EXEPrimitiveVariable("z", "30"));
 
             Scope.SuperScope = SuperScope;
 
@@ -107,15 +97,11 @@ namespace AnimationControlTests
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             Class1Inst1.SetAttribute("age", "50");
 
-            CDRelationshipPool RelationshipSpace = new CDRelationshipPool();
             EXEScope Scope = new EXEScope();
-            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
-            Var1.Value = "45";
-            Scope.AddVariable(Var1);
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "45"));
 
             EXEScope SuperScope = new EXEScope();
-            EXEReferencingVariable Var3 = new EXEReferencingVariable("human", "Human", Class1Inst1.UniqueID);
-            Scope.AddVariable(Var3);
+            SuperScope.AddVariable(new EXEReferencingVariable("human", "Human", Class1Inst1.UniqueID));
 
             Scope.SuperScope = SuperScope;
 
@@ -174,16 +160,11 @@ namespace AnimationControlTests
 
             Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
-            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
-            Scope.AddVariable(Var1);
-            EXEPrimitiveVariable Var2 = new EXEPrimitiveVariable("y", EXETypes.IntegerTypeName);
-            Var2.Value = EXETypes.BooleanFalse;
-            Scope.AddVariable(Var2);
+            Scope.AddVariable(new EXEPrimitiveVariable("x", EXETypes.UnitializedName));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", EXETypes.BooleanFalse));
 
             EXEScope SuperScope = new EXEScope();
-            EXEPrimitiveVariable Var3 = new EXEPrimitiveVariable("z", EXETypes.IntegerTypeName);
-            Var3.Value = EXETypes.BooleanTrue;
-            Scope.AddVariable(Var3);
+            SuperScope.AddVariable(new EXEPrimitiveVariable("z", EXETypes.BooleanTrue));
 
             Scope.SuperScope = SuperScope;
 
@@ -215,17 +196,11 @@ namespace AnimationControlTests
 
             Animation Animation = new Animation();
             EXEScope Scope = new EXEScope();
-            EXEPrimitiveVariable Var1 = new EXEPrimitiveVariable("x", EXETypes.IntegerTypeName);
-            Var1.Value = "45";
-            Scope.AddVariable(Var1);
-            EXEPrimitiveVariable Var2 = new EXEPrimitiveVariable("y", EXETypes.IntegerTypeName);
-            Var2.Value = EXETypes.BooleanFalse;
-            Scope.AddVariable(Var2);
+            Scope.AddVariable(new EXEPrimitiveVariable("x", "45"));
+            Scope.AddVariable(new EXEPrimitiveVariable("y", EXETypes.BooleanFalse));
 
             EXEScope SuperScope = new EXEScope();
-            EXEPrimitiveVariable Var3 = new EXEPrimitiveVariable("z", EXETypes.IntegerTypeName);
-            Var3.Value = EXETypes.BooleanTrue;
-            Scope.AddVariable(Var3);
+            SuperScope.AddVariable(new EXEPrimitiveVariable("z", EXETypes.BooleanTrue));
 
             Scope.SuperScope = SuperScope;
 
@@ -242,13 +217,13 @@ namespace AnimationControlTests
 
             Boolean Success = AssignCommand.Execute(Animation, Scope);
             Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x", EXETypes.BooleanTrue},
+                {"x", "45"},
                 {"y", EXETypes.BooleanFalse},
                 {"z", EXETypes.BooleanTrue}
             };
             Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
 
-            Assert.IsTrue(Success);
+            Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
         }
     }

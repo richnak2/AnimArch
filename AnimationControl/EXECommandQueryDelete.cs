@@ -11,9 +11,8 @@ namespace AnimationControl
             this.VariableName = VariableName;
         }
 
-        new public bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(Animation Animation, EXEScope Scope)
         {
-
             bool Result = false;
             EXEReferencingVariable Variable = Scope.FindReferencingVariableByName(this.VariableName);
             if (Variable != null)
@@ -24,7 +23,6 @@ namespace AnimationControl
                     Result = Scope.UnsetReferencingVariables(Variable.ClassName, Variable.ReferencedInstanceId);
                 }
             }
-
             return Result;
         }
     }

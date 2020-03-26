@@ -21,11 +21,12 @@ namespace AnimationControl
             this.AssignedExpression = AssignedExpression;
         }
 
-        new public Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
             Boolean Result = false;
 
             String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);
+            Console.WriteLine("Assigning value: " + AssignedValue);
             // If we are assigning to a variable
             if (this.AttributeName == null)
             {
@@ -33,16 +34,19 @@ namespace AnimationControl
                 // If the variable doesnt exist, we simply create it
                 if (Variable == null)
                 {
+                    Console.WriteLine("Creating new var" + this.VariableName);
                     Result = Scope.AddVariable(new EXEPrimitiveVariable(this.VariableName, AssignedValue));
                 }
                 //If variable exists and its type is UNDEFINED
                 else if (EXETypes.UnitializedName.Equals(Variable.Type))
                 {
+                    Console.WriteLine("Assigning to unitialized var" + this.VariableName);
                     Result = Variable.AssignValue(Variable.Name, AssignedValue);
                 }
                 // If the variable exists and is primitive
                 else if (!EXETypes.ReferenceTypeName.Equals(Variable.Type))
                 {
+                    Console.WriteLine("Assigning to initialized var" + this.VariableName);
                     // If the types don't match, this fails and returns false
                     Result = Variable.AssignValue("", AssignedValue);
                 }

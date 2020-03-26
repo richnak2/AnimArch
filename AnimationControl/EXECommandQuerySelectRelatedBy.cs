@@ -20,9 +20,8 @@ namespace AnimationControl
             this.WhereCondition = WhereCondition;
             this.RelationshipSelection = RelationshipSelection;
         }
-
         // SetUloh2
-        new public bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(Animation Animation, EXEScope Scope)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in
@@ -40,15 +39,18 @@ namespace AnimationControl
             // We need to check, if the variable already exists, it must be of corresponding type
             if (Scope.VariableNameExists(this.VariableName))
             {
-                try
-                {
-                    if (!((EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality) && this.RelationshipSelection.GetLastClassName() == Scope.FindReferencingVariableByName(this.VariableName).ClassName)
-                       || (EXECommandQuerySelect.CardinalityMany.Equals(this.Cardinality) && this.RelationshipSelection.GetLastClassName() == Scope.FindSetReferencingVariableByName(this.VariableName).ClassName)))
-                    {
-                        return false;
-                    }
-                }
-                catch (Exception e)
+                if
+                (
+                    !(
+                            (EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality)
+                            &&
+                            this.RelationshipSelection.GetLastClassName() == Scope.FindReferencingVariableByName(this.VariableName).ClassName)
+                        ||
+                            (EXECommandQuerySelect.CardinalityMany.Equals(this.Cardinality)
+                            &&
+                            this.RelationshipSelection.GetLastClassName() == Scope.FindSetReferencingVariableByName(this.VariableName).ClassName)
+                    )
+                )
                 {
                     return false;
                 }
@@ -130,21 +132,6 @@ namespace AnimationControl
             }
 
             return true;
-        }
-
-        //Ignore all methods below this comment
-        new public string GetCode()
-        {
-            throw new NotImplementedException();
-        }
-        new public void PrintAST()
-        {
-            throw new NotImplementedException();
-        }
-
-        new public string PrintSelf(bool IsTopLevel)
-        {
-            throw new NotImplementedException();
         }
     }
 }

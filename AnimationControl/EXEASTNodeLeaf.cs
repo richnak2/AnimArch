@@ -33,6 +33,9 @@ namespace AnimationControl
                 }
             }
 
+            Console.WriteLine("Operand: " + this.Value);
+            Console.WriteLine("Result: " + Result);
+
             return Result;
         }
 

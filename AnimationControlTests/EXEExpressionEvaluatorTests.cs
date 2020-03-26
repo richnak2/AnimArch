@@ -1452,9 +1452,8 @@ namespace AnimationControl.Tests
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
 
-            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            String ActualOutput = Evaluator.Evaluate("and", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue, "22" }));
             Assert.IsNull(ActualOutput);
-
         }
 
         [TestMethod]
@@ -1530,7 +1529,7 @@ namespace AnimationControl.Tests
         {
             EXEExpressionEvaluator Evaluator = new EXEExpressionEvaluator();
 
-            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue }));
+            String ActualOutput = Evaluator.Evaluate("or", new List<String>(new String[] { EXETypes.BooleanTrue, EXETypes.BooleanTrue, EXETypes.BooleanTrue, "\"TRUE\"" }));
             Assert.IsNull(ActualOutput);
 
         }

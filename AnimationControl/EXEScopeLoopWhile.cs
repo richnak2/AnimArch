@@ -21,8 +21,12 @@ namespace AnimationControl
 
             return EXETypes.BooleanTrue.Equals(Result) ? true : false;
         }
-
-        new public Boolean Execute(Animation Animation , EXEScope Scope)
+        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        {
+            Boolean Success = this.Execute(Animation, Scope);
+            return Success;
+        }
+        public override Boolean Execute(Animation Animation , EXEScope Scope)
         {
             Boolean Success = true;
             this.Animation = Animation;

@@ -18,7 +18,7 @@ namespace AnimationControl
         // Based on class names get the CDRelationship from RelationshipSpace
         // Based on variable names get the instance ids from Scope.ReferencingVariables
         // Create relationship between the given instance ids (CDRelationship.CreateRelationship) and return result of it
-        new public bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(Animation Animation, EXEScope Scope)
         {
             EXEReferencingVariable Variable1 = Scope.FindReferencingVariableByName(this.Variable1Name);
             if (Variable1 == null)
@@ -30,7 +30,7 @@ namespace AnimationControl
             {
                 return false;
             }
-            CDRelationship Relationship = Animation.RelationshipSpace.GetRelationship(this.RelationshipName,Variable1.ClassName, Variable2.ClassName);
+            CDRelationship Relationship = Animation.RelationshipSpace.GetRelationship(this.RelationshipName, Variable1.ClassName, Variable2.ClassName);
             if (Relationship == null)
             {
                 return false;
@@ -38,22 +38,6 @@ namespace AnimationControl
             bool Success = Relationship.CreateRelationship(Variable1.ReferencedInstanceId, Variable2.ReferencedInstanceId);
 
             return Success;
-        }
-
-        //Ignore all methods below this comment
-        new public string GetCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        new public void PrintAST()
-        {
-            throw new NotImplementedException();
-        }
-
-        new public string PrintSelf(bool IsTopLevel)
-        {
-            throw new NotImplementedException();
         }
     }
 }

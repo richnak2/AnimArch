@@ -37,7 +37,7 @@ namespace AnimationControl
             //Console.WriteLine("ConstrAST:" + ExpressionCommand + "EOL");
 
             EXEASTNode AST = null;
-            EXEQueryChecker QueryChecker = new EXEQueryChecker();
+           // EXEQueryChecker QueryChecker = new EXEQueryChecker();
 
             String ClearedExpressionCommand = EXEParseUtil.SqueezeWhiteSpace(ExpressionCommand);
             // Bollock - think about (5 + 6) * (5 + 7)
@@ -46,7 +46,7 @@ namespace AnimationControl
                 ClearedExpressionCommand = ClearedExpressionCommand.Substring(1, ClearedExpressionCommand.Length - 2);
             }*/
 
-            if ("\"".Equals(ClearedExpressionCommand[0]) && "\"".Equals(ClearedExpressionCommand[ExpressionCommand.Length - 1]))
+           /* if ("\"".Equals(ClearedExpressionCommand[0]) && "\"".Equals(ClearedExpressionCommand[ExpressionCommand.Length - 1]))
             {
                // AST = new EXEASTNodeLeaf(ExpressionCommand, false, false, false);
             }
@@ -84,7 +84,7 @@ namespace AnimationControl
                 }
 
                 AST = new EXEASTNodeLeaf(EXEParseUtil.SqueezeWhiteSpace(ClearedExpressionCommand));
-            }
+            }*/
 
             //Console.WriteLine("OALCP:" + ExpressionCommand);
             return AST;

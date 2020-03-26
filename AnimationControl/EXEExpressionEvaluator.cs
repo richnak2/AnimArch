@@ -430,7 +430,14 @@ namespace AnimationControl
                     {
                         //convert to list of int
                         List<bool> BooleanList = Operands.Select(bool.Parse).ToList();
-                        return (BooleanList[0] && BooleanList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+                        foreach (bool bool_var in BooleanList)
+                        {
+                            if (!bool_var)
+                            {
+                                return EXETypes.BooleanFalse;
+                            }
+                        }
+                        return EXETypes.BooleanTrue;
                     }
                     break;
                 case "or": //only boolean
@@ -439,14 +446,19 @@ namespace AnimationControl
                     {
                         //convert to list of int
                         List<bool> BooleanList = Operands.Select(bool.Parse).ToList();
-                        return (BooleanList[0] || BooleanList[1]) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
-
+                        foreach (bool bool_var in BooleanList)
+                        {
+                            if (bool_var)
+                            {
+                                return EXETypes.BooleanTrue;
+                            }
+                        }
+                        return EXETypes.BooleanFalse;
                     }
                     break;
                 //only 1 operand
                 case "not": //only boolean
                     //true if Operands are boolean
-                    Console.WriteLine(VariableType);
                     if (String.Equals(EXETypes.BooleanTypeName, VariableType))
                     {
                         //return TRUE or FALSE
@@ -521,10 +533,8 @@ namespace AnimationControl
                     return (Boolean.TryParse(param[0], out _)) ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
                 }
 
-                if (oper == "==" || oper == "!=" || oper.ToLower() == "and" || oper.ToLower() == "or")
+                if (((oper == "==" || oper == "!=") && param.Length == 2) || ((oper.ToLower() == "and" || oper.ToLower() == "or") && param.Length >= 2))
                 {
-                    if (param.Length != 2) return EXETypes.BooleanFalse;
-
                     foreach (var value in param)
                     {
                         if (!Boolean.TryParse(value, out _)) return EXETypes.BooleanFalse;
