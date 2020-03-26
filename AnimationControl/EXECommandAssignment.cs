@@ -23,6 +23,7 @@ namespace AnimationControl
 
         public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
+            Console.WriteLine("Assignment is being executed");
             Boolean Result = false;
 
             String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);

@@ -59,10 +59,13 @@ namespace AnimationControl
                 {
                     IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
-                    Success = base.SynchronizedExecute(Animation, this);
-                    if (!Success)
+                    foreach (EXECommand Command in this.Commands)
                     {
-                        break;
+                        Success = Command.SynchronizedExecute(Animation, this);
+                        if (!Success)
+                        {
+                            break;
+                        }
                     }
                 }
             }

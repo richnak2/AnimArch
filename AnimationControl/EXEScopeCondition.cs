@@ -47,12 +47,24 @@ namespace AnimationControl
             Boolean Result = true;
             Boolean AScopeWasExecuted = false;
 
+            
             Animation.AccessInstanceDatabase();
             Boolean IfConditionResult = this.EvaluateCondition(Scope, Animation.ExecutionSpace);
             Animation.LeaveInstanceDatabase();
             if (IfConditionResult)
             {
-                Result = base.SynchronizedExecute(Animation, this);
+                Console.WriteLine("If - Condition is true");
+                int i = 0;
+                foreach (EXECommand Command in this.Commands)
+                {
+                    Console.WriteLine("If - Bout to do " + ++i + "th command");
+                    Result = Command.SynchronizedExecute(Animation, this);
+                    Console.WriteLine("If - Done " + i + "th command");
+                    if (!Result)
+                    {
+                        break;
+                    }
+                }
                 AScopeWasExecuted = true;
             }
 

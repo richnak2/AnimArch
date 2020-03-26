@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace AnimationControl
 {
@@ -37,6 +38,7 @@ namespace AnimationControl
 
         public void AccessInstanceDatabase()
         {
+            Console.WriteLine("Entering DB");
             lock (this.InstanceDatabaseLock)
             {
                 while (this.InDatabase)
@@ -45,14 +47,17 @@ namespace AnimationControl
                 }
                 this.InDatabase = true;
             }
+            Console.WriteLine("Entered DB");
         }
         public void LeaveInstanceDatabase()
         {
+            Console.WriteLine("Leaving DB");
             lock (this.InstanceDatabaseLock)
             {
                 Monitor.PulseAll(this.InstanceDatabaseLock);
                 this.InDatabase = false;
             }
+            Console.WriteLine("Left DB");
         }
         public bool Execute()
         {

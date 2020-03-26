@@ -10,15 +10,26 @@ namespace AnimationControl
     {
         static void Main(string[] args)
         {
-            OALParser2 parser = new OALParser2();
-            String Code = "par thread x =6;y = y + 1; thread y = y + 2;\t\nthread y = y+ 3; end par;\n";
-            List<String> tokens = parser.Tokenize(Code);
+            Animation Animation = new Animation();
+            EXEScope SuperScope = new EXEScope();
+            SuperScope.AddVariable(new EXEPrimitiveVariable("x", "0"));
+            SuperScope.AddVariable(new EXEPrimitiveVariable("y", "0"));
 
-            int i = 1;
-            foreach (String token in tokens)
-            {
-                Console.WriteLine(i++ + ": " + token);
-            }
+            EXEScopeCondition ConditionScope = new EXEScopeCondition();
+            ConditionScope.SuperScope = SuperScope;
+
+            EXECommandAssignment AssignC1 = new EXECommandAssignment("y", new EXEASTNodeLeaf("50"));
+            ConditionScope.AddCommand(AssignC1);
+
+            EXEASTNodeLeaf Condition = new EXEASTNodeLeaf(EXETypes.BooleanTrue);
+            ConditionScope.Condition = Condition;
+
+            Boolean Success = ConditionScope.Execute(Animation, null);
+            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
+                {"x", "0"},
+                {"y", "50"},
+            };
+            Dictionary<String, String> ActualOutput = ConditionScope.GetStateDictRecursive();
 
             Console.ReadLine();
         }
