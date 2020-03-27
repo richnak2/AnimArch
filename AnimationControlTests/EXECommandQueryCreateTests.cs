@@ -15,8 +15,8 @@ namespace AnimationControl.Tests
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
 
-            EXECommandQueryCreate CreateCommand = new EXECommandQueryCreate("Observer", "o");
-            Boolean ExecutionSuccess = CreateCommand.Execute(Animation, Animation.SuperScope);
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -42,8 +42,8 @@ namespace AnimationControl.Tests
             Animation.ExecutionSpace.SpawnClass("Subject");
             Animation.ExecutionSpace.SpawnClass("Form");
 
-            EXECommandQueryCreate CreateCommand = new EXECommandQueryCreate("Observer", "o");
-            Boolean ExecutionSuccess = CreateCommand.Execute(Animation, Animation.SuperScope);
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -71,8 +71,8 @@ namespace AnimationControl.Tests
             Animation.ExecutionSpace.SpawnClass("Subject");
             Animation.ExecutionSpace.SpawnClass("Form");
 
-            EXECommandQueryCreate CreateCommand = new EXECommandQueryCreate("Observer");
-            Boolean ExecutionSuccess = CreateCommand.Execute(Animation, Animation.SuperScope);
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {

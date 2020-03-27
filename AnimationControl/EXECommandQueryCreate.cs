@@ -28,7 +28,7 @@ namespace AnimationControl
         {
             //Create an instance of given class -> will affect ExecutionSpace.
             //If ReferencingVariableName is provided (is not ""), create a referencing variable pointing to this instance -> will affect scope
-            CDClass Class = Animation.ExecutionSpace.getClassByName(ClassName);
+            CDClass Class = Animation.ExecutionSpace.getClassByName(this.ClassName);
             if (Class == null)
             {
                 return false;
@@ -51,7 +51,7 @@ namespace AnimationControl
                 return Scope.AddVariable(Variable);
             }
 
-            return false;
+            return true;
         }
     }
 }
