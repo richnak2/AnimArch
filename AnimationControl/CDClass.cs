@@ -161,6 +161,11 @@ namespace AnimationControl
             return result;
         }
 
+        public List<long> GetAllInstanceIDs()
+        {
+            return this.Instances.Select(x => x.UniqueID).ToList();
+        }
+        
         public void AppendToInstanceDatabase(Dictionary<String, long> InstanceDatabase)
         {
             foreach (CDClassInstance Instance in this.Instances)
@@ -168,6 +173,5 @@ namespace AnimationControl
                 InstanceDatabase.Add(this.Name, Instance.UniqueID);
             }
         }
-
     }
 }
