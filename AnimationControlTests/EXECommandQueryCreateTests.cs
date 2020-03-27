@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace AnimationControl.Tests
 {
@@ -225,7 +223,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
         }
         [TestMethod]
-        public void Execute_Bad_01()
+        public void Execute_Normal_08()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");          
@@ -236,11 +234,33 @@ namespace AnimationControl.Tests
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 1}
+                { "Observer", 2}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
                 { "o", "Observer"}
+            };
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+        }
+        [TestMethod]
+        public void Execute_Bad_01()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
             };
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();

@@ -34,9 +34,13 @@ namespace AnimationControl
                 return false;
             }
 
-            if (!"".Equals(this.ReferencingVariableName) && Scope.VariableNameExists(this.ReferencingVariableName))
+            EXEReferencingVariable Variable = Scope.FindReferencingVariableByName(this.ReferencingVariableName);
+            if (Variable != null)
             {
-                return false;
+                if (!String.Equals(this.ClassName, Variable.ClassName))
+                {
+                    return false;
+                }
             }
 
             CDClassInstance Instance = Class.CreateClassInstance();
@@ -47,8 +51,16 @@ namespace AnimationControl
 
             if (!"".Equals(this.ReferencingVariableName))
             {
-                EXEReferencingVariable Variable = new EXEReferencingVariable(this.ReferencingVariableName, Class.Name, Instance.UniqueID);
-                return Scope.AddVariable(Variable);
+                if (Variable != null)
+                {
+                    
+                    Variable.ReferencedInstanceId = Instance.UniqueID;
+                }
+                else
+                {
+                    Variable = new EXEReferencingVariable(this.ReferencingVariableName, Class.Name, Instance.UniqueID);
+                    return Scope.AddVariable(Variable);
+                }
             }
 
             return true;
