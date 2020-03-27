@@ -160,5 +160,14 @@ namespace AnimationControl
 
             return result;
         }
+
+        public void AppendToInstanceDatabase(Dictionary<String, long> InstanceDatabase)
+        {
+            foreach (CDClassInstance Instance in this.Instances)
+            {
+                InstanceDatabase.Add(this.Name, Instance.UniqueID);
+            }
+        }
+
     }
 }

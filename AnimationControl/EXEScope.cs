@@ -44,6 +44,23 @@ namespace AnimationControl
             return Result;
         }
 
+        public Dictionary<String, String> GetRefStateDictRecursive()
+        {
+            Dictionary<String, String> Result = new Dictionary<String, String>();
+            EXEScope CurrentScope = this;
+            while (CurrentScope != null)
+            {
+                foreach (EXEReferencingVariable CurrentVariable in CurrentScope.ReferencingVariables)
+                {
+                    Result[CurrentVariable.Name] = CurrentVariable.ClassName;
+                }
+
+                CurrentScope = CurrentScope.SuperScope;
+            }
+
+            return Result;
+        }
+
         public bool AddVariable(EXEPrimitiveVariable Variable)
         {
             bool Result = false;

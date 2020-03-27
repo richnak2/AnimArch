@@ -9,62 +9,87 @@ namespace AnimationControl.Tests
     [TestClass]
     public class EXECommandQueryCreateTests
     {
-        /*[TestMethod]
+        [TestMethod]
         public void Execute_Normal_01()
         {
             Animation Animation = new Animation();
-            CDClass DesiredClass = ExecutionSpace.SpawnClass("Observer");
-            ExecutionSpace.SpawnClass("Subject");
-            ExecutionSpace.SpawnClass("Form");
-
-            CDRelationshipPool RelationshipSpace = null;
-
-            EXEScope Scope = new EXEScope();
+            Animation.ExecutionSpace.SpawnClass("Observer");
 
             EXECommandQueryCreate CreateCommand = new EXECommandQueryCreate("Observer", "o");
-            Boolean ExecutionSuccess = CreateCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean ExecutionSuccess = CreateCommand.Execute(Animation, Animation.SuperScope);
 
-            Boolean Success = ExecutionSuccess && Scope.ReferencingVariables[0].Name == "o" && DesiredClass.Instances.Count == 1;
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "o", "Observer"}
+            };
 
-            Assert.IsTrue(Success);
-        }*/
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
 
-       /* [TestMethod]
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+        }
+        [TestMethod]
         public void Execute_Normal_02()
         {
             Animation Animation = new Animation();
-            CDClass DesiredClass = ExecutionSpace.SpawnClass("Observer");
-            ExecutionSpace.SpawnClass("Subject");
-
-            CDRelationshipPool RelationshipSpace = null;
-
-            EXEScope Scope = new EXEScope();
+            Animation.ExecutionSpace.SpawnClass("Observer");
+            Animation.ExecutionSpace.SpawnClass("Subject");
+            Animation.ExecutionSpace.SpawnClass("Form");
 
             EXECommandQueryCreate CreateCommand = new EXECommandQueryCreate("Observer", "o");
-            Boolean ExecutionSuccess = CreateCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Boolean ExecutionSuccess = CreateCommand.Execute(Animation, Animation.SuperScope);
 
-            Boolean Success = ExecutionSuccess && Scope.ReferencingVariables[0].Name == "o" && DesiredClass.Instances.Count == 1;
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 1},
+                { "Subject", 0},
+                { "Form", 0}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "o", "Observer"}
+            };
 
-            Assert.IsTrue(Success);
-        }*/
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
 
-       /* [TestMethod]
-        public void Execute_Bad_01()
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+        }
+        [TestMethod]
+        public void Execute_Normal_03()
         {
             Animation Animation = new Animation();
-            CDClass DesiredClass = ExecutionSpace.SpawnClass("Observer");
-            ExecutionSpace.SpawnClass("Subject");
+            Animation.ExecutionSpace.SpawnClass("Observer");
+            Animation.ExecutionSpace.SpawnClass("Subject");
+            Animation.ExecutionSpace.SpawnClass("Form");
 
-            CDRelationshipPool RelationshipSpace = null;
+            EXECommandQueryCreate CreateCommand = new EXECommandQueryCreate("Observer");
+            Boolean ExecutionSuccess = CreateCommand.Execute(Animation, Animation.SuperScope);
 
-            EXEScope Scope = new EXEScope();
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 1},
+                { "Subject", 0},
+                { "Form", 0}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+            };
 
-            EXECommandQueryCreate CreateCommand = new EXECommandQueryCreate("Object", "o");
-            Boolean ExecutionSuccess = CreateCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
 
-            Boolean Success = ExecutionSuccess && Scope.ReferencingVariables.Count == 0 && DesiredClass.Instances.Count == 0;
-
-            Assert.IsTrue(Success);
-        }*/
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+        }
     }
 }

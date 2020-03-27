@@ -11,7 +11,7 @@ namespace AnimationControl
         private String ReferencingVariableName { get; }
         private String ClassName { get; }
 
-        public EXECommandQueryCreate(String ClassNamem, String ReferencingVariableName)
+        public EXECommandQueryCreate(String ClassName, String ReferencingVariableName)
         {
             this.ReferencingVariableName = ReferencingVariableName;
             this.ClassName = ClassName;
@@ -28,7 +28,30 @@ namespace AnimationControl
         {
             //Create an instance of given class -> will affect ExecutionSpace.
             //If ReferencingVariableName is provided (is not ""), create a referencing variable pointing to this instance -> will affect scope
-            throw new NotImplementedException();
+            CDClass Class = Animation.ExecutionSpace.getClassByName(ClassName);
+            if (Class == null)
+            {
+                return false;
+            }
+
+            if (!"".Equals(this.ReferencingVariableName) && Scope.VariableNameExists(this.ReferencingVariableName))
+            {
+                return false;
+            }
+
+            CDClassInstance Instance = Class.CreateClassInstance();
+            if (Instance == null)
+            {
+                return false;
+            }
+
+            if (!"".Equals(this.ReferencingVariableName))
+            {
+                EXEReferencingVariable Variable = new EXEReferencingVariable(this.ReferencingVariableName, Class.Name, Instance.UniqueID);
+                return Scope.AddVariable(Variable);
+            }
+
+            return false;
         }
     }
 }

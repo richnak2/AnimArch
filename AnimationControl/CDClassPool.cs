@@ -17,7 +17,6 @@ namespace AnimationControl
             this.ClassPool = new List<CDClass>();
         }
 
-        // SetUloh2
         public CDClassInstance GetClassInstanceById(String ClassName, long Id)
         {
             CDClassInstance Result = null;
@@ -129,6 +128,26 @@ namespace AnimationControl
             }
 
             return Result;
+        }
+
+        public Dictionary<String, long> ProduceInstanceDatabase()
+        {
+            Dictionary<String, long> InstanceDatabase = new Dictionary<String, long>();
+            foreach (CDClass Class in this.ClassPool)
+            {
+                Class.AppendToInstanceDatabase(InstanceDatabase);
+            }
+            return InstanceDatabase;
+        }
+
+        public Dictionary<String, int> ProduceInstanceHistogram()
+        {
+            Dictionary<String, int> InstanceHistogram = new Dictionary<String, int>();
+            foreach (CDClass Class in this.ClassPool)
+            {
+                InstanceHistogram.Add(Class.Name, Class.InstanceCount());
+            }
+            return InstanceHistogram;
         }
     }
 }
