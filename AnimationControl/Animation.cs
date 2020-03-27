@@ -38,7 +38,6 @@ namespace AnimationControl
 
         public void AccessInstanceDatabase()
         {
-            Console.WriteLine("Entering DB");
             lock (this.InstanceDatabaseLock)
             {
                 while (this.InDatabase)
@@ -47,23 +46,20 @@ namespace AnimationControl
                 }
                 this.InDatabase = true;
             }
-            Console.WriteLine("Entered DB");
         }
         public void LeaveInstanceDatabase()
         {
-            Console.WriteLine("Leaving DB");
             lock (this.InstanceDatabaseLock)
             {
                 Monitor.PulseAll(this.InstanceDatabaseLock);
                 this.InDatabase = false;
             }
-            Console.WriteLine("Left DB");
         }
         public bool Execute()
         {
             bool Result = false;
 
-            Result = this.SuperScope.Execute(this, null);
+            Result = this.SuperScope.SynchronizedExecute(this, null);
 
             return Result;
         }

@@ -197,6 +197,14 @@ namespace AnimationControl
         public void AddCommand(EXECommand Command)
         {
             this.Commands.Add(Command);
+            if (Command.IsComposite())
+            {
+                ((EXEScope)Command).SuperScope = this;
+            }
+        }
+        public override Boolean IsComposite()
+        {
+            return true;
         }
 
         public bool UnsetReferencingVariables(String ClassName, long InstanceID)

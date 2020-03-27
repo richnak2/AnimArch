@@ -11,6 +11,10 @@ namespace AnimationControl
             Animation.LeaveInstanceDatabase();
             return Success;
         }
+        public virtual Boolean IsComposite()
+        {
+            return false;
+        }
         public abstract Boolean Execute(Animation Animation, EXEScope Scope);
     }
 }

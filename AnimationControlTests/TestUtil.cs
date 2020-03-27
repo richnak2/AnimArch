@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AnimationControl.Tests
@@ -41,6 +42,21 @@ namespace AnimationControl.Tests
             }
 
             return Result;
+        }
+        public static void ShuffleList<T>(List<T> List)
+        {
+            Random random = new Random();
+            int n = List.Count();
+            int i;
+            T temp;
+            while (n > 1)
+            {
+                n--;
+                i = random.Next(n + 1);
+                temp = List[i];
+                List[i] = List[n];
+                List[n] = temp;
+            }
         }
     }
 }
