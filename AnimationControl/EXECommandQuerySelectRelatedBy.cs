@@ -31,7 +31,14 @@ namespace AnimationControl
             // Where condition tells us which instances to select from all instances of the class (just do EXEASTNode.Evaluate and return true if the result "true" and false for "false")
             // When making unit tests, do not use the "where" causule yet, because its evaluation is not yet implemented
             // If relationship selection does not exists, this is problem
+
             if (this.RelationshipSelection == null)
+            {
+                return false;
+            }
+
+            CDClass Class = Animation.ExecutionSpace.getClassByName(this.RelationshipSelection.GetLastClassName());
+            if (Class == null)
             {
                 return false;
             }
