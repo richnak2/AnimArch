@@ -5,11 +5,11 @@ namespace AnimationControl
 {
     public class CDRelationship
     {
-        public String FromClass { get;}
-        public String ToClass { get;}
+        public String FromClass { get; }
+        public String ToClass { get; }
         public String RelationshipName { get; }
 
-        private List<(long, long)> InstanceRelationships { get;}
+        private List<(long, long)> InstanceRelationships { get; }
 
         public CDRelationship(String FromClass, String ToClass, String Name)
         {
@@ -87,6 +87,20 @@ namespace AnimationControl
         public void ClearRelationships()
         {
             this.InstanceRelationships.Clear();
+        }
+
+        public List<(String, long, long)> GetTupples()
+        {
+            List<(String, long, long)> Tupples = new List<(String, long, long)>();
+            foreach ((long, long) Tupple in this.InstanceRelationships)
+            {
+                Tupples.Add((this.RelationshipName, Tupple.Item1, Tupple.Item2));
+            }
+            if (Tupples.Count == 0)
+            {
+                Tupples.Add((this.RelationshipName, int.MinValue, int.MinValue));
+            }
+            return Tupples;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace AnimationControl
 {
@@ -303,9 +303,22 @@ namespace AnimationControl
             Boolean Success = this.Execute(Animation, Scope);
             return Success;
         }
-        public void RequestNextStep()
+
+        public List<(String, String)> GetReferencingVariablesByIDRecursive(long ID)
         {
-            this.Animation.RequestNextStep();
+            List<(String, String)> Vars = new List<(String, String)>();
+            foreach (EXEReferencingVariable Var in this.ReferencingVariables)
+            {
+                if (Var.ReferencedInstanceId == ID)
+                {
+                    Vars.Add((Var.ClassName ,Var.Name));
+                }
+            }
+            if (this.SuperScope != null)
+            {
+                Vars = Vars.Concat(this.SuperScope.GetReferencingVariablesByIDRecursive(ID)).ToList();
+            }
+            return Vars;
         }
     }
 }

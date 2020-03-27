@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AnimationControl
 {
@@ -99,6 +100,16 @@ namespace AnimationControl
                 }
             }
             return Result;
+        }
+
+        public List<(String, long, long)> GetAllRelationshipsTupples()
+        {
+            List<(String, long, long)> Tupples = new List<(String, long, long)>();
+            foreach (CDRelationship Relationship in this.RelationshipPool)
+            {
+                Tupples = Tupples.Concat(Relationship.GetTupples()).ToList();
+            }
+            return Tupples;
         }
     }
 }
