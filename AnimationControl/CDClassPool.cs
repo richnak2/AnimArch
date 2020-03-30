@@ -13,7 +13,6 @@ namespace AnimationControl
 
         public CDClassPool()
         {
-            this.ClassIDPrefix = 1000;
             this.ClassPool = new List<CDClass>();
         }
 
@@ -31,8 +30,7 @@ namespace AnimationControl
         }
         public CDClass SpawnClass(String Name)
         {
-            long NewClassID = this.GenerateClassID();
-            CDClass NewClass = new CDClass(NewClassID, Name);
+            CDClass NewClass = new CDClass(Name);
             this.ClassPool.Add(NewClass);
             return NewClass;
         }
@@ -108,14 +106,6 @@ namespace AnimationControl
             }
 
             return SearchedClass.MethodExists(MethodName);
-        }
-
-        private long GenerateClassID()
-        {
-            long NewClassID = this.ClassIDPrefix;
-            this.ClassIDPrefix++;
-
-            return NewClassID;
         }
 
         public bool DestroyInstance(String ClassName, long InstanceId)

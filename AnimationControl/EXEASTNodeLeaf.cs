@@ -18,13 +18,20 @@ namespace AnimationControl
         public String Evaluate(EXEScope Scope, CDClassPool ExecutionSpace)
         {
             String Result = null;
+
+            String ValueType = EXETypes.DetermineVariableType("", this.Value);
+            if (ValueType == null)
+            {
+                return Result;
+            }
+
             // If we have simple value, e.g. 5, 3.14, "hi Madelyn", we are good
-            if (!EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Value)))
+            if (!EXETypes.ReferenceTypeName.Equals(ValueType))
             {
                 Result = this.Value;
             }
             // We got here because we have a variable name, the variable is of primitive value
-            else if(EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Value)))
+            else if(EXETypes.ReferenceTypeName.Equals(ValueType))
             {
                 EXEPrimitiveVariable ThisVariable = Scope.FindPrimitiveVariableByName(this.Value);
                 if(ThisVariable != null)

@@ -23,6 +23,7 @@ namespace AnimationControl
 
             if (!this.CanBeEvaluated(Operator, Operands)) return null;
 
+            Console.WriteLine("Can be evaluated");
 
             //get variable type
             String VariableType = EXETypes.DetermineVariableType(null, Operands[0]);
@@ -140,7 +141,7 @@ namespace AnimationControl
                         return IntList.Aggregate((a, x) => a / x).ToString();
                     }
                     //true if Operands are real numbers
-                    if (String.Equals(EXETypes.IntegerTypeName, VariableType))
+                    if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
@@ -171,7 +172,7 @@ namespace AnimationControl
                         return IntList.Aggregate((a, x) => a % x).ToString();
                     }
                     //true if Operands are real numbers
-                    if (String.Equals(EXETypes.IntegerTypeName, VariableType))
+                    if (String.Equals(EXETypes.RealTypeName, VariableType))
                     {
                         //convert to list of real numbers
                         // List<double> DoubleList = Operands.Select(double.Parse.).ToList();
@@ -470,8 +471,7 @@ namespace AnimationControl
                     break;
             }
 
-
-            throw new NotImplementedException();
+            return null;
         }
         //What's the difference between "FAIL" and "false"?
         public Boolean CanBeEvaluated(String Operator, List<String> Params)

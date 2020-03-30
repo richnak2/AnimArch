@@ -13,13 +13,9 @@ namespace AnimationControl
         private List<CDAttribute> Attributes { get; }
         private List<CDMethod> Methods { get; }
         private List<CDClassInstance> Instances { get; }
-        private long ClassIDPrefix;
-        private long InstanceIDSeed;
 
-        public CDClass(long ClassIDPrefix, String Name)
+        public CDClass(String Name)
         {
-            this.ClassIDPrefix = ClassIDPrefix;
-            this.InstanceIDSeed = 0;
             this.Name = Name;
 
             this.Attributes = new List<CDAttribute>();
@@ -28,10 +24,8 @@ namespace AnimationControl
 
             this.Instances = new List<CDClassInstance>();
         }
-        public CDClass(long ClassIDPrefix, String Name, CDAttribute [] Attributes)
+        public CDClass(String Name, CDAttribute [] Attributes)
         {
-            this.ClassIDPrefix = ClassIDPrefix;
-            this.InstanceIDSeed = 0;
             this.Name = Name;
 
             this.Attributes = new List<CDAttribute>(Attributes);
@@ -40,10 +34,8 @@ namespace AnimationControl
 
             this.Instances = new List<CDClassInstance>();
         }
-        public CDClass(long ClassIDPrefix, String Name, CDMethod[] Methods)
+        public CDClass(String Name, CDMethod[] Methods)
         {
-            this.ClassIDPrefix = ClassIDPrefix;
-            this.InstanceIDSeed = 0;
             this.Name = Name;
 
             this.Attributes = new List<CDAttribute>();
@@ -52,10 +44,8 @@ namespace AnimationControl
 
             this.Instances = new List<CDClassInstance>();
         }
-        public CDClass(long ClassIDPrefix, String Name, CDAttribute[] Attributes, CDMethod[] Methods)
+        public CDClass(String Name, CDAttribute[] Attributes, CDMethod[] Methods)
         {
-            this.ClassIDPrefix = ClassIDPrefix;
-            this.InstanceIDSeed = 0;
             this.Name = Name;
 
             this.Attributes = new List<CDAttribute>(Attributes);
@@ -67,20 +57,12 @@ namespace AnimationControl
 
         public CDClassInstance CreateClassInstance()
         {
-            long NewInstanceID = ConstructNewInstanceUniqueID();
-            this.InstanceIDSeed++;
+            long NewInstanceID = EXEInstanceIDSeed.GetInstance().GenerateID();
 
             CDClassInstance Instance = new CDClassInstance(NewInstanceID, this.Attributes);
             this.Instances.Add(Instance);
 
             return Instance;
-        }
-        private long ConstructNewInstanceUniqueID()
-        {
-            int DigitCount = this.InstanceIDSeed.ToString().Length;
-            long NewInstanceID = ClassIDPrefix * PowerOf(10, DigitCount) + InstanceIDSeed;
-
-            return NewInstanceID;
         }
 
         public bool DestroyInstance(long InstanceId)

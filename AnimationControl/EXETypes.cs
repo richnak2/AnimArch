@@ -35,6 +35,11 @@ namespace AnimationControl
                 return UnitializedName;
             }
 
+            if (value == "")
+            {
+                return null;
+            }
+
             if (long.TryParse(value, out _))
             {
                 return IntegerTypeName;

@@ -63,6 +63,7 @@
     <Compile Include="EXECommandQueryUnrelate.cs" />
     <Compile Include="EXEEvaluatorHandleOperators.cs" />
     <Compile Include="EXEExpressionEvaluator.cs" />
+    <Compile Include="EXEInstanceIDSeed.cs" />
     <Compile Include="EXEReferenceEvaluator.cs" />
     <Compile Include="EXEReferenceHandle.cs" />
     <Compile Include="EXEReferencingSetVariable.cs" />

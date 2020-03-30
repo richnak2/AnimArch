@@ -66,7 +66,12 @@ namespace AnimationControl
                 Console.WriteLine("Result of operation" + (Result == null ? "null" : Result));
                 if (EXETypes.RealTypeName.Equals(EXETypes.DetermineVariableType("", Result)))
                 {
+                    Console.WriteLine("is real and needs formatting");
                     Result = FormatDouble(Result);
+                    if (!Result.Contains("."))
+                    {
+                        Result += ".0";
+                    }
                 }
             }
             // If we have handle operators
