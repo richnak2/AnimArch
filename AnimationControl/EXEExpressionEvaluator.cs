@@ -16,8 +16,11 @@ namespace AnimationControl
         }
         // SetUloh1
         // Here you get operator and operands, and you need to return the result. Check the unit tests to see what this is about
-        public String Evaluate(String Operator, List<String> Operands)
+        public String Evaluate(String Operator, List<String> InOperands)
         {
+            List<String> Operands = PromoteIntegers(InOperands);
+            int i = 0;
+
             if (!this.CanBeEvaluated(Operator, Operands)) return null;
 
 
@@ -581,6 +584,33 @@ namespace AnimationControl
             return EXETypes.BooleanFalse;
         }
 
+        private List<String> PromoteIntegers(List<String> Operands)
+        {
+            if (!EXEExecutionGlobals.AllowPromotionOfIntegerToReal)
+            {
+                return Operands;
+            }
+
+            bool ContainsReal = false;
+            bool ContainsInteger = false;
+            foreach (String Operand in Operands)
+            {
+                ContainsReal |= EXETypes.RealTypeName.Equals(EXETypes.DetermineVariableType("", Operand));
+                ContainsInteger |= EXETypes.IntegerTypeName.Equals(EXETypes.DetermineVariableType("", Operand));
+
+                if (ContainsReal && ContainsInteger)
+                {
+                    break;
+                }
+            }
+
+            if (!ContainsReal || !ContainsInteger)
+            {
+                return Operands;
+            }
+
+            return Operands.Select(x => EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, EXETypes.DetermineVariableType("", x), x)).ToList();
+        }
 
         //return "clear" string without \" 
         public String GetClearStringFromEXETypeString(String str)

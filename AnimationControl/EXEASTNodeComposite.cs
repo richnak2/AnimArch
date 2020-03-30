@@ -55,6 +55,9 @@ namespace AnimationControl
 
                 //If we are returning real number, let's format it so that we don't have trouble with precision
                 Result = Evaluator.Evaluate(this.Operation, EvaluatedOperands);
+                Console.Write("AST Composite operation " + this.Operation + " has result ");
+                Console.Write(Result == null ? "null" : Result);
+                Console.WriteLine();
                 if (Result == null)
                 {
                     return Result;

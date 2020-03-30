@@ -23,7 +23,7 @@ namespace AnimationControl
             }
 
             this.UniqueID = UniqueID;
-            this.State.Add(EXETypes.UniqueIDTypeName, UniqueID.ToString());
+            this.State.Add(EXETypes.UniqueIDAttributeName, UniqueID.ToString());
         }
 
         public String GetAttributeValue(String name)
@@ -55,7 +55,7 @@ namespace AnimationControl
             
             foreach (var Item in this.State)
             {
-                if (!EXETypes.UniqueIDTypeName.Equals(Item.Key))
+                if (!EXETypes.UniqueIDAttributeName.Equals(Item.Key))
                 {
                     State[Item.Key] = Item.Value;
                 }

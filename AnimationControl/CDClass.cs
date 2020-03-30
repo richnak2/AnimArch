@@ -28,6 +28,42 @@ namespace AnimationControl
 
             this.Instances = new List<CDClassInstance>();
         }
+        public CDClass(long ClassIDPrefix, String Name, CDAttribute [] Attributes)
+        {
+            this.ClassIDPrefix = ClassIDPrefix;
+            this.InstanceIDSeed = 0;
+            this.Name = Name;
+
+            this.Attributes = new List<CDAttribute>(Attributes);
+
+            this.Methods = new List<CDMethod>();
+
+            this.Instances = new List<CDClassInstance>();
+        }
+        public CDClass(long ClassIDPrefix, String Name, CDMethod[] Methods)
+        {
+            this.ClassIDPrefix = ClassIDPrefix;
+            this.InstanceIDSeed = 0;
+            this.Name = Name;
+
+            this.Attributes = new List<CDAttribute>();
+
+            this.Methods = new List<CDMethod>(Methods);
+
+            this.Instances = new List<CDClassInstance>();
+        }
+        public CDClass(long ClassIDPrefix, String Name, CDAttribute[] Attributes, CDMethod[] Methods)
+        {
+            this.ClassIDPrefix = ClassIDPrefix;
+            this.InstanceIDSeed = 0;
+            this.Name = Name;
+
+            this.Attributes = new List<CDAttribute>(Attributes);
+
+            this.Methods = new List<CDMethod>(Methods);
+
+            this.Instances = new List<CDClassInstance>();
+        }
 
         public CDClassInstance CreateClassInstance()
         {

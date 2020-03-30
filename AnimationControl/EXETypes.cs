@@ -21,10 +21,11 @@ namespace AnimationControl
         public const String BooleanFalse = "FALSE";
 
         public static String UnitializedName = "UNDEFINED";
+        public const String UniqueIDAttributeName = "ID";
 
         public static String DetermineVariableType(String name, String value)
         {
-            if (name == UniqueIDTypeName)
+            if (name == UniqueIDAttributeName)
             {
                 return UniqueIDTypeName;
             }
@@ -96,6 +97,104 @@ namespace AnimationControl
             }
 
             return Result;
+        }
+        public static bool CanBeAssignedToAttribute(String AttributeName, String AttributeType, String NewValueType)
+        {
+            if (AttributeName == null || AttributeType == null || NewValueType == null)
+            {
+                return false;
+            }
+
+            if (EXETypes.UniqueIDAttributeName.Equals(AttributeName))
+            {
+                return false;
+            }
+
+            if (String.Equals(AttributeType, NewValueType))
+            {
+                return true;
+            }
+
+            if (
+                EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger
+                && EXETypes.IntegerTypeName.Equals(AttributeType)
+                && EXETypes.RealTypeName.Equals(NewValueType)
+            )
+            {
+                return true;
+            }
+
+            if (
+               EXEExecutionGlobals.AllowPromotionOfIntegerToReal
+               && EXETypes.RealTypeName.Equals(AttributeType)
+               && EXETypes.IntegerTypeName.Equals(NewValueType)
+            )
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public static bool CanBeAssignedToVariable(String VariableType, String NewValueType)
+        {
+            if (VariableType == null || NewValueType == null)
+            {
+                return false;
+            }
+
+            if (String.Equals(VariableType, NewValueType))
+            {
+                return true;
+            }
+
+            if (
+                EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger
+                && EXETypes.IntegerTypeName.Equals(VariableType)
+                && EXETypes.RealTypeName.Equals(NewValueType)
+            )
+            {
+                return true;
+            }
+
+            if (
+               EXEExecutionGlobals.AllowPromotionOfIntegerToReal
+               && EXETypes.RealTypeName.Equals(VariableType)
+               && EXETypes.IntegerTypeName.Equals(NewValueType)
+            )
+            {
+                return true;
+            }
+
+            return false;
+        }
+        public static String AdjustAssignedValue(String VariableType, String NewValueType, String NewValue)
+        {
+            if (NewValue == null || VariableType == null || NewValueType == null)
+            {
+                return "";
+            }
+
+            // We're assigning real to integer
+            if (
+                EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger
+                && EXETypes.IntegerTypeName.Equals(VariableType)
+                && EXETypes.RealTypeName.Equals(NewValueType)
+            )
+            {
+                return NewValue.Split('.')[0];
+            }
+
+            // We're assigning integer to real
+            if (
+               EXEExecutionGlobals.AllowPromotionOfIntegerToReal
+               && EXETypes.RealTypeName.Equals(VariableType)
+               && EXETypes.IntegerTypeName.Equals(NewValueType)
+            )
+            {
+                return NewValue + ".0";
+            }
+
+            return NewValue;
         }
     }
 }

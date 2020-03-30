@@ -58,17 +58,19 @@ namespace AnimationControl
                     Result = Variable.AssignValue("", AssignedValue);
                 }
 
-                Console.WriteLine("Assigning to initialized var" + this.VariableName);
                 // Variable exists and is not primitive. What to do, what to do?
-                // We do nothing, we CANNOT ASIGN TO HANDLES!!!
+                // We do nothing, we CANNOT ASSIGN TO HANDLES!!!
             }
             // We are assigning to an attribute of a variable
             else
             {
+            
                 EXEReferenceEvaluator RefEvaluator = new EXEReferenceEvaluator();
                 Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, Scope, Animation.ExecutionSpace, AssignedValue);
+                Console.WriteLine("Tried to assign " + AssignedValue + " to " + this.VariableName + "." + this.AttributeName);
             }
 
+            Console.WriteLine("Assignment Result: " + Result);
             return Result;
         }
     }

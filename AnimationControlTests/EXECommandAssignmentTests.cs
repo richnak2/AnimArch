@@ -667,9 +667,9 @@ namespace AnimationControl.Tests
             };
             Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
             {
-                {"obj.x","66.4"},
-                {"obj.y","33.3"},
-                {"obj.z","1.3"},
+                {"obj.x","66"},
+                {"obj.y","33"},
+                {"obj.z","1"},
             };
 
             Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
@@ -680,7 +680,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }
         [TestMethod]
-        public void Execute_Normal_Int_200()
+        public void Execute_Normal_Int_23()
         {
             Animation Animation = new Animation();
             CDClass Class = Animation.ExecutionSpace.SpawnClass("GameObject");
@@ -710,19 +710,268 @@ namespace AnimationControl.Tests
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
             {   
-                {"sum","101"}
+                {"sum","100"}
             };
             Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
             {
-                {"obj.x","66.4"},
-                {"obj.y","33.3"},
-                {"obj.z","1.3"},
+                {"obj.x","66"},
+                {"obj.y","33"},
+                {"obj.z","1"},
             };
 
             Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
             Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
 
             Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Normal_Int_24()
+        {
+            Animation Animation = new Animation();
+            CDClass Class = Animation.ExecutionSpace.SpawnClass("GameObject");
+            Class.AddAttribute(new CDAttribute("x", EXETypes.RealTypeName));
+            Class.AddAttribute(new CDAttribute("y", EXETypes.RealTypeName));
+            Class.AddAttribute(new CDAttribute("z", EXETypes.RealTypeName));
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("GameObject", "obj"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("obj", "x", new EXEASTNodeLeaf("66.4")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("obj", "y", new EXEASTNodeLeaf("33.4")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("obj", "z", new EXEASTNodeLeaf("1.4")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("sum", new EXEASTNodeLeaf("5")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("sum",
+                new EXEASTNodeComposite("+", new EXEASTNode[] {
+                    new EXEASTNodeComposite(".", new EXEASTNode[] {
+                        new EXEASTNodeLeaf("obj"), new EXEASTNodeLeaf("x")
+                    }),
+                    new EXEASTNodeComposite(".", new EXEASTNode[] {
+                        new EXEASTNodeLeaf("obj"), new EXEASTNodeLeaf("y")
+                    }),
+                    new EXEASTNodeComposite(".", new EXEASTNode[] {
+                        new EXEASTNodeLeaf("obj"), new EXEASTNodeLeaf("z")
+                    })
+                })
+            ));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"sum","101"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                {"obj.x","66.4"},
+                {"obj.y","33.4"},
+                {"obj.z","1.4"},
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Normal_Int_25()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("15")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("3.3")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("z", new EXEASTNodeComposite("+", new EXEASTNode[] {
+                new EXEASTNodeLeaf("x"), new EXEASTNodeLeaf("y")
+            })));
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","15"},
+                {"y","3.3"},
+                {"z","18.3"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_Int_01()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("15.1.2018")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_Int_02()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","0"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_Int_03()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("y")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_Int_04()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("\"\"")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","0"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_Int_05()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("\"ahoj\"")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","0"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_Int_06()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("\"0\"")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","0"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_Int_07()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Synged");
+            
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("\"0\"")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","0"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
             CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }

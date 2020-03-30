@@ -53,11 +53,12 @@ namespace AnimationControl
             if (Attribute == null) return false;
 
             String NewValueType = EXETypes.DetermineVariableType(null, NewValue);
-            if (!String.Equals(Attribute.Type, NewValueType)) return false;
+            if (!EXETypes.CanBeAssignedToAttribute(AttributeName, Attribute.Type, NewValueType)) return false;
 
-            ClassInstance.SetAttribute(AttributeName, NewValue);
+            ClassInstance.SetAttribute(AttributeName, EXETypes.AdjustAssignedValue(Attribute.Type, NewValueType, NewValue));
 
             return true;
         }
+       
     }
 }
