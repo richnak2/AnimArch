@@ -240,6 +240,32 @@ namespace AnimationControl.Tests
             Assert.AreEqual(ExpectedOutput, ActualOutput);
         }
         [TestMethod]
+        public void Evaluate_Normal_Int_05()
+        {
+            Animation Animation = new Animation();
+            CDClass Class = Animation.ExecutionSpace.SpawnClass("GameObject");
+            Class.AddAttribute(new CDAttribute("x", EXETypes.IntegerTypeName));
+            Class.AddAttribute(new CDAttribute("y", EXETypes.IntegerTypeName));
+            Class.AddAttribute(new CDAttribute("z", EXETypes.IntegerTypeName));
+
+            CDClassInstance Instance = Class.CreateClassInstance();
+            Instance.SetAttribute("x", "1");
+
+            Animation.SuperScope.AddVariable(new EXEReferencingVariable("obj", "GameObject", Instance.UniqueID));
+
+            EXEASTNodeComposite AST = new EXEASTNodeComposite("+", new EXEASTNode[] {
+                    new EXEASTNodeComposite(".", new EXEASTNode[] {
+                        new EXEASTNodeLeaf("obj"), new EXEASTNodeLeaf("x")
+                    }),
+                    new EXEASTNodeLeaf("5")
+                });
+
+            String ActualOutput = AST.Evaluate(Animation.SuperScope, Animation.ExecutionSpace);
+            String ExpectedOutput = "6";
+
+            Assert.AreEqual(ExpectedOutput, ActualOutput);
+        }
+        [TestMethod]
         public void Evaluate_Normal_Real_01()
         {
             Animation Animation = new Animation();

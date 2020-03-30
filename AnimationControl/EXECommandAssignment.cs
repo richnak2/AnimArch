@@ -27,10 +27,16 @@ namespace AnimationControl
             Boolean Result = false;
 
             String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);
-            Console.WriteLine("Assigning value: " + AssignedValue);
+            if (AssignedValue == null)
+            {
+                return Result;
+            }
+           
             // If we are assigning to a variable
             if (this.AttributeName == null)
             {
+                Console.WriteLine("Assigning value: " + AssignedValue + " to variable " + this.VariableName);
+
                 EXEPrimitiveVariable Variable = Scope.FindPrimitiveVariableByName(this.VariableName);
                 // If the variable doesnt exist, we simply create it
                 if (Variable == null)
@@ -51,6 +57,8 @@ namespace AnimationControl
                     // If the types don't match, this fails and returns false
                     Result = Variable.AssignValue("", AssignedValue);
                 }
+
+                Console.WriteLine("Assigning to initialized var" + this.VariableName);
                 // Variable exists and is not primitive. What to do, what to do?
                 // We do nothing, we CANNOT ASIGN TO HANDLES!!!
             }

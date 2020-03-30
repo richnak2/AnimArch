@@ -41,7 +41,7 @@ namespace AnimationControl
 
             try
             {
-                double.Parse(value, CultureInfo.InvariantCulture);
+                decimal.Parse(value, CultureInfo.InvariantCulture);
                 return RealTypeName;
             }
             catch (Exception e)

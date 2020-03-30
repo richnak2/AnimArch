@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ namespace AnimationControl
 
             if (NewValueType == EXETypes.RealTypeName && this.Type == EXETypes.IntegerTypeName && EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger)
             {
-                double newValueDouble = double.Parse(NewValue);
+                decimal newValueDouble = decimal.Parse(NewValue, CultureInfo.InvariantCulture);
                 int newValueInt = (int) newValueDouble;
                 this.Value = newValueInt.ToString();
                 return true;

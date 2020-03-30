@@ -17,6 +17,11 @@ namespace AnimationControl
             this.Operation = Operation;
             this.Operands = new List<EXEASTNode>();
         }
+        public EXEASTNodeComposite(String Operation, EXEASTNode[] Operands)
+        {
+            this.Operation = Operation;
+            this.Operands = new List<EXEASTNode>(Operands);
+        }
 
         public void AddOperand(EXEASTNode Operand)
         {
@@ -50,6 +55,10 @@ namespace AnimationControl
 
                 //If we are returning real number, let's format it so that we don't have trouble with precision
                 Result = Evaluator.Evaluate(this.Operation, EvaluatedOperands);
+                if (Result == null)
+                {
+                    return Result;
+                }
                 Console.WriteLine("Operation: " + this.Operation);
                 Console.WriteLine("Result of operation" + (Result == null ? "null" : Result));
                 if (EXETypes.RealTypeName.Equals(EXETypes.DetermineVariableType("", Result)))
