@@ -58,7 +58,7 @@ namespace AnimationControl
                             }
                         }
                         //add numbers in list and return result 
-                        return DoubleList.Aggregate((a, x) => a + x).ToString();
+                        return EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, DoubleList.Aggregate((a, x) => a + x).ToString());
                     }
                     if (String.Equals(EXETypes.StringTypeName, VariableType))
                     {
@@ -97,7 +97,7 @@ namespace AnimationControl
                             }
                         }
                         //sub numbers in list and return result
-                        return DoubleList.Aggregate((a, x) => a - x).ToString();
+                        return EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, DoubleList.Aggregate((a, x) => a - x).ToString());
                     }
                     break;
                 case "*": //int, real
@@ -127,7 +127,7 @@ namespace AnimationControl
                             }
                         }
                         //multiply numbers in list and return result
-                        return DoubleList.Aggregate((a, x) => a * x).ToString();
+                        return EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, DoubleList.Aggregate((a, x) => a * x).ToString());
                     }
 
                     break;
@@ -158,7 +158,7 @@ namespace AnimationControl
                             }
                         }
                         //divide numbers in list and return result 
-                        return DoubleList.Aggregate((a, x) => a / x).ToString();
+                        return EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, DoubleList.Aggregate((a, x) => a / x).ToString());
                     }
 
                     break;
@@ -189,7 +189,7 @@ namespace AnimationControl
                             }
                         }
                         //divide numbers in list and return result 
-                        return DoubleList.Aggregate((a, x) => a % x).ToString();
+                        return EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, DoubleList.Aggregate((a, x) => a % x).ToString());
                     }
 
                     break;
@@ -609,7 +609,7 @@ namespace AnimationControl
                 return Operands;
             }
 
-            return Operands.Select(x => EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, EXETypes.DetermineVariableType("", x), x)).ToList();
+            return Operands.Select(x => EXETypes.AdjustAssignedValue(EXETypes.RealTypeName, x)).ToList();
         }
 
         //return "clear" string without \" 

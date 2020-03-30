@@ -41,7 +41,7 @@ namespace AnimationControl
                 // If the variable doesnt exist, we simply create it
                 if (Variable == null)
                 {
-                    Console.WriteLine("Creating new var" + this.VariableName);
+                    Console.WriteLine("Creating new var " + this.VariableName);
                     Result = Scope.AddVariable(new EXEPrimitiveVariable(this.VariableName, AssignedValue));
                 }
                 //If variable exists and its type is UNDEFINED
@@ -55,6 +55,7 @@ namespace AnimationControl
                 {
                     Console.WriteLine("Assigning to initialized var" + this.VariableName);
                     // If the types don't match, this fails and returns false
+                    AssignedValue = EXETypes.AdjustAssignedValue(Variable.Type, AssignedValue);
                     Result = Variable.AssignValue("", AssignedValue);
                 }
 

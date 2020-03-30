@@ -42,6 +42,7 @@ namespace AnimationControl
             bool success = false;
             if (this.State.ContainsKey(name))
             {
+                Console.WriteLine("CDInstance is assigning " + value + " to its attribute " + name);
                 this.State[name] = value;
                 success = true;
             }

@@ -172,8 +172,10 @@ namespace AnimationControl
 
             return false;
         }
-        public static String AdjustAssignedValue(String VariableType, String NewValueType, String NewValue)
+        public static String AdjustAssignedValue(String VariableType, String NewValue)
         {
+            String NewValueType = DetermineVariableType("", NewValue);
+
             if (NewValue == null || VariableType == null || NewValueType == null)
             {
                 return "";
@@ -186,6 +188,7 @@ namespace AnimationControl
                 && EXETypes.RealTypeName.Equals(NewValueType)
             )
             {
+                Console.WriteLine("REAL 2 INT");
                 return NewValue.Split('.')[0];
             }
 
@@ -196,6 +199,7 @@ namespace AnimationControl
                && EXETypes.IntegerTypeName.Equals(NewValueType)
             )
             {
+                Console.WriteLine("INT 2 REAL");
                 return NewValue + ".0";
             }
 

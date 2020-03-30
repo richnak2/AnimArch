@@ -67,7 +67,10 @@ namespace AnimationControl
                 if (EXETypes.RealTypeName.Equals(EXETypes.DetermineVariableType("", Result)))
                 {
                     Console.WriteLine("is real and needs formatting");
-                    Result = FormatDouble(Result);
+                    if (!Result.Contains("."))
+                    {
+                        Result = FormatDouble(Result);
+                    }
                     if (!Result.Contains("."))
                     {
                         Result += ".0";
