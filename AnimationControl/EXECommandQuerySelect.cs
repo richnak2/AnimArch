@@ -16,12 +16,19 @@ namespace AnimationControl
         public String VariableName { get; set; }
         public EXEASTNode WhereCondition { get; set; }
 
-        public EXECommandQuerySelect()
+        public EXECommandQuerySelect(String Cardinality, String ClassName, String VariableName)
         {
-            this.ClassName = null;
-            this.Cardinality = null;
-            this.VariableName = null;
+            this.Cardinality = Cardinality;
+            this.ClassName = ClassName;
+            this.VariableName = VariableName;
             this.WhereCondition = null;
+        }
+        public EXECommandQuerySelect(String Cardinality, String ClassName, String VariableName, EXEASTNode WhereCondition)
+        {
+            this.Cardinality = Cardinality;
+            this.ClassName = ClassName;
+            this.VariableName = VariableName;
+            this.WhereCondition = WhereCondition;
         }
 
         // SetUloh2

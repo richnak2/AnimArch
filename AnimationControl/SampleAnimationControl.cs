@@ -52,10 +52,7 @@ namespace AnimationControl
             AnimationSuperscope.AddCommand(RelQuery4);
 
             EXECommandCall Call1 = new EXECommandCall("ooc", "InitiateDispatch", R1.RelationshipName, "order", "dispatch");
-            EXECommandQuerySelect SelectSetQuery = new EXECommandQuerySelect();
-            SelectSetQuery.Cardinality = EXECommandQuerySelect.CardinalityMany;
-            SelectSetQuery.ClassName = "Line Item";
-            SelectSetQuery.VariableName = "line_items";
+            EXECommandQuerySelect SelectSetQuery = new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityMany, "Line Item", "line_items");
             AnimationSuperscope.AddCommand(Call1);
             AnimationSuperscope.AddCommand(SelectSetQuery);
 

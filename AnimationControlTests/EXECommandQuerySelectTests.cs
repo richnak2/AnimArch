@@ -9,92 +9,123 @@ namespace AnimationControl.Tests
     [TestClass]
     public class EXECommandQuerySelectTests
     {
-       /* [TestMethod]
-        public void Execute_Normal_Any_01()
+        [TestMethod]
+        public void Execute_Normal_01()
         {
             Animation Animation = new Animation();
-            CDClass UserClass = ExecutionSpace.SpawnClass("User");
-            UserClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
-            UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
-            UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
+            Animation.ExecutionSpace.SpawnClass("Observer");
 
-            CDClassInstance Inst1 = UserClass.CreateClassInstance("x");
-            Inst1.SetAttribute("Nick", "Alex");
-            CDClassInstance Inst2 = UserClass.CreateClassInstance("y");
-            Inst2.SetAttribute("Nick", "Miso");
-            CDClassInstance Inst3 = UserClass.CreateClassInstance("z");
-            Inst3.SetAttribute("Nick", "Mato");
-            CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
-            Inst4.SetAttribute("Nick", "Samo");
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityAny, "Observer", "o"));
+            Boolean ExecutionSuccess = Animation.Execute();
 
-            CDRelationshipPool RelationshipSpace = null;
-
-            EXEScope Scope = new EXEScope();
-
-            EXECommandQuerySelect SelectCommand = new EXECommandQuerySelect();
-            SelectCommand.Cardinality = EXECommandQuerySelect.CardinalityAny;
-            SelectCommand.ClassName = "User";
-            SelectCommand.VariableName = "selected_user";
-
-            Boolean ExecutionSuccess = SelectCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
-            Boolean VariableCreationSuccess = Scope.ReferencingVariables[0].Name == "selected_user";
-            Boolean CorrectId = Scope.ReferencingVariables[0].ReferencedInstanceId == Inst1.UniqueID ||
-                                Scope.ReferencingVariables[0].ReferencedInstanceId == Inst2.UniqueID ||
-                                Scope.ReferencingVariables[0].ReferencedInstanceId == Inst3.UniqueID ||
-                                Scope.ReferencingVariables[0].ReferencedInstanceId == Inst4.UniqueID;
-            Boolean Success = ExecutionSuccess && VariableCreationSuccess && CorrectId;
-
-            Assert.IsTrue(Success);
-        }*/
-        /*[TestMethod]
-        public void Execute_Normal_Many_01()
-        {
-            Animation Animation = new Animation();
-            CDClass UserClass = ExecutionSpace.SpawnClass("User");
-            UserClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
-            UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
-            UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
-
-            CDClassInstance Inst1 = UserClass.CreateClassInstance("x");
-            Inst1.SetAttribute("Nick", "Alex");
-            CDClassInstance Inst2 = UserClass.CreateClassInstance("y");
-            Inst2.SetAttribute("Nick", "Miso");
-            CDClassInstance Inst3 = UserClass.CreateClassInstance("z");
-            Inst3.SetAttribute("Nick", "Mato");
-            CDClassInstance Inst4 = UserClass.CreateClassInstance("w");
-            Inst4.SetAttribute("Nick", "Samo");
-
-            CDRelationshipPool RelationshipSpace = null;
-
-            EXEScope Scope = new EXEScope();
-
-            EXECommandQuerySelect SelectCommand = new EXECommandQuerySelect();
-            SelectCommand.Cardinality = EXECommandQuerySelect.CardinalityMany;
-            SelectCommand.ClassName = "User";
-            SelectCommand.VariableName = "selected_user";
-
-            Boolean ExecutionSuccess = SelectCommand.Execute(ExecutionSpace, RelationshipSpace, Scope);
-            Boolean VariableCreationSuccess = Scope.SetReferencingVariables[0].Name == "selected_user";
-
-            List<long> CreatedIds = new List<long>(new long[] { Inst1.UniqueID, Inst2.UniqueID, Inst3.UniqueID, Inst4.UniqueID});
-            List<long> SelectedIds = new List<long>();
-            foreach (EXEReferencingVariable TempRefVar in Scope.SetReferencingVariables[0].GetReferencingVariables())
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                SelectedIds.Add(TempRefVar.ReferencedInstanceId);
-            }
+                { "Observer", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "o", "Observer"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>(){
+                
+            };
+            int ExpectedValidRefVarCount = 1;
 
-            Boolean CorrectIds = CompareLists(CreatedIds, SelectedIds);
-            Boolean Success = ExecutionSuccess && VariableCreationSuccess && CorrectIds;
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
 
-            Assert.IsTrue(Success);
-        }*/
-
-        private Boolean CompareLists(List<long> List1, List<long> List2)
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Normal_02()
         {
-            List1.Sort();
-            List2.Sort();
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("SwampMonster");
+            Class1.AddAttribute(new CDAttribute("health", EXETypes.RealTypeName));
+            Class1.AddAttribute(new CDAttribute("max_health", EXETypes.RealTypeName));
+            Class1.AddAttribute(new CDAttribute("mana", EXETypes.RealTypeName));
+            Class1.AddAttribute(new CDAttribute("max_mana", EXETypes.RealTypeName));
 
-            return List1.Equals(List2);
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampMonster"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityAny, "SwampMonster", "swamp_monster1"));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "SwampMonster", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "swamp_monster1", "SwampMonster"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+                { "swamp_monster1.health", EXETypes.UnitializedName},
+                { "swamp_monster1.max_health", EXETypes.UnitializedName},
+                { "swamp_monster1.mana", EXETypes.UnitializedName},
+                { "swamp_monster1.max_mana", EXETypes.UnitializedName}
+            };
+            int ExpectedValidRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "swamp_monster1");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Normal_03()
+        {
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("SwampMonster");
+            Class1.AddAttribute(new CDAttribute("health", EXETypes.RealTypeName));
+            Class1.AddAttribute(new CDAttribute("max_health", EXETypes.RealTypeName));
+            Class1.AddAttribute(new CDAttribute("mana", EXETypes.RealTypeName));
+            Class1.AddAttribute(new CDAttribute("max_mana", EXETypes.RealTypeName));
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampMonster"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityAny, "SwampMonster", "swamp_monster1"));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "SwampMonster", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "swamp_monster1", "SwampMonster"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+                { "swamp_monster1.health", EXETypes.UnitializedName},
+                { "swamp_monster1.max_health", EXETypes.UnitializedName},
+                { "swamp_monster1.mana", EXETypes.UnitializedName},
+                { "swamp_monster1.max_mana", EXETypes.UnitializedName}
+            };
+            int ExpectedValidRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "swamp_monster1");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
         }
     }
 }

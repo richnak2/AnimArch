@@ -61,6 +61,79 @@ namespace AnimationControl
             return Result;
         }
 
+        public Dictionary<String, String> GetRefStateAttrsDictRecursive(CDClassPool ExecutionSpace, String VarName)
+        {
+            Dictionary<String, String> Result = new Dictionary<String, String>();
+            EXEReferencingVariable Var = this.FindReferencingVariableByName(VarName);
+            if (Var == null)
+            {
+                return Result;
+            }
+            CDClassInstance Inst = Var.RetrieveReferencedClassInstance(ExecutionSpace);
+            if (Inst == null)
+            {
+                return Result;
+            }
+            Console.WriteLine(Inst.State.Count);
+            Console.WriteLine(Inst.GetStateWithoutID().Count);
+            foreach (var Attribute in Inst.GetStateWithoutID())
+            {
+                Result[VarName + "." + Attribute.Key] = Attribute.Value;
+            }
+
+            return Result;
+        }
+        public Dictionary<String, String> GetRefStateAttrsDictRecursive(CDClassPool ExecutionSpace)
+        {
+            Dictionary<String, String> Result = new Dictionary<String, String>();
+            EXEScope CurrentScope = this;
+            while (CurrentScope != null)
+            {
+                foreach (EXEReferencingVariable Var in CurrentScope.ReferencingVariables)
+                {
+                    CDClassInstance Inst = Var.RetrieveReferencedClassInstance(ExecutionSpace);
+                    if (Inst == null)
+                    {
+                        continue;
+                    }
+                    foreach (var Attribute in Inst.GetStateWithoutID())
+                    {
+                        Result[Var.Name + "." + Attribute.Key] = Attribute.Value;
+                    }
+                }
+
+                CurrentScope = CurrentScope.SuperScope;
+            }
+
+            return Result;
+        }
+
+        public Dictionary<String, String> GetSetRefStateAttrsDictRecursive(CDClassPool ExecutionSpace, String VarName)
+        {
+            Dictionary<String, String> Result = new Dictionary<String, String>();
+
+            EXEReferencingSetVariable SetVar = this.FindSetReferencingVariableByName(VarName);
+            if (SetVar == null)
+            {
+                return Result;
+            }
+            int i = 0;
+            foreach (EXEReferencingVariable Var in SetVar.GetReferencingVariables())
+            {
+                CDClassInstance Inst = Var.RetrieveReferencedClassInstance(ExecutionSpace);
+                if (Inst == null)
+                {
+                    continue;
+                }
+                foreach (var Attribute in Inst.GetStateWithoutID())
+                {
+                    Result[VarName + "[" + i + "]." + Attribute.Key] = Attribute.Value;
+                }
+            }
+
+            return Result;
+        }
+
         public bool AddVariable(EXEPrimitiveVariable Variable)
         {
             bool Result = false;

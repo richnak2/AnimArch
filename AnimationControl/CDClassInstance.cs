@@ -23,7 +23,7 @@ namespace AnimationControl
             }
 
             this.UniqueID = UniqueID;
-            this.State.Add("unique_ID", UniqueID.ToString());
+            this.State.Add(EXETypes.UniqueIDTypeName, UniqueID.ToString());
         }
 
         public String GetAttributeValue(String name)
@@ -47,6 +47,21 @@ namespace AnimationControl
             }
 
             return success;
+        }
+
+        public Dictionary<string, string> GetStateWithoutID()
+        {
+            Dictionary<string, string> State = new Dictionary<string, string>();
+            
+            foreach (var Item in this.State)
+            {
+                if (!EXETypes.UniqueIDTypeName.Equals(Item.Key))
+                {
+                    State[Item.Key] = Item.Value;
+                }
+            }
+
+            return State;
         }
     }
 }

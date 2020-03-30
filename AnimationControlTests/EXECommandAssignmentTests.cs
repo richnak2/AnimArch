@@ -13,218 +13,261 @@ namespace AnimationControl.Tests
         public void Execute_Normal_Int_01()
         {
             Animation Animation = new Animation();
-            EXEScope Scope = new EXEScope();
-            Scope.AddVariable(new EXEPrimitiveVariable("x", EXETypes.UnitializedName));
 
-            EXEASTNode AssignedExpression = new EXEASTNodeLeaf("15");
-            EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("15")));
 
-            Boolean Success = AssignCommand.Execute(Animation, Scope);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
                 {"x","15"}
             };
-            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
 
             Assert.IsTrue(Success);
-            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }
         [TestMethod]
         public void Execute_Normal_Int_02()
         {
             Animation Animation = new Animation();
-            EXEScope Scope = new EXEScope();
-            Scope.AddVariable(new EXEPrimitiveVariable("x", EXETypes.UnitializedName));
-            Scope.AddVariable(new EXEPrimitiveVariable("y", "17"));
 
-            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("+");
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf("y"));
-            AssignedExpression.AddOperand( new EXEASTNodeLeaf("13"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("15")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("6")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("z", new EXEASTNodeLeaf("-56")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("a", new EXEASTNodeLeaf("-13")));
 
-            EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
+            Boolean Success = Animation.Execute();
 
-            Boolean Success = AssignCommand.Execute(Animation, Scope);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x","30"},
-                {"y","17"}
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","15"},
+                {"y","6"},
+                {"z","-56"},
+                {"a","-13"}
             };
-            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
 
             Assert.IsTrue(Success);
-            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }
         [TestMethod]
         public void Execute_Normal_Int_03()
         {
-
             Animation Animation = new Animation();
-            EXEScope Scope = new EXEScope();
-            Scope.AddVariable(new EXEPrimitiveVariable("x", "15"));
-            Scope.AddVariable(new EXEPrimitiveVariable("y", "10"));
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("SwampMonster");
+            Class1.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("mana", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_mana", EXETypes.IntegerTypeName));
 
-            EXEScope SuperScope = new EXEScope();
-            Scope.AddVariable(new EXEPrimitiveVariable("z", "30"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("15")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("z", new EXEASTNodeLeaf("-56")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("a", new EXEASTNodeLeaf("-13")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampMonster", "swamp_monster1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "health",new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_health", new EXEASTNodeLeaf("1024")));
+            Boolean Success = Animation.Execute();
 
-            Scope.SuperScope = SuperScope;
-
-            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("+");
-
-            EXEASTNodeComposite MultExpr = new EXEASTNodeComposite("*");
-            MultExpr.AddOperand(new EXEASTNodeLeaf("y"));
-            MultExpr.AddOperand(new EXEASTNodeLeaf("z"));
-
-            AssignedExpression.AddOperand(MultExpr);
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf("50"));
-
-            EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
-
-            Boolean Success = AssignCommand.Execute(Animation, Scope);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x","350"},
-                {"y","10"},
-                {"z","30"}
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","15"},
+                {"y","0"},
+                {"z","-56"},
+                {"a","-13"}
             };
-            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                { "swamp_monster1.health", "1024"},
+                { "swamp_monster1.max_health", "1024"},
+                { "swamp_monster1.mana", EXETypes.UnitializedName},
+                { "swamp_monster1.max_mana", EXETypes.UnitializedName}
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
 
             Assert.IsTrue(Success);
-            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }
         [TestMethod]
         public void Execute_Normal_Int_04()
         {
             Animation Animation = new Animation();
-            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Human");
-            Class1.AddAttribute(new CDAttribute("age", EXETypes.IntegerTypeName));
-            CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
-            Class1Inst1.SetAttribute("age", "50");
 
-            EXEScope Scope = new EXEScope();
-            Scope.AddVariable(new EXEPrimitiveVariable("x", "45"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("15")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("150")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("-15")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("-150")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("223344")));
 
-            EXEScope SuperScope = new EXEScope();
-            SuperScope.AddVariable(new EXEReferencingVariable("human", "Human", Class1Inst1.UniqueID));
+            Boolean Success = Animation.Execute();
 
-            Scope.SuperScope = SuperScope;
-
-            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("+");
-
-            EXEASTNodeComposite MultExpr = new EXEASTNodeComposite(".");
-            MultExpr.AddOperand(new EXEASTNodeLeaf("human"));
-            MultExpr.AddOperand(new EXEASTNodeLeaf("age"));
-
-            AssignedExpression.AddOperand(MultExpr);
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf("50"));
-
-            EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
-
-            Boolean Success = AssignCommand.Execute(Animation, Scope);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x","100"}
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","223344"}
             };
-            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
 
             Assert.IsTrue(Success);
-            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }
         [TestMethod]
         public void Execute_Normal_Int_05()
         {
             Animation Animation = new Animation();
-            EXEScope Scope = new EXEScope();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("SwampMonster");
+            Class1.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("mana", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_mana", EXETypes.IntegerTypeName));
 
-            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("-");
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf("25"));
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf("50"));
-            
-            EXECommandAssignment AssignCommand1 = new EXECommandAssignment("x", AssignedExpression);
-            EXECommandAssignment AssignCommand2 = new EXECommandAssignment("y", new EXEASTNodeLeaf("0"));
-            EXECommandAssignment AssignCommand3 = new EXECommandAssignment("z", new EXEASTNodeLeaf("1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("321")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("123")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("z", new EXEASTNodeLeaf("750000")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampMonster", "swamp_monster1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "mana", new EXEASTNodeLeaf("2")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_mana", new EXEASTNodeLeaf("2")));
+            Boolean Success = Animation.Execute();
 
-            Boolean Success1 = AssignCommand1.Execute(Animation, Scope);
-            Boolean Success2 = AssignCommand2.Execute(Animation, Scope);
-            Boolean Success3 = AssignCommand3.Execute(Animation, Scope);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x","-25"},
-                {"y","0"},
-                {"z","1"}
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","321"},
+                {"y","123"},
+                {"z","750000"}
             };
-            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
-
-            Assert.IsTrue(Success1);
-            Assert.IsTrue(Success2);
-            Assert.IsTrue(Success3);
-            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
-        }
-        [TestMethod]
-        public void Execute_Normal_Bool_01()
-        {
-
-            Animation Animation = new Animation();
-            EXEScope Scope = new EXEScope();
-            Scope.AddVariable(new EXEPrimitiveVariable("x", EXETypes.UnitializedName));
-            Scope.AddVariable(new EXEPrimitiveVariable("y", EXETypes.BooleanFalse));
-
-            EXEScope SuperScope = new EXEScope();
-            SuperScope.AddVariable(new EXEPrimitiveVariable("z", EXETypes.BooleanTrue));
-
-            Scope.SuperScope = SuperScope;
-
-            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("and");
-
-            EXEASTNodeComposite MultExpr = new EXEASTNodeComposite("not");
-            MultExpr.AddOperand(new EXEASTNodeLeaf("y"));
-
-            AssignedExpression.AddOperand(MultExpr);
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf("z"));
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf(EXETypes.BooleanTrue));
-
-            EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
-
-            Boolean Success = AssignCommand.Execute(Animation, Scope);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x", EXETypes.BooleanTrue},
-                {"y", EXETypes.BooleanFalse},
-                {"z", EXETypes.BooleanTrue}
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                { "swamp_monster1.health", "1024"},
+                { "swamp_monster1.max_health", "1024"},
+                { "swamp_monster1.mana", "2"},
+                { "swamp_monster1.max_mana", "2"}
             };
-            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
 
             Assert.IsTrue(Success);
-            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }
         [TestMethod]
-        public void Execute_Bad_Bool_01()
+        public void Execute_Normal_Int_06()
         {
-
             Animation Animation = new Animation();
-            EXEScope Scope = new EXEScope();
-            Scope.AddVariable(new EXEPrimitiveVariable("x", "45"));
-            Scope.AddVariable(new EXEPrimitiveVariable("y", EXETypes.BooleanFalse));
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("SwampMonster");
+            Class1.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("mana", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_mana", EXETypes.IntegerTypeName));
 
-            EXEScope SuperScope = new EXEScope();
-            SuperScope.AddVariable(new EXEPrimitiveVariable("z", EXETypes.BooleanTrue));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("321")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("123")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("z", new EXEASTNodeLeaf("750000")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampMonster", "swamp_monster1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "mana", new EXEASTNodeLeaf("2")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_mana", new EXEASTNodeLeaf("2")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_health", new EXEASTNodeLeaf("4048")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "mana", new EXEASTNodeLeaf("20")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_mana", new EXEASTNodeLeaf("500")));
+            Boolean Success = Animation.Execute();
 
-            Scope.SuperScope = SuperScope;
-
-            EXEASTNodeComposite AssignedExpression = new EXEASTNodeComposite("and");
-
-            EXEASTNodeComposite MultExpr = new EXEASTNodeComposite("not");
-            MultExpr.AddOperand(new EXEASTNodeLeaf("y"));
-
-            AssignedExpression.AddOperand(MultExpr);
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf("z"));
-            AssignedExpression.AddOperand(new EXEASTNodeLeaf(EXETypes.BooleanTrue));
-
-            EXECommandAssignment AssignCommand = new EXECommandAssignment("x", AssignedExpression);
-
-            Boolean Success = AssignCommand.Execute(Animation, Scope);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x", "45"},
-                {"y", EXETypes.BooleanFalse},
-                {"z", EXETypes.BooleanTrue}
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","321"},
+                {"y","123"},
+                {"z","750000"}
             };
-            Dictionary<String, String> ActualOutput = Scope.GetStateDictRecursive();
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                { "swamp_monster1.health", "1024"},
+                { "swamp_monster1.max_health", "1024"},
+                { "swamp_monster1.mana", "2"},
+                { "swamp_monster1.max_mana", "2"},
+                { "swamp_monster2.health", "1024"},
+                { "swamp_monster2.max_health", "4048"},
+                { "swamp_monster2.mana", "20"},
+                { "swamp_monster2.max_mana", "500"}
+            };
 
-            Assert.IsFalse(Success);
-            CollectionAssert.AreEquivalent(ExprectedOutput, ActualOutput);
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Normal_Int_07()
+        {
+            Animation Animation = new Animation();
+            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("SwampMonster");
+            Class1.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("mana", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("max_mana", EXETypes.IntegerTypeName));
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("321")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("123")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("z", new EXEASTNodeLeaf("750000")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampMonster", "swamp_monster1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "mana", new EXEASTNodeLeaf("2")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster1", "max_mana", new EXEASTNodeLeaf("2")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampMonster", "swamp_monster2"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster2", "health", new EXEASTNodeLeaf("1024")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster2", "max_health", new EXEASTNodeLeaf("4048")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster2", "mana", new EXEASTNodeLeaf("20")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("swamp_monster2", "max_mana", new EXEASTNodeLeaf("500")));
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"x","321"},
+                {"y","123"},
+                {"z","750000"}
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                { "swamp_monster1.health", "1024"},
+                { "swamp_monster1.max_health", "4048"},
+                { "swamp_monster1.mana", "20"},
+                { "swamp_monster1.max_mana", "500"}
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
         }
     }
 }
