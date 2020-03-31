@@ -105,6 +105,7 @@ namespace AnimationControl
 
                     if (!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {
+                        Scope.DestroyReferencingVariable(TempSelectedVarName);
                         return false;
                     }
 
@@ -114,6 +115,7 @@ namespace AnimationControl
                     }
                 }
                 Console.WriteLine("Select has " + SelectedIds.Count + " results");
+                foreach (long id in ResultIds) Console.WriteLine("RES: " + id);
                 SelectedIds = ResultIds;
                 Scope.DestroyReferencingVariable(TempSelectedVarName);
             }
@@ -141,6 +143,7 @@ namespace AnimationControl
                 if (Variable == null)
                 {
                     long ResultId = SelectedIds.Any() ? SelectedIds[new Random().Next(SelectedIds.Count)] : -1;
+                    Console.WriteLine("Final 'any' id is " + ResultId);
                     Variable = new EXEReferencingVariable(this.VariableName, this.ClassName, ResultId);
                     if (!Scope.AddVariable(Variable))
                     {
