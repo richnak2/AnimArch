@@ -79,23 +79,29 @@ namespace AnimationControl
                 return false;
             }
 
+            Console.WriteLine("Select has " + SelectedIds.Count + " potential results");
+
             // Now let's evaluate the condition
             if (this.WhereCondition != null && SelectedIds.Any())
             {
                 String TempSelectedVarName = "selected";
 
+                Console.WriteLine("creating selected var");
                 EXEReferencingVariable SelectedVar = new EXEReferencingVariable(TempSelectedVarName, this.ClassName, -1);
                 if (!Scope.AddVariable(SelectedVar))
                 {
                     return false;
                 }
-
+                Console.WriteLine("created selected var");
                 List<long> ResultIds = new List<long>();
                 foreach (long Id in SelectedIds)
                 {
+                    Console.WriteLine("id check iteration start");
                     SelectedVar.ReferencedInstanceId = Id;
                     String ConditionResult = this.WhereCondition.Evaluate(Scope, Animation.ExecutionSpace);
-                    //Console.Write(Id + " : " + ConditionResult);
+
+                    Console.WriteLine("cond evaluated");
+                    Console.WriteLine(Id + " : " + ConditionResult == null ? "null" : ConditionResult);
 
                     if (!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {
@@ -107,7 +113,7 @@ namespace AnimationControl
                         ResultIds.Add(Id);
                     }
                 }
-
+                Console.WriteLine("Select has " + SelectedIds.Count + " results");
                 SelectedIds = ResultIds;
                 Scope.DestroyReferencingVariable(TempSelectedVarName);
             }

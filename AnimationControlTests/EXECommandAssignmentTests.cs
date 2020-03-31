@@ -1848,6 +1848,269 @@ namespace AnimationControl.Tests
             Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
             Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
 
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Normal_String_02()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("\"Good\"")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("\"Morning\"")));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                { "x", "\"Good\"" },
+                { "y", "\"Morning\"" }
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Normal_String_03()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("\"Good\"")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("\"Morning\"")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("z",
+                new EXEASTNodeComposite("+",
+                new EXEASTNode[]
+                {
+                    new EXEASTNodeLeaf("x"),
+                    new EXEASTNodeLeaf("\" \""),
+                    new EXEASTNodeLeaf("y")
+                })
+            ));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                { "x", "\"Good\"" },
+                { "y", "\"Morning\"" },
+                { "z", "\"Good Morning\"" }
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Normal_String_04()
+        {
+            Animation Animation = new Animation();
+            CDClass Class = Animation.ExecutionSpace.SpawnClass("Item");
+            Class.AddAttribute(new CDAttribute("screen_name", EXETypes.StringTypeName));
+            Class.AddAttribute(new CDAttribute("description", EXETypes.StringTypeName));
+            Class.AddAttribute(new CDAttribute("tooltip", EXETypes.StringTypeName));
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "gladius"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("gladius", "tooltip", new EXEASTNodeLeaf("\"Gladius\"")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("gladius", "screen_name",
+                new EXEASTNodeComposite("+",
+                new EXEASTNode[]
+                {
+                    new EXEASTNodeComposite(".",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("gladius"),
+                        new EXEASTNodeLeaf("tooltip")
+                    }),
+                    new EXEASTNodeLeaf("\" of Briars\"")
+                })
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("gladius", "description",
+                new EXEASTNodeComposite("+",
+                new EXEASTNode[]
+                {
+                    new EXEASTNodeLeaf("\"Usually, \""),
+                    new EXEASTNodeComposite(".",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("gladius"),
+                        new EXEASTNodeLeaf("tooltip")
+                    }),
+                    new EXEASTNodeLeaf("\" cuts deep enough. However, \""),
+                    new EXEASTNodeComposite(".",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("gladius"),
+                        new EXEASTNodeLeaf("screen_name")
+                    }),
+                    new EXEASTNodeLeaf("\" hurts much longer after being taken out of the wound.\""),
+                })
+            ));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                { "gladius.screen_name", "\"Gladius of Briars\"" },
+                { "gladius.description", "\"Usually, Gladius cuts deep enough. However, Gladius of Briars hurts much longer after being taken out of the wound.\"" },
+                { "gladius.tooltip", "\"Gladius\"" }
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Normal_String_05()
+        {
+            Animation Animation = new Animation();
+            CDClass Class = Animation.ExecutionSpace.SpawnClass("Item");
+            Class.AddAttribute(new CDAttribute("screen_name", EXETypes.StringTypeName));
+            Class.AddAttribute(new CDAttribute("description", EXETypes.StringTypeName));
+            Class.AddAttribute(new CDAttribute("tooltip", EXETypes.StringTypeName));
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "gladius"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("gladius", "tooltip", new EXEASTNodeLeaf("\"Gladius\"")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("gladius", "screen_name",
+                new EXEASTNodeComposite("+",
+                new EXEASTNode[]
+                {
+                 
+                    new EXEASTNodeComposite(".",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("gladius"),
+                        new EXEASTNodeLeaf("tooltip")
+                    }),
+                    new EXEASTNodeLeaf("\" of Briars\"")
+                })
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("gladius", "description",
+                new EXEASTNodeComposite("+",
+                new EXEASTNode[]
+                {
+                    new EXEASTNodeLeaf("\"Usually, \""),
+                    new EXEASTNodeComposite(".",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("gladius"),
+                        new EXEASTNodeLeaf("tooltip")
+                    }),
+                    new EXEASTNodeLeaf("\" cuts deep enough. However, \""),
+                    new EXEASTNodeComposite(".",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("gladius"),
+                        new EXEASTNodeLeaf("screen_name")
+                    }),
+                    new EXEASTNodeLeaf("\" hurts much longer after being taken out of the wound.\""),
+                })
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x",
+                new EXEASTNodeComposite(".",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("gladius"),
+                        new EXEASTNodeLeaf("description")
+                    }
+                )
+            ));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                 { "x", "\"Usually, Gladius cuts deep enough. However, Gladius of Briars hurts much longer after being taken out of the wound.\"" }
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                { "gladius.screen_name", "\"Gladius of Briars\"" },
+                { "gladius.description", "\"Usually, Gladius cuts deep enough. However, Gladius of Briars hurts much longer after being taken out of the wound.\"" },
+                { "gladius.tooltip", "\"Gladius\"" }
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_ID_01()
+        {
+            Animation Animation = new Animation();
+            CDClass Class = Animation.ExecutionSpace.SpawnClass("Synged");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Synged", "synged"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("synged", EXETypes.UniqueIDAttributeName,
+                new EXEASTNodeLeaf("112")
+            ));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
+        }
+        [TestMethod]
+        public void Execute_Bad_ID_02()
+        {
+            Animation Animation = new Animation();
+            CDClass Class = Animation.ExecutionSpace.SpawnClass("Synged");
+            Class.AddAttribute(new CDAttribute("life", EXETypes.IntegerTypeName));
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Synged", "synged"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("synged", "life",
+                new EXEASTNodeLeaf("112")
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("synged", EXETypes.UniqueIDAttributeName,
+                new EXEASTNodeLeaf("112")
+            ));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+            };
+            Dictionary<String, String> ExpectedReferencingVarState = new Dictionary<string, string>
+            {
+                { "synged.life", "112" }
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualReferencingVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace);
+
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
             CollectionAssert.AreEquivalent(ExpectedReferencingVarState, ActualReferencingVarState);
