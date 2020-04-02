@@ -19,11 +19,10 @@ namespace AnimationControl
         public String Evaluate(String Operator, List<String> InOperands)
         {
             List<String> Operands = PromoteIntegers(InOperands);
-            int i = 0;
 
             if (!this.CanBeEvaluated(Operator, Operands)) return null;
 
-            Console.WriteLine("Can be evaluated");
+            //Console.WriteLine("Can be evaluated");
 
             //get variable type
             String VariableType = EXETypes.DetermineVariableType(null, Operands[0]);

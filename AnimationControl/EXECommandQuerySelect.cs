@@ -79,29 +79,35 @@ namespace AnimationControl
                 return false;
             }
 
-            Console.WriteLine("Select has " + SelectedIds.Count + " potential results");
+            // If class has no instances, command may execute successfully, but we better verify references in the WHERE condition
+            if (SelectedIds.Count() == 0 && this.WhereCondition != null)
+            {
+                return this.WhereCondition.VerifyReferences(Scope, Animation.ExecutionSpace);
+            }
+
+            //Console.WriteLine("Select has " + SelectedIds.Count + " potential results");
 
             // Now let's evaluate the condition
             if (this.WhereCondition != null && SelectedIds.Any())
             {
                 String TempSelectedVarName = "selected";
 
-                Console.WriteLine("creating selected var");
+                //Console.WriteLine("creating selected var");
                 EXEReferencingVariable SelectedVar = new EXEReferencingVariable(TempSelectedVarName, this.ClassName, -1);
                 if (!Scope.AddVariable(SelectedVar))
                 {
                     return false;
                 }
-                Console.WriteLine("created selected var");
+               // Console.WriteLine("created selected var");
                 List<long> ResultIds = new List<long>();
                 foreach (long Id in SelectedIds)
                 {
-                    Console.WriteLine("id check iteration start");
+                    //Console.WriteLine("id check iteration start");
                     SelectedVar.ReferencedInstanceId = Id;
                     String ConditionResult = this.WhereCondition.Evaluate(Scope, Animation.ExecutionSpace);
 
-                    Console.WriteLine("cond evaluated");
-                    Console.WriteLine(Id + " : " + ConditionResult == null ? "null" : ConditionResult);
+                   /* Console.WriteLine("cond evaluated");
+                    Console.WriteLine(Id + " : " + ConditionResult == null ? "null" : ConditionResult);*/
 
                     if (!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {
@@ -114,8 +120,8 @@ namespace AnimationControl
                         ResultIds.Add(Id);
                     }
                 }
-                Console.WriteLine("Select has " + SelectedIds.Count + " results");
-                foreach (long id in ResultIds) Console.WriteLine("RES: " + id);
+                //Console.WriteLine("Select has " + SelectedIds.Count + " results");
+                //foreach (long id in ResultIds) Console.WriteLine("RES: " + id);
                 SelectedIds = ResultIds;
                 Scope.DestroyReferencingVariable(TempSelectedVarName);
             }
@@ -143,7 +149,7 @@ namespace AnimationControl
                 if (Variable == null)
                 {
                     long ResultId = SelectedIds.Any() ? SelectedIds[new Random().Next(SelectedIds.Count)] : -1;
-                    Console.WriteLine("Final 'any' id is " + ResultId);
+                    //Console.WriteLine("Final 'any' id is " + ResultId);
                     Variable = new EXEReferencingVariable(this.VariableName, this.ClassName, ResultId);
                     if (!Scope.AddVariable(Variable))
                     {

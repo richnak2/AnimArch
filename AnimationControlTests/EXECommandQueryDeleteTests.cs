@@ -723,7 +723,7 @@ namespace AnimationControl.Tests
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Creature");
             Animation.SuperScope.AddVariable(new EXEReferencingSetVariable("x", "Creature"));
-            
+     
             Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
             Animation.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
             Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
@@ -735,6 +735,7 @@ namespace AnimationControl.Tests
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
+                { "x[0]", "Creature"}
             };
             int ExpectedValidRefVarCount = 0;
 
@@ -744,6 +745,7 @@ namespace AnimationControl.Tests
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
         }

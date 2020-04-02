@@ -40,9 +40,23 @@ namespace AnimationControl
                 }
             }
 
-            Console.WriteLine("Operand: " + this.Value);
-            Console.WriteLine("Result: " + Result);
+            /*Console.WriteLine("Operand: " + this.Value);
+            Console.WriteLine("Result: " + Result);*/
 
+            return Result;
+        }
+
+        public bool VerifyReferences(EXEScope Scope, CDClassPool ExecutionSpace)
+        {
+            bool Result = false;
+            if (!EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Value)))
+            {
+                Result = true;
+            }
+            else
+            {
+                Result = Scope.VariableNameExists(this.Value);
+            }
             return Result;
         }
 

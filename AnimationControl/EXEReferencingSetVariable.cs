@@ -26,5 +26,29 @@ namespace AnimationControl
         {
             return this.ReferencingVariables.Select(x => { return x.ReferencedInstanceId; }).ToList().FindAll(x => x >= 0).ToList();
         }
+
+        public bool IsNotEmpty()
+        {
+            foreach(EXEReferencingVariable Var in this.ReferencingVariables)
+            {
+                if (Var.IsInitialized())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public int ValidVariableCount()
+        {
+            int Result = 0;
+            foreach (EXEReferencingVariable Var in this.ReferencingVariables)
+            {
+                if (Var.IsInitialized())
+                {
+                    Result++;
+                }
+            }
+            return Result;
+        }
     }
 }

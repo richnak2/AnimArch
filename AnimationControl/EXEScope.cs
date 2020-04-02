@@ -54,6 +54,10 @@ namespace AnimationControl
                 {
                     Result[CurrentVariable.Name] = CurrentVariable.ClassName;
                 }
+                foreach (EXEReferencingSetVariable CurrentVariable in CurrentScope.SetReferencingVariables)
+                {
+                    Result[CurrentVariable.Name + "[" + CurrentVariable.ValidVariableCount() + "]"] = CurrentVariable.ClassName;
+                }
 
                 CurrentScope = CurrentScope.SuperScope;
             }
@@ -74,8 +78,6 @@ namespace AnimationControl
             {
                 return Result;
             }
-            Console.WriteLine(Inst.State.Count);
-            Console.WriteLine(Inst.GetStateWithoutID().Count);
             foreach (var Attribute in Inst.GetStateWithoutID())
             {
                 Result[VarName + "." + Attribute.Key] = Attribute.Value;
@@ -118,17 +120,20 @@ namespace AnimationControl
                 return Result;
             }
             int i = 0;
+            Console.WriteLine(VarName + " has cardinality " + SetVar.GetReferencingVariables().Count());
             foreach (EXEReferencingVariable Var in SetVar.GetReferencingVariables())
             {
                 CDClassInstance Inst = Var.RetrieveReferencedClassInstance(ExecutionSpace);
                 if (Inst == null)
                 {
+                    i++;
                     continue;
                 }
                 foreach (var Attribute in Inst.GetStateWithoutID())
                 {
                     Result[VarName + "[" + i + "]." + Attribute.Key] = Attribute.Value;
                 }
+                i++;
             }
 
             return Result;
@@ -336,6 +341,22 @@ namespace AnimationControl
         public int VariableReferencingCount()
         {
             return this.ReferencingVariables.Count;
+        }
+        public int NonEmptyVariableSetReferencingCountRecursive()
+        {
+            int Result = 0;
+            foreach (EXEReferencingSetVariable Var in this.SetReferencingVariables)
+            {
+                if (Var.IsNotEmpty())
+                {
+                    ++Result;
+                }
+            }
+            if (this.SuperScope != null)
+            {
+                Result += this.SuperScope.ValidVariableReferencingCountRecursive();
+            }
+            return Result;
         }
         public int VariableSetReferencingCount()
         {

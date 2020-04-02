@@ -15,6 +15,11 @@ namespace AnimationControl
             this.StartingVariable = StartingVariable;
             this.RelationshipSpecification = new List<EXERelationshipLink>();
         }
+        public EXERelationshipSelection(String StartingVariable, EXERelationshipLink[] RelLinks)
+        {
+            this.StartingVariable = StartingVariable;
+            this.RelationshipSpecification = RelLinks.ToList();
+        }
         public void AddRelationshipLink(EXERelationshipLink RelationshipLink)
         {
             this.RelationshipSpecification.Add(RelationshipLink);

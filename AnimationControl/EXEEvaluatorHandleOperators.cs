@@ -15,6 +15,7 @@ namespace AnimationControl
 
         public String Evaluate(String Operator, List<String> Operands, EXEScope Scope)
         {
+            Console.WriteLine("EXEEvaluatorHandleOperators.Evaluate");
             String Result = null;
 
             if (Operator == null || Operands == null)
@@ -22,15 +23,18 @@ namespace AnimationControl
                 return Result;
             }
 
+            Console.WriteLine("EXEEvaluatorHandleOperators.Evaluate - OPERATOR and OPERANDS not null");
+
             if (!IsHandleOperator(Operator))
             {
                 return Result;
             }
 
-            if (Operator.Length == 1)
+            if (Operands.Count == 1)
             {
                 switch (Operator) {
                     case "empty":
+                        Console.WriteLine("Time to evaluate 'empty' operator");
                         Result = EvaluateEmpty(Operands.First(), Scope);
                         break;
                     case "not_empty":

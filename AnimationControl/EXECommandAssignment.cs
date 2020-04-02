@@ -23,7 +23,7 @@ namespace AnimationControl
 
         public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
-            Console.WriteLine("Assignment is being executed");
+            //Console.WriteLine("Assignment is being executed");
             Boolean Result = false;
 
             String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);
@@ -35,25 +35,25 @@ namespace AnimationControl
             // If we are assigning to a variable
             if (this.AttributeName == null)
             {
-                Console.WriteLine("Assigning value: " + AssignedValue + " to variable " + this.VariableName);
+                //Console.WriteLine("Assigning value: " + AssignedValue + " to variable " + this.VariableName);
 
                 EXEPrimitiveVariable Variable = Scope.FindPrimitiveVariableByName(this.VariableName);
                 // If the variable doesnt exist, we simply create it
                 if (Variable == null)
                 {
-                    Console.WriteLine("Creating new var " + this.VariableName);
+                    //Console.WriteLine("Creating new var " + this.VariableName);
                     Result = Scope.AddVariable(new EXEPrimitiveVariable(this.VariableName, AssignedValue));
                 }
                 //If variable exists and its type is UNDEFINED
                 else if (EXETypes.UnitializedName.Equals(Variable.Type))
                 {
-                    Console.WriteLine("Assigning to unitialized var" + this.VariableName);
+                    //Console.WriteLine("Assigning to unitialized var" + this.VariableName);
                     Result = Variable.AssignValue(Variable.Name, AssignedValue);
                 }
                 // If the variable exists and is primitive
                 else if (!EXETypes.ReferenceTypeName.Equals(Variable.Type))
                 {
-                    Console.WriteLine("Assigning to initialized var" + this.VariableName);
+                    //Console.WriteLine("Assigning to initialized var" + this.VariableName);
                     // If the types don't match, this fails and returns false
                     AssignedValue = EXETypes.AdjustAssignedValue(Variable.Type, AssignedValue);
                     Result = Variable.AssignValue("", AssignedValue);
@@ -68,10 +68,10 @@ namespace AnimationControl
             
                 EXEReferenceEvaluator RefEvaluator = new EXEReferenceEvaluator();
                 Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, Scope, Animation.ExecutionSpace, AssignedValue);
-                Console.WriteLine("Tried to assign " + AssignedValue + " to " + this.VariableName + "." + this.AttributeName);
+                //Console.WriteLine("Tried to assign " + AssignedValue + " to " + this.VariableName + "." + this.AttributeName);
             }
 
-            Console.WriteLine("Assignment Result: " + Result);
+            //Console.WriteLine("Assignment Result: " + Result);
             return Result;
         }
     }

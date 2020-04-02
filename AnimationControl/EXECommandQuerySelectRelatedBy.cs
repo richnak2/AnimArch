@@ -69,6 +69,11 @@ namespace AnimationControl
             {
                 return false;
             }
+            // If class has no instances, command may execute successfully, but we better verify references in the WHERE condition
+            if (SelectedIds.Count() == 0 && this.WhereCondition != null)
+            {
+                return this.WhereCondition.VerifyReferences(Scope, Animation.ExecutionSpace);
+            }
 
             // Now let's evaluate the condition
             if (this.WhereCondition != null && SelectedIds.Any())
