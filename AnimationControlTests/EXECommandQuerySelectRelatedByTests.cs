@@ -9,9 +9,13 @@ namespace AnimationControl.Tests
     [TestClass]
     public class EXECommandQuerySelectRelatedByTests
     {
-        private void Setup_Observer_Classes(Animation Animation)
+        private void Setup_Observer_Classes(Animation Animation, int flag = 0)
         {
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            if (flag == 1)
+            {
+                ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
+            }
             Animation.ExecutionSpace.SpawnClass("Subject");
 
             Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
@@ -100,6 +104,19 @@ namespace AnimationControl.Tests
             }
 
             return RelSel;
+        }
+        private void Setup_Troll_Classes(Animation Animation, int flag = 0)
+        {
+            CDClass Class1= Animation.ExecutionSpace.SpawnClass("Troll");
+            Class1.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
+            Class1.AddAttribute(new CDAttribute("attack", EXETypes.IntegerTypeName));
+
+            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Item");
+            Class2.AddAttribute(new CDAttribute("type", EXETypes.StringTypeName));
+            Class2.AddAttribute(new CDAttribute("screen_name", EXETypes.StringTypeName));
+            Class2.AddAttribute(new CDAttribute("gold_value", EXETypes.IntegerTypeName));
+
+            Animation.RelationshipSpace.SpawnRelationship("Troll", "Item");
         }
         [TestMethod]
         public void Execute_Normal_Any_01()
@@ -1610,30 +1627,36 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
         }
-        /*
         [TestMethod]
         public void Execute_Good_Many_01()
         {
             Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            Setup_Observer_Classes(Animation);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "Observer", "o"));
+            Setup_Observer_Commands(Animation);
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "o",
+                null,
+                Setup_Observer_RelationshipNavigation(0)
+            ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 1}
+                { "Observer", 1},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
+                { "observer", "Observer"},
+                { "subject", "Subject"},
                 { "o[1]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 0;
+            int ExpectedValidRefVarCount = 2;
             int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -1653,29 +1676,46 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_02()
         {
             Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            Setup_Observer_Classes(Animation);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "Observer", "o"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer1", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer2", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer3", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer4", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer5", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "o",
+                null,
+                Setup_Observer_RelationshipNavigation(0)
+            ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 5}
+                { "Observer", 5},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
+                { "observer1", "Observer"},
+                { "observer2", "Observer"},
+                { "observer3", "Observer"},
+                { "observer4", "Observer"},
+                { "observer5", "Observer"},
+                { "subject", "Subject"},
                 { "o[5]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 0;
+            int ExpectedValidRefVarCount = 6;
             int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -1695,77 +1735,91 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_03()
         {
             Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            Setup_Observer_Classes(Animation);
 
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "Observer", "o"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "o",
+                null,
+                Setup_Observer_RelationshipNavigation(0)
+            ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 0}
+                { "Observer", 0},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
+                { "subject", "Subject"},
                 { "o[0]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 0;
-            int ExpectedNonEmptySetRefVarCount = 0;
+            int ExpectedValidRefVarCount = 1;
+            int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
             Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
-            int ActualNonEmptySetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
-
-            Assert.IsTrue(ExecutionSuccess);
-            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
-            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
-            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
-            Assert.AreEqual(ExpectedNonEmptySetRefVarCount, ActualNonEmptySetRefVarCount);
-        }
-        [TestMethod]
-        public void Execute_Good_Many_04()
-        {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
-            ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
-
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o1", "value", new EXEASTNodeLeaf("3")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "Observer", "observers"));
-            Boolean ExecutionSuccess = Animation.Execute();
-
-            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
-            {
-                { "Observer", 1}
-            };
-            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
-            {
-                { "observers[1]", "Observer"},
-                { "o1", "Observer"}
-            };
-            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
-            {
-                { "observers[0].value", "3" }
-            };
-            int ExpectedValidRefVarCount = 1;
-            int ExpectedValidSetRefVarCount = 1;
-
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "observers");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            foreach (var Item in ActualCreatedVarState) Console.WriteLine(Item.Key + ":" + Item.Value);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Good_Many_04()
+        {
+            Animation Animation = new Animation();
+            Setup_Observer_Classes(Animation, 1);
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("subject", "observer", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer", "value", new EXEASTNodeLeaf("3")));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "o",
+                null,
+                Setup_Observer_RelationshipNavigation(0)
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 1},
+                { "Subject", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "observer", "Observer"},
+                { "subject", "Subject"},
+                { "o[1]", "Observer"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+                { "o[0].value", "3"}
+            };
+            int ExpectedValidRefVarCount = 2;
+            int ExpectedValidSetRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
@@ -1774,34 +1828,46 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_05()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
-            ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o1", "value", new EXEASTNodeLeaf("3")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o2", "value", new EXEASTNodeLeaf("4")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o3", "value", new EXEASTNodeLeaf("5")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o4"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o4", "value", new EXEASTNodeLeaf("6")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o5"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o5", "value", new EXEASTNodeLeaf("7")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "Observer", "observers"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer1", "value", new EXEASTNodeLeaf("3")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer2"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer2", "value", new EXEASTNodeLeaf("4")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer3"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer3", "value", new EXEASTNodeLeaf("5")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer4"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer4", "value", new EXEASTNodeLeaf("6")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer5"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer5", "value", new EXEASTNodeLeaf("7")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("subject", "observer1", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer2", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer3", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer4", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer5", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "observers",
+                null,
+                Setup_Observer_RelationshipNavigation(0)
+            ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 5}
+                { "Observer", 5},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "observers[5]", "Observer"},
-                { "o1", "Observer"},
-                { "o2", "Observer"},
-                { "o3", "Observer"},
-                { "o4", "Observer"},
-                { "o5", "Observer"}
+                { "observer1", "Observer"},
+                { "observer2", "Observer"},
+                { "observer3", "Observer"},
+                { "observer4", "Observer"},
+                { "observer5", "Observer"},
+                { "subject", "Subject"},
+                { "observers[5]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
@@ -1811,7 +1877,7 @@ namespace AnimationControl.Tests
                 { "observers[3].value", "6" },
                 { "observers[4].value", "7" },
             };
-            int ExpectedValidRefVarCount = 5;
+            int ExpectedValidRefVarCount = 6;
             int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -1823,7 +1889,6 @@ namespace AnimationControl.Tests
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            foreach (var Item in ActualCreatedVarState) Console.WriteLine(Item.Key + ":" + Item.Value);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
@@ -1832,23 +1897,26 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_06()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
-            ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o1", "value", new EXEASTNodeLeaf("3")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o2", "value", new EXEASTNodeLeaf("4")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o3", "value", new EXEASTNodeLeaf("5")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o4"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o4", "value", new EXEASTNodeLeaf("6")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o5"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o5", "value", new EXEASTNodeLeaf("7")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer1", "value", new EXEASTNodeLeaf("3")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer2"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer2", "value", new EXEASTNodeLeaf("4")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer3"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer3", "value", new EXEASTNodeLeaf("5")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer4"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer4", "value", new EXEASTNodeLeaf("6")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer5"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer5", "value", new EXEASTNodeLeaf("7")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("subject", "observer1", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer2", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer3", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer4", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer5", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
                 "observers",
                 new EXEASTNodeComposite
                 (
@@ -1866,29 +1934,32 @@ namespace AnimationControl.Tests
                         ),
                         new EXEASTNodeLeaf("5")
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 5}
+                { "Observer", 5},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "observers[2]", "Observer"},
-                { "o1", "Observer"},
-                { "o2", "Observer"},
-                { "o3", "Observer"},
-                { "o4", "Observer"},
-                { "o5", "Observer"}
+                { "observer1", "Observer"},
+                { "observer2", "Observer"},
+                { "observer3", "Observer"},
+                { "observer4", "Observer"},
+                { "observer5", "Observer"},
+                { "subject", "Subject"},
+                { "observers[2]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
                 { "observers[0].value", "6" },
-                { "observers[1].value", "7" }
+                { "observers[1].value", "7" },
             };
-            int ExpectedValidRefVarCount = 5;
+            int ExpectedValidRefVarCount = 6;
             int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -1900,7 +1971,6 @@ namespace AnimationControl.Tests
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            foreach (var Item in ActualCreatedVarState) Console.WriteLine(Item.Key + ":" + Item.Value);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
@@ -1909,23 +1979,26 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_07()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
-            ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o1", "value", new EXEASTNodeLeaf("3")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o2", "value", new EXEASTNodeLeaf("4")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o3", "value", new EXEASTNodeLeaf("5")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o4"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o4", "value", new EXEASTNodeLeaf("6")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o5"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o5", "value", new EXEASTNodeLeaf("7")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer1", "value", new EXEASTNodeLeaf("3")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer2"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer2", "value", new EXEASTNodeLeaf("4")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer3"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer3", "value", new EXEASTNodeLeaf("5")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer4"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer4", "value", new EXEASTNodeLeaf("6")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer5"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer5", "value", new EXEASTNodeLeaf("7")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("subject", "observer1", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer2", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer3", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer4", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer5", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
                 "observers",
                 new EXEASTNodeComposite
                 (
@@ -1941,30 +2014,33 @@ namespace AnimationControl.Tests
                                 new EXEASTNodeLeaf("value")
                             }
                         ),
-                        new EXEASTNodeLeaf("5")
+                        new EXEASTNodeLeaf("7")
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 5}
+                { "Observer", 5},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "observers[1]", "Observer"},
-                { "o1", "Observer"},
-                { "o2", "Observer"},
-                { "o3", "Observer"},
-                { "o4", "Observer"},
-                { "o5", "Observer"}
+                { "observer1", "Observer"},
+                { "observer2", "Observer"},
+                { "observer3", "Observer"},
+                { "observer4", "Observer"},
+                { "observer5", "Observer"},
+                { "subject", "Subject"},
+                { "observers[1]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-                { "observers[0].value", "5" }
+                { "observers[0].value", "7" }
             };
-            int ExpectedValidRefVarCount = 5;
+            int ExpectedValidRefVarCount = 6;
             int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -1976,7 +2052,6 @@ namespace AnimationControl.Tests
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            foreach (var Item in ActualCreatedVarState) Console.WriteLine(Item.Key + ":" + Item.Value);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
@@ -1985,27 +2060,30 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_08()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
-            ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o1", "value", new EXEASTNodeLeaf("3")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o2", "value", new EXEASTNodeLeaf("4")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o3", "value", new EXEASTNodeLeaf("5")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o4"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o4", "value", new EXEASTNodeLeaf("6")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o5"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o5", "value", new EXEASTNodeLeaf("7")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer1", "value", new EXEASTNodeLeaf("3")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer2"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer2", "value", new EXEASTNodeLeaf("4")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer3"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer3", "value", new EXEASTNodeLeaf("5")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer4"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer4", "value", new EXEASTNodeLeaf("6")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer5"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer5", "value", new EXEASTNodeLeaf("7")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("subject", "observer1", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer2", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer3", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer4", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer5", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
                 "observers",
                 new EXEASTNodeComposite
                 (
-                    "==",
+                    ">",
                     new EXEASTNode[]
                     {
                         new EXEASTNodeComposite
@@ -2017,29 +2095,32 @@ namespace AnimationControl.Tests
                                 new EXEASTNodeLeaf("value")
                             }
                         ),
-                        new EXEASTNodeLeaf("2")
+                        new EXEASTNodeLeaf("7")
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 5}
+                { "Observer", 5},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "observers[0]", "Observer"},
-                { "o1", "Observer"},
-                { "o2", "Observer"},
-                { "o3", "Observer"},
-                { "o4", "Observer"},
-                { "o5", "Observer"}
+                { "observer1", "Observer"},
+                { "observer2", "Observer"},
+                { "observer3", "Observer"},
+                { "observer4", "Observer"},
+                { "observer5", "Observer"},
+                { "subject", "Subject"},
+                { "observers[0]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
             };
-            int ExpectedValidRefVarCount = 5;
+            int ExpectedValidRefVarCount = 6;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -2051,7 +2132,6 @@ namespace AnimationControl.Tests
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            foreach (var Item in ActualCreatedVarState) Console.WriteLine(Item.Key + ":" + Item.Value);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
@@ -2060,23 +2140,26 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_09()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
-            ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o1", "value", new EXEASTNodeLeaf("3")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o2", "value", new EXEASTNodeLeaf("4")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o3", "value", new EXEASTNodeLeaf("5")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o4"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o4", "value", new EXEASTNodeLeaf("6")));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o5"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o5", "value", new EXEASTNodeLeaf("7")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer1"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer1", "value", new EXEASTNodeLeaf("3")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer2"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer2", "value", new EXEASTNodeLeaf("4")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer3"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer3", "value", new EXEASTNodeLeaf("5")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer4"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer4", "value", new EXEASTNodeLeaf("6")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer5"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer5", "value", new EXEASTNodeLeaf("7")));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "subject"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("subject", "observer1", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer2", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer3", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer4", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("observer5", "subject", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
                 "observers",
                 new EXEASTNodeComposite
                 (
@@ -2094,22 +2177,25 @@ namespace AnimationControl.Tests
                         ),
                         new EXEASTNodeLeaf("5")
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 5}
+                { "Observer", 5},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "observers[3]", "Observer"},
-                { "o1", "Observer"},
-                { "o2", "Observer"},
-                { "o3", "Observer"},
-                { "o4", "Observer"},
-                { "o5", "Observer"}
+                { "observer1", "Observer"},
+                { "observer2", "Observer"},
+                { "observer3", "Observer"},
+                { "observer4", "Observer"},
+                { "observer5", "Observer"},
+                { "subject", "Subject"},
+                { "observers[3]", "Observer"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
@@ -2117,7 +2203,7 @@ namespace AnimationControl.Tests
                 { "observers[1].value", "6" },
                 { "observers[2].value", "7" }
             };
-            int ExpectedValidRefVarCount = 5;
+            int ExpectedValidRefVarCount = 6;
             int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -2129,7 +2215,6 @@ namespace AnimationControl.Tests
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            foreach (var Item in ActualCreatedVarState) Console.WriteLine(Item.Key + ":" + Item.Value);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
@@ -2138,20 +2223,28 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_10()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Troll");
-            ClassObserver.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
-            ClassObserver.AddAttribute(new CDAttribute("attack", EXETypes.IntegerTypeName));
+            Setup_Troll_Classes(Animation);
 
+            int ItemCount = 1;
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
             for (int i = 1; i <= 200; i++)
             {
                 Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Troll", "troll" + i.ToString()));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "health", new EXEASTNodeLeaf((50 + i).ToString())));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "attack", new EXEASTNodeLeaf((10 + i).ToString())));
+                Animation.SuperScope.AddCommand(new EXECommandQueryRelate("troll" + i.ToString(), "item" + ItemCount.ToString(), "R1"));
+
+                if(i % 20 == 0)
+                {
+                    ItemCount++;
+                    Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "type", new EXEASTNodeLeaf("\"Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "screen_name", new EXEASTNodeLeaf("\"Butchering Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "gold_value", new EXEASTNodeLeaf((ItemCount + 1000).ToString())));
+                }
             }
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "weak_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2169,12 +2262,18 @@ namespace AnimationControl.Tests
                         ),
                         new EXEASTNodeLeaf("100")
                     }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item2",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
                 )
             ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "strong_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2192,40 +2291,53 @@ namespace AnimationControl.Tests
                         ),
                         new EXEASTNodeLeaf("200")
                     }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item9",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
                 )
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Troll", 200}
+                { "Troll", 200},
+                { "Item", 11},
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "weak_trolls[50]", "Troll"},
-                { "strong_trolls[51]", "Troll"}
+                { "weak_trolls[20]", "Troll"},
+                { "strong_trolls[20]", "Troll"}
             };
             for (int i = 1; i <= 200; i++)
             {
                 ExpectedScopeVars["troll" + i.ToString()] = "Troll";
             }
+            for (int i = 1; i <= 11; i++)
+            {
+                ExpectedScopeVars["item" + i.ToString()] = "Item";
+            }
             Dictionary<String, String> ExpectedCreatedVarState1 = new Dictionary<String, String>()
             {
             };
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i <= 19; i++)
             {
-                ExpectedCreatedVarState1["weak_trolls[" + i.ToString() + "].health"] = (51 + i).ToString();
-                ExpectedCreatedVarState1["weak_trolls[" + i.ToString() + "].attack"] = (11 + i).ToString();
+                ExpectedCreatedVarState1["weak_trolls[" + i.ToString() + "].health"] = (50 + i + 21).ToString();
+                ExpectedCreatedVarState1["weak_trolls[" + i.ToString() + "].attack"] = (10 + i + 21).ToString();
             }
             Dictionary<String, String> ExpectedCreatedVarState2 = new Dictionary<String, String>()
             {
             };
-            for (int i = 0; i <= 50; i++)
+            for (int i = 0; i <= 19; i++)
             {
-                ExpectedCreatedVarState2["strong_trolls[" + i.ToString() + "].health"] = (200 + i).ToString();
-                ExpectedCreatedVarState2["strong_trolls[" + i.ToString() + "].attack"] = (160 + i).ToString();
+                ExpectedCreatedVarState2["strong_trolls[" + i.ToString() + "].health"] = (i + 211).ToString();
+                ExpectedCreatedVarState2["strong_trolls[" + i.ToString() + "].attack"] = (i + 171).ToString();
             }
-            int ExpectedValidRefVarCount = 200;
+            int ExpectedValidRefVarCount = 211;
             int ExpectedValidSetRefVarCount = 2;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -2238,7 +2350,6 @@ namespace AnimationControl.Tests
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            //foreach (var Item in ActualCreatedVarState) Console.WriteLine(Item.Key + ":" + Item.Value);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState1, ActualCreatedVarState1);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState2, ActualCreatedVarState2);
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
@@ -2248,20 +2359,28 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_11()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Troll");
-            ClassObserver.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
-            ClassObserver.AddAttribute(new CDAttribute("attack", EXETypes.IntegerTypeName));
+            Setup_Troll_Classes(Animation);
 
+            int ItemCount = 1;
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
             for (int i = 1; i <= 200; i++)
             {
                 Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Troll", "troll" + i.ToString()));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "health", new EXEASTNodeLeaf((50 + i).ToString())));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "attack", new EXEASTNodeLeaf((10 + i).ToString())));
+                Animation.SuperScope.AddCommand(new EXECommandQueryRelate("troll" + i.ToString(), "item" + ItemCount.ToString(), "R1"));
+
+                if (i % 20 == 0)
+                {
+                    ItemCount++;
+                    Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "type", new EXEASTNodeLeaf("\"Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "screen_name", new EXEASTNodeLeaf("\"Butchering Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "gold_value", new EXEASTNodeLeaf((ItemCount + 1000).ToString())));
+                }
             }
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "weak_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2311,12 +2430,18 @@ namespace AnimationControl.Tests
                             }
                         )
                     }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item2",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
                 )
             ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "strong_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2366,54 +2491,177 @@ namespace AnimationControl.Tests
                             }
                         )
                     }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item9",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
                 )
             ));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "no_trolls",
+                null,
+                new EXERelationshipSelection
+                (
+                    "item11",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "no_troll_was_selected",
+                new EXEASTNodeComposite
+                (
+                    "and",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "a_troll_was_selected",
+                new EXEASTNodeComposite
+                (
+                    "or",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "selected_troll_count",
+                new EXEASTNodeComposite
+                (
+                    "+",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
+                    }
+                )
+            ));
+
             Boolean ExecutionSuccess = Animation.Execute();
 
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"no_troll_was_selected", EXETypes.BooleanFalse },
+                {"a_troll_was_selected", EXETypes.BooleanTrue },
+                {"selected_troll_count", "4" }
+            };
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Troll", 200}
+                { "Troll", 200},
+                { "Item", 11},
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "weak_trolls[5]", "Troll"},
-                { "strong_trolls[6]", "Troll"}
+                { "weak_trolls[2]", "Troll"},
+                { "strong_trolls[2]", "Troll"},
+                { "no_trolls[0]", "Troll"}
             };
             for (int i = 1; i <= 200; i++)
             {
                 ExpectedScopeVars["troll" + i.ToString()] = "Troll";
             }
+            for (int i = 1; i <= 11; i++)
+            {
+                ExpectedScopeVars["item" + i.ToString()] = "Item";
+            }
             Dictionary<String, String> ExpectedCreatedVarState1 = new Dictionary<String, String>()
             {
-                { "weak_trolls[0].health", "60"},
-                { "weak_trolls[0].attack", "20"},
-                { "weak_trolls[1].health", "70"},
-                { "weak_trolls[1].attack", "30"},
-                { "weak_trolls[2].health", "80"},
-                { "weak_trolls[2].attack", "40"},
-                { "weak_trolls[3].health", "90"},
-                { "weak_trolls[3].attack", "50"},
-                { "weak_trolls[4].health", "100"},
-                { "weak_trolls[4].attack", "60"}
+                { "weak_trolls[0].health", "80"},
+                { "weak_trolls[0].attack", "40"},
+                { "weak_trolls[1].health", "90"},
+                { "weak_trolls[1].attack", "50"}
             };
             Dictionary<String, String> ExpectedCreatedVarState2 = new Dictionary<String, String>()
             {
-                { "strong_trolls[0].health", "200"},
-                { "strong_trolls[0].attack", "160"},
-                { "strong_trolls[1].health", "210"},
-                { "strong_trolls[1].attack", "170"},
-                { "strong_trolls[2].health", "220"},
-                { "strong_trolls[2].attack", "180"},
-                { "strong_trolls[3].health", "230"},
-                { "strong_trolls[3].attack", "190"},
-                { "strong_trolls[4].health", "240"},
-                { "strong_trolls[4].attack", "200"},
-                { "strong_trolls[5].health", "250"},
-                { "strong_trolls[5].attack", "210"}
+                { "strong_trolls[0].health", "220"},
+                { "strong_trolls[0].attack", "180"},
+                { "strong_trolls[1].health", "230"},
+                { "strong_trolls[1].attack", "190"}
             };
-            int ExpectedValidRefVarCount = 200;
+            int ExpectedValidRefVarCount = 211;
             int ExpectedValidSetRefVarCount = 2;
 
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
             Dictionary<String, String> ActualCreatedVarState1 = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "weak_trolls");
@@ -2422,6 +2670,7 @@ namespace AnimationControl.Tests
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState1, ActualCreatedVarState1);
@@ -2433,20 +2682,28 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_12()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Troll");
-            ClassObserver.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
-            ClassObserver.AddAttribute(new CDAttribute("attack", EXETypes.IntegerTypeName));
+            Setup_Troll_Classes(Animation);
 
+            int ItemCount = 1;
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
             for (int i = 1; i <= 200; i++)
             {
                 Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Troll", "troll" + i.ToString()));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "health", new EXEASTNodeLeaf((50 + i).ToString())));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "attack", new EXEASTNodeLeaf((10 + i).ToString())));
+                Animation.SuperScope.AddCommand(new EXECommandQueryRelate("troll" + i.ToString(), "item" + ItemCount.ToString(), "R1"));
+
+                if (i % 20 == 0)
+                {
+                    ItemCount++;
+                    Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "type", new EXEASTNodeLeaf("\"Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "screen_name", new EXEASTNodeLeaf("\"Butchering Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "gold_value", new EXEASTNodeLeaf((ItemCount + 1000).ToString())));
+                }
             }
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "weak_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2467,7 +2724,7 @@ namespace AnimationControl.Tests
                                         new EXEASTNodeLeaf("health")
                                     }
                                 ),
-                                new EXEASTNodeLeaf("240")
+                                new EXEASTNodeLeaf("100")
                             }
                         ),
                         new EXEASTNodeComposite
@@ -2492,16 +2749,22 @@ namespace AnimationControl.Tests
                                         new EXEASTNodeLeaf("10")
                                     }
                                 ),
-                                new EXEASTNodeLeaf("11")
+                                new EXEASTNodeLeaf("10")
                             }
                         )
                     }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item2",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
                 )
             ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "strong_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2551,22 +2814,158 @@ namespace AnimationControl.Tests
                             }
                         )
                     }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item9",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
                 )
             ));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "no_trolls",
+                null,
+                new EXERelationshipSelection
+                (
+                    "item11",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "no_troll_was_selected",
+                new EXEASTNodeComposite
+                (
+                    "and",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "a_troll_was_selected",
+                new EXEASTNodeComposite
+                (
+                    "or",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "selected_troll_count",
+                new EXEASTNodeComposite
+                (
+                    "+",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
+                    }
+                )
+            ));
+
             Boolean ExecutionSuccess = Animation.Execute();
 
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+                {"no_troll_was_selected", EXETypes.BooleanTrue },
+                {"a_troll_was_selected", EXETypes.BooleanFalse },
+                {"selected_troll_count", "0" }
+            };
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Troll", 200}
+                { "Troll", 200},
+                { "Item", 11},
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
                 { "weak_trolls[0]", "Troll"},
-                { "strong_trolls[0]", "Troll"}
+                { "strong_trolls[0]", "Troll"},
+                { "no_trolls[0]", "Troll"}
             };
             for (int i = 1; i <= 200; i++)
             {
                 ExpectedScopeVars["troll" + i.ToString()] = "Troll";
+            }
+            for (int i = 1; i <= 11; i++)
+            {
+                ExpectedScopeVars["item" + i.ToString()] = "Item";
             }
             Dictionary<String, String> ExpectedCreatedVarState1 = new Dictionary<String, String>()
             {
@@ -2574,9 +2973,10 @@ namespace AnimationControl.Tests
             Dictionary<String, String> ExpectedCreatedVarState2 = new Dictionary<String, String>()
             {
             };
-            int ExpectedValidRefVarCount = 200;
+            int ExpectedValidRefVarCount = 211;
             int ExpectedValidSetRefVarCount = 0;
 
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
             Dictionary<String, String> ActualCreatedVarState1 = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "weak_trolls");
@@ -2585,6 +2985,7 @@ namespace AnimationControl.Tests
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
             CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
             CollectionAssert.AreEquivalent(ExpectedCreatedVarState1, ActualCreatedVarState1);
@@ -2596,20 +2997,28 @@ namespace AnimationControl.Tests
         public void Execute_Good_Many_13()
         {
             Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Troll");
-            ClassObserver.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
-            ClassObserver.AddAttribute(new CDAttribute("attack", EXETypes.IntegerTypeName));
+            Setup_Troll_Classes(Animation);
 
+            int ItemCount = 1;
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
             for (int i = 1; i <= 200; i++)
             {
                 Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Troll", "troll" + i.ToString()));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "health", new EXEASTNodeLeaf((50 + i).ToString())));
                 Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "attack", new EXEASTNodeLeaf((10 + i).ToString())));
+                Animation.SuperScope.AddCommand(new EXECommandQueryRelate("troll" + i.ToString(), "item" + ItemCount.ToString(), "R1"));
+
+                if (i % 20 == 0)
+                {
+                    ItemCount++;
+                    Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item" + ItemCount.ToString()));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "type", new EXEASTNodeLeaf("\"Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "screen_name", new EXEASTNodeLeaf("\"Butchering Sword\"")));
+                    Animation.SuperScope.AddCommand(new EXECommandAssignment("item" + ItemCount.ToString(), "gold_value", new EXEASTNodeLeaf((ItemCount + 1000).ToString())));
+                }
             }
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "weak_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2630,41 +3039,39 @@ namespace AnimationControl.Tests
                                         new EXEASTNodeLeaf("health")
                                     }
                                 ),
-                                new EXEASTNodeLeaf("100")
+                                new EXEASTNodeLeaf("80")
                             }
                         ),
                         new EXEASTNodeComposite
                         (
-                            "==",
+                            ">=",
                             new EXEASTNode[]
                             {
                                 new EXEASTNodeComposite
                                 (
-                                    "%",
+                                    ".",
                                     new EXEASTNode[]
                                     {
-                                        new EXEASTNodeComposite
-                                        (
-                                            ".",
-                                            new EXEASTNode[]
-                                            {
-                                                new EXEASTNodeLeaf("selected"),
-                                                new EXEASTNodeLeaf("attack")
-                                            }
-                                        ),
-                                        new EXEASTNodeLeaf("10")
+                                        new EXEASTNodeLeaf("selected"),
+                                        new EXEASTNodeLeaf("health")
                                     }
                                 ),
-                                new EXEASTNodeLeaf("11")
+                                new EXEASTNodeLeaf("75")
                             }
                         )
                     }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item2",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
                 )
             ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Troll",
                 "strong_trolls",
                 new EXEASTNodeComposite
                 (
@@ -2690,7 +3097,7 @@ namespace AnimationControl.Tests
                         ),
                         new EXEASTNodeComposite
                         (
-                            "==",
+                            ">",
                             new EXEASTNode[]
                             {
                                 new EXEASTNodeComposite
@@ -2710,31 +3117,132 @@ namespace AnimationControl.Tests
                                         new EXEASTNodeLeaf("10")
                                     }
                                 ),
-                                new EXEASTNodeLeaf("0")
+                                new EXEASTNodeLeaf("10")
+                            }
+                        )
+                    }
+                ),
+                new EXERelationshipSelection
+                (
+                    "item9",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "no_trolls",
+                null,
+                new EXERelationshipSelection
+                (
+                    "item11",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Troll")
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "no_troll_was_selected",
+                new EXEASTNodeComposite
+                (
+                    "and",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
                             }
                         )
                     }
                 )
             ));
             Animation.SuperScope.AddCommand(new EXECommandAssignment(
-                "weak_are_empty",
+                "a_troll_was_selected",
                 new EXEASTNodeComposite
                 (
-                    "empty",
+                    "or",
                     new EXEASTNode[]
                     {
-                        new EXEASTNodeLeaf("weak_trolls")
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "not_empty",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
                     }
                 )
             ));
             Animation.SuperScope.AddCommand(new EXECommandAssignment(
-                "strong_are_empty",
+                "selected_troll_count",
                 new EXEASTNodeComposite
                 (
-                    "empty",
+                    "+",
                     new EXEASTNode[]
                     {
-                        new EXEASTNodeLeaf("strong_trolls")
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("weak_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("strong_trolls")
+                            }
+                        ),
+                        new EXEASTNodeComposite
+                        (
+                            "cardinality",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("no_trolls")
+                            }
+                        )
                     }
                 )
             ));
@@ -2743,451 +3251,41 @@ namespace AnimationControl.Tests
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
             {
-                {"weak_are_empty", EXETypes.BooleanTrue },
-                {"strong_are_empty", EXETypes.BooleanFalse }
+                {"no_troll_was_selected", EXETypes.BooleanFalse },
+                {"a_troll_was_selected", EXETypes.BooleanTrue},
+                {"selected_troll_count", "6" }
             };
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Troll", 200}
+                { "Troll", 200},
+                { "Item", 11},
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "weak_trolls[0]", "Troll"},
-                { "strong_trolls[6]", "Troll"}
+                { "weak_trolls[6]", "Troll"},
+                { "strong_trolls[0]", "Troll"},
+                { "no_trolls[0]", "Troll"}
             };
             for (int i = 1; i <= 200; i++)
             {
                 ExpectedScopeVars["troll" + i.ToString()] = "Troll";
             }
-            Dictionary<String, String> ExpectedCreatedVarState1 = new Dictionary<String, String>()
+            for (int i = 1; i <= 11; i++)
             {
-            };
-            Dictionary<String, String> ExpectedCreatedVarState2 = new Dictionary<String, String>()
-            {
-                { "strong_trolls[0].health", "200"},
-                { "strong_trolls[0].attack", "160"},
-                { "strong_trolls[1].health", "210"},
-                { "strong_trolls[1].attack", "170"},
-                { "strong_trolls[2].health", "220"},
-                { "strong_trolls[2].attack", "180"},
-                { "strong_trolls[3].health", "230"},
-                { "strong_trolls[3].attack", "190"},
-                { "strong_trolls[4].health", "240"},
-                { "strong_trolls[4].attack", "200"},
-                { "strong_trolls[5].health", "250"},
-                { "strong_trolls[5].attack", "210"}
-            };
-            int ExpectedValidRefVarCount = 200;
-            int ExpectedValidSetRefVarCount = 1;
-
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState1 = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "weak_trolls");
-            Dictionary<String, String> ActualCreatedVarState2 = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "strong_trolls");
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
-            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
-
-            Assert.IsTrue(ExecutionSuccess);
-            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
-            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
-            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            CollectionAssert.AreEquivalent(ExpectedCreatedVarState1, ActualCreatedVarState1);
-            CollectionAssert.AreEquivalent(ExpectedCreatedVarState2, ActualCreatedVarState2);
-            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
-            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
-        }
-        [TestMethod]
-        public void Execute_Good_Many_15()
-        {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Troll");
-            ClassObserver.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
-            ClassObserver.AddAttribute(new CDAttribute("attack", EXETypes.IntegerTypeName));
-
-            for (int i = 1; i <= 200; i++)
-            {
-                Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Troll", "troll" + i.ToString()));
-                Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "health", new EXEASTNodeLeaf((50 + i).ToString())));
-                Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "attack", new EXEASTNodeLeaf((10 + i).ToString())));
-            }
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
-                EXECommandQuerySelect.CardinalityMany,
-                "Troll",
-                "weak_trolls",
-                new EXEASTNodeComposite
-                (
-                    "and",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeComposite
-                        (
-                            "<=",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    ".",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeLeaf("selected"),
-                                        new EXEASTNodeLeaf("health")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("100")
-                            }
-                        ),
-                        new EXEASTNodeComposite
-                        (
-                            "==",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    "%",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeComposite
-                                        (
-                                            ".",
-                                            new EXEASTNode[]
-                                            {
-                                                new EXEASTNodeLeaf("selected"),
-                                                new EXEASTNodeLeaf("attack")
-                                            }
-                                        ),
-                                        new EXEASTNodeLeaf("10")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("11")
-                            }
-                        )
-                    }
-                )
-            ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
-                EXECommandQuerySelect.CardinalityMany,
-                "Troll",
-                "strong_trolls",
-                new EXEASTNodeComposite
-                (
-                    "and",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeComposite
-                        (
-                            ">=",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    ".",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeLeaf("selected"),
-                                        new EXEASTNodeLeaf("health")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("200")
-                            }
-                        ),
-                        new EXEASTNodeComposite
-                        (
-                            "==",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    "%",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeComposite
-                                        (
-                                            ".",
-                                            new EXEASTNode[]
-                                            {
-                                                new EXEASTNodeLeaf("selected"),
-                                                new EXEASTNodeLeaf("attack")
-                                            }
-                                        ),
-                                        new EXEASTNodeLeaf("10")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("0")
-                            }
-                        )
-                    }
-                )
-            ));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment(
-                "weak_count",
-                new EXEASTNodeComposite
-                (
-                    "cardinality",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeLeaf("weak_trolls")
-                    }
-                )
-            ));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment(
-                "strong_count",
-                new EXEASTNodeComposite
-                (
-                    "cardinality",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeLeaf("strong_trolls")
-                    }
-                )
-            ));
-
-            Boolean ExecutionSuccess = Animation.Execute();
-
-            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
-            {
-                {"weak_count", "0" },
-                {"strong_count", "6" }
-            };
-            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
-            {
-                { "Troll", 200}
-            };
-            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
-            {
-                { "weak_trolls[0]", "Troll"},
-                { "strong_trolls[6]", "Troll"}
-            };
-            for (int i = 1; i <= 200; i++)
-            {
-                ExpectedScopeVars["troll" + i.ToString()] = "Troll";
+                ExpectedScopeVars["item" + i.ToString()] = "Item";
             }
             Dictionary<String, String> ExpectedCreatedVarState1 = new Dictionary<String, String>()
             {
             };
+            for (int i = 0; i < 6; i++)
+            {
+                ExpectedCreatedVarState1["weak_trolls[" + i.ToString() + "].health"] = (50 + i + 25).ToString();
+                ExpectedCreatedVarState1["weak_trolls[" + i.ToString() + "].attack"] = (10 + i + 25).ToString();
+            }
             Dictionary<String, String> ExpectedCreatedVarState2 = new Dictionary<String, String>()
             {
-                { "strong_trolls[0].health", "200"},
-                { "strong_trolls[0].attack", "160"},
-                { "strong_trolls[1].health", "210"},
-                { "strong_trolls[1].attack", "170"},
-                { "strong_trolls[2].health", "220"},
-                { "strong_trolls[2].attack", "180"},
-                { "strong_trolls[3].health", "230"},
-                { "strong_trolls[3].attack", "190"},
-                { "strong_trolls[4].health", "240"},
-                { "strong_trolls[4].attack", "200"},
-                { "strong_trolls[5].health", "250"},
-                { "strong_trolls[5].attack", "210"}
             };
-            int ExpectedValidRefVarCount = 200;
-            int ExpectedValidSetRefVarCount = 1;
-
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState1 = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "weak_trolls");
-            Dictionary<String, String> ActualCreatedVarState2 = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "strong_trolls");
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
-            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
-
-            Assert.IsTrue(ExecutionSuccess);
-            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
-            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
-            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            CollectionAssert.AreEquivalent(ExpectedCreatedVarState1, ActualCreatedVarState1);
-            CollectionAssert.AreEquivalent(ExpectedCreatedVarState2, ActualCreatedVarState2);
-            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
-            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
-        }
-        [TestMethod]
-        public void Execute_Good_Many_14()
-        {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Troll");
-            ClassObserver.AddAttribute(new CDAttribute("health", EXETypes.IntegerTypeName));
-            ClassObserver.AddAttribute(new CDAttribute("attack", EXETypes.IntegerTypeName));
-
-            for (int i = 1; i <= 200; i++)
-            {
-                Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Troll", "troll" + i.ToString()));
-                Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "health", new EXEASTNodeLeaf((50 + i).ToString())));
-                Animation.SuperScope.AddCommand(new EXECommandAssignment("troll" + i.ToString(), "attack", new EXEASTNodeLeaf((10 + i).ToString())));
-            }
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
-                EXECommandQuerySelect.CardinalityMany,
-                "Troll",
-                "weak_trolls",
-                new EXEASTNodeComposite
-                (
-                    "and",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeComposite
-                        (
-                            "<=",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    ".",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeLeaf("selected"),
-                                        new EXEASTNodeLeaf("health")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("100")
-                            }
-                        ),
-                        new EXEASTNodeComposite
-                        (
-                            "==",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    "%",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeComposite
-                                        (
-                                            ".",
-                                            new EXEASTNode[]
-                                            {
-                                                new EXEASTNodeLeaf("selected"),
-                                                new EXEASTNodeLeaf("attack")
-                                            }
-                                        ),
-                                        new EXEASTNodeLeaf("10")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("11")
-                            }
-                        )
-                    }
-                )
-            ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
-                EXECommandQuerySelect.CardinalityMany,
-                "Troll",
-                "strong_trolls",
-                new EXEASTNodeComposite
-                (
-                    "and",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeComposite
-                        (
-                            ">=",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    ".",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeLeaf("selected"),
-                                        new EXEASTNodeLeaf("health")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("200")
-                            }
-                        ),
-                        new EXEASTNodeComposite
-                        (
-                            "==",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeComposite
-                                (
-                                    "%",
-                                    new EXEASTNode[]
-                                    {
-                                        new EXEASTNodeComposite
-                                        (
-                                            ".",
-                                            new EXEASTNode[]
-                                            {
-                                                new EXEASTNodeLeaf("selected"),
-                                                new EXEASTNodeLeaf("attack")
-                                            }
-                                        ),
-                                        new EXEASTNodeLeaf("10")
-                                    }
-                                ),
-                                new EXEASTNodeLeaf("0")
-                            }
-                        )
-                    }
-                )
-            ));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment(
-                "weak_are_empty",
-                new EXEASTNodeComposite
-                (
-                    "not_empty",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeLeaf("weak_trolls")
-                    }
-                )
-            ));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment(
-                "strong_are_empty",
-                new EXEASTNodeComposite
-                (
-                    "not_empty",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeLeaf("strong_trolls")
-                    }
-                )
-            ));
-
-            Boolean ExecutionSuccess = Animation.Execute();
-
-            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
-            {
-                {"weak_are_empty", EXETypes.BooleanFalse },
-                {"strong_are_empty", EXETypes.BooleanTrue }
-            };
-            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
-            {
-                { "Troll", 200}
-            };
-            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
-            {
-                { "weak_trolls[0]", "Troll"},
-                { "strong_trolls[6]", "Troll"}
-            };
-            for (int i = 1; i <= 200; i++)
-            {
-                ExpectedScopeVars["troll" + i.ToString()] = "Troll";
-            }
-            Dictionary<String, String> ExpectedCreatedVarState1 = new Dictionary<String, String>()
-            {
-            };
-            Dictionary<String, String> ExpectedCreatedVarState2 = new Dictionary<String, String>()
-            {
-                { "strong_trolls[0].health", "200"},
-                { "strong_trolls[0].attack", "160"},
-                { "strong_trolls[1].health", "210"},
-                { "strong_trolls[1].attack", "170"},
-                { "strong_trolls[2].health", "220"},
-                { "strong_trolls[2].attack", "180"},
-                { "strong_trolls[3].health", "230"},
-                { "strong_trolls[3].attack", "190"},
-                { "strong_trolls[4].health", "240"},
-                { "strong_trolls[4].attack", "200"},
-                { "strong_trolls[5].health", "250"},
-                { "strong_trolls[5].attack", "210"}
-            };
-            int ExpectedValidRefVarCount = 200;
+            int ExpectedValidRefVarCount = 211;
             int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
@@ -3211,29 +3309,47 @@ namespace AnimationControl.Tests
         public void Execute_Bad_Many_01()
         {
             Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            Setup_Observer_Classes(Animation);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "Subject", "s"));
+            Setup_Observer_Commands(Animation);
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "o",
+                null,
+                new EXERelationshipSelection
+                (
+                    "observer",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink
+                        (
+                            "R1",
+                            "Visitor"
+                        )
+                    }
+                )
+            ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 1}
+                { "Observer", 1},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
+                { "observer", "Observer"},
+                { "subject", "Subject"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 0;
+            int ExpectedValidRefVarCount = 2;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "s");
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
@@ -3249,7 +3365,23 @@ namespace AnimationControl.Tests
         {
             Animation Animation = new Animation();
 
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(EXECommandQuerySelect.CardinalityMany, "Observer", "s"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "o",
+                null,
+                new EXERelationshipSelection
+                (
+                    "observer",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink
+                        (
+                            "R1",
+                            "Visitor"
+                        )
+                    }
+                )
+            ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -3260,14 +3392,13 @@ namespace AnimationControl.Tests
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
             int ExpectedValidRefVarCount = 0;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "s");
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
@@ -3282,50 +3413,50 @@ namespace AnimationControl.Tests
         public void Execute_Bad_Many_03()
         {
             Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            Setup_Observer_Classes(Animation);
 
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Setup_Observer_Commands(Animation);
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
-                "observers",
+                "o",
                 new EXEASTNodeComposite
                 (
                     "==",
                     new EXEASTNode[]
                     {
-                        new EXEASTNodeComposite
-                        (
+                        new EXEASTNodeComposite(
                             ".",
                             new EXEASTNode[]
                             {
                                 new EXEASTNodeLeaf("selected"),
-                                new EXEASTNodeLeaf("value")
+                                new EXEASTNodeLeaf("count")
                             }
-                        ),
-                        new EXEASTNodeLeaf("2")
+                        )
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 0}
+                { "Observer", 1},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
+                { "observer", "Observer"},
+                { "subject", "Subject"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 0;
+            int ExpectedValidRefVarCount = 2;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "s");
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
@@ -3340,51 +3471,50 @@ namespace AnimationControl.Tests
         public void Execute_Bad_Many_04()
         {
             Animation Animation = new Animation();
-            CDClass Class = Animation.ExecutionSpace.SpawnClass("Observer");
-            Class.AddAttribute(new CDAttribute("count", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Setup_Observer_Commands(Animation);
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
-                "observers",
+                "o",
                 new EXEASTNodeComposite
                 (
                     "==",
                     new EXEASTNode[]
                     {
-                        new EXEASTNodeComposite
-                        (
+                        new EXEASTNodeComposite(
                             ".",
                             new EXEASTNode[]
                             {
                                 new EXEASTNodeLeaf("selected"),
-                                new EXEASTNodeLeaf("value")
+                                new EXEASTNodeLeaf("count")
                             }
-                        ),
-                        new EXEASTNodeLeaf("2")
+                        )
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 0}
+                { "Observer", 1},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
+                { "observer", "Observer"},
+                { "subject", "Subject"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 0;
+            int ExpectedValidRefVarCount = 2;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "s");
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
@@ -3399,54 +3529,55 @@ namespace AnimationControl.Tests
         public void Execute_Bad_Many_05()
         {
             Animation Animation = new Animation();
-            CDClass Class = Animation.ExecutionSpace.SpawnClass("Observer");
-            Class.AddAttribute(new CDAttribute("count", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o", "count", new EXEASTNodeLeaf("50")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Setup_Observer_Commands(Animation);
+            Animation.SuperScope.AddCommand(new EXECommandAssignment(
+                "observer",
+                "value",
+                new EXEASTNodeLeaf("5")
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
-                "observers",
+                "o",
                 new EXEASTNodeComposite
                 (
                     "==",
                     new EXEASTNode[]
                     {
-                        new EXEASTNodeComposite
-                        (
+                        new EXEASTNodeComposite(
                             ".",
                             new EXEASTNode[]
                             {
                                 new EXEASTNodeLeaf("selected"),
-                                new EXEASTNodeLeaf("value")
+                                new EXEASTNodeLeaf("count")
                             }
-                        ),
-                        new EXEASTNodeLeaf("2")
+                        )
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 1}
+                { "Observer", 1},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "o", "Observer"}
+                { "observer", "Observer"},
+                { "subject", "Subject"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 1;
+            int ExpectedValidRefVarCount = 2;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "s");
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
@@ -3461,54 +3592,50 @@ namespace AnimationControl.Tests
         public void Execute_Bad_Many_06()
         {
             Animation Animation = new Animation();
-            CDClass Class = Animation.ExecutionSpace.SpawnClass("Observer");
-            Class.AddAttribute(new CDAttribute("count", EXETypes.IntegerTypeName));
+            Setup_Observer_Classes(Animation, 1);
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("o", "count", new EXEASTNodeLeaf("50")));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
+            Setup_Observer_Commands(Animation);
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "Observer",
-                "observers",
+                "o",
                 new EXEASTNodeComposite
                 (
                     "==",
                     new EXEASTNode[]
                     {
-                        new EXEASTNodeComposite
-                        (
+                        new EXEASTNodeComposite(
                             ".",
                             new EXEASTNode[]
                             {
                                 new EXEASTNodeLeaf("selected"),
                                 new EXEASTNodeLeaf("value")
                             }
-                        ),
-                        new EXEASTNodeLeaf("2")
+                        )
                     }
-                )
+                ),
+                Setup_Observer_RelationshipNavigation(0)
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 1}
+                { "Observer", 1},
+                { "Subject", 1}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "o", "Observer"}
+                { "observer", "Observer"},
+                { "subject", "Subject"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
-
             };
-            int ExpectedValidRefVarCount = 1;
+            int ExpectedValidRefVarCount = 2;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "s");
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
@@ -3519,66 +3646,5 @@ namespace AnimationControl.Tests
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
         }
-        [TestMethod]
-        public void Execute_Bad_Many_07()
-        {
-            Animation Animation = new Animation();
-            CDClass Class = Animation.ExecutionSpace.SpawnClass("Observer");
-            Class.AddAttribute(new CDAttribute("count", EXETypes.IntegerTypeName));
-
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy
-            (
-                EXECommandQuerySelect.CardinalityMany,
-                "Observer",
-                "observers",
-                new EXEASTNodeComposite
-                (
-                    "==",
-                    new EXEASTNode[]
-                    {
-                        new EXEASTNodeComposite
-                        (
-                            ".",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeLeaf("selected"),
-                                new EXEASTNodeLeaf("count")
-                            }
-                        ),
-                        new EXEASTNodeLeaf("2")
-                    }
-                )
-            ));
-            Boolean ExecutionSuccess = Animation.Execute();
-
-            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
-            {
-                { "Observer", 1}
-            };
-            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
-            {
-                { "o", "Observer"}
-            };
-            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
-            {
-
-            };
-            int ExpectedValidRefVarCount = 1;
-            int ExpectedValidSetRefVarCount = 0;
-
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "s");
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
-            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
-
-            Assert.IsFalse(ExecutionSuccess);
-            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
-            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
-            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
-            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
-            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
-        }*/
     }
 }

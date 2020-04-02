@@ -20,6 +20,8 @@ namespace AnimationControl
 
         public EXETestGUI Visualizer = new EXETestGUIImplementation();
         
+        private int command_counter = 0;
+
         public int HighlightDuration { get; set; }
         public Animation(int HighlightDuration = 5)
         {
@@ -46,6 +48,7 @@ namespace AnimationControl
                 }
                 this.InDatabase = true;
             }
+            Console.WriteLine("Executing command no. " + ++this.command_counter);
         }
         public void LeaveInstanceDatabase()
         {
@@ -75,7 +78,7 @@ namespace AnimationControl
                         Monitor.Wait(StepCountLock);
                     }
                     --AllowedStepCount;
-                }
+                } 
             }
         }
         public void PermitNextStep()

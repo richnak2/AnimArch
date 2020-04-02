@@ -95,6 +95,7 @@ namespace AnimationControl
 
                     if(!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {
+                        Scope.DestroyReferencingVariable(TempSelectedVarName);
                         return false;
                     }
 
