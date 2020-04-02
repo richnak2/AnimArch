@@ -3306,6 +3306,632 @@ namespace AnimationControl.Tests
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
         }
         [TestMethod]
+        public void Execute_Good_Many_14()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "hero",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Inventory"),
+                        new EXERelationshipLink("R2", "Item_Slot"),
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Stat")
+
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 1},
+                { "Stat", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "stats[1]", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 6;
+            int ExpectedValidSetRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Good_Many_15()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod1", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat1", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "hero",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Inventory"),
+                        new EXERelationshipLink("R2", "Item_Slot"),
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Stat")
+
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 2},
+                { "Stat", 2}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "mod1", "Modifier"},
+                { "stat1", "Stat"},
+                { "stats[2]", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 8;
+            int ExpectedValidSetRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Good_Many_16()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod1", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat1", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat2", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "hero",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Inventory"),
+                        new EXERelationshipLink("R2", "Item_Slot"),
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Stat")
+
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 2},
+                { "Stat", 3}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "mod1", "Modifier"},
+                { "stat1", "Stat"},
+                { "stat2", "Stat"},
+                { "stats[3]", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 9;
+            int ExpectedValidSetRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Good_Many_17()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod1", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat1", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat2", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "inv_slot",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Stat")
+
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 2},
+                { "Stat", 3}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "mod1", "Modifier"},
+                { "stat1", "Stat"},
+                { "stat2", "Stat"},
+                { "stats[3]", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 9;
+            int ExpectedValidSetRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Good_Many_18()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            // No relationship between item and slot
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod1", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat1", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat2", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "hero",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Inventory"),
+                        new EXERelationshipLink("R2", "Item_Slot"),
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Stat")
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 2},
+                { "Stat", 3}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "mod1", "Modifier"},
+                { "stat1", "Stat"},
+                { "stat2", "Stat"},
+                { "stats[0]", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 9;
+            int ExpectedValidSetRefVarCount = 0;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Good_Many_19()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "hero",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Inventory"),
+                        new EXERelationshipLink("R2", "Item_Slot"),
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Stat")
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 0},
+                { "Stat", 0}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "stats[0]", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 4;
+            int ExpectedValidSetRefVarCount = 0;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Good_Many_20()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero1", "inv1", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv1", "inv_slot1", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot1", "item1", "R3"));
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero2", "inv2", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv2", "inv_slot2", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot2", "item2", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(
+                EXECommandQuerySelect.CardinalityMany,
+                "Hero",
+                "heroes"
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "items",
+                null,
+                new EXERelationshipSelection
+                (
+                    "heroes",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R1", "Inventory"),
+                        new EXERelationshipLink("R2", "Item_Slot"),
+                        new EXERelationshipLink("R3", "Item")
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 2},
+                { "Inventory", 2},
+                { "Item_Slot", 2},
+                { "Item", 2},
+                { "Modifier", 0},
+                { "Stat", 0}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero1", "Hero"},
+                { "inv1", "Inventory"},
+                { "inv_slot1", "Item_Slot"},
+                { "item1", "Item"},
+                { "hero2", "Hero"},
+                { "inv2", "Inventory"},
+                { "inv_slot2", "Item_Slot"},
+                { "item2", "Item"},
+                { "heroes[2]", "Hero"},
+                { "items[2]", "Item"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 8;
+            int ExpectedValidSetRefVarCount = 2;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
         public void Execute_Bad_Many_01()
         {
             Animation Animation = new Animation();
@@ -3592,50 +4218,264 @@ namespace AnimationControl.Tests
         public void Execute_Bad_Many_06()
         {
             Animation Animation = new Animation();
-            Setup_Observer_Classes(Animation, 1);
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
 
-            Setup_Observer_Commands(Animation);
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod1", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat1", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat2", "R5"));
             Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
                 EXECommandQuerySelect.CardinalityMany,
-                "o",
-                new EXEASTNodeComposite
+                "stats",
+                null,
+                new EXERelationshipSelection
                 (
-                    "==",
-                    new EXEASTNode[]
+                    "item",
+                    new EXERelationshipLink[]
                     {
-                        new EXEASTNodeComposite(
-                            ".",
-                            new EXEASTNode[]
-                            {
-                                new EXEASTNodeLeaf("selected"),
-                                new EXEASTNodeLeaf("value")
-                            }
-                        )
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Stat")
+
                     }
-                ),
-                Setup_Observer_RelationshipNavigation(0)
+                )
             ));
             Boolean ExecutionSuccess = Animation.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
-                { "Observer", 1},
-                { "Subject", 1}
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 2},
+                { "Stat", 3}
             };
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
-                { "observer", "Observer"},
-                { "subject", "Subject"}
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "mod1", "Modifier"},
+                { "stat1", "Stat"},
+                { "stat2", "Stat"}
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
             };
-            int ExpectedValidRefVarCount = 2;
+            int ExpectedValidRefVarCount = 9;
             int ExpectedValidSetRefVarCount = 0;
 
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
             Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsFalse(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Bad_Many_07()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod1", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat1", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat2", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "item",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R6", "Stat")
+
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 2},
+                { "Stat", 3}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "mod1", "Modifier"},
+                { "stat1", "Stat"},
+                { "stat2", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 9;
+            int ExpectedValidSetRefVarCount = 0;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsFalse(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
+        public void Execute_Bad_Many_08()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod1", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat1", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod1", "stat2", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "stats",
+                null,
+                new EXERelationshipSelection
+                (
+                    "item",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R3", "Item"),
+                        new EXERelationshipLink("R4", "Modifier"),
+                        new EXERelationshipLink("R5", "Hero")
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 2},
+                { "Stat", 3}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "mod1", "Modifier"},
+                { "stat1", "Stat"},
+                { "stat2", "Stat"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 9;
+            int ExpectedValidSetRefVarCount = 0;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
             int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
             int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 

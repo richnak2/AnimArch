@@ -32,10 +32,15 @@ namespace AnimationControl
             if (StartVariable != null && this.RelationshipSpecification.Any())
             {
                 List<long> CurrentIds = StartVariable.GetReferencedIds();
+                if (CurrentIds == null)
+                {
+                    return null;
+                }
+
                 String CurrentClass = StartVariable.ClassName;
                 foreach(EXERelationshipLink RelationshipLink in this.RelationshipSpecification)
                 {
-                    if (!CurrentIds.Any())
+                    if (CurrentIds == null || !CurrentIds.Any())
                     {
                         break;
                     }
