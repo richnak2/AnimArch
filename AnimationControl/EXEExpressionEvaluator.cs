@@ -136,6 +136,13 @@ namespace AnimationControl
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
+                        for (int i = 1; i < IntList.Count; i++)
+                        {
+                            if (IntList[i] == 0)
+                            {
+                                return null;
+                            }
+                        }
                         //divide numbers in list and return result
                         return IntList.Aggregate((a, x) => a / x).ToString();
                     }
@@ -150,6 +157,13 @@ namespace AnimationControl
                             try
                             {
                                 DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
+                                for (int i = 1; i < DoubleList.Count; i++)
+                                {
+                                    if (DoubleList[i] == 0)
+                                    {
+                                        return EXETypes.BooleanFalse;
+                                    }
+                                }
                             }
                             catch (Exception e)
                             {
@@ -167,6 +181,13 @@ namespace AnimationControl
                     {
                         //convert to list of int
                         List<int> IntList = Operands.Select(int.Parse).ToList();
+                        for (int i = 1; i < IntList.Count; i++)
+                        {
+                            if (IntList[i] == 0)
+                            {
+                                return null;
+                            }
+                        }
                         //divide numbers in list and return result
                         return IntList.Aggregate((a, x) => a % x).ToString();
                     }
@@ -181,6 +202,13 @@ namespace AnimationControl
                             try
                             {
                                 DoubleList.Add(decimal.Parse(Operand, CultureInfo.InvariantCulture));
+                                for (int i = 1; i < DoubleList.Count; i++)
+                                {
+                                    if (DoubleList[i] == 0)
+                                    {
+                                        return EXETypes.BooleanFalse;
+                                    }
+                                }
                             }
                             catch (Exception e)
                             {

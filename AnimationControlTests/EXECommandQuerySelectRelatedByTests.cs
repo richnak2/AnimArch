@@ -3932,6 +3932,90 @@ namespace AnimationControl.Tests
             Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
         }
         [TestMethod]
+        public void Execute_Good_Many_21()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Hero");
+            Animation.ExecutionSpace.SpawnClass("Inventory");
+            Animation.ExecutionSpace.SpawnClass("Item_Slot");
+            Animation.ExecutionSpace.SpawnClass("Item");
+            Animation.ExecutionSpace.SpawnClass("Modifier");
+            Animation.ExecutionSpace.SpawnClass("Stat");
+            Animation.RelationshipSpace.SpawnRelationship("Hero", "Inventory");
+            Animation.RelationshipSpace.SpawnRelationship("Inventory", "Item_Slot");
+            Animation.RelationshipSpace.SpawnRelationship("Item_Slot", "Item");
+            Animation.RelationshipSpace.SpawnRelationship("Item", "Modifier");
+            Animation.RelationshipSpace.SpawnRelationship("Modifier", "Stat");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Hero", "hero"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Inventory", "inv"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("hero", "inv", "R1"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item_Slot", "inv_slot"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv", "inv_slot", "R2"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Item", "item"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("inv_slot", "item", "R3"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Modifier", "mod"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("item", "mod", "R4"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Stat", "stat"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("mod", "stat", "R5"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelectRelatedBy(
+                EXECommandQuerySelect.CardinalityMany,
+                "heroes",
+                null,
+                new EXERelationshipSelection
+                (
+                    "stat",
+                    new EXERelationshipLink[]
+                    {
+                        new EXERelationshipLink("R5", "Modifier"),
+                        new EXERelationshipLink("R4", "Item"),
+                        new EXERelationshipLink("R3", "Item_Slot"),
+                        new EXERelationshipLink("R2", "Inventory"),
+                        new EXERelationshipLink("R1", "Hero")
+                    }
+                )
+            ));
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Hero", 1},
+                { "Inventory", 1},
+                { "Item_Slot", 1},
+                { "Item", 1},
+                { "Modifier", 1},
+                { "Stat", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "hero", "Hero"},
+                { "inv", "Inventory"},
+                { "inv_slot", "Item_Slot"},
+                { "item", "Item"},
+                { "mod", "Modifier"},
+                { "stat", "Stat"},
+                { "heroes[1]", "Hero"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 6;
+            int ExpectedValidSetRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "stats");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
+        [TestMethod]
         public void Execute_Bad_Many_01()
         {
             Animation Animation = new Animation();

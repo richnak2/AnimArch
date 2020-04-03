@@ -1313,5 +1313,133 @@ namespace AnimationControl.Tests
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
+        [TestMethod]
+        public void EXEScopeCondition_Stress_01()
+        {
+            Animation Animation = new Animation();
+            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            ClassObserver.AddAttribute(new CDAttribute("active", EXETypes.BooleanTypeName));
+            ClassObserver.AddAttribute(new CDAttribute("value", EXETypes.IntegerTypeName));
+            ClassObserver.AddAttribute(new CDAttribute("status", EXETypes.StringTypeName));
+
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "observer"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer", "active", new EXEASTNodeLeaf(EXETypes.BooleanTrue)));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer", "status", new EXEASTNodeLeaf("\"Active\"")));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("observer", "value", new EXEASTNodeLeaf("0")));
+
+            EXEScopeCondition Temp;
+            EXEScope Current = Animation.SuperScope;
+            for (int i = 0; i < 20; i++)
+            {
+                Temp = new EXEScopeCondition
+                    (
+                        Current,
+                        new EXECommand[]
+                        {
+                           new EXECommandAssignment(
+                               "observer",
+                               "active",
+                               new EXEASTNodeComposite
+                               (
+                                   "not",
+                                    new EXEASTNode[]
+                                    {
+                                        new EXEASTNodeComposite
+                                       (
+                                           ".",
+                                            new EXEASTNode[]
+                                            {
+                                                new EXEASTNodeLeaf("observer"),
+                                                new EXEASTNodeLeaf("active")
+                                            }
+                                       )
+                                    }
+                               )
+
+                           ),
+                           new EXECommandAssignment(
+                               "observer",
+                               "value",
+                               new EXEASTNodeComposite
+                               (
+                                   "+",
+                                    new EXEASTNode[]
+                                    {
+                                        new EXEASTNodeComposite
+                                        (
+                                            ".",
+                                            new EXEASTNode[]
+                                            {
+                                                new EXEASTNodeLeaf("observer"),
+                                                new EXEASTNodeLeaf("value")
+                                            }
+                                        ),
+                                        new EXEASTNodeLeaf("1")
+                                    }
+                               )
+
+                           )
+                        },
+                        new EXEASTNodeComposite
+                        (
+                            "<",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeComposite
+                                (
+                                    ".",
+                                    new EXEASTNode[]
+                                    {
+                                        new EXEASTNodeLeaf("observer"),
+                                        new EXEASTNodeLeaf("value")
+                                    }
+                                ),
+                                new EXEASTNodeLeaf("20")
+                            }
+                        )
+                    );
+                Current.AddCommand(Temp);
+                Current = Temp;
+            }
+
+
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+            };
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "observer", "Observer"}
+            };
+            Dictionary<String, String> ExpectedCreatedVarsState = new Dictionary<String, String>()
+            {
+                { "observer.active", EXETypes.BooleanTrue },
+                { "observer.status", "\"Active\"" },
+                { "observer.value", "20" }
+            };
+            int ExpectedValidRefVarCount = 1;
+            int ExpectedValidSetRefVarCount = 0;
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarsState = Animation.SuperScope.GetAllHandleStateAttrsDictRecursive(Animation.ExecutionSpace);
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarsState, ActualCreatedVarsState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+        }
     }
 }
