@@ -9,7 +9,7 @@ namespace AnimationControl
         private List<EXEPrimitiveVariable> PrimitiveVariables;
         private List<EXEReferencingVariable> ReferencingVariables;
         private List<EXEReferencingSetVariable> SetReferencingVariables;
-        public EXEScope SuperScope;
+        private EXEScope SuperScope { get; set; }
         public List<EXECommand> Commands;
 
         public String OALCode;
@@ -32,7 +32,7 @@ namespace AnimationControl
             this.ReferencingVariables = new List<EXEReferencingVariable>();
             this.SetReferencingVariables = new List<EXEReferencingSetVariable>();
 
-            this.SuperScope = SuperScope;
+            this.SetSuperScope(SuperScope);
 
             this.Commands = new List<EXECommand>();
             foreach (EXECommand Command in Commands)
@@ -41,6 +41,15 @@ namespace AnimationControl
             }
 
             this.Animation = null;
+        }
+
+        public EXEScope GetSuperScope()
+        {
+            return this.SuperScope;
+        }
+        public virtual void SetSuperScope(EXEScope SuperScope)
+        {
+            this.SuperScope = SuperScope;
         }
 
         public Dictionary<String, String> GetStateDictRecursive()
@@ -317,7 +326,7 @@ namespace AnimationControl
             this.Commands.Add(Command);
             if (Command.IsComposite())
             {
-                ((EXEScope)Command).SuperScope = this;
+                ((EXEScope)Command).SetSuperScope(this);
             }
         }
         public override Boolean IsComposite()

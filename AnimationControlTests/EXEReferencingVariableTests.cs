@@ -359,10 +359,10 @@ namespace AnimationControl.Tests
             SetVariable3.AddReferencingVariable(ReferencingVariable333);
 
             Scope.AddVariable(SetVariable1);
-            Scope.SuperScope = new EXEScope();
-            Scope.SuperScope.AddVariable(SetVariable2);
-            Scope.SuperScope.SuperScope = new EXEScope();
-            Scope.SuperScope.SuperScope.AddVariable(SetVariable3);
+            Scope.SetSuperScope (new EXEScope());
+            Scope.GetSuperScope().AddVariable(SetVariable2);
+            Scope.GetSuperScope().SetSuperScope (new EXEScope());
+            Scope.GetSuperScope().GetSuperScope().AddVariable(SetVariable3);
 
             EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Set111");
 
@@ -442,10 +442,10 @@ namespace AnimationControl.Tests
             SetVariable3.AddReferencingVariable(ReferencingVariable333);
 
             Scope.AddVariable(SetVariable1);
-            Scope.SuperScope = new EXEScope();
-            Scope.SuperScope.AddVariable(SetVariable2);
-            Scope.SuperScope.SuperScope = new EXEScope();
-            Scope.SuperScope.SuperScope.AddVariable(SetVariable3);
+            Scope.SetSuperScope (new EXEScope());
+            Scope.GetSuperScope().AddVariable(SetVariable2);
+            Scope.GetSuperScope().SetSuperScope (new EXEScope());
+            Scope.GetSuperScope().GetSuperScope().AddVariable(SetVariable3);
 
             EXEReferencingSetVariable SeekedVariable = Scope.FindSetReferencingVariableByName("Set1111");
 

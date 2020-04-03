@@ -48,7 +48,7 @@ namespace AnimationControl
                 }
                 this.InDatabase = true;
             }
-            Console.WriteLine("Executing command no. " + ++this.command_counter);
+            //Console.WriteLine("Executing command no. " + ++this.command_counter);
         }
         public void LeaveInstanceDatabase()
         {

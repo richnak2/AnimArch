@@ -128,7 +128,7 @@ namespace AnimationControl.Tests
 
             EXEScope SuperScope = new EXEScope();
             SuperScope.AddVariable(new EXEReferencingVariable("new_user4", "UserAccount", ClassInstance4.UniqueID));
-            Scope.SuperScope = SuperScope;
+            Scope.SetSuperScope (SuperScope);
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Email", Scope, Animation.ExecutionSpace);
@@ -272,7 +272,7 @@ namespace AnimationControl.Tests
 
             EXEScope SuperScope = new EXEScope();
             SuperScope.AddVariable(new EXEReferencingVariable("new_user4", "UserAccount", ClassInstance4.UniqueID));
-            Scope.SuperScope = SuperScope;
+            Scope.SetSuperScope (SuperScope);
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             String ActualOutput = Evaluator.EvaluateAttributeValue("new_user5", "Email", Scope, Animation.ExecutionSpace);
@@ -326,7 +326,7 @@ namespace AnimationControl.Tests
 
             EXEScope SuperScope = new EXEScope();
             SuperScope.AddVariable(new EXEReferencingVariable("new_user4", "UserAccount", ClassInstance4.UniqueID));
-            Scope.SuperScope = SuperScope;
+            Scope.SetSuperScope (SuperScope);
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
             String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Age", Scope, Animation.ExecutionSpace);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    class EXEScopeLoopWhile : EXEScope
+    public class EXEScopeLoopWhile : EXEScope
     {
         public EXEASTNode Condition;
 
@@ -14,13 +14,11 @@ namespace AnimationControl
         {
             this.Condition = Condition;
         }
-
-        public Boolean EvaluateCondition(EXEScope Scope, CDClassPool ExecutionSpace)
+        public EXEScopeLoopWhile(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition) : base(SuperScope, Commands)
         {
-            String Result = this.Condition.Evaluate(Scope, ExecutionSpace);
-
-            return EXETypes.BooleanTrue.Equals(Result) ? true : false;
+            this.Condition = Condition;
         }
+
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
         {
             Boolean Success = this.Execute(Animation, Scope);
@@ -31,11 +29,23 @@ namespace AnimationControl
             Boolean Success = true;
             this.Animation = Animation;
 
-            Animation.AccessInstanceDatabase();
-            Boolean ConditionResult = this.EvaluateCondition(Scope, Animation.ExecutionSpace);
-            Animation.LeaveInstanceDatabase();
-            while (ConditionResult)
+            bool ConditionTrue = true;
+            String ConditionResult;
+            while (ConditionTrue)
             {
+                Animation.AccessInstanceDatabase();
+                ConditionResult = this.Condition.Evaluate(Scope, Animation.ExecutionSpace);
+                Animation.LeaveInstanceDatabase();
+                if (ConditionResult == null)
+                {
+                    return false;
+                }
+                ConditionTrue = EXETypes.BooleanTrue.Equals(ConditionResult);
+                if (!ConditionTrue)
+                {
+                    break;
+                }
+
                 foreach (EXECommand Command in this.Commands)
                 {
                     Success = Command.SynchronizedExecute(Animation, this);
@@ -44,8 +54,11 @@ namespace AnimationControl
                         break;
                     }
                 }
+                if (!Success)
+                {
+                    break;
+                }
             }
-
             return Success;
         }
     }

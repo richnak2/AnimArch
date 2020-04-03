@@ -37,6 +37,24 @@ namespace AnimationControl
             this.ElseScope = ElseScope;
         }
 
+        public override void SetSuperScope(EXEScope SuperScope)
+        {
+            base.SetSuperScope(SuperScope);
+
+            if (this.ElifScopes != null)
+            {
+                foreach (EXEScope ElifScope in this.ElifScopes)
+                {
+                    ElifScope.SetSuperScope(this.GetSuperScope());
+                }
+            }
+
+            if (this.ElseScope != null)
+            {
+                this.ElseScope.SetSuperScope(this.GetSuperScope());
+            }
+        }
+
         public void AddElifScope(EXEScopeCondition ElifScope)
         {
             if (this.ElifScopes == null)
@@ -45,6 +63,7 @@ namespace AnimationControl
             }
 
             this.ElifScopes.Add(ElifScope);
+            ElifScope.SetSuperScope(this.GetSuperScope());
         }
 
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
@@ -57,8 +76,6 @@ namespace AnimationControl
             this.Animation = Animation;
             Boolean Result = true;
             Boolean AScopeWasExecuted = false;
-
-            Console.WriteLine("About to evaluate condition");
 
             if (this.Condition == null)
             {
@@ -73,17 +90,13 @@ namespace AnimationControl
                 return false;
             }
             Boolean IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
-            Console.WriteLine("Evaluated condition: " + IfConditionResult);
 
             if (IfConditionResult)
             {
-                Console.WriteLine("If - Condition is true");
                 int i = 0;
                 foreach (EXECommand Command in this.Commands)
                 {
-                    Console.WriteLine("If - Bout to do " + ++i + "th command");
                     Result = Command.SynchronizedExecute(Animation, this);
-                    Console.WriteLine("If - Done " + i + "th command");
                     if (!Result)
                     {
                         break;
@@ -131,9 +144,7 @@ namespace AnimationControl
 
             if (this.ElseScope != null)
             {
-                Console.WriteLine("Executing elif");
                 Result = this.ElseScope.SynchronizedExecute(Animation, ElseScope);
-                Console.WriteLine("Executed elif: " + Result);
             }
 
             return Result;

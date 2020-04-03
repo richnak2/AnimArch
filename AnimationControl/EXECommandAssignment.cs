@@ -35,7 +35,7 @@ namespace AnimationControl
             // If we are assigning to a variable
             if (this.AttributeName == null)
             {
-                Console.WriteLine("Assigning value: " + AssignedValue + " to variable " + this.VariableName);
+                //Console.WriteLine("Assigning value: " + AssignedValue + " to variable " + this.VariableName);
 
                 EXEPrimitiveVariable Variable = Scope.FindPrimitiveVariableByName(this.VariableName);
                 // If the variable doesnt exist, we simply create it
