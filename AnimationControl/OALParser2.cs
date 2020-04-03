@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
+using AnimationControl.OAL;
 
 namespace AnimationControl
 {
@@ -10,8 +12,66 @@ namespace AnimationControl
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("ANDREJ nie je uchyl!");
+
+
+            try
+            {
+                string oalexample = "create object instance observer1 of Observer;\n";
+
+                ICharStream target = new AntlrInputStream(oalexample);
+                ITokenSource lexer = new OALLexer(target);
+                ITokenStream tokens = new CommonTokenStream(lexer);
+                OALParser parser = new OALParser(tokens);
+                parser.BuildParseTree = true;
+
+                //ExprParser.LiteralContext result = parser.literal();
+                OALParser.LinesContext result = parser.lines();
+                Console.Write(result.ToStringTree());
+                Console.WriteLine();
+
+                OALVisitor2 test = new OALVisitor2();
+
+                test.VisitLines(result);
+
+                EXEScope e = test.e;
+
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ClassName);
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ReferencingVariableName);
+
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ClassName);
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ReferencingVariableName);
+
+                //List<CreateQuery> list = new List<CreateQuery>();
+                //list = (List<CreateQuery>)test.VisitLines(result);
+
+                /*foreach (CreateQuery item in list)
+                {
+                    Console.WriteLine("-> " + item.ClassName + " " + item.InstanceName);
+
+                }
+                list.ForEach(Console.WriteLine);*/
+
+                //  var htmlChat = new Test();
+                // antlr4.tree.ParseTreeWalker.DEFAULT.walk(htmlChat, result);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex);
+            }
+
+
+
+
+
+            Console.ReadLine();
+
+
+
 
         }
+
 
         public static List<String> ArithmeticOperatorList = new List<String>(new String[] { "+", "-", "*", "/", "%" });
         // Do not forget that each operator ("<=") needs to be sooner than its substrings ("<")

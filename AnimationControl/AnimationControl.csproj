@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime.Standard, Version=4.8.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
+      <HintPath>packages\Antlr4.Runtime.Standard.4.8.0\lib\net35\Antlr4.Runtime.Standard.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,11 +95,23 @@
     <Compile Include="OALCodeLine.cs" />
     <Compile Include="OALCommandParser.cs" />
     <Compile Include="OALParser2.cs" />
+    <Compile Include="OAL\OALVisitor2.cs" />
+    <Compile Include="OAL\OALBaseListener.cs" />
+    <Compile Include="OAL\OALBaseVisitor.cs" />
+    <Compile Include="OAL\OALLexer.cs" />
+    <Compile Include="OAL\OALListener.cs" />
+    <Compile Include="OAL\OALParser.cs" />
+    <Compile Include="OAL\OALVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleAnimationControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="OAL\OAL.interp" />
+    <None Include="OAL\OAL.tokens" />
+    <None Include="OAL\OALLexer.interp" />
+    <None Include="OAL\OALLexer.tokens" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

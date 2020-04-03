@@ -8,8 +8,8 @@ namespace AnimationControl
 {
     public class EXECommandQueryCreate : EXECommand
     {
-        private String ReferencingVariableName { get; }
-        private String ClassName { get; }
+        public String ReferencingVariableName { get; }
+        public String ClassName { get; }
 
         public EXECommandQueryCreate(String ClassName, String ReferencingVariableName)
         {
