@@ -10,28 +10,7 @@ namespace AnimationControl
     {
         static void Main(string[] args)
         {
-            Animation Animation = new Animation();
-            EXEScope SuperScope = new EXEScope();
-            SuperScope.AddVariable(new EXEPrimitiveVariable("x", "0"));
-            SuperScope.AddVariable(new EXEPrimitiveVariable("y", "0"));
 
-            EXEScopeCondition ConditionScope = new EXEScopeCondition();
-            ConditionScope.SuperScope = SuperScope;
-
-            EXECommandAssignment AssignC1 = new EXECommandAssignment("y", new EXEASTNodeLeaf("50"));
-            ConditionScope.AddCommand(AssignC1);
-
-            EXEASTNodeLeaf Condition = new EXEASTNodeLeaf(EXETypes.BooleanTrue);
-            ConditionScope.Condition = Condition;
-
-            Boolean Success = ConditionScope.Execute(Animation, null);
-            Dictionary<String, String> ExprectedOutput = new Dictionary<string, string> {
-                {"x", "0"},
-                {"y", "50"},
-            };
-            Dictionary<String, String> ActualOutput = ConditionScope.GetStateDictRecursive();
-
-            Console.ReadLine();
         }
 
         public static List<String> ArithmeticOperatorList = new List<String>(new String[] { "+", "-", "*", "/", "%" });

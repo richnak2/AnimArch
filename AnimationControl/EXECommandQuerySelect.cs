@@ -146,15 +146,19 @@ namespace AnimationControl
             else if (EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality))
             {
                 EXEReferencingVariable Variable = Scope.FindReferencingVariableByName(this.VariableName);
+                long ResultId = SelectedIds.Any() ? SelectedIds[new Random().Next(SelectedIds.Count)] : -1;
                 if (Variable == null)
                 {
-                    long ResultId = SelectedIds.Any() ? SelectedIds[new Random().Next(SelectedIds.Count)] : -1;
                     //Console.WriteLine("Final 'any' id is " + ResultId);
                     Variable = new EXEReferencingVariable(this.VariableName, this.ClassName, ResultId);
                     if (!Scope.AddVariable(Variable))
                     {
                         return false;
                     }
+                }
+                else
+                {
+                    Variable.ReferencedInstanceId = ResultId;
                 }
             }
             else

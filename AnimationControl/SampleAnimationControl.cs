@@ -57,7 +57,7 @@ namespace AnimationControl
             AnimationSuperscope.AddCommand(SelectSetQuery);
 
             EXEScopeForEach ForEachCommand = new EXEScopeForEach("current_li", "line_items");
-            EXEScopeCondition IfCommand = new EXEScopeCondition();
+           // EXEScopeCondition IfCommand = new EXEScopeCondition(new EXEASTNodeLeaf(EXETypes.BooleanTrue));
         }
     }
 }

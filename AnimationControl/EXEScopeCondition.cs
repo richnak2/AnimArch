@@ -12,11 +12,29 @@ namespace AnimationControl
         private List<EXEScopeCondition> ElifScopes;
         public EXEScope ElseScope { get; set; }
 
-        public EXEScopeCondition() : base()
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition) : base(SuperScope, Commands)
         {
-            this.Condition = null;
+            this.Condition = Condition;
             this.ElifScopes = null;
             this.ElseScope = null;
+        }
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition, EXEScope ElseScope) : base(SuperScope, Commands)
+        {
+            this.Condition = Condition;
+            this.ElifScopes = null;
+            this.ElseScope = ElseScope;
+        }
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition, EXEScopeCondition[] ElifScopes) : base(SuperScope, Commands)
+        {
+            this.Condition = Condition;
+            this.ElifScopes = ElifScopes.ToList();
+            this.ElseScope = null;
+        }
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition, EXEScopeCondition[] ElifScopes, EXEScope ElseScope) : base(SuperScope, Commands)
+        {
+            this.Condition = Condition;
+            this.ElifScopes = ElifScopes.ToList();
+            this.ElseScope = ElseScope;
         }
 
         public void AddElifScope(EXEScopeCondition ElifScope)
@@ -29,13 +47,6 @@ namespace AnimationControl
             this.ElifScopes.Add(ElifScope);
         }
 
-        // should evaluate to true only if base "if" is true
-        public Boolean EvaluateCondition(EXEScope Scope, CDClassPool ExecutionSpace)
-        {
-            String Result = this.Condition.Evaluate(Scope, ExecutionSpace);
-
-            return EXETypes.BooleanTrue.Equals(Result) ? true : false;
-        }
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
         {
             Boolean Success = this.Execute(Animation, Scope);
@@ -47,10 +58,23 @@ namespace AnimationControl
             Boolean Result = true;
             Boolean AScopeWasExecuted = false;
 
-            
+            Console.WriteLine("About to evaluate condition");
+
+            if (this.Condition == null)
+            {
+                return false;
+            }
+
             Animation.AccessInstanceDatabase();
-            Boolean IfConditionResult = this.EvaluateCondition(Scope, Animation.ExecutionSpace);
+            String ConditionResult = this.Condition.Evaluate(Scope, Animation.ExecutionSpace);
             Animation.LeaveInstanceDatabase();
+            if (ConditionResult == null)
+            {
+                return false;
+            }
+            Boolean IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
+            Console.WriteLine("Evaluated condition: " + IfConditionResult);
+
             if (IfConditionResult)
             {
                 Console.WriteLine("If - Condition is true");
@@ -77,10 +101,21 @@ namespace AnimationControl
             {
                 foreach (EXEScopeCondition CurrentElif in this.ElifScopes)
                 {
+                    if (CurrentElif.Condition == null)
+                    {
+                        return false;
+                    }
                     Animation.AccessInstanceDatabase();
-                    Boolean ElifConditionResult = CurrentElif.EvaluateCondition(Scope, Animation.ExecutionSpace);
+                    ConditionResult = CurrentElif.Condition.Evaluate(Scope, Animation.ExecutionSpace);
                     Animation.LeaveInstanceDatabase();
-                    if (ElifConditionResult)
+
+                    if (ConditionResult == null)
+                    {
+                        return false;
+                    }
+                    IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
+                    
+                    if (IfConditionResult)
                     {
                         Result = CurrentElif.SynchronizedExecute(Animation, CurrentElif);
                         AScopeWasExecuted = true;
@@ -96,7 +131,9 @@ namespace AnimationControl
 
             if (this.ElseScope != null)
             {
+                Console.WriteLine("Executing elif");
                 Result = this.ElseScope.SynchronizedExecute(Animation, ElseScope);
+                Console.WriteLine("Executed elif: " + Result);
             }
 
             return Result;

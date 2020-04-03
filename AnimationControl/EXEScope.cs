@@ -26,6 +26,22 @@ namespace AnimationControl
 
             this.Animation = null;
         }
+        public EXEScope(EXEScope SuperScope, EXECommand[] Commands)
+        {
+            this.PrimitiveVariables = new List<EXEPrimitiveVariable>();
+            this.ReferencingVariables = new List<EXEReferencingVariable>();
+            this.SetReferencingVariables = new List<EXEReferencingSetVariable>();
+
+            this.SuperScope = SuperScope;
+
+            this.Commands = new List<EXECommand>();
+            foreach (EXECommand Command in Commands)
+            {
+                this.AddCommand(Command);
+            }
+
+            this.Animation = null;
+        }
 
         public Dictionary<String, String> GetStateDictRecursive()
         {
@@ -134,6 +150,30 @@ namespace AnimationControl
                     Result[VarName + "[" + i + "]." + Attribute.Key] = Attribute.Value;
                 }
                 i++;
+            }
+
+            return Result;
+        }
+
+        public Dictionary<String, String> GetAllHandleStateAttrsDictRecursive(CDClassPool ExecutionSpace)
+        {
+            Dictionary<String, String> Result = new Dictionary<String, String>();
+            Dictionary<String, String> Temp;
+
+            foreach (EXEReferencingVariable Var in this.ReferencingVariables)
+            {
+                Temp = this.GetRefStateAttrsDictRecursive(ExecutionSpace, Var.Name);
+                Temp.ToList().ForEach(x => Result.Add(x.Key, x.Value));
+            }
+            foreach (EXEReferencingSetVariable Var in this.SetReferencingVariables)
+            {
+                Temp = this.GetSetRefStateAttrsDictRecursive(ExecutionSpace, Var.Name);
+                Temp.ToList().ForEach(x => Result.Add(x.Key, x.Value));
+            }
+            if (this.SuperScope != null)
+            {
+                Temp = this.SuperScope.GetAllHandleStateAttrsDictRecursive(ExecutionSpace);
+                Temp.ToList().ForEach(x => Result.Add(x.Key, x.Value));
             }
 
             return Result;
@@ -388,8 +428,10 @@ namespace AnimationControl
         {
             this.Animation = Animation;
 
-            Boolean Success = false;
-            foreach(EXECommand Command in this.Commands)
+            Boolean Success = true;
+            if (this.SuperScope != null) Console.WriteLine("I have superscope");
+            else Console.WriteLine("I have no superscope");
+            foreach (EXECommand Command in this.Commands)
             {
                 Success = Command.SynchronizedExecute(Animation, this);
                 if (!Success)
