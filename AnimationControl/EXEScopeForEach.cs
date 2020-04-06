@@ -10,7 +10,7 @@ namespace AnimationControl
     {
         public String IteratorName { get; set; }
         public String IterableName { get; set; }
-
+        public LoopControlStructure CurrentLoopControlCommand { get; set; }
         public EXEScopeForEach(String Iterator, String Iterable)  : base()
         {
             this.IteratorName = Iterator;
@@ -20,6 +20,7 @@ namespace AnimationControl
         {
             this.IteratorName = Iterator;
             this.IterableName = Iterable;
+            this.CurrentLoopControlCommand = LoopControlStructure.None;
         }
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
         {
@@ -69,17 +70,50 @@ namespace AnimationControl
 
                     foreach (EXECommand Command in this.Commands)
                     {
+                        if (this.CurrentLoopControlCommand != LoopControlStructure.None)
+                        {
+                            break;
+                        }
+
                         Success = Command.SynchronizedExecute(Animation, this);
                         if (!Success)
                         {
                             break;
                         }
                     }
+
+                    if (!Success)
+                    {
+                        break;
+                    }
+
+                    if (this.CurrentLoopControlCommand == LoopControlStructure.Break)
+                    {
+                        this.CurrentLoopControlCommand = LoopControlStructure.None;
+                        break;
+                    }
+                    else if (this.CurrentLoopControlCommand == LoopControlStructure.Continue)
+                    {
+                        this.CurrentLoopControlCommand = LoopControlStructure.None;
+                        continue;
+                    }
                 }
             }
             
 
             return Success;
+        }
+
+        public override bool PropagateControlCommand(LoopControlStructure PropagatedCommand)
+        {
+            if (this.CurrentLoopControlCommand != LoopControlStructure.None)
+            {
+                return false;
+            }
+
+            this.CurrentLoopControlCommand = PropagatedCommand;
+
+            return true;
         }
     }
 }

@@ -9,14 +9,17 @@ namespace AnimationControl
     public class EXEScopeLoopWhile : EXEScope
     {
         public EXEASTNode Condition;
+        public LoopControlStructure CurrentLoopControlCommand { get; set; }
 
         public EXEScopeLoopWhile(EXEASTNode Condition) : base()
         {
             this.Condition = Condition;
+            this.CurrentLoopControlCommand = LoopControlStructure.None;
         }
         public EXEScopeLoopWhile(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition) : base(SuperScope, Commands)
         {
             this.Condition = Condition;
+            this.CurrentLoopControlCommand = LoopControlStructure.None;
         }
 
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
@@ -34,7 +37,6 @@ namespace AnimationControl
             int IterationCounter = 0;
             while (ConditionTrue)
             {
-
                 Animation.AccessInstanceDatabase();
                 ConditionResult = this.Condition.Evaluate(Scope, Animation.ExecutionSpace);
                 Animation.LeaveInstanceDatabase();
@@ -64,6 +66,11 @@ namespace AnimationControl
 
                 foreach (EXECommand Command in this.Commands)
                 {
+                    if (this.CurrentLoopControlCommand != LoopControlStructure.None)
+                    {
+                        break;
+                    }
+
                     Success = Command.SynchronizedExecute(Animation, this);
                     if (!Success)
                     {
@@ -76,8 +83,31 @@ namespace AnimationControl
                 }
 
                 IterationCounter++;
+
+                if (this.CurrentLoopControlCommand == LoopControlStructure.Break)
+                {
+                    this.CurrentLoopControlCommand = LoopControlStructure.None;
+                    break;
+                }
+                else if (this.CurrentLoopControlCommand == LoopControlStructure.Continue)
+                {
+                    this.CurrentLoopControlCommand = LoopControlStructure.None;
+                    continue;
+                }
             }
             return Success;
+        }
+
+        public override bool PropagateControlCommand(LoopControlStructure PropagatedCommand)
+        {
+            if (this.CurrentLoopControlCommand != LoopControlStructure.None)
+            {
+                return false;
+            }
+
+            this.CurrentLoopControlCommand = PropagatedCommand;
+
+            return true;
         }
     }
 }

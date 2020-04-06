@@ -16,6 +16,7 @@ namespace AnimationControl
 
         public Animation Animation;
 
+
         public EXEScope()
         {
             this.PrimitiveVariables = new List<EXEPrimitiveVariable>();
@@ -462,12 +463,21 @@ namespace AnimationControl
             }
             return Vars;
         }
-
         public void ClearVariables()
         {
             this.PrimitiveVariables.Clear();
             this.ReferencingVariables.Clear();
             this.SetReferencingVariables.Clear();
+        }
+
+        public virtual bool PropagateControlCommand(LoopControlStructure PropagatedCommand)
+        {
+            if (this.SuperScope == null)
+            {
+                return false;
+            }
+
+            return this.SuperScope.PropagateControlCommand(PropagatedCommand);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace AnimationControl
         public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
             this.Animation = Animation;
-            this.Animation.ThreadSyncer.RegisterThread((uint) this.Threads.Count);
+            this.Animation.ThreadSyncer.RegisterThread((uint)this.Threads.Count);
             EXEScopeParallel ParallelScope = this;
             Boolean Success = true;
 
@@ -69,6 +69,10 @@ namespace AnimationControl
             }
 
             return Success;
+        }
+        public override bool PropagateControlCommand(LoopControlStructure PropagatedCommand)
+        {
+            return false;
         }
     }
 }
