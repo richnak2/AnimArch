@@ -10,7 +10,7 @@ namespace AnimationControl.Tests
     public class EXEScopeForEachTests
     {
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_01()
+        public void EXEScopeForEach_Normal_01()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -64,7 +64,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_02()
+        public void EXEScopeForEach_Normal_02()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -120,7 +120,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_03()
+        public void EXEScopeForEach_Normal_03()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -204,7 +204,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_04()
+        public void EXEScopeForEach_Normal_04()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -344,7 +344,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_05()
+        public void EXEScopeForEach_Normal_05()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -486,7 +486,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_06()
+        public void EXEScopeForEach_Normal_06()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -639,7 +639,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_07()
+        public void EXEScopeForEach_Normal_07()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -707,7 +707,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_08()
+        public void EXEScopeForEach_Normal_08()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -826,7 +826,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_09()
+        public void EXEScopeForEach_Normal_09()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -903,7 +903,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_10()
+        public void EXEScopeForEach_Normal_10()
         {
             Animation Animation = new Animation();
             CDClass ClassO = Animation.ExecutionSpace.SpawnClass("Observer");
@@ -996,7 +996,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Bad_01()
+        public void EXEScopeForEach_Bad_01()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -1050,7 +1050,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Bad_02()
+        public void EXEScopeForEach_Bad_02()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -1106,7 +1106,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Bad_03()
+        public void EXEScopeForEach_Bad_03()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -1162,7 +1162,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Bad_04()
+        public void EXEScopeForEach_Bad_04()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -1215,7 +1215,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Bad_05()
+        public void EXEScopeForEach_Bad_05()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -1269,7 +1269,7 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Bad_06()
+        public void EXEScopeForEach_Bad_06()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");

@@ -564,6 +564,77 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
+        public void EXEScopeLoopWhile_Normal_09()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                Animation.SuperScope,
+                new EXECommand[]
+                {
+                    new EXEScopeCondition
+                    (
+                        Animation.SuperScope,
+                        new EXECommand[]
+                        {
+                            new EXECommandAssignment("y", new EXEASTNodeLeaf("0"))
+                        },
+                        new EXEASTNodeComposite
+                        (
+                            "==",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("x"),
+                                new EXEASTNodeLeaf("0")
+                            }
+                        ),
+                        new EXEScope
+                        (
+                            Animation.SuperScope,
+                            new EXECommand[]
+                            {
+                                new EXECommandAssignment("y", new EXEASTNodeLeaf("\"0\""))
+                            }
+                        )
+                    ),
+                    new EXECommandAssignment
+                    (
+                        "x",
+                        new EXEASTNodeComposite
+                        (
+                            "+",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("x"),
+                                new EXEASTNodeLeaf("1")
+                            }
+                        )
+                    )
+                },
+                new EXEASTNodeComposite
+                (
+                    "<",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("x"),
+                        new EXEASTNodeLeaf("2")
+                    }
+                )
+            ));
+
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
+                {"x", "2"}
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+
+            Assert.IsTrue(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+        }
+        [TestMethod]
         public void EXEScopeLoopWhile_Bad_01()
         {
             Animation Animation = new Animation();
