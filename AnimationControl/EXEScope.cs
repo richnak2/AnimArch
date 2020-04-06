@@ -346,18 +346,7 @@ namespace AnimationControl
             }
             foreach (EXEReferencingSetVariable SetVariable in this.SetReferencingVariables)
             {
-                if (SetVariable.ClassName != ClassName)
-                {
-                    continue;
-                }
-
-                foreach (EXEReferencingVariable Variable in SetVariable.GetReferencingVariables())
-                {
-                    if (Variable.ReferencedInstanceId == InstanceID)
-                    {
-                        Variable.ReferencedInstanceId = -1;
-                    }
-                }
+                SetVariable.UnsetVariables(InstanceID);
             }
             if (this.SuperScope != null)
             {

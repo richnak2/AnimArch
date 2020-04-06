@@ -65,6 +65,8 @@ namespace AnimationControl
 
                     IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
+                    Console.WriteLine("ForEach: " + CurrentItem.ReferencedInstanceId);
+
                     foreach (EXECommand Command in this.Commands)
                     {
                         Success = Command.SynchronizedExecute(Animation, this);
