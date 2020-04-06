@@ -89,11 +89,14 @@ namespace AnimationControl
             {
                 return false;
             }
+            if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
+            {
+                return false;
+            }
             Boolean IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
 
             if (IfConditionResult)
             {
-                int i = 0;
                 foreach (EXECommand Command in this.Commands)
                 {
                     Result = Command.SynchronizedExecute(Animation, this);
@@ -123,6 +126,10 @@ namespace AnimationControl
                     Animation.LeaveInstanceDatabase();
 
                     if (ConditionResult == null)
+                    {
+                        return false;
+                    }
+                    if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
                     {
                         return false;
                     }

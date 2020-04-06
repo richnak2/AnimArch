@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    class EXEScopeForEach : EXEScope
+    public class EXEScopeForEach : EXEScope
     {
         public String IteratorName { get; set; }
         public String IterableName { get; set; }
 
-        public EXEScopeForEach(String Iterator, String Iterable)
+        public EXEScopeForEach(String Iterator, String Iterable)  : base()
+        {
+            this.IteratorName = Iterator;
+            this.IterableName = Iterable;
+        }
+        public EXEScopeForEach(EXEScope SuperScope, EXECommand[] Commands, String Iterator, String Iterable) : base(SuperScope, Commands)
         {
             this.IteratorName = Iterator;
             this.IterableName = Iterable;
@@ -24,10 +29,11 @@ namespace AnimationControl
         public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
             this.Animation = Animation;
-            Animation.AccessInstanceDatabase();
 
+            Animation.AccessInstanceDatabase();
             EXEReferencingVariable IteratorVariable = Scope.FindReferencingVariableByName(this.IteratorName);
             EXEReferencingSetVariable IterableVariable = Scope.FindSetReferencingVariableByName(this.IterableName);
+            Animation.LeaveInstanceDatabase();
 
             Boolean Success = true;
 
@@ -46,11 +52,7 @@ namespace AnimationControl
             // If iterator name is already taken for another variable, we quit again. Otherwise we create the iterator variable
             if (Success & IteratorVariable == null)
             {
-                Boolean IteratorCreationSuccess = Scope.AddVariable(new EXEReferencingVariable(this.IteratorName, IterableVariable.ClassName, -1));
-                if (!IteratorCreationSuccess)
-                {
-                    Success = false;
-                }
+                Success = Scope.AddVariable(new EXEReferencingVariable(this.IteratorName, IterableVariable.ClassName, -1));
             }
 
             if (Success)
@@ -69,7 +71,7 @@ namespace AnimationControl
                     }
                 }
             }
-            Animation.LeaveInstanceDatabase();
+            
 
             return Success;
         }

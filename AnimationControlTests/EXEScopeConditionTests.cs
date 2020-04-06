@@ -1314,6 +1314,39 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
+        public void EXEScopeCondition_Bad_06()
+        {
+            Animation Animation = new Animation();
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXEScopeCondition(
+                Animation.SuperScope,
+                new EXECommand[]
+                {
+                },
+                new EXEASTNodeComposite
+                (
+                    "+",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("x"),
+                        new EXEASTNodeLeaf("10")
+                    }
+                )
+            ));
+            
+            Boolean Success = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
+                {"x", "0"}
+            };
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+
+            Assert.IsFalse(Success);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+        }
+        [TestMethod]
         public void EXEScopeCondition_Stress_01()
         {
             Animation Animation = new Animation();

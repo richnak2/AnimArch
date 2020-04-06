@@ -31,8 +31,10 @@ namespace AnimationControl
 
             bool ConditionTrue = true;
             String ConditionResult;
+            int IterationCounter = 0;
             while (ConditionTrue)
             {
+
                 Animation.AccessInstanceDatabase();
                 ConditionResult = this.Condition.Evaluate(Scope, Animation.ExecutionSpace);
                 Animation.LeaveInstanceDatabase();
@@ -40,9 +42,19 @@ namespace AnimationControl
                 {
                     return false;
                 }
+                if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
+                {
+                    return false;
+                }
                 ConditionTrue = EXETypes.BooleanTrue.Equals(ConditionResult);
                 if (!ConditionTrue)
                 {
+                    break;
+                }
+
+                if (IterationCounter >= EXEExecutionGlobals.LoopIterationCap)
+                {
+                    Success = false;
                     break;
                 }
 
@@ -58,6 +70,8 @@ namespace AnimationControl
                 {
                     break;
                 }
+
+                IterationCounter++;
             }
             return Success;
         }

@@ -1054,6 +1054,69 @@ namespace AnimationControl.Tests
             Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
         }
         [TestMethod]
+        public void Execute_Bad_Any_05()
+        {
+            Animation Animation = new Animation();
+            CDClass Class = Animation.ExecutionSpace.SpawnClass("Observer");
+            Class.AddAttribute(new CDAttribute("count", EXETypes.IntegerTypeName));
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("o", "count", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand
+            (
+                new EXECommandQuerySelect
+                (
+                    EXECommandQuerySelect.CardinalityAny,
+                    "Observer",
+                    "o",
+                    new EXEASTNodeComposite
+                    (
+                        "+",
+                        new EXEASTNode[]
+                        {
+                            new EXEASTNodeComposite
+                            (
+                                ".",
+                                new EXEASTNode[]
+                                {
+                                    new EXEASTNodeLeaf("selected"),
+                                    new EXEASTNodeLeaf("count")
+                                }
+                            ),
+                            new EXEASTNodeLeaf("3")
+                        }
+                    )
+                )
+            );
+
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 1}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "o", "Observer" }
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+                { "o.count", "0" }
+            };
+            int ExpectedValidRefVarCount = 1;
+
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "o");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+
+            Assert.IsFalse(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+        }
+        [TestMethod]
         public void Execute_Good_Many_01()
         {
             Animation Animation = new Animation();
