@@ -9,7 +9,7 @@ namespace AnimationControl
         private List<EXEScope> Threads { get; }
         private object MyThreadEndSyncer { get; }
         private int ActiveThreadCount;
-        public EXEScopeParallel()
+        public EXEScopeParallel() : base()
         {
             this.Threads = new List<EXEScope>();
             this.MyThreadEndSyncer = new object();

@@ -56,6 +56,7 @@
     <Compile Include="EXECommandAssignment.cs" />
     <Compile Include="EXECommandBreak.cs" />
     <Compile Include="EXECommandCall.cs" />
+    <Compile Include="EXECommandContinue.cs" />
     <Compile Include="EXECommandQueryCreate.cs" />
     <Compile Include="EXECommandQueryDelete.cs" />
     <Compile Include="EXECommandQueryRelate.cs" />
