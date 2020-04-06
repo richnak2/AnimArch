@@ -52,13 +52,15 @@ namespace AnimationControl
             // If iterator name is already taken for another variable, we quit again. Otherwise we create the iterator variable
             if (Success & IteratorVariable == null)
             {
-                Success = Scope.AddVariable(new EXEReferencingVariable(this.IteratorName, IterableVariable.ClassName, -1));
+                IteratorVariable = new EXEReferencingVariable(this.IteratorName, IterableVariable.ClassName, -1);
+                Success = Scope.AddVariable(IteratorVariable);
             }
 
             if (Success)
             {
                 foreach (EXEReferencingVariable CurrentItem in IterableVariable.GetReferencingVariables())
                 {
+                    IteratorVariable.ReferencedInstanceId = 0;
                     IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
                     foreach (EXECommand Command in this.Commands)

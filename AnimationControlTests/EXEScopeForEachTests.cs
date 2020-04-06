@@ -40,13 +40,13 @@ namespace AnimationControl.Tests
             Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
             {
                 { "observer", "Observer"},
-                { "observers[]", "Observer"},
+                { "observers[1]", "Observer"},
             };
             Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
             {
             };
-            int ExpectedValidRefVarCount = 0;
-            int ExpectedValidSetRefVarCount = 0;
+            int ExpectedValidRefVarCount = 1;
+            int ExpectedValidSetRefVarCount = 1;
 
             Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
             Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
@@ -65,6 +65,62 @@ namespace AnimationControl.Tests
         }
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_02()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Observer");
+
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityMany, "Observer", "observers"));
+            Animation.SuperScope.AddCommand(
+                new EXEScopeForEach
+                (
+                   Animation.SuperScope,
+                   new EXECommand[]
+                   {
+                   },
+                   "observer",
+                   "observers"
+                )
+            );
+
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string>
+            {
+            };
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 2}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "observer", "Observer"},
+                { "observers[2]", "Observer"},
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 1;
+            int ExpectedValidSetRefVarCount = 1;
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "observers");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+        }
+        [TestMethod]
+        public void tEXEScopeLoopWhile_Normal_02()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
@@ -148,7 +204,91 @@ namespace AnimationControl.Tests
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
         }
         [TestMethod]
-        public void EXEScopeLoopWhile_Normal_03()
+        public void tEXEScopeLoopWhile_Normal_03()
+        {
+            Animation Animation = new Animation();
+            Animation.ExecutionSpace.SpawnClass("Observer");
+
+            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile
+            (
+                Animation.SuperScope,
+                new EXECommand[]
+                {
+                    new EXECommandQueryCreate("Observer"),
+                    new EXECommandAssignment(
+                        "x",
+                        new EXEASTNodeComposite(
+                            "+",
+                            new EXEASTNode[]
+                            {
+                                new EXEASTNodeLeaf("x"),
+                                new EXEASTNodeLeaf("1")
+                            }
+                        )
+                    )
+                },
+                new EXEASTNodeComposite
+                (
+                    "<",
+                    new EXEASTNode[]
+                    {
+                        new EXEASTNodeLeaf("x"),
+                        new EXEASTNodeLeaf("10")
+                    }
+                )
+            ));
+            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityMany, "Observer", "observers"));
+            Animation.SuperScope.AddCommand(
+                new EXEScopeForEach
+                (
+                   Animation.SuperScope,
+                   new EXECommand[]
+                   {
+                        new EXECommandQueryDelete("observer")
+                   },
+                   "observer",
+                   "observers"
+                )
+            );
+
+            Boolean ExecutionSuccess = Animation.Execute();
+
+            Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
+                {"x", "10"}
+            };
+            Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
+            {
+                { "Observer", 0}
+            };
+            Dictionary<string, string> ExpectedScopeVars = new Dictionary<string, string>()
+            {
+                { "observer", "Observer"},
+                { "observers[]", "Observer"},
+            };
+            Dictionary<String, String> ExpectedCreatedVarState = new Dictionary<String, String>()
+            {
+            };
+            int ExpectedValidRefVarCount = 0;
+            int ExpectedValidSetRefVarCount = 0;
+
+            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "observers");
+            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+
+            Assert.IsTrue(ExecutionSuccess);
+            CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
+            CollectionAssert.AreEquivalent(ExpectedScopeVars, ActualScopeVars);
+            CollectionAssert.AreEquivalent(ExpectedCreatedVarState, ActualCreatedVarState);
+            Assert.AreEqual(ExpectedValidRefVarCount, ActualValidRefVarCount);
+            Assert.AreEqual(ExpectedValidSetRefVarCount, ActualValidSetRefVarCount);
+            CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
+        }
+        [TestMethod]
+        public void tEXEScopeLoopWhile_Normal_0t3()
         {
             Animation Animation = new Animation();
             Animation.ExecutionSpace.SpawnClass("Observer");
