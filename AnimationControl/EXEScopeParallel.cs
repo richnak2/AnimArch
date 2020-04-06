@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace AnimationControl
 {
@@ -15,9 +16,20 @@ namespace AnimationControl
             this.MyThreadEndSyncer = new object();
             this.ActiveThreadCount = 0;
         }
+        public EXEScopeParallel(EXEScope[] Threads) : base()
+        {
+            this.Threads = new List<EXEScope>();
+            foreach (EXEScope Thread in Threads)
+            {
+                this.AddThread(Thread);
+            }
+            this.MyThreadEndSyncer = new object();
+            this.ActiveThreadCount = 0;
+        }
 
         public void AddThread(EXEScope Thread)
         {
+            Thread.SetSuperScope(this);
             this.Threads.Add(Thread);
         }
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
@@ -32,7 +44,6 @@ namespace AnimationControl
             EXEScopeParallel ParallelScope = this;
             Boolean Success = true;
 
-
             lock (this.MyThreadEndSyncer)
             {
                 this.ActiveThreadCount = this.Threads.Count;
@@ -44,7 +55,7 @@ namespace AnimationControl
                 {
                     Thread.CurrentThread.IsBackground = false;
 
-                    Boolean MySuccess = ThreadScope.SynchronizedExecute(Animation, null);
+                    Boolean MySuccess = ThreadScope.SynchronizedExecute(Animation, ParallelScope);
 
                     Animation.ThreadSyncer.UnregisterThread();
 

@@ -31,7 +31,7 @@ namespace AnimationControl
 
         public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
-            //TODO
+            Animation.RequestNextStep();
 
             return true;
         }

@@ -98,6 +98,7 @@ namespace AnimationControl
                 {
                     AllowedStepCount = 0;
                 }
+                Monitor.PulseAll(StepCountLock);
             }
         }
     }
