@@ -38,6 +38,10 @@ namespace AnimationControl
                 Animation.AccessInstanceDatabase();
                 ConditionResult = this.Condition.Evaluate(Scope, Animation.ExecutionSpace);
                 Animation.LeaveInstanceDatabase();
+
+                //!!NON-RECURSIVE!!
+                this.ClearVariables();
+
                 if (ConditionResult == null)
                 {
                     return false;

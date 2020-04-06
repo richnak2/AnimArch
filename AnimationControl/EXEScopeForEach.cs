@@ -23,7 +23,7 @@ namespace AnimationControl
         }
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
         {
-            Boolean Success = this.Execute(Animation, Scope);
+            Boolean Success = this.Execute(Animation, this);
             return Success;
         }
         public override Boolean Execute(Animation Animation, EXEScope Scope)
@@ -31,8 +31,8 @@ namespace AnimationControl
             this.Animation = Animation;
 
             Animation.AccessInstanceDatabase();
-            EXEReferencingVariable IteratorVariable = Scope.FindReferencingVariableByName(this.IteratorName);
-            EXEReferencingSetVariable IterableVariable = Scope.FindSetReferencingVariableByName(this.IterableName);
+            EXEReferencingVariable IteratorVariable = this.FindReferencingVariableByName(this.IteratorName);
+            EXEReferencingSetVariable IterableVariable = this.FindSetReferencingVariableByName(this.IterableName);
             Animation.LeaveInstanceDatabase();
 
             Boolean Success = true;
@@ -53,14 +53,16 @@ namespace AnimationControl
             if (Success & IteratorVariable == null)
             {
                 IteratorVariable = new EXEReferencingVariable(this.IteratorName, IterableVariable.ClassName, -1);
-                Success = Scope.AddVariable(IteratorVariable);
+                Success = this.GetSuperScope().AddVariable(IteratorVariable);
             }
 
             if (Success)
             {
                 foreach (EXEReferencingVariable CurrentItem in IterableVariable.GetReferencingVariables())
                 {
-                    IteratorVariable.ReferencedInstanceId = 0;
+                    //!!NON-RECURSIVE!!
+                    this.ClearVariables();
+
                     IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
 
                     foreach (EXECommand Command in this.Commands)

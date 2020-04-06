@@ -473,5 +473,12 @@ namespace AnimationControl
             }
             return Vars;
         }
+
+        public void ClearVariables()
+        {
+            this.PrimitiveVariables.Clear();
+            this.ReferencingVariables.Clear();
+            this.SetReferencingVariables.Clear();
+        }
     }
 }
