@@ -8,7 +8,9 @@ namespace AnimationControl
 {
     public class EXEExecutionGlobals
     {
-        public static Boolean AllowPromotionOfIntegerToReal = true;
-        public static Boolean AllowLossyAssignmentOfRealToInteger = true;
+        public static readonly Boolean AllowPromotionOfIntegerToReal = true;
+        public static readonly Boolean AllowLossyAssignmentOfRealToInteger = true;
+
+        public static readonly int LoopIterationCap = 10000;
     }
 }

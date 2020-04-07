@@ -57,7 +57,9 @@
     <Compile Include="CDRelationship.cs" />
     <Compile Include="CDRelationshipPool.cs" />
     <Compile Include="EXECommandAssignment.cs" />
+    <Compile Include="EXECommandBreak.cs" />
     <Compile Include="EXECommandCall.cs" />
+    <Compile Include="EXECommandContinue.cs" />
     <Compile Include="EXECommandQueryCreate.cs" />
     <Compile Include="EXECommandQueryDelete.cs" />
     <Compile Include="EXECommandQueryRelate.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="EXETestGUI.cs" />
     <Compile Include="EXETestGUIImplementation.cs" />
     <Compile Include="EXEThreadSynchronizator.cs" />
+    <Compile Include="LoopControlStructure.cs" />
     <Compile Include="OALCall.cs" />
     <Compile Include="OALCodeBuilder.cs" />
     <Compile Include="EXEASTNode.cs" />

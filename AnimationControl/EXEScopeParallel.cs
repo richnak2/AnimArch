@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace AnimationControl
 {
@@ -9,15 +10,26 @@ namespace AnimationControl
         private List<EXEScope> Threads { get; }
         private object MyThreadEndSyncer { get; }
         private int ActiveThreadCount;
-        public EXEScopeParallel()
+        public EXEScopeParallel() : base()
         {
             this.Threads = new List<EXEScope>();
+            this.MyThreadEndSyncer = new object();
+            this.ActiveThreadCount = 0;
+        }
+        public EXEScopeParallel(EXEScope[] Threads) : base()
+        {
+            this.Threads = new List<EXEScope>();
+            foreach (EXEScope Thread in Threads)
+            {
+                this.AddThread(Thread);
+            }
             this.MyThreadEndSyncer = new object();
             this.ActiveThreadCount = 0;
         }
 
         public void AddThread(EXEScope Thread)
         {
+            Thread.SetSuperScope(this);
             this.Threads.Add(Thread);
         }
         public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
@@ -28,10 +40,9 @@ namespace AnimationControl
         public override Boolean Execute(Animation Animation, EXEScope Scope)
         {
             this.Animation = Animation;
-            this.Animation.ThreadSyncer.RegisterThread((uint) this.Threads.Count);
+            this.Animation.ThreadSyncer.RegisterThread((uint)this.Threads.Count);
             EXEScopeParallel ParallelScope = this;
             Boolean Success = true;
-
 
             lock (this.MyThreadEndSyncer)
             {
@@ -44,7 +55,7 @@ namespace AnimationControl
                 {
                     Thread.CurrentThread.IsBackground = false;
 
-                    Boolean MySuccess = ThreadScope.SynchronizedExecute(Animation, null);
+                    Boolean MySuccess = ThreadScope.SynchronizedExecute(Animation, ParallelScope);
 
                     Animation.ThreadSyncer.UnregisterThread();
 
@@ -69,6 +80,10 @@ namespace AnimationControl
             }
 
             return Success;
+        }
+        public override bool PropagateControlCommand(LoopControlStructure PropagatedCommand)
+        {
+            return false;
         }
     }
 }

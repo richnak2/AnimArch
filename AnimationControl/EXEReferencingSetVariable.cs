@@ -12,6 +12,21 @@ namespace AnimationControl
             this.ReferencingVariables = new List<EXEReferencingVariable>(); ;
         }
 
+        public void UnsetVariables(long ID)
+        {
+            List<EXEReferencingVariable> ReferencingVariables = new List<EXEReferencingVariable>();
+
+            foreach (EXEReferencingVariable Variable in this.ReferencingVariables)
+            {
+                if (Variable.ReferencedInstanceId != ID)
+                {
+                    ReferencingVariables.Add(Variable);
+                }
+            }
+
+            this.ReferencingVariables = ReferencingVariables;
+        }
+
         public void AddReferencingVariable(EXEReferencingVariable NewReferencingVariable)
         {
             this.ReferencingVariables.Add(NewReferencingVariable);
