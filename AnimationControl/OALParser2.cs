@@ -12,12 +12,11 @@ namespace AnimationControl
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("ANDREJ nie je uchyl!");
-
 
             try
             {
-                string oalexample = "create object instance observer1 of Observer;\n";
+                string oalexample = "create object instance observer1 of Observer;\n" +
+                                    "create object instance observer2 of Observer;\n";
 
                 ICharStream target = new AntlrInputStream(oalexample);
                 ITokenSource lexer = new OALLexer(target);
@@ -36,11 +35,15 @@ namespace AnimationControl
 
                 EXEScope e = test.e;
 
+                Console.WriteLine("Overenie parsovania:");
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ClassName);
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ReferencingVariableName);
 
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ClassName);
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ReferencingVariableName);
+
+                /*Console.WriteLine(((EXECommandQueryCreate)e.Commands[2]).ClassName);
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[2]).ReferencingVariableName);*/
 
                 //List<CreateQuery> list = new List<CreateQuery>();
                 //list = (List<CreateQuery>)test.VisitLines(result);

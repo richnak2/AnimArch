@@ -16,7 +16,7 @@ namespace AnimationControl.OAL
         public OALVisitor2()
         {
             this.e = new EXEScope();
-            e.AddCommand(new EXECommandQueryCreate("a","a"));
+            //e.AddCommand(new EXECommandQueryCreate("a","a"));
 
         }
 
