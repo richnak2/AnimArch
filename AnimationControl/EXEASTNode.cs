@@ -12,5 +12,6 @@ namespace AnimationControl
         String Evaluate(EXEScope Scope, CDClassPool ExecutionSpace);
         bool VerifyReferences(EXEScope Scope, CDClassPool ExecutionSpace);
         void PrintPretty(string indent, bool last);
+        string ToCode();
     }
 }

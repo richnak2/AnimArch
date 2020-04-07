@@ -200,5 +200,27 @@ namespace AnimationControl
 
             return Result;
         }
+
+        public string ToCode()
+        {
+            string Result = null;
+            if (this.Operands.Count == 1)
+            {
+                Result = this.Operation + " " + this.Operands[0].ToCode();
+            }
+            else if (this.Operands.Count > 1)
+            {
+                Result = "";
+                foreach (EXEASTNode Operand in this.Operands)
+                {
+                    if (!"".Equals(Result))
+                    {
+                        Result += " " + this.Operation;
+                    }
+                    Result += Operand.ToCode();
+                }
+            }
+            return Result;
+        }
     }
 }
