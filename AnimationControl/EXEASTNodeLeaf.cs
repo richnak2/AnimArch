@@ -79,7 +79,7 @@ namespace AnimationControl
 
         public string ToCode()
         {
-            return this.ToCode();
+            return this.Value;
         }
     }
 }
