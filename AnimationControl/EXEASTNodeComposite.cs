@@ -208,6 +208,10 @@ namespace AnimationControl
             {
                 Result = this.Operation + " " + this.Operands[0].ToCode();
             }
+            else if (".".Equals(this.Operation))
+            {
+                Result = this.Operands[0].GetNodeValue() + "." + this.Operands[1].GetNodeValue();
+            }
             else if (this.Operands.Count > 1)
             {
                 Result = "";
