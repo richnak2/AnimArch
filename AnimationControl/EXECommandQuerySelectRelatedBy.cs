@@ -150,7 +150,7 @@ namespace AnimationControl
         {
             string prefix = "select " + this.Cardinality + " " + this.VariableName + " related by ";
             string relationLink = this.RelationshipSelection.ToCode();
-            string sufix = this.WhereCondition == null ? "" : ("where ") + this.WhereCondition.ToCode();
+            string sufix = this.WhereCondition == null ? "" : (" where ") + this.WhereCondition.ToCode();
 
             return prefix + relationLink + sufix;
         }
