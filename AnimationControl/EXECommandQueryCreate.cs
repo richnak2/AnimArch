@@ -68,7 +68,7 @@ namespace AnimationControl
         public override string ToCodeSimple()
         {
             return "create object instance "
-                + this.ReferencingVariableName == null ? "" : (this.ReferencingVariableName + " ")
+                + (this.ReferencingVariableName == null ? "" : (this.ReferencingVariableName + " "))
                 + "of " + this.ClassName;
         }
     }
