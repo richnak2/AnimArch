@@ -37,14 +37,14 @@ namespace AnimationControl.OAL
                 //Console.WriteLine(context.ChildCount);
                 if (child.GetType().ToString().Contains("KeyLetter"))
                 {
-                    ClassName = child.GetText();
-                    //Console.WriteLine(ClassName);
+                    ClassName = ParseUtil.StripWhiteSpace((child.GetText()));
+                    Console.WriteLine("Class name---" + ClassName + "---");
                 }
 
                 if (child.GetType().ToString().Contains("InstanceHandle"))
                 {
-                    InstanceName = child.GetText();
-                    //Console.WriteLine(InstanceName);
+                    InstanceName = ParseUtil.StripWhiteSpace((child.GetText()));
+                    Console.WriteLine("Instance name---" + InstanceName + "---");
                 }
                 
             }
