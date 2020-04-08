@@ -206,5 +206,56 @@ namespace AnimationControl.OAL
             //return base.VisitExpr(context);
         }
 
+
+        public override object VisitExeCommandQuerySelectRelatedBy([NotNull] OALParser.ExeCommandQuerySelectRelatedByContext context)
+        {
+            String Cardinality = context.GetChild(0).GetText().Contains("many") ? "many" : "any";
+            Console.WriteLine("Cardinality = " + Cardinality);
+
+            String VariableName = context.GetChild(1).GetText();
+            Console.WriteLine("VariableName = " + VariableName);
+
+            String StartingVariable = context.GetChild(3).GetText();
+            Console.WriteLine("StartingVariable = " + StartingVariable);
+
+            String ClassName = context.GetChild(5).GetText();
+            Console.WriteLine("ClassName = " + ClassName);
+
+            String RelationshipName = context.GetChild(6).GetText().Replace('[',' ').Replace(']',' ').Trim();
+            Console.WriteLine("RelationshipName = " + RelationshipName);
+
+            List<EXERelationshipLink> list = new List<EXERelationshipLink>();
+            EXERelationshipLink eXERelationshipLink = new EXERelationshipLink(RelationshipName, ClassName);
+            EXERelationshipSelection eXERelationshipSelection = new EXERelationshipSelection(StartingVariable);
+            eXERelationshipSelection.AddRelationshipLink(eXERelationshipLink);
+            EXEASTNode WhereExpression = null;
+
+            int i = 7;
+            while (context.GetChild(i).GetText().Equals("->"))
+            {
+                String ClassName2 = context.GetChild(i + 1).GetText();
+                Console.WriteLine("ClassName = " + ClassName2);
+
+                String RelationshipName2 = context.GetChild(i + 2).GetText().Replace('[', ' ').Replace(']', ' ').Trim();
+                Console.WriteLine("RelationshipName = " + RelationshipName2);
+
+                EXERelationshipLink eXERelationshipLink2 = new EXERelationshipLink(RelationshipName2, ClassName2);
+                eXERelationshipSelection.AddRelationshipLink(eXERelationshipLink2);
+                i += 3;
+            }
+
+            Console.WriteLine("Where 3= " + context.GetChild(context.ChildCount - 3).GetText());
+            if (context.GetChild(context.ChildCount - 3).GetText().Contains("where"))
+            {
+                Visit(context.GetChild(context.ChildCount - 2));
+                WhereExpression = stackEXEASTNode.Peek();
+            }
+            stackEXEScope.Peek().AddCommand(new EXECommandQuerySelectRelatedBy(Cardinality, VariableName, WhereExpression, eXERelationshipSelection));
+
+            stackEXEASTNode.Clear();
+
+            return null;
+            //return base.VisitExeCommandQuerySelectRelatedBy(context);
+        }
     }
 }

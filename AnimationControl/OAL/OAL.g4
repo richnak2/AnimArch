@@ -143,10 +143,11 @@ atribute
 expr
 	:	 Digit | VariableName | Text
     |    VariableName'.'VariableName
-	|	 ('cardinality ' | 'empty ' | 'not_empty ')VariableName
-	|	 expr ('+' | '-') expr
-    |    expr ('*' | '/' | '%') expr
+	|	 'cardinality 'VariableName
+	|	 expr ('*' | '/' | '%') expr
+    |    expr ('+' | '-') expr
     |    expr ('<' | '>' | '<=' | '>=') expr
+	|	 ('empty ' | 'not_empty ')VariableName
     |    expr ('==' | '!=') expr
     |    ('NOT ' | 'not ') expr | '(' expr ')'
     |    expr ('AND' | 'OR' | 'and' | 'or') expr
