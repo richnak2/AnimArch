@@ -221,7 +221,28 @@ namespace AnimationControl
                     {
                         Result += " " + this.Operation;
                     }
-                    Result += ("".Equals(Result) ? "" : " ") + Operand.ToCode();
+                    Boolean UseBrackets = false;
+                    if (Operand is EXEASTNodeComposite)
+                    {
+                        String SubOperation = ((EXEASTNodeComposite) Operand).Operation;
+                        int ThisOperatorLevel = OALParser2.GetOperatorLevel(this.Operation);
+                        int SubOperatorLevel = OALParser2.GetOperatorLevel(SubOperation);
+                        if (ThisOperatorLevel != -1 && SubOperatorLevel != -1)
+                        {
+                            if (ThisOperatorLevel >= SubOperatorLevel && !this.Operation.Equals(SubOperation))
+                            {
+                                UseBrackets = true;
+                            }
+                        }
+                    }
+                    if (UseBrackets)
+                    {
+                        Result += ("".Equals(Result) ? "" : " ") + "(" + Operand.ToCode() + ")";
+                    }
+                    else
+                    {
+                        Result += ("".Equals(Result) ? "" : " ") + Operand.ToCode();
+                    }
                 }
             }
             return Result;
