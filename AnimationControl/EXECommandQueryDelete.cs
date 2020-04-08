@@ -4,7 +4,7 @@ namespace AnimationControl
 {
     public class EXECommandQueryDelete : EXECommand
     {
-        private String VariableName { get; }
+        public String VariableName { get; }
 
         public EXECommandQueryDelete(String VariableName)
         {

@@ -24,7 +24,14 @@ namespace AnimationControl
                                     "select any young_dog from instances of Dog where selected.age < 5 OR 6;\n" +
                                     "select any young_dog from instances of Dog where cardinality observers and not x > 5 or not_empty g;" +
                                     "select any dog from instances of Dog where x == (1+2)*3;" +
-                                    "select any dog from instances of Dog where (1 /(obj1.x * 0.22 + object1.y * 0.55 - object1.z /2) == \"ahoj\" + \"te deti\" or (x+3 != y%4+2)) and (x<=1 or x+1>=y or obj1.x<2 or obj1.y>1.2 * cardinality observers) and (empty k or not_empty g) and not x>5;";
+                                    "select any dog from instances of Dog where (1 /(obj1.x * 0.22 + object1.y * 0.55 - object1.z /2) == \"ahoj\" + \"te deti\" or (x+3 != y%4+2)) and (x<=1 or x+1>=y or obj1.x<2 or obj1.y>1.2 * cardinality observers) and (empty k or not_empty g) and not x>5;" +
+                                    "create object instance of Visitor;" +
+                                    "create object instance myUserAccount of UserAccount;" +
+                                    "unrelate subject from observer across R15;" +
+                                    "unrelate dog from owner across R7;" +
+                                    "delete object instance current_user;" +
+                                    "delete object instance observer3;" +
+                                    "x = 15.0 * y;";
 
                 ICharStream target = new AntlrInputStream(oalexample);
                 ITokenSource lexer = new OALLexer(target);
@@ -48,41 +55,58 @@ namespace AnimationControl
                 Console.WriteLine(((EXECommandQueryRelate)e.Commands[0]).Variable1Name);
                 Console.WriteLine(((EXECommandQueryRelate)e.Commands[0]).Variable2Name);
                 Console.WriteLine(((EXECommandQueryRelate)e.Commands[0]).RelationshipName);
-                Console.WriteLine("Druhy command:");
+                Console.WriteLine("\nDruhy command:");
                 Console.WriteLine(((EXECommandQueryRelate)e.Commands[1]).Variable1Name);
                 Console.WriteLine(((EXECommandQueryRelate)e.Commands[1]).Variable2Name);
                 Console.WriteLine(((EXECommandQueryRelate)e.Commands[1]).RelationshipName);
-                Console.WriteLine("Treti command:");
+                Console.WriteLine("\nTreti command:");
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[2]).Cardinality);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[2]).VariableName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[2]).ClassName);
-                Console.WriteLine("Stvrty command:");
+                Console.WriteLine("\nStvrty command:");
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[3]).Cardinality);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[3]).VariableName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[3]).ClassName);
-                Console.WriteLine("Piaty command:");
+                Console.WriteLine("\nPiaty command:");
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).Cardinality);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).VariableName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).ClassName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).WhereCondition.ToCode());
-                Console.WriteLine("Siesty command:");
+                Console.WriteLine("\nSiesty command:");
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).Cardinality);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).VariableName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).ClassName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).WhereCondition.ToCode());
-                Console.WriteLine("Siedmy command:");
+                Console.WriteLine("\nSiedmy command:");
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).Cardinality);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).VariableName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).ClassName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).WhereCondition.ToCode());
-                Console.WriteLine("Osmy command:");
+                Console.WriteLine("\nOsmy command:");
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).Cardinality);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).VariableName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).ClassName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).WhereCondition.ToCode());
-
-
-
+                Console.WriteLine("\nDeviaty command:");
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[8]).ClassName);
+                Console.WriteLine("\nDesiaty command:");
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[9]).ClassName);
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[9]).ReferencingVariableName);
+                Console.WriteLine("\nJedenasty command:");
+                Console.WriteLine(((EXECommandQueryUnrelate)e.Commands[10]).Variable1Name);
+                Console.WriteLine(((EXECommandQueryUnrelate)e.Commands[10]).Variable2Name);
+                Console.WriteLine(((EXECommandQueryUnrelate)e.Commands[10]).RelationshipName);
+                Console.WriteLine("\nDvanasty command:");
+                Console.WriteLine(((EXECommandQueryUnrelate)e.Commands[11]).Variable1Name);
+                Console.WriteLine(((EXECommandQueryUnrelate)e.Commands[11]).Variable2Name);
+                Console.WriteLine(((EXECommandQueryUnrelate)e.Commands[11]).RelationshipName);
+                Console.WriteLine("\nTrinasty command:");
+                Console.WriteLine(((EXECommandQueryDelete)e.Commands[12]).VariableName);
+                Console.WriteLine("\nStrnasty command:");
+                Console.WriteLine(((EXECommandQueryDelete)e.Commands[13]).VariableName);
+                Console.WriteLine("\nPatnasty command:");
+                Console.WriteLine(((EXECommandAssignment)e.Commands[14]).VariableName);
+                Console.WriteLine(((EXECommandAssignment)e.Commands[14]).AssignedExpression.ToCode());
 
                 //List<CreateQuery> list = new List<CreateQuery>();
                 //list = (List<CreateQuery>)test.VisitLines(result);
