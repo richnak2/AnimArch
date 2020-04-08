@@ -10,7 +10,24 @@ namespace AnimationControl
     {
         static void Main(string[] args)
         {
-            
+            EXEASTNodeComposite C = new EXEASTNodeComposite(
+                "+",
+                new EXEASTNode[]
+                {
+                    new EXEASTNodeLeaf("6"),
+                    new EXEASTNodeComposite
+                    (
+                        "-",
+                        new EXEASTNode[]
+                        {
+                            new EXEASTNodeLeaf("1"),
+                            new EXEASTNodeLeaf("2")
+                        }
+                    )
+                }
+            );
+            Console.WriteLine(C.ToCode());
+            Console.ReadLine();
         }
 
         public static List<String> ArithmeticOperatorList = new List<String>(new String[] { "+", "-", "*", "/", "%" });
@@ -23,9 +40,11 @@ namespace AnimationControl
             new List<String> (new String[] { "and", "or"}),
             new List<String> (new String[] { "not"}),
             new List<String> (new String[] { "==", "!="}),
+            new List<String> (new String[] { "empty", "not_empty"}),
             new List<String> (new String[] { "<=", ">=", "<", ">" }),
             new List<String> (new String[] { "+", "-"}),
             new List<String> (new String[] { "*", "/", "%"}),
+            new List<String> (new String[] { "cardinality"}),
             new List<String> (new String[] { AccessOperator})
         });
         public static List<String> UnaryOperators = new List<String>(new String[] { "not", "empty", "not_empty", "cardinality" });
@@ -137,6 +156,17 @@ namespace AnimationControl
         private Boolean IsNameChar(char c)
         {
             return Char.IsLetterOrDigit(c) || c == '_';
+        }
+        public static int GetOperatorLevel(String Operator)
+        {
+            for (int i = 0; i < LeveledOperators.Count; i++)
+            {
+                if (LeveledOperators[i].Contains(Operator))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }
