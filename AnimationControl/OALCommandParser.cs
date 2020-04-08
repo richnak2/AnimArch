@@ -39,7 +39,7 @@ namespace AnimationControl
             EXEASTNode AST = null;
            // EXEQueryChecker QueryChecker = new EXEQueryChecker();
 
-            String ClearedExpressionCommand = EXEParseUtil.SqueezeWhiteSpace(ExpressionCommand);
+            String ClearedExpressionCommand = ParseUtil.SqueezeWhiteSpace(ExpressionCommand);
             // Bollock - think about (5 + 6) * (5 + 7)
             /*while ("(".Equals(ClearedExpressionCommand[0]) && ")".Equals(ClearedExpressionCommand[ExpressionCommand.Length - 1]))
             {
@@ -100,7 +100,7 @@ namespace AnimationControl
                 return AST;
             }
 
-            String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
+            String SanitizedCommand = ParseUtil.SqueezeWhiteSpace(Command);
             String[] CommandTokens = SanitizedCommand.Split(' ');
 
             if (CommandTokens[0] == "continue" || CommandTokens[0] == "break")
@@ -124,7 +124,7 @@ namespace AnimationControl
                 return AST;
             }
 
-            String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
+            String SanitizedCommand = ParseUtil.SqueezeWhiteSpace(Command);
            // Console.WriteLine("ConstrAssign:" + SanitizedCommand + "EOL");
 
             int SplitIndex = SanitizedCommand.IndexOf('=');
@@ -229,7 +229,7 @@ namespace AnimationControl
 
         public Boolean IsControlCommand (String Command)
         {
-            String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Command);
+            String SanitizedCommand = ParseUtil.SqueezeWhiteSpace(Command);
             String[] CommandTokens = SanitizedCommand.Split(' ');
             Boolean result = false;
             if (ControlKeywords.Contains(CommandTokens[0]))
@@ -334,7 +334,7 @@ namespace AnimationControl
 
         private Boolean IsUnaryOperator(String Operator)
         {
-            String SanitizedCommand = EXEParseUtil.SqueezeWhiteSpace(Operator);
+            String SanitizedCommand = ParseUtil.SqueezeWhiteSpace(Operator);
             Boolean Result = UnaryOperators.Contains(SanitizedCommand);
             return Result;
         }
@@ -343,7 +343,7 @@ namespace AnimationControl
         {
             //Console.WriteLine("ConsASTAlt:" + Expression + "EOL");
 
-            String ModifiedExpression = EXEParseUtil.SqueezeWhiteSpace(Expression);
+            String ModifiedExpression = ParseUtil.SqueezeWhiteSpace(Expression);
             (String, int) TopLevelOperator = IdentifyFirstTopLevelOperator(ModifiedExpression);
             Boolean ExprContainsOperator = ContainsOperator(ModifiedExpression);
             while (TopLevelOperator.Item2 == -1 && ExprContainsOperator)
@@ -380,7 +380,7 @@ namespace AnimationControl
             {
                 return Result;
             }
-            String SanitizedExpression = EXEParseUtil.SqueezeWhiteSpace(Expression);
+            String SanitizedExpression = ParseUtil.SqueezeWhiteSpace(Expression);
             if (Expression == null || Expression.Length == 0 || !ContainsOperator(Expression))
             {
                 return Result;
@@ -462,7 +462,7 @@ namespace AnimationControl
         }
         public int OperatorLevel(String InputOperator)
         {
-            String SanitizedOperator = EXEParseUtil.SqueezeWhiteSpace(InputOperator);
+            String SanitizedOperator = ParseUtil.SqueezeWhiteSpace(InputOperator);
 
             int OperatorLevel = -1;
             for (int i = 0; i < LeveledOperators.Count; i++)
@@ -486,7 +486,7 @@ namespace AnimationControl
                 return OperatorLevel;
             }
 
-            String SanitizedOperator = EXEParseUtil.SqueezeWhiteSpace(InputOperator);
+            String SanitizedOperator = ParseUtil.SqueezeWhiteSpace(InputOperator);
             for (int i = LeveledOperators.Count - 1; i >= 0; i--)
             {
                 foreach (String Operator in LeveledOperators[i])

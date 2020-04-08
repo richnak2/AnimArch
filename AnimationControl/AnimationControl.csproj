@@ -88,7 +88,7 @@
     <Compile Include="EXEASTNodeLeaf.cs" />
     <Compile Include="EXECommand.cs" />
     <Compile Include="EXEExecutionGlobals.cs" />
-    <Compile Include="EXEParseUtil.cs" />
+    <Compile Include="ParseUtil.cs" />
     <Compile Include="EXEPrimitiveVariable.cs" />
     <Compile Include="EXEScope.cs" />
     <Compile Include="EXETypes.cs" />
