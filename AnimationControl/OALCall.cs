@@ -25,7 +25,7 @@ namespace AnimationControl
 
         public OALCall(String CallCode)
         {
-            String SanitizedCallCode = EXEParseUtil.SqueezeWhiteSpace(CallCode);
+            String SanitizedCallCode = ParseUtil.SqueezeWhiteSpace(CallCode);
             //Remove "call(" and ")" chars
             SanitizedCallCode = SanitizedCallCode.Substring(5, SanitizedCallCode.Length - 5 - 1);
             String[] Args = SanitizedCallCode.Split(',');
