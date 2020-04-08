@@ -48,6 +48,8 @@ namespace AnimationControl
 
                 EXEScope e = test.globalExeScope;
 
+                Console.WriteLine(e.ToCode());
+
                 Console.WriteLine("Overenie parsovania:");
                 Console.WriteLine("Prvy command:");
                 Console.WriteLine(((EXECommandQueryRelate)e.Commands[0]).Variable1Name);
