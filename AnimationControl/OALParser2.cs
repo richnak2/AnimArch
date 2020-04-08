@@ -31,11 +31,20 @@ namespace AnimationControl
                                     "delete object instance observer3;" +
                                     "x = 15.0 * y;";
 
-                ICharStream target = new AntlrInputStream(oalexample);
-                ITokenSource lexer = new OALLexer(target);
-                ITokenStream tokens = new CommonTokenStream(lexer);
-                OALParser parser = new OALParser(tokens);
-                parser.BuildParseTree = true;
+                OALParser parser = null;
+                try
+                {
+                    ICharStream target = new AntlrInputStream(oalexample);
+                    ITokenSource lexer = new OALLexer(target);
+                    ITokenStream tokens = new CommonTokenStream(lexer);
+                    parser = new OALParser(tokens);
+                    parser.BuildParseTree = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+
+                }
 
                 //ExprParser.LiteralContext result = parser.literal();
                 OALParser.LinesContext result = parser.lines();
@@ -44,7 +53,13 @@ namespace AnimationControl
 
                 OALVisitor2 test = new OALVisitor2();
 
-                test.VisitLines(result);
+                try
+                {
+                    test.VisitLines(result);
+                } catch (Exception ex) {
+                    Console.WriteLine(ex.ToString());
+                    
+                }
 
                 EXEScope e = test.globalExeScope;
 

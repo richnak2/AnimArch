@@ -25,8 +25,8 @@ namespace AnimationControl.OAL.Tests
 
             //ExprParser.LiteralContext result = parser.literal();
             OALParser.LinesContext result = parser.lines();
-            //Console.Write(result.ToStringTree());
-            //Console.WriteLine();
+            Console.Write(result.ToStringTree());
+            Console.WriteLine();
 
             OALVisitor2 test = new OALVisitor2();
             test.VisitLines(result);
@@ -36,7 +36,9 @@ namespace AnimationControl.OAL.Tests
             String actualResult = e.ToCode();
             String expectedResult = "create object instance of Visitor;\n";
 
+            //mozme mat viac assertov
             Assert.AreEqual(expectedResult, actualResult);
+
 
         }
     }
