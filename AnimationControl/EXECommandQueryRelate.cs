@@ -39,5 +39,9 @@ namespace AnimationControl
 
             return Success;
         }
+        public override string ToCodeSimple()
+        {
+            return "relate " + this.Variable1Name + " to " + this.Variable2Name + " across " + this.RelationshipName;
+        }
     }
 }

@@ -217,7 +217,7 @@ namespace AnimationControl
                     {
                         Result += " " + this.Operation;
                     }
-                    Result += Operand.ToCode();
+                    Result += ("".Equals(Result) ? "" : " ") + Operand.ToCode();
                 }
             }
             return Result;

@@ -39,10 +39,10 @@ namespace AnimationControl
 
             return true;
         }
-        public override String ToCode()
+        public override String ToCodeSimple()
         {
             return "call from " + this.CallerClass + "::" + this.CallerMethod + "() to "
-                + this.CalledClass + "::" + this.CalledMethod + "() across " + this.RelationshipName + ";\n";
+                + this.CalledClass + "::" + this.CalledMethod + "() across " + this.RelationshipName;
         }
     }
 }

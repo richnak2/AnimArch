@@ -60,5 +60,14 @@ namespace AnimationControl
             }
             return Result;
         }
+        public String ToCode()
+        {
+            String Result = this.StartingVariable;
+            foreach (EXERelationshipLink Link in this.RelationshipSpecification)
+            {
+                Result += "->" + Link.ClassName + "[" + Link.RelationshipName + "]";
+            }
+            return Result;
+        }
     }
 }

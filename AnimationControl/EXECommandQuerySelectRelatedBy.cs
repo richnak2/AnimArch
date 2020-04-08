@@ -146,5 +146,13 @@ namespace AnimationControl
 
             return true;
         }
+        public override string ToCodeSimple()
+        {
+            string prefix = "select " + this.Cardinality + " " + this.VariableName + " related by ";
+            string relationLink = this.RelationshipSelection.ToCode();
+            string sufix = this.WhereCondition == null ? "" : ("where ") + this.WhereCondition.ToCode();
+
+            return prefix + relationLink + sufix;
+        }
     }
 }

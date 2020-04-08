@@ -25,5 +25,9 @@ namespace AnimationControl
             }
             return Result;
         }
+        public override string ToCodeSimple()
+        {
+            return "delete object instance " + this.VariableName;
+        }
     }
 }

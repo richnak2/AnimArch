@@ -478,5 +478,15 @@ namespace AnimationControl
 
             return this.SuperScope.PropagateControlCommand(PropagatedCommand);
         }
+
+        public override String ToCode(String Indent = "")
+        {
+            String Result = "";
+            foreach (EXECommand Command in this.Commands)
+            {
+                Result += Command.ToCode(Indent);
+            }
+            return Result;
+        }
     }
 }

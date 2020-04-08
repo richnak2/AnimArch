@@ -168,5 +168,10 @@ namespace AnimationControl
 
             return true;
         }
+        public override string ToCodeSimple()
+        {
+            return "select " + this.Cardinality + " " + this.VariableName + " from instances of " + this.ClassName +
+                this.WhereCondition == null ? "" : ("where ") + this.WhereCondition.ToCode();
+        }
     }
 }

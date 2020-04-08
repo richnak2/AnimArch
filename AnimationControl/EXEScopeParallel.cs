@@ -89,5 +89,24 @@ namespace AnimationControl
         {
             return false;
         }
+
+        public override String ToCode(String Indent = "")
+        {
+            String Result = Indent + "par\n";
+            if (this.Threads != null)
+            {
+                foreach (EXEScope Thread in this.Threads)
+                {
+                    Result += Indent + "\tthread\n";
+                    foreach (EXECommand Command in Thread.Commands)
+                    {
+                        Result += Command.ToCode(Indent + "\t\t");
+                    }
+                    Result += Indent + "\tend thread;\n";
+                }
+            }
+            Result += Indent + "end par;\n";
+            return Result;
+        }
     }
 }

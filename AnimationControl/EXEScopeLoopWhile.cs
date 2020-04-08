@@ -109,5 +109,16 @@ namespace AnimationControl
 
             return true;
         }
+
+        public override String ToCode(String Indent = "")
+        {
+            String Result = Indent + "while (" + this.Condition.ToCode() + ")\n";
+            foreach (EXECommand Command in this.Commands)
+            {
+                Result += Command.ToCode(Indent + "\t");
+            }
+            Result += Indent + "end while;\n";
+            return Result;
+        }
     }
 }

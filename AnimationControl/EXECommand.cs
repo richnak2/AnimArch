@@ -21,7 +21,7 @@ namespace AnimationControl
 
         public virtual String ToCode(String Indent = "")
         {
-            return Indent + ToCodeSimple() + "\n";
+            return Indent + ToCodeSimple() + ";\n";
         }
         public virtual String ToCodeSimple()
         {

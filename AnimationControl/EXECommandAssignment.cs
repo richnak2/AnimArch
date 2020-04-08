@@ -75,14 +75,14 @@ namespace AnimationControl
             //Console.WriteLine("Assignment Result: " + Result);
             return Result;
         }
-        public override String ToCode()
+        public override String ToCodeSimple()
         {
             String Result = this.VariableName;
             if (this.AttributeName != null)
             {
                 Result += "." + this.AttributeName;
             }
-            Result += " = " + this.AssignedExpression.ToCode() + ";";
+            Result += " = " + this.AssignedExpression.ToCode();
             return Result;
         }
     }

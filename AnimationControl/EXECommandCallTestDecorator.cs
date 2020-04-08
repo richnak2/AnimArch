@@ -8,9 +8,9 @@ namespace AnimationControl
 {
     public class EXECommandCallTestDecorator : EXECommand
     {
-        private EXECommandCall DecoratedCommand { get; }
+        private EXECommand DecoratedCommand { get; }
         private StringBuffer CallTextBuffer { get; }
-        public EXECommandCallTestDecorator(EXECommandCall DecoratedCommand, StringBuffer CallTextBuffer)
+        public EXECommandCallTestDecorator(EXECommand DecoratedCommand, StringBuffer CallTextBuffer)
         {
             this.DecoratedCommand = DecoratedCommand;
             this.CallTextBuffer = CallTextBuffer;
@@ -29,6 +29,10 @@ namespace AnimationControl
         public override bool SynchronizedExecute(Animation Animation, EXEScope Scope)
         {
             return this.Execute(Animation, Scope);
+        }
+        public override String ToCodeSimple()
+        {
+            return this.DecoratedCommand.ToCodeSimple();
         }
     }
 }
