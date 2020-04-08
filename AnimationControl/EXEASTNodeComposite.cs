@@ -231,7 +231,11 @@ namespace AnimationControl
                         {
                             if (ThisOperatorLevel >= SubOperatorLevel && !this.Operation.Equals(SubOperation))
                             {
-                                UseBrackets = true;
+                                    UseBrackets = true;
+                            }
+                            if (UseBrackets && ThisOperatorLevel == SubOperatorLevel && (ThisOperatorLevel == 5 || ThisOperatorLevel == 6))
+                            {
+                                UseBrackets = false;
                             }
                         }
                     }
