@@ -15,8 +15,6 @@ namespace AnimationControl
 
             try
             {
-                /*string oalexample = "create object instance observer1 of Observer;\n" +
-                                    "create object instance observer2 of Observer;\n";*/
                 string oalexample = "relate subject to observer across R15;\n" +
                                     "relate dog to owner across R7;\n" +
                                     "select any dog from instances of Dog;\n" +
