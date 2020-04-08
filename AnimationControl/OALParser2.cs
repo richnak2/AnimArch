@@ -18,7 +18,13 @@ namespace AnimationControl
                 /*string oalexample = "create object instance observer1 of Observer;\n" +
                                     "create object instance observer2 of Observer;\n";*/
                 string oalexample = "relate subject to observer across R15;\n" +
-                                    "relate dog to owner across R7;";
+                                    "relate dog to owner across R7;\n" +
+                                    "select any dog from instances of Dog;\n" +
+                                    "select many all_dogs from instances of Dog;\n" +
+                                    "select any young_dog from instances of Dog where selected.age < 5 OR 6;\n" +
+                                    "select any young_dog from instances of Dog where cardinality observers and not x > 5 or not_empty g;" +
+                                    "select any dog from instances of Dog where x == (1+2)*3;" +
+                                    "select any dog from instances of Dog where (1 /(obj1.x * 0.22 + object1.y * 0.55 - object1.z /2) == \"ahoj\" + \"te deti\" or (x+3 != y%4+2)) and (x<=1 or x+1>=y or obj1.x<2 or obj1.y>1.2 * cardinality observers) and (empty k or not_empty g) and not x>5;";
 
                 ICharStream target = new AntlrInputStream(oalexample);
                 ITokenSource lexer = new OALLexer(target);
@@ -37,16 +43,46 @@ namespace AnimationControl
 
                 EXEScope e = test.globalExeScope;
 
+                Console.WriteLine("Overenie parsovania:");
+                Console.WriteLine("Prvy command:");
+                Console.WriteLine(((EXECommandQueryRelate)e.Commands[0]).Variable1Name);
+                Console.WriteLine(((EXECommandQueryRelate)e.Commands[0]).Variable2Name);
+                Console.WriteLine(((EXECommandQueryRelate)e.Commands[0]).RelationshipName);
+                Console.WriteLine("Druhy command:");
+                Console.WriteLine(((EXECommandQueryRelate)e.Commands[1]).Variable1Name);
+                Console.WriteLine(((EXECommandQueryRelate)e.Commands[1]).Variable2Name);
+                Console.WriteLine(((EXECommandQueryRelate)e.Commands[1]).RelationshipName);
+                Console.WriteLine("Treti command:");
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[2]).Cardinality);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[2]).VariableName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[2]).ClassName);
+                Console.WriteLine("Stvrty command:");
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[3]).Cardinality);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[3]).VariableName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[3]).ClassName);
+                Console.WriteLine("Piaty command:");
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).Cardinality);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).VariableName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).ClassName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[4]).WhereCondition.ToCode());
+                Console.WriteLine("Siesty command:");
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).Cardinality);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).VariableName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).ClassName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[5]).WhereCondition.ToCode());
+                Console.WriteLine("Siedmy command:");
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).Cardinality);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).VariableName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).ClassName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).WhereCondition.ToCode());
+                Console.WriteLine("Osmy command:");
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).Cardinality);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).VariableName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).ClassName);
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).WhereCondition.ToCode());
 
-                /*Console.WriteLine("Overenie parsovania:");
-                Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ClassName);
-                Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ReferencingVariableName);
 
-                Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ClassName);
-                Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ReferencingVariableName);
 
-                Console.WriteLine(((EXECommandQueryCreate)e.Commands[2]).ClassName);
-                Console.WriteLine(((EXECommandQueryCreate)e.Commands[2]).ReferencingVariableName);*/
 
                 //List<CreateQuery> list = new List<CreateQuery>();
                 //list = (List<CreateQuery>)test.VisitLines(result);
