@@ -156,18 +156,18 @@ namespace AnimationControl.OAL
             
             if (context.ChildCount == 1)
             {
-                stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(context.GetChild(0).GetText()));
+                stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText())));
             }
             else if(context.ChildCount == 2)
-            {
-                EXEASTNodeComposite ast = new EXEASTNodeComposite(context.GetChild(0).GetText());
+            {               
+                EXEASTNodeComposite ast = new EXEASTNodeComposite(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText()));
                 stackEXEASTNode.Push(ast);
                 
                 base.VisitExpr(context);
 
                 if (context.GetChild(0).GetType().Name.Contains("TerminalNode") && !context.GetChild(0).GetText().Equals("not "))
                 {
-                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(context.GetChild(1).GetText()));
+                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(1).GetText())));
                     EXEASTNodeComposite temp = stackEXEASTNode.Pop();
                     stackEXEASTNode.Peek().AddOperand(temp);
                 }
@@ -181,7 +181,7 @@ namespace AnimationControl.OAL
             {
                 if (!context.GetChild(0).GetText().Equals("("))
                 {
-                    EXEASTNodeComposite ast = new EXEASTNodeComposite(context.GetChild(1).GetText());
+                    EXEASTNodeComposite ast = new EXEASTNodeComposite(ParseUtil.StripWhiteSpace(context.GetChild(1).GetText()));
                     stackEXEASTNode.Push(ast);
                 }
 
@@ -189,8 +189,8 @@ namespace AnimationControl.OAL
                 
                 if (context.GetChild(0).GetType().Name.Contains("TerminalNode") && !context.GetChild(0).GetText().Equals("("))
                 {
-                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(context.GetChild(0).GetText()));
-                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(context.GetChild(2).GetText()));
+                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText())));
+                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(2).GetText())));
                     EXEASTNodeComposite temp = stackEXEASTNode.Pop();
                     stackEXEASTNode.Peek().AddOperand(temp);
                 }
