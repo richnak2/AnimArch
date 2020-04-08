@@ -49,6 +49,8 @@ namespace AnimationControl
                 this.ActiveThreadCount = this.Threads.Count;
             }
 
+            Animation.ThreadSyncer.UnregisterThread();
+
             foreach (EXEScope ThreadScope in this.Threads)
             {
                 new Thread(() =>
@@ -78,6 +80,8 @@ namespace AnimationControl
                     Monitor.Wait(this.MyThreadEndSyncer);
                 }
             }
+
+            Animation.ThreadSyncer.RegisterThread(1);
 
             return Success;
         }

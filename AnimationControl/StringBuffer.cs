@@ -34,5 +34,17 @@ namespace AnimationControl
             }
             return Result;
         }
+        public List<String> CloneStringList()
+        {
+            List<String> Result = new List<String>();
+            lock (this.Syncer)
+            {
+                foreach (String String in this.Strings)
+                {
+                    Result.Add(String);
+                }
+            }
+            return Result;
+        }
     }
 }

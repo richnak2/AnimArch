@@ -26,5 +26,9 @@ namespace AnimationControl
             CallTextBuffer.Append(DecoratedCommand.ToCode());
             return Result;
         }
+        public override bool SynchronizedExecute(Animation Animation, EXEScope Scope)
+        {
+            return this.Execute(Animation, Scope);
+        }
     }
 }

@@ -27,11 +27,12 @@ namespace AnimationControl
             Boolean Result = false;
 
             String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);
+
             if (AssignedValue == null)
             {
                 return Result;
             }
-           
+
             // If we are assigning to a variable
             if (this.AttributeName == null)
             {
@@ -72,6 +73,16 @@ namespace AnimationControl
             }
 
             //Console.WriteLine("Assignment Result: " + Result);
+            return Result;
+        }
+        public override String ToCode()
+        {
+            String Result = this.VariableName;
+            if (this.AttributeName != null)
+            {
+                Result += "." + this.AttributeName;
+            }
+            Result += " = " + this.AssignedExpression.ToCode() + ";";
             return Result;
         }
     }

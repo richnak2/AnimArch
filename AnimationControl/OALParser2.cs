@@ -10,7 +10,7 @@ namespace AnimationControl
     {
         static void Main(string[] args)
         {
-
+            
         }
 
         public static List<String> ArithmeticOperatorList = new List<String>(new String[] { "+", "-", "*", "/", "%" });

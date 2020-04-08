@@ -33,9 +33,13 @@ namespace AnimationControl
         {
             Animation.RequestNextStep();
 
+            //Execution code goes here
+
+            Animation.ThreadSyncer.RequestStep();
+
             return true;
         }
-        public String ToCode()
+        public override String ToCode()
         {
             return "call from " + this.CallerClass + "::" + this.CallerMethod + "() to "
                 + this.CalledClass + "::" + this.CalledMethod + "() across " + this.RelationshipName + ";\n";

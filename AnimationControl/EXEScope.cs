@@ -428,8 +428,7 @@ namespace AnimationControl
             this.Animation = Animation;
 
             Boolean Success = true;
-            if (this.SuperScope != null) Console.WriteLine("I have superscope");
-            else Console.WriteLine("I have no superscope");
+
             foreach (EXECommand Command in this.Commands)
             {
                 Success = Command.SynchronizedExecute(Animation, this);
