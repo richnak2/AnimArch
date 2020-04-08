@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace AnimationControl
 {
-    class EXECommandCall : EXECommand
+    public class EXECommandCall : EXECommand
     {
-        public String CallerClass { get; }
-        public String CalledClass { get; }
-        public String CallerMethod { get; }
-        public String CalledMethod { get; }
-        public String RelationshipName { get; }
+        private String CallerClass { get; }
+        private String CalledClass { get; }
+        private String CallerMethod { get; }
+        private String CalledMethod { get; }
+        private String RelationshipName { get; }
 
         public EXECommandCall(String CallerClass, String CallerMethod, String RelationshipName, String CalledClass, String CalledMethod)
         {
@@ -33,7 +33,16 @@ namespace AnimationControl
         {
             Animation.RequestNextStep();
 
+            //Execution code goes here
+
+            Animation.ThreadSyncer.RequestStep();
+
             return true;
+        }
+        public override String ToCodeSimple()
+        {
+            return "call from " + this.CallerClass + "::" + this.CallerMethod + "() to "
+                + this.CalledClass + "::" + this.CalledMethod + "() across " + this.RelationshipName;
         }
     }
 }

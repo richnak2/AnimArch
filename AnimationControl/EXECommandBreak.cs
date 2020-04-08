@@ -6,5 +6,9 @@
         {
             return Scope.PropagateControlCommand(LoopControlStructure.Break);
         }
+        public override string ToCodeSimple()
+        {
+            return "break";
+        }
     }
 }

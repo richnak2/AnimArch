@@ -115,5 +115,15 @@ namespace AnimationControl
 
             return true;
         }
+        public override String ToCode(String Indent = "")
+        {
+            String Result = Indent + "for each " + this.IteratorName + " in " + this.IterableName + "\n";
+            foreach (EXECommand Command in this.Commands)
+            {
+                Result += Command.ToCode(Indent + "\t");
+            }
+            Result += Indent + "end for;\n";
+            return Result;
+        }
     }
 }

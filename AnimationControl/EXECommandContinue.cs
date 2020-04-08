@@ -6,5 +6,9 @@
         {
             return Scope.PropagateControlCommand(LoopControlStructure.Continue);
         }
+        public override string ToCodeSimple()
+        {
+            return "continue";
+        }
     }
 }

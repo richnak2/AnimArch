@@ -40,28 +40,34 @@ namespace AnimationControl
 
         public void AccessInstanceDatabase()
         {
+            Console.WriteLine("Accessing Instance DB");
             lock (this.InstanceDatabaseLock)
             {
+                
                 while (this.InDatabase)
                 {
                     Monitor.Wait(this.InstanceDatabaseLock);
                 }
                 this.InDatabase = true;
             }
+            Console.WriteLine("Accessed Instance DB");
             //Console.WriteLine("Executing command no. " + ++this.command_counter);
         }
         public void LeaveInstanceDatabase()
         {
+            Console.WriteLine("Leaving Instance DB");
             lock (this.InstanceDatabaseLock)
             {
                 Monitor.PulseAll(this.InstanceDatabaseLock);
                 this.InDatabase = false;
             }
+            Console.WriteLine("Left Instance DB");
         }
         public bool Execute()
         {
             bool Result = false;
 
+            this.ThreadSyncer.RegisterThread(1);
             Result = this.SuperScope.SynchronizedExecute(this, null);
 
             return Result;

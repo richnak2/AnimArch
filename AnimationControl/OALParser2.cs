@@ -133,9 +133,6 @@ namespace AnimationControl
 
             Console.ReadLine();
 
-
-
-
         }
 
 

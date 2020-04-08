@@ -428,8 +428,7 @@ namespace AnimationControl
             this.Animation = Animation;
 
             Boolean Success = true;
-            if (this.SuperScope != null) Console.WriteLine("I have superscope");
-            else Console.WriteLine("I have no superscope");
+
             foreach (EXECommand Command in this.Commands)
             {
                 Success = Command.SynchronizedExecute(Animation, this);
@@ -478,6 +477,16 @@ namespace AnimationControl
             }
 
             return this.SuperScope.PropagateControlCommand(PropagatedCommand);
+        }
+
+        public override String ToCode(String Indent = "")
+        {
+            String Result = "";
+            foreach (EXECommand Command in this.Commands)
+            {
+                Result += Command.ToCode(Indent);
+            }
+            return Result;
         }
     }
 }

@@ -49,6 +49,8 @@ namespace AnimationControl
                 this.ActiveThreadCount = this.Threads.Count;
             }
 
+            Animation.ThreadSyncer.UnregisterThread();
+
             foreach (EXEScope ThreadScope in this.Threads)
             {
                 new Thread(() =>
@@ -79,11 +81,32 @@ namespace AnimationControl
                 }
             }
 
+            Animation.ThreadSyncer.RegisterThread(1);
+
             return Success;
         }
         public override bool PropagateControlCommand(LoopControlStructure PropagatedCommand)
         {
             return false;
+        }
+
+        public override String ToCode(String Indent = "")
+        {
+            String Result = Indent + "par\n";
+            if (this.Threads != null)
+            {
+                foreach (EXEScope Thread in this.Threads)
+                {
+                    Result += Indent + "\tthread\n";
+                    foreach (EXECommand Command in Thread.Commands)
+                    {
+                        Result += Command.ToCode(Indent + "\t\t");
+                    }
+                    Result += Indent + "\tend thread;\n";
+                }
+            }
+            Result += Indent + "end par;\n";
+            return Result;
         }
     }
 }

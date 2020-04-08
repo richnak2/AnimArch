@@ -59,6 +59,7 @@
     <Compile Include="EXECommandAssignment.cs" />
     <Compile Include="EXECommandBreak.cs" />
     <Compile Include="EXECommandCall.cs" />
+    <Compile Include="EXECommandCallTestDecorator.cs" />
     <Compile Include="EXECommandContinue.cs" />
     <Compile Include="EXECommandQueryCreate.cs" />
     <Compile Include="EXECommandQueryDelete.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="OAL\OALVisitor2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleAnimationControl.cs" />
+    <Compile Include="StringBuffer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
