@@ -34,17 +34,17 @@ namespace AnimationControl.OAL
 
             foreach (IParseTree child in context.children)
             {
-                Console.WriteLine(context.ChildCount);
+                //Console.WriteLine(context.ChildCount);
                 if (child.GetType().ToString().Contains("KeyLetter"))
                 {
                     ClassName = child.GetText();
-                    Console.WriteLine(ClassName);
+                    //Console.WriteLine(ClassName);
                 }
 
                 if (child.GetType().ToString().Contains("InstanceHandle"))
                 {
                     InstanceName = child.GetText();
-                    Console.WriteLine(InstanceName);
+                    //Console.WriteLine(InstanceName);
                 }
                 
             }

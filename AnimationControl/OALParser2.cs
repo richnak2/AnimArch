@@ -83,10 +83,10 @@ namespace AnimationControl
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).ClassName);
                 Console.WriteLine(((EXECommandQuerySelect)e.Commands[6]).WhereCondition.ToCode());
                 Console.WriteLine("\nOsmy command:");
-                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).Cardinality);
-                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).VariableName);
-                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).ClassName);
-                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).WhereCondition.ToCode());
+                Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).ToCode());
+                //Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).VariableName);
+                //Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).ClassName);
+                //Console.WriteLine(((EXECommandQuerySelect)e.Commands[7]).WhereCondition.ToCode());
                 Console.WriteLine("\nDeviaty command:");
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[8]).ClassName);
                 Console.WriteLine("\nDesiaty command:");
