@@ -15,8 +15,10 @@ namespace AnimationControl
 
             try
             {
-                string oalexample = "create object instance observer1 of Observer;\n" +
-                                    "create object instance observer2 of Observer;\n";
+                /*string oalexample = "create object instance observer1 of Observer;\n" +
+                                    "create object instance observer2 of Observer;\n";*/
+                string oalexample = "relate subject to observer across R15;\n" +
+                                    "relate dog to owner across R7;";
 
                 ICharStream target = new AntlrInputStream(oalexample);
                 ITokenSource lexer = new OALLexer(target);
@@ -33,16 +35,17 @@ namespace AnimationControl
 
                 test.VisitLines(result);
 
-                EXEScope e = test.e;
+                EXEScope e = test.globalExeScope;
 
-                Console.WriteLine("Overenie parsovania:");
+
+                /*Console.WriteLine("Overenie parsovania:");
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ClassName);
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[0]).ReferencingVariableName);
 
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ClassName);
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[1]).ReferencingVariableName);
 
-                /*Console.WriteLine(((EXECommandQueryCreate)e.Commands[2]).ClassName);
+                Console.WriteLine(((EXECommandQueryCreate)e.Commands[2]).ClassName);
                 Console.WriteLine(((EXECommandQueryCreate)e.Commands[2]).ReferencingVariableName);*/
 
                 //List<CreateQuery> list = new List<CreateQuery>();

@@ -98,18 +98,19 @@
     <Compile Include="OALCodeLine.cs" />
     <Compile Include="OALCommandParser.cs" />
     <Compile Include="OALParser2.cs" />
-    <Compile Include="OAL\OALVisitor2.cs" />
     <Compile Include="OAL\OALBaseListener.cs" />
     <Compile Include="OAL\OALBaseVisitor.cs" />
     <Compile Include="OAL\OALLexer.cs" />
     <Compile Include="OAL\OALListener.cs" />
     <Compile Include="OAL\OALParser.cs" />
     <Compile Include="OAL\OALVisitor.cs" />
+    <Compile Include="OAL\OALVisitor2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleAnimationControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="OAL\OAL.g4" />
     <None Include="OAL\OAL.interp" />
     <None Include="OAL\OAL.tokens" />
     <None Include="OAL\OALLexer.interp" />

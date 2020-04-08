@@ -44,6 +44,42 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitLine([NotNull] OALParser.LineContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.parCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParCommand([NotNull] OALParser.ParCommandContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.ifCommnad"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfCommnad([NotNull] OALParser.IfCommnadContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.whileCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhileCommand([NotNull] OALParser.WhileCommandContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.foreachCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitForeachCommand([NotNull] OALParser.ForeachCommandContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.continueCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitContinueCommand([NotNull] OALParser.ContinueCommandContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.breakCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBreakCommand([NotNull] OALParser.BreakCommandContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.exeCommandQueryCreate"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -97,12 +133,6 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCommands([NotNull] OALParser.CommandsContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="OALParser.newLine"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitNewLine([NotNull] OALParser.NewLineContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.relationshipLink"/>.
 	/// </summary>
