@@ -105,8 +105,23 @@ namespace AnimationControl
 
             StringBuilder FilteredStringBuilder = new StringBuilder();
             Boolean InString = false;
+            Boolean Denoting = false;
             foreach (char c in TrimmedString)
             {
+                if (Denoting)
+                {
+                    Denoting = false;
+                    FilteredStringBuilder.Append(c);
+                    continue;
+                }
+
+                if (c == '\\')
+                {
+                    Denoting = true;
+                    FilteredStringBuilder.Append(c);
+                    continue;
+                }
+
                 if (c == '"')
                 {
                     InString = !InString;
