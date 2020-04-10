@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXEReferenceEvaluatorTests
@@ -17,9 +17,9 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateAttributeValue_Normal_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
 
             CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance();
@@ -29,7 +29,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user", "Nick", Scope, Animation.ExecutionSpace);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user", "Nick", Scope, OALProgram.ExecutionSpace);
 
             String ExpectedOutput = "\"Jano245\"";
 
@@ -39,13 +39,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateAttributeValue_Normal_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -75,7 +75,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user2", "LastName", Scope, Animation.ExecutionSpace);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user2", "LastName", Scope, OALProgram.ExecutionSpace);
 
             String ExpectedOutput = "\"Cirova\"";
 
@@ -85,13 +85,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateAttributeValue_Normal_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -131,7 +131,7 @@ namespace AnimationControl.Tests
             Scope.SetSuperScope (SuperScope);
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Email", Scope, Animation.ExecutionSpace);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Email", Scope, OALProgram.ExecutionSpace);
 
             String ExpectedOutput = "\"pp@gmail.com\"";
 
@@ -141,13 +141,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateAttributeValue_Bad_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -177,7 +177,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "LastName", Scope, Animation.ExecutionSpace);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "LastName", Scope, OALProgram.ExecutionSpace);
 
             Assert.IsNull(ActualOutput);
         }
@@ -185,13 +185,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateAttributeValue_Bad_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -221,7 +221,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user3", "Age", Scope, Animation.ExecutionSpace);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user3", "Age", Scope, OALProgram.ExecutionSpace);
 
             Assert.IsNull(ActualOutput);
         }
@@ -229,13 +229,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateAttributeValue_Bad_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -275,7 +275,7 @@ namespace AnimationControl.Tests
             Scope.SetSuperScope (SuperScope);
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user5", "Email", Scope, Animation.ExecutionSpace);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user5", "Email", Scope, OALProgram.ExecutionSpace);
 
             Assert.IsNull(ActualOutput);
         }
@@ -283,13 +283,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateAttributeValue_Bad_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -329,7 +329,7 @@ namespace AnimationControl.Tests
             Scope.SetSuperScope (SuperScope);
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Age", Scope, Animation.ExecutionSpace);
+            String ActualOutput = Evaluator.EvaluateAttributeValue("new_user4", "Age", Scope, OALProgram.ExecutionSpace);
 
             Assert.IsNull(ActualOutput);
         }
@@ -337,9 +337,9 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void SetAttributeValue_Normal_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
 
             CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance();
@@ -349,7 +349,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            Evaluator.SetAttributeValue("new_user", "Nick", Scope, Animation.ExecutionSpace, "\"Jano69\"");
+            Evaluator.SetAttributeValue("new_user", "Nick", Scope, OALProgram.ExecutionSpace, "\"Jano69\"");
 
             String ActualOutput = ClassInstance.GetAttributeValue("Nick");
 
@@ -360,13 +360,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void SetAttributeValue_Normal_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -396,7 +396,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            Evaluator.SetAttributeValue("new_user1", "FirstName", Scope, Animation.ExecutionSpace, "\"Ivan\"");
+            Evaluator.SetAttributeValue("new_user1", "FirstName", Scope, OALProgram.ExecutionSpace, "\"Ivan\"");
 
             String ActualOutput = ClassInstance1.GetAttributeValue("FirstName");
 
@@ -407,9 +407,9 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void SetAttributeValue_Normal_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.BooleanTypeName));
 
             CDClassInstance ClassInstance = UserAccountClass.CreateClassInstance();
@@ -418,7 +418,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user", "UserAccount", ClassInstance.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            Evaluator.SetAttributeValue("new_user", "Nick", Scope, Animation.ExecutionSpace, EXETypes.BooleanFalse);
+            Evaluator.SetAttributeValue("new_user", "Nick", Scope, OALProgram.ExecutionSpace, EXETypes.BooleanFalse);
 
             String ActualOutput = ClassInstance.GetAttributeValue("Nick");
 
@@ -429,13 +429,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void SetAttributeValue_Bad_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -472,7 +472,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            bool Success = Evaluator.SetAttributeValue("new_user4", "FirstName", Scope, Animation.ExecutionSpace, "\"Ivan\"");
+            bool Success = Evaluator.SetAttributeValue("new_user4", "FirstName", Scope, OALProgram.ExecutionSpace, "\"Ivan\"");
 
             List<(String, String, String, String)> ActualState =
                 new List<(string, string, string, string)>(new (string, string, string, string)[] {
@@ -487,13 +487,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void SetAttributeValue_Bad_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -530,7 +530,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            bool Success = Evaluator.SetAttributeValue("new_user3", "Age", Scope, Animation.ExecutionSpace, "\"Ivan\"");
+            bool Success = Evaluator.SetAttributeValue("new_user3", "Age", Scope, OALProgram.ExecutionSpace, "\"Ivan\"");
 
             List<(String, String, String, String)> ActualState =
                 new List<(string, string, string, string)>(new (string, string, string, string)[] {
@@ -545,13 +545,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void SetAttributeValue_Bad_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -588,7 +588,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            bool Success = Evaluator.SetAttributeValue("new_user3", "Nick", Scope, Animation.ExecutionSpace, "52");
+            bool Success = Evaluator.SetAttributeValue("new_user3", "Nick", Scope, OALProgram.ExecutionSpace, "52");
 
             List<(String, String, String, String)> ActualState =
                 new List<(string, string, string, string)>(new (string, string, string, string)[] {
@@ -603,13 +603,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void SetAttributeValue_Bad_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass GameClass = Animation.ExecutionSpace.SpawnClass("Game");
+            CDClass GameClass = OALProgram.ExecutionSpace.SpawnClass("Game");
             GameClass.AddAttribute(new CDAttribute("Score", EXETypes.IntegerTypeName));
             GameClass.AddAttribute(new CDAttribute("Name", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass = Animation.ExecutionSpace.SpawnClass("UserAccount");
+            CDClass UserAccountClass = OALProgram.ExecutionSpace.SpawnClass("UserAccount");
             UserAccountClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("FirstName", EXETypes.StringTypeName));
             UserAccountClass.AddAttribute(new CDAttribute("LastName", EXETypes.StringTypeName));
@@ -650,7 +650,7 @@ namespace AnimationControl.Tests
             Scope.AddVariable(new EXEReferencingVariable("new_user3", "UserAccount", ClassInstance3.UniqueID));
 
             EXEReferenceEvaluator Evaluator = new EXEReferenceEvaluator();
-            bool Success = Evaluator.SetAttributeValue("new_user3", "Age", Scope, Animation.ExecutionSpace, EXETypes.BooleanFalse);
+            bool Success = Evaluator.SetAttributeValue("new_user3", "Age", Scope, OALProgram.ExecutionSpace, EXETypes.BooleanFalse);
 
             List<(String, String, String, String, String)> ActualState =
                 new List<(string, string, string, string, string)>(new (string, string, string, string, string)[] {

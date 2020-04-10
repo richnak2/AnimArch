@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class OALParser2Tests

@@ -3,7 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXEThreadSynchronizatorTests
@@ -11,8 +11,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_01()
         {
-            Animation Animation = new Animation();
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
+            OALProgram OALProgram = new OALProgram();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(OALProgram);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -36,8 +36,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_02()
         {
-            Animation Animation = new Animation();
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
+            OALProgram OALProgram = new OALProgram();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(OALProgram);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -61,8 +61,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_03()
         {
-            Animation Animation = new Animation();
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
+            OALProgram OALProgram = new OALProgram();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(OALProgram);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -86,8 +86,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_04()
         {
-            Animation Animation = new Animation();
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
+            OALProgram OALProgram = new OALProgram();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(OALProgram);
             Syncer.RegisterThread(3);
 
             object Locker = new object();
@@ -111,8 +111,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEThreadSynchronizatorTest_05()
         {
-            Animation Animation = new Animation();
-            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(Animation);
+            OALProgram OALProgram = new OALProgram();
+            EXEThreadSynchronizator Syncer = new EXEThreadSynchronizator(OALProgram);
             Syncer.RegisterThread(3);
 
             object Locker = new object();

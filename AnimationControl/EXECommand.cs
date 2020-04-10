@@ -1,23 +1,23 @@
 ﻿using System;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public abstract class EXECommand
     {
-        public virtual Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public virtual Boolean SynchronizedExecute(OALProgram OALProgram, EXEScope Scope)
         {
-            Animation.AccessInstanceDatabase();
+            OALProgram.AccessInstanceDatabase();
             Console.WriteLine(this.ToCode());
-            Boolean Success = this.Execute(Animation, Scope);
+            Boolean Success = this.Execute(OALProgram, Scope);
             Console.WriteLine("Done");
-            Animation.LeaveInstanceDatabase();
+            OALProgram.LeaveInstanceDatabase();
             return Success;
         }
         public virtual Boolean IsComposite()
         {
             return false;
         }
-        public abstract Boolean Execute(Animation Animation, EXEScope Scope);
+        public abstract Boolean Execute(OALProgram OALProgram, EXEScope Scope);
 
         public virtual String ToCode(String Indent = "")
         {

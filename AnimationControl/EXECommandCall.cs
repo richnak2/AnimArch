@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandCall : EXECommand
     {
@@ -23,19 +23,19 @@ namespace AnimationControl
             this.CalledClass = CalledClass;
             this.CalledMethod = CalledMethod;
         }
-        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override Boolean SynchronizedExecute(OALProgram OALProgram, EXEScope Scope)
         {
-            Boolean Success = this.Execute(Animation, Scope);
+            Boolean Success = this.Execute(OALProgram, Scope);
             return Success;
         }
 
-        public override Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(OALProgram OALProgram, EXEScope Scope)
         {
-            Animation.RequestNextStep();
+            OALProgram.RequestNextStep();
 
             //Execution code goes here
 
-            Animation.ThreadSyncer.RequestStep();
+            OALProgram.ThreadSyncer.RequestStep();
 
             return true;
         }

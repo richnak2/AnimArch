@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXECommandQueryCreateTests
@@ -10,11 +10,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_01()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -25,8 +25,8 @@ namespace AnimationControl.Tests
                 { "o", "Observer"}
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -35,13 +35,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_02()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Form");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Form");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -54,8 +54,8 @@ namespace AnimationControl.Tests
                 { "o", "Observer"}
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -64,16 +64,16 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_03()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Form");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Form");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -88,8 +88,8 @@ namespace AnimationControl.Tests
                 { "o3", "Observer"}
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -98,13 +98,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_04()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Form");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Form");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -116,8 +116,8 @@ namespace AnimationControl.Tests
             {
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -126,13 +126,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_05()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Form");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Form");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -144,8 +144,8 @@ namespace AnimationControl.Tests
             {
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -154,17 +154,17 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_06()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Form");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Form");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -176,8 +176,8 @@ namespace AnimationControl.Tests
             {
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -186,20 +186,20 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_07()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Form");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Form");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -215,8 +215,8 @@ namespace AnimationControl.Tests
                 { "s1", "Subject"}
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -225,12 +225,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_08()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");          
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");          
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -241,8 +241,8 @@ namespace AnimationControl.Tests
                 { "o", "Observer"}
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -251,10 +251,10 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -263,8 +263,8 @@ namespace AnimationControl.Tests
             {
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -273,11 +273,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_02()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -287,8 +287,8 @@ namespace AnimationControl.Tests
             {
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -297,12 +297,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_03()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.SuperScope.AddVariable(new EXEPrimitiveVariable("s", "12"));
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.SuperScope.AddVariable(new EXEPrimitiveVariable("s", "12"));
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -312,8 +312,8 @@ namespace AnimationControl.Tests
             {
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -322,22 +322,22 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_04()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Form");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Form");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("ConcreteObserver"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Form"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("ConcreteObserver"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Form"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -352,8 +352,8 @@ namespace AnimationControl.Tests
                 { "s1", "Subject"}
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -362,13 +362,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_05()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "s"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "s"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -380,8 +380,8 @@ namespace AnimationControl.Tests
                 { "s", "Subject"}
             };
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);

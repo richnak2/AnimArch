@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXECommandQueryUnrelateTests
@@ -11,17 +11,17 @@ namespace AnimationControl.Tests
         public void Execute_Normal_01()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -37,9 +37,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -50,17 +50,17 @@ namespace AnimationControl.Tests
         public void Execute_Normal_02()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("s", "o", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("s", "o", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -76,9 +76,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -89,18 +89,18 @@ namespace AnimationControl.Tests
         public void Execute_Normal_03()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -116,9 +116,9 @@ namespace AnimationControl.Tests
                 (Rel1Name, "Observer", "o", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -129,21 +129,21 @@ namespace AnimationControl.Tests
         public void Execute_Normal_04()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
             for (int i = 0; i < 1000; i++)
             {
-                Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-                Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+                OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+                OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
             }
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -159,9 +159,9 @@ namespace AnimationControl.Tests
                 (Rel1Name, "Observer", "o", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -172,20 +172,20 @@ namespace AnimationControl.Tests
         public void Execute_Normal_05()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
             for (int i = 0; i < 1000; i++)
             {
-                Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-                Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+                OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+                OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
             }
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -200,9 +200,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -213,24 +213,24 @@ namespace AnimationControl.Tests
         public void Execute_Normal_06()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Client");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
-            String Rel2Name = Animation.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Client");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            String Rel2Name = OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("c", "s", Rel2Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("c", "s", Rel2Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -249,9 +249,9 @@ namespace AnimationControl.Tests
                 (Rel2Name, "Client", "c", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -262,22 +262,22 @@ namespace AnimationControl.Tests
         public void Execute_Normal_07()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Client");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
-            String Rel2Name = Animation.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Client");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            String Rel2Name = OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -296,9 +296,9 @@ namespace AnimationControl.Tests
                 (Rel2Name, "Client", "c", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -309,21 +309,21 @@ namespace AnimationControl.Tests
         public void Execute_Normal_08()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Client");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
-            String Rel2Name = Animation.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Client");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            String Rel2Name = OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -341,9 +341,9 @@ namespace AnimationControl.Tests
                 (Rel2Name, "Client", "c", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -354,21 +354,21 @@ namespace AnimationControl.Tests
         public void Execute_Normal_09()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Client");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
-            String Rel2Name = Animation.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Client");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            String Rel2Name = OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("c", "s", Rel2Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -386,9 +386,9 @@ namespace AnimationControl.Tests
                 (Rel2Name, "Client", "c", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -399,23 +399,23 @@ namespace AnimationControl.Tests
         public void Execute_Normal_10()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Client");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
-            String Rel2Name = Animation.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Client");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            String Rel2Name = OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c3"));
 
             List<EXECommandQueryRelate> RelateCommands = new List<EXECommandQueryRelate>(new EXECommandQueryRelate[] {
                 new EXECommandQueryRelate("o1", "s1", Rel1Name),
@@ -465,16 +465,16 @@ namespace AnimationControl.Tests
 
                 foreach (EXECommandQueryRelate Command in RelateCommands)
                 {
-                    Animation.SuperScope.AddCommand(Command);
+                    OALProgram.SuperScope.AddCommand(Command);
                 }
                 foreach (EXECommandQueryUnrelate Command in UnrelateCommands)
                 {
-                    Animation.SuperScope.AddCommand(Command);
+                    OALProgram.SuperScope.AddCommand(Command);
                 }
             }
 
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -497,9 +497,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -510,23 +510,23 @@ namespace AnimationControl.Tests
         public void Execute_Normal_11()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Client");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
-            String Rel2Name = Animation.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Client");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            String Rel2Name = OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
 
             EXEScope SubScope = new EXEScope();
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
             SubScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s2"));
             SubScope.AddCommand(new EXECommandQueryCreate("Subject", "s3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c2"));
             SubScope.AddCommand(new EXECommandQueryCreate("Client", "c3"));
 
             List<EXECommandQueryRelate> RelateCommands = new List<EXECommandQueryRelate>(new EXECommandQueryRelate[] {
@@ -584,9 +584,9 @@ namespace AnimationControl.Tests
                     SubScope.AddCommand(Command);
                 }
             }
-            Animation.SuperScope.AddCommand(SubScope);
+            OALProgram.SuperScope.AddCommand(SubScope);
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -606,9 +606,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -619,23 +619,23 @@ namespace AnimationControl.Tests
         public void Execute_Normal_12()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.ExecutionSpace.SpawnClass("Client");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
-            String Rel2Name = Animation.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Client");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            String Rel2Name = OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject").RelationshipName;
 
             EXEScope SubScope = new EXEScope();
             SubScope.AddCommand(new EXECommandQueryCreate("Observer", "o1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o2"));
             SubScope.AddCommand(new EXECommandQueryCreate("Observer", "o3"));
             SubScope.AddCommand(new EXECommandQueryCreate("Subject", "s1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s2"));
             SubScope.AddCommand(new EXECommandQueryCreate("Subject", "s3"));
             SubScope.AddCommand(new EXECommandQueryCreate("Client", "c1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Client", "c2"));
             SubScope.AddCommand(new EXECommandQueryCreate("Client", "c3"));
 
             List<EXECommandQueryRelate> RelateCommands = new List<EXECommandQueryRelate>(new EXECommandQueryRelate[] {
@@ -698,9 +698,9 @@ namespace AnimationControl.Tests
             {
                 SubScope.AddCommand(Command);
             }
-            Animation.SuperScope.AddCommand(SubScope);
+            OALProgram.SuperScope.AddCommand(SubScope);
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -735,9 +735,9 @@ namespace AnimationControl.Tests
                 (Rel2Name, "Client", "c3", "Subject", "s3"),
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, SubScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, SubScope);
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -748,16 +748,16 @@ namespace AnimationControl.Tests
         public void Execute_Bad_01()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -773,9 +773,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -786,18 +786,18 @@ namespace AnimationControl.Tests
         public void Execute_Bad_02()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -813,9 +813,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -826,17 +826,17 @@ namespace AnimationControl.Tests
         public void Execute_Bad_03()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("c", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("c", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -853,9 +853,9 @@ namespace AnimationControl.Tests
                 (Rel1Name, "Observer", "o", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -866,18 +866,18 @@ namespace AnimationControl.Tests
         public void Execute_Bad_04()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            String Rel1Name = Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            String Rel1Name = OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject").RelationshipName;
 
-            Animation.SuperScope.AddVariable(new EXEPrimitiveVariable("c", "80"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("c", "s", Rel1Name));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddVariable(new EXEPrimitiveVariable("c", "80"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryRelate("o", "s", Rel1Name));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("c", "s", Rel1Name));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -894,9 +894,9 @@ namespace AnimationControl.Tests
                 (Rel1Name, "Observer", "o", "Subject", "s")
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -907,15 +907,15 @@ namespace AnimationControl.Tests
         public void Execute_Bad_05()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -931,9 +931,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -944,15 +944,15 @@ namespace AnimationControl.Tests
         public void Execute_Bad_06()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -968,9 +968,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -981,10 +981,10 @@ namespace AnimationControl.Tests
         public void Execute_Bad_07()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -996,9 +996,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -1009,14 +1009,14 @@ namespace AnimationControl.Tests
         public void Execute_Bad_08()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -1028,9 +1028,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -1041,13 +1041,13 @@ namespace AnimationControl.Tests
         public void Execute_Bad_09()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -1059,9 +1059,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -1072,13 +1072,13 @@ namespace AnimationControl.Tests
         public void Execute_Bad_10()
         {
             //Set up the execution space
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("s"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Subject", "s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("s"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryUnrelate("o", "s", "R1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
@@ -1090,9 +1090,9 @@ namespace AnimationControl.Tests
             List<(String, String, String, String, String)> ExpectedRels = new List<(String, String, String, String, String)>(new (String, String, String, String, String)[] {
             });
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(Animation, Animation.SuperScope);
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            List<(String, String, String, String, String)> ActualRels = TestUtil.CreateRelatedVariableTupples(OALProgram, OALProgram.SuperScope);
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);

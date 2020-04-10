@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXEScopeLoopWhileTests
@@ -10,11 +10,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment(
@@ -40,13 +40,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "10"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -54,13 +54,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("1")));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("i", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("1")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("i", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment
@@ -99,14 +99,14 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"i", "10"},
                 {"x", "1024"},
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -114,13 +114,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("1")));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("i", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("1")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("i", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXEScopeCondition
@@ -205,14 +205,14 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"i", "5"},
                 {"x", "128"},
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -220,11 +220,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment(
@@ -250,13 +250,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "10"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -264,12 +264,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_05()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandQueryCreate("Observer"),
@@ -295,9 +295,9 @@ namespace AnimationControl.Tests
                     }
                 )
             ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityMany, "Observer", "observers"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityMany, "Observer", "observers"));
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "10"}
@@ -316,12 +316,12 @@ namespace AnimationControl.Tests
             int ExpectedValidRefVarCount = 0;
             int ExpectedValidSetRefVarCount = 1;
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "observers");
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
-            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = OALProgram.SuperScope.GetSetRefStateAttrsDictRecursive(OALProgram.ExecutionSpace, "observers");
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = OALProgram.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -334,12 +334,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_06()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandQueryCreate("Observer"),
@@ -365,9 +365,9 @@ namespace AnimationControl.Tests
                     }
                 )
             ));
-            Animation.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityAny, "Observer", "o"));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandQuerySelect(EXECommandQuerySelect.CardinalityAny, "Observer", "o"));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandQueryDelete("o"),
@@ -383,7 +383,7 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "10"}
@@ -402,12 +402,12 @@ namespace AnimationControl.Tests
             int ExpectedValidRefVarCount = 0;
             int ExpectedValidSetRefVarCount = 0;
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "observers");
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
-            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = OALProgram.SuperScope.GetSetRefStateAttrsDictRecursive(OALProgram.ExecutionSpace, "observers");
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = OALProgram.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -420,22 +420,22 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_07()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Observer");
-            Animation.ExecutionSpace.SpawnClass("Subject");
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Observer");
+            OALProgram.ExecutionSpace.SpawnClass("Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile
             (
-                Animation.SuperScope,
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandQueryCreate("Subject", "s"),
                     new EXECommandAssignment("y", new EXEASTNodeLeaf("0")),
                     new EXEScopeLoopWhile
                     (
-                        Animation.SuperScope,
+                        OALProgram.SuperScope,
                         new EXECommand[]
                         {
                             new EXECommandQueryCreate("Observer", "o"),
@@ -485,7 +485,7 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "10"}
@@ -504,12 +504,12 @@ namespace AnimationControl.Tests
             int ExpectedValidRefVarCount = 0;
             int ExpectedValidSetRefVarCount = 0;
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            Dictionary<String, String> ActualCreatedVarState = Animation.SuperScope.GetSetRefStateAttrsDictRecursive(Animation.ExecutionSpace, "observers");
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
-            int ActualValidSetRefVarCount = Animation.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            Dictionary<String, String> ActualCreatedVarState = OALProgram.SuperScope.GetSetRefStateAttrsDictRecursive(OALProgram.ExecutionSpace, "observers");
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
+            int ActualValidSetRefVarCount = OALProgram.SuperScope.NonEmptyVariableSetReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -522,11 +522,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_08()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment(
@@ -552,13 +552,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", EXEExecutionGlobals.LoopIterationCap.ToString()}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -566,16 +566,16 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Normal_09()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXEScopeCondition
                     (
-                        Animation.SuperScope,
+                        OALProgram.SuperScope,
                         new EXECommand[]
                         {
                             new EXECommandAssignment("y", new EXEASTNodeLeaf("0"))
@@ -591,7 +591,7 @@ namespace AnimationControl.Tests
                         ),
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandAssignment("y", new EXEASTNodeLeaf("\"0\""))
@@ -623,13 +623,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "2"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -637,11 +637,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Bad_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment(
@@ -667,13 +667,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "0"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -681,11 +681,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Bad_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment(
@@ -711,13 +711,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "0"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -725,11 +725,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Bad_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment(
@@ -755,13 +755,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "0"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -769,11 +769,11 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Bad_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment(
@@ -791,24 +791,24 @@ namespace AnimationControl.Tests
                 new EXEASTNodeLeaf(EXETypes.BooleanTrue)
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", EXEExecutionGlobals.LoopIterationCap.ToString()}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState, ActualPrimitiveVarState["x"]);
         }
         [TestMethod]
         public void EXEScopeLoopWhile_Bad_05()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand(new EXEScopeLoopWhile(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeLoopWhile(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                 },
@@ -823,13 +823,13 @@ namespace AnimationControl.Tests
                 )
             ));
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "0"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -837,13 +837,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Stress_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
 
             int cap = 10;
             EXEScope Temp;
-            EXEScope Current = Animation.SuperScope;
+            EXEScope Current = OALProgram.SuperScope;
             Char x = 'a';
             for (int i = 0; i < cap; i++)
             {
@@ -923,14 +923,14 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "1024"},
                 {"a", "2"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -938,13 +938,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Stress_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
 
             int cap = 13;
             EXEScope Temp;
-            EXEScope Current = Animation.SuperScope;
+            EXEScope Current = OALProgram.SuperScope;
             Char x = 'a';
             for (int i = 0; i < cap; i++)
             {
@@ -1024,14 +1024,14 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "8192"},
                 {"a", "2"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -1039,13 +1039,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Stress_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
 
             int cap = 14;
             EXEScope Temp;
-            EXEScope Current = Animation.SuperScope;
+            EXEScope Current = OALProgram.SuperScope;
             Char x = 'a';
             for (int i = 0; i < cap; i++)
             {
@@ -1125,14 +1125,14 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "16384"},
                 {"a", "2"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -1140,13 +1140,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Stress_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
 
             int cap = 15;
             EXEScope Temp;
-            EXEScope Current = Animation.SuperScope;
+            EXEScope Current = OALProgram.SuperScope;
             Char x = 'a';
             for (int i = 0; i < cap; i++)
             {
@@ -1226,14 +1226,14 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "32768"},
                 {"a", "2"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -1241,13 +1241,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Stress_05()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
 
             int cap = 5;
             EXEScope Temp;
-            EXEScope Current = Animation.SuperScope;
+            EXEScope Current = OALProgram.SuperScope;
             Char x = 'a';
             for (int i = 0; i < cap; i++)
             {
@@ -1327,14 +1327,14 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "1024"},
                 {"a", "4"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -1342,13 +1342,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EXEScopeLoopWhile_Stress_06()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
 
             int cap = 6;
             EXEScope Temp;
-            EXEScope Current = Animation.SuperScope;
+            EXEScope Current = OALProgram.SuperScope;
             Char x = 'a';
             for (int i = 0; i < cap; i++)
             {
@@ -1428,14 +1428,14 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "117649"},
                 {"a", "7"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);

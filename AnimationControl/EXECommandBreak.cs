@@ -1,8 +1,8 @@
-﻿namespace AnimationControl
+﻿namespace OALProgramControl
 {
     public class EXECommandBreak : EXECommand
     {
-        public override bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(OALProgram OALProgram, EXEScope Scope)
         {
             return Scope.PropagateControlCommand(LoopControlStructure.Break);
         }

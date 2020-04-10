@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXEScopeLoopWhile : EXEScope
     {
@@ -22,24 +22,24 @@ namespace AnimationControl
             this.CurrentLoopControlCommand = LoopControlStructure.None;
         }
 
-        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override Boolean SynchronizedExecute(OALProgram OALProgram, EXEScope Scope)
         {
-            Boolean Success = this.Execute(Animation, Scope);
+            Boolean Success = this.Execute(OALProgram, Scope);
             return Success;
         }
-        public override Boolean Execute(Animation Animation , EXEScope Scope)
+        public override Boolean Execute(OALProgram OALProgram , EXEScope Scope)
         {
             Boolean Success = true;
-            this.Animation = Animation;
+            this.OALProgram = OALProgram;
 
             bool ConditionTrue = true;
             String ConditionResult;
             int IterationCounter = 0;
             while (ConditionTrue)
             {
-                Animation.AccessInstanceDatabase();
-                ConditionResult = this.Condition.Evaluate(Scope, Animation.ExecutionSpace);
-                Animation.LeaveInstanceDatabase();
+                OALProgram.AccessInstanceDatabase();
+                ConditionResult = this.Condition.Evaluate(Scope, OALProgram.ExecutionSpace);
+                OALProgram.LeaveInstanceDatabase();
 
                 //!!NON-RECURSIVE!!
                 this.ClearVariables();
@@ -71,7 +71,7 @@ namespace AnimationControl
                         break;
                     }
 
-                    Success = Command.SynchronizedExecute(Animation, this);
+                    Success = Command.SynchronizedExecute(OALProgram, this);
                     if (!Success)
                     {
                         break;

@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXECommandCallTests
@@ -13,21 +13,21 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_01()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
 
-            Animation.SuperScope.AddCommand(new EXECommandCallTestDecorator(
+            OALProgram.SuperScope.AddCommand(new EXECommandCallTestDecorator(
                 new EXECommandCall("Observer", "init", "R1", "Subject", "register"),
                 StringBuffer
             ));
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             String ExpectedCallHistory = "call from Observer::init() to Subject::register() across R1;\n";
 
@@ -40,25 +40,25 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_02()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
 
-            Animation.SuperScope.AddCommand(new EXECommandCallTestDecorator(
+            OALProgram.SuperScope.AddCommand(new EXECommandCallTestDecorator(
                 new EXECommandCall("Observer", "init", "R1", "Subject", "register"),
                 StringBuffer
             ));
-            Animation.SuperScope.AddCommand(new EXECommandCallTestDecorator(
+            OALProgram.SuperScope.AddCommand(new EXECommandCallTestDecorator(
                 new EXECommandCall("Observer", "init", "R1", "Subject", "register"),
                 StringBuffer
             ));
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             String ExpectedCallHistory = 
                 "call from Observer::init() to Subject::register() across R1;\n" +
@@ -73,24 +73,24 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_03()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0"))
             );
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeLoopWhile
                 (
-                    Animation.SuperScope,
+                    OALProgram.SuperScope,
                     new EXECommand[]
                     {
                         new EXECommandCallTestDecorator
@@ -124,7 +124,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             String ExpectedCallHistory = "";
             for (int i = 0; i < 10; i++)
@@ -141,12 +141,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_04()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -155,7 +155,7 @@ namespace AnimationControl.Tests
                 Threads[i] = 
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -180,11 +180,11 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0"))
             );
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -192,7 +192,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 10; i++)
@@ -205,7 +205,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);
@@ -215,13 +215,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_05()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -230,7 +230,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -260,11 +260,11 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0"))
             );
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -272,7 +272,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 10; i++)
@@ -289,7 +289,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);
@@ -299,15 +299,15 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_06()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -316,7 +316,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -351,11 +351,11 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0"))
             );
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -363,7 +363,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 10; i++)
@@ -384,7 +384,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);
@@ -394,17 +394,17 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_07()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
-            CDClass ClassClient = Animation.ExecutionSpace.SpawnClass("Client");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            CDClass ClassClient = OALProgram.ExecutionSpace.SpawnClass("Client");
             ClassClient.AddMethod(new CDMethod("setValue", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Client", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -413,7 +413,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -424,7 +424,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -460,7 +460,7 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -468,7 +468,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 10; i++)
@@ -491,7 +491,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);
@@ -501,19 +501,19 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_08()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
             ClassObserver.AddMethod(new CDMethod("destroy", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
             ClassSubject.AddMethod(new CDMethod("update", "void"));
             ClassSubject.AddMethod(new CDMethod("unregister", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
-            CDClass ClassClient = Animation.ExecutionSpace.SpawnClass("Client");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            CDClass ClassClient = OALProgram.ExecutionSpace.SpawnClass("Client");
             ClassClient.AddMethod(new CDMethod("setValue", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Client", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -522,7 +522,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -533,7 +533,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -573,7 +573,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -584,7 +584,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -622,7 +622,7 @@ namespace AnimationControl.Tests
                                     {
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -639,7 +639,7 @@ namespace AnimationControl.Tests
                                         ),
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -656,7 +656,7 @@ namespace AnimationControl.Tests
                                         ),
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -677,7 +677,7 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -685,7 +685,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 10; i++)
@@ -725,7 +725,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);
@@ -735,19 +735,19 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_09()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
             ClassObserver.AddMethod(new CDMethod("destroy", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
             ClassSubject.AddMethod(new CDMethod("update", "void"));
             ClassSubject.AddMethod(new CDMethod("unregister", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
-            CDClass ClassClient = Animation.ExecutionSpace.SpawnClass("Client");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            CDClass ClassClient = OALProgram.ExecutionSpace.SpawnClass("Client");
             ClassClient.AddMethod(new CDMethod("setValue", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Client", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -756,7 +756,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -767,7 +767,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -802,7 +802,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -842,7 +842,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -853,7 +853,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -891,7 +891,7 @@ namespace AnimationControl.Tests
                                     {
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -908,7 +908,7 @@ namespace AnimationControl.Tests
                                         ),
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -925,7 +925,7 @@ namespace AnimationControl.Tests
                                         ),
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -946,7 +946,7 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -954,7 +954,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 10; i++)
@@ -1005,7 +1005,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);
@@ -1015,19 +1015,19 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_10()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
             ClassObserver.AddMethod(new CDMethod("destroy", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
             ClassSubject.AddMethod(new CDMethod("update", "void"));
             ClassSubject.AddMethod(new CDMethod("unregister", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
-            CDClass ClassClient = Animation.ExecutionSpace.SpawnClass("Client");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            CDClass ClassClient = OALProgram.ExecutionSpace.SpawnClass("Client");
             ClassClient.AddMethod(new CDMethod("setValue", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Client", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -1036,7 +1036,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -1047,7 +1047,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -1082,7 +1082,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -1122,7 +1122,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -1133,7 +1133,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -1171,7 +1171,7 @@ namespace AnimationControl.Tests
                                     {
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -1188,7 +1188,7 @@ namespace AnimationControl.Tests
                                         ),
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -1205,7 +1205,7 @@ namespace AnimationControl.Tests
                                         ),
                                         new EXEScope
                                         (
-                                            Animation.SuperScope,
+                                            OALProgram.SuperScope,
                                             new EXECommand[]
                                             {
                                                 new EXECommandCallTestDecorator
@@ -1226,14 +1226,14 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
                    Threads
                 )
             );
-            Animation.SuperScope.AddCommand(
+            OALProgram.SuperScope.AddCommand(
                 new EXECommandCallTestDecorator
                 (
                     new EXECommandCall("Client", "setValue", "R2", "Subject", "update"),
@@ -1241,7 +1241,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 10; i++)
@@ -1294,7 +1294,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);
@@ -1304,17 +1304,17 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Stress_01()
         {
-            Animation Animation = new Animation();
-            CDClass ClassObserver = Animation.ExecutionSpace.SpawnClass("Observer");
+            OALProgram OALProgram = new OALProgram();
+            CDClass ClassObserver = OALProgram.ExecutionSpace.SpawnClass("Observer");
             ClassObserver.AddMethod(new CDMethod("init", "void"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
-            CDClass ClassSubject = Animation.ExecutionSpace.SpawnClass("Subject");
+            CDClass ClassSubject = OALProgram.ExecutionSpace.SpawnClass("Subject");
             ClassSubject.AddMethod(new CDMethod("register", "bool"));
             ClassObserver.AddMethod(new CDMethod("update", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Observer", "Subject");
-            CDClass ClassClient = Animation.ExecutionSpace.SpawnClass("Client");
+            OALProgram.RelationshipSpace.SpawnRelationship("Observer", "Subject");
+            CDClass ClassClient = OALProgram.ExecutionSpace.SpawnClass("Client");
             ClassClient.AddMethod(new CDMethod("setValue", "void"));
-            Animation.RelationshipSpace.SpawnRelationship("Client", "Subject");
+            OALProgram.RelationshipSpace.SpawnRelationship("Client", "Subject");
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[20];
@@ -1323,7 +1323,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -1334,7 +1334,7 @@ namespace AnimationControl.Tests
                                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0")),
                                 new EXEScopeLoopWhile
                                 (
-                                    Animation.SuperScope,
+                                    OALProgram.SuperScope,
                                     new EXECommand[]
                                     {
                                         new EXECommandCallTestDecorator
@@ -1370,7 +1370,7 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -1378,7 +1378,7 @@ namespace AnimationControl.Tests
                 )
             );
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             List<String> ExpectedCallHistory = new List<String>();
             for (int i = 0; i < 20; i++)
@@ -1401,7 +1401,7 @@ namespace AnimationControl.Tests
             };
 
             List<String> ActualCallHistory = StringBuffer.CloneStringList();
-            Dictionary<String, String> ActualPrimitiveVars = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVars = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEqual(ExpectedCallHistory, ActualCallHistory);

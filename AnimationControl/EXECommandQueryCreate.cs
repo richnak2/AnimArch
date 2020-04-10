@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandQueryCreate : EXECommand
     {
@@ -24,11 +24,11 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        public override bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(OALProgram OALProgram, EXEScope Scope)
         {
             //Create an instance of given class -> will affect ExecutionSpace.
             //If ReferencingVariableName is provided (is not ""), create a referencing variable pointing to this instance -> will affect scope
-            CDClass Class = Animation.ExecutionSpace.getClassByName(this.ClassName);
+            CDClass Class = OALProgram.ExecutionSpace.getClassByName(this.ClassName);
             if (Class == null)
             {
                 return false;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandQueryUnrelate : EXECommand
     {
@@ -22,7 +22,7 @@ namespace AnimationControl
         // Based on class names get the CDRelationship from RelationshipSpace
         // Based on variable names get the instance ids from Scope.ReferencingVariables
         // Create relationship between the given instance ids (CDRelationship.CreateRelationship) and return result of it
-        public override bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(OALProgram OALProgram, EXEScope Scope)
         {
             EXEReferencingVariable Variable1 = Scope.FindReferencingVariableByName(this.Variable1Name);
             if (Variable1 == null)
@@ -34,7 +34,7 @@ namespace AnimationControl
             {
                 return false;
             }
-            CDRelationship Relationship = Animation.RelationshipSpace.GetRelationship(this.RelationshipName, Variable1.ClassName, Variable2.ClassName);
+            CDRelationship Relationship = OALProgram.RelationshipSpace.GetRelationship(this.RelationshipName, Variable1.ClassName, Variable2.ClassName);
             if (Relationship == null)
             {
                 return false;

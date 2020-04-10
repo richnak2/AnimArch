@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandAssignment : EXECommand
     {
@@ -21,12 +21,12 @@ namespace AnimationControl
             this.AssignedExpression = AssignedExpression;
         }
 
-        public override Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(OALProgram OALProgram, EXEScope Scope)
         {
             //Console.WriteLine("Assignment is being executed");
             Boolean Result = false;
 
-            String AssignedValue = this.AssignedExpression.Evaluate(Scope, Animation.ExecutionSpace);
+            String AssignedValue = this.AssignedExpression.Evaluate(Scope, OALProgram.ExecutionSpace);
 
             if (AssignedValue == null)
             {
@@ -68,7 +68,7 @@ namespace AnimationControl
             {
             
                 EXEReferenceEvaluator RefEvaluator = new EXEReferenceEvaluator();
-                Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, Scope, Animation.ExecutionSpace, AssignedValue);
+                Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, Scope, OALProgram.ExecutionSpace, AssignedValue);
                 //Console.WriteLine("Tried to assign " + AssignedValue + " to " + this.VariableName + "." + this.AttributeName);
             }
 

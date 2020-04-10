@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXEScope : EXECommand
     {
@@ -14,7 +14,7 @@ namespace AnimationControl
 
         public String OALCode;
 
-        public Animation Animation;
+        public OALProgram OALProgram;
 
 
         public EXEScope()
@@ -25,7 +25,7 @@ namespace AnimationControl
             this.SuperScope = null;
             this.Commands = new List<EXECommand>();
 
-            this.Animation = null;
+            this.OALProgram = null;
         }
         public EXEScope(EXEScope SuperScope, EXECommand[] Commands)
         {
@@ -41,7 +41,7 @@ namespace AnimationControl
                 this.AddCommand(Command);
             }
 
-            this.Animation = null;
+            this.OALProgram = null;
         }
 
         public EXEScope GetSuperScope()
@@ -423,15 +423,15 @@ namespace AnimationControl
         }
 
         //"Scope" param is ignored here, because this class is a scope
-        public override Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(OALProgram OALProgram, EXEScope Scope)
         {
-            this.Animation = Animation;
+            this.OALProgram = OALProgram;
 
             Boolean Success = true;
 
             foreach (EXECommand Command in this.Commands)
             {
-                Success = Command.SynchronizedExecute(Animation, this);
+                Success = Command.SynchronizedExecute(OALProgram, this);
                 if (!Success)
                 {
                     break;
@@ -440,9 +440,9 @@ namespace AnimationControl
 
             return Success;
         }
-        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override Boolean SynchronizedExecute(OALProgram OALProgram, EXEScope Scope)
         {
-            Boolean Success = this.Execute(Animation, Scope);
+            Boolean Success = this.Execute(OALProgram, Scope);
             return Success;
         }
 

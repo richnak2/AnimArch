@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXERelationshipSelectionTests
@@ -12,10 +12,10 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void EvaluateTest()
         {
-            Animation Animation = new Animation();
-            CDClass Class1 = Animation.ExecutionSpace.SpawnClass("Observer");
-            CDClass Class2 = Animation.ExecutionSpace.SpawnClass("Subject");
-            CDRelationship RelClass12 = Animation.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
+            OALProgram OALProgram = new OALProgram();
+            CDClass Class1 = OALProgram.ExecutionSpace.SpawnClass("Observer");
+            CDClass Class2 = OALProgram.ExecutionSpace.SpawnClass("Subject");
+            CDRelationship RelClass12 = OALProgram.RelationshipSpace.SpawnRelationship(Class1.Name, Class2.Name);
 
             CDClassInstance Class1Inst1 = Class1.CreateClassInstance();
             CDClassInstance Class2Inst1 = Class2.CreateClassInstance();
@@ -27,7 +27,7 @@ namespace AnimationControl.Tests
             EXERelationshipSelection RelSel = new EXERelationshipSelection("subject");
             RelSel.AddRelationshipLink(new EXERelationshipLink(RelClass12.RelationshipName, "Observer"));
 
-            List<long> ActualIds = RelSel.Evaluate(Animation.RelationshipSpace, Scope);
+            List<long> ActualIds = RelSel.Evaluate(OALProgram.RelationshipSpace, Scope);
             List<long> ExpectedIds = new List<long>(new long[] { Class1Inst1.UniqueID });
 
             CollectionAssert.AreEquivalent(ExpectedIds, ActualIds);

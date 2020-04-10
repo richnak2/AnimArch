@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXEScopeParallel : EXEScope
     {
@@ -32,15 +32,15 @@ namespace AnimationControl
             Thread.SetSuperScope(this);
             this.Threads.Add(Thread);
         }
-        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override Boolean SynchronizedExecute(OALProgram OALProgram, EXEScope Scope)
         {
-            Boolean Success = this.Execute(Animation, Scope);
+            Boolean Success = this.Execute(OALProgram, Scope);
             return Success;
         }
-        public override Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(OALProgram OALProgram, EXEScope Scope)
         {
-            this.Animation = Animation;
-            this.Animation.ThreadSyncer.RegisterThread((uint)this.Threads.Count);
+            this.OALProgram = OALProgram;
+            this.OALProgram.ThreadSyncer.RegisterThread((uint)this.Threads.Count);
             EXEScopeParallel ParallelScope = this;
             Boolean Success = true;
 
@@ -49,7 +49,7 @@ namespace AnimationControl
                 this.ActiveThreadCount = this.Threads.Count;
             }
 
-            Animation.ThreadSyncer.UnregisterThread();
+            OALProgram.ThreadSyncer.UnregisterThread();
 
             foreach (EXEScope ThreadScope in this.Threads)
             {
@@ -57,9 +57,9 @@ namespace AnimationControl
                 {
                     Thread.CurrentThread.IsBackground = false;
 
-                    Boolean MySuccess = ThreadScope.SynchronizedExecute(Animation, ParallelScope);
+                    Boolean MySuccess = ThreadScope.SynchronizedExecute(OALProgram, ParallelScope);
 
-                    Animation.ThreadSyncer.UnregisterThread();
+                    OALProgram.ThreadSyncer.UnregisterThread();
 
                     lock (ParallelScope.MyThreadEndSyncer)
                     {
@@ -81,7 +81,7 @@ namespace AnimationControl
                 }
             }
 
-            Animation.ThreadSyncer.RegisterThread(1);
+            OALProgram.ThreadSyncer.RegisterThread(1);
 
             return Success;
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandCallTestDecorator : EXECommand
     {
@@ -16,9 +16,9 @@ namespace AnimationControl
             this.CallTextBuffer = CallTextBuffer;
         }
 
-        public override bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(OALProgram OALProgram, EXEScope Scope)
         {
-            bool Result = DecoratedCommand.Execute(Animation, Scope);
+            bool Result = DecoratedCommand.Execute(OALProgram, Scope);
             if (!Result)
             {
                 return Result;
@@ -26,9 +26,9 @@ namespace AnimationControl
             CallTextBuffer.Append(DecoratedCommand.ToCode());
             return Result;
         }
-        public override bool SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override bool SynchronizedExecute(OALProgram OALProgram, EXEScope Scope)
         {
-            return this.Execute(Animation, Scope);
+            return this.Execute(OALProgram, Scope);
         }
         public override String ToCodeSimple()
         {

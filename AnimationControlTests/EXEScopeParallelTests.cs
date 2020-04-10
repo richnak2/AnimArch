@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.ParallelTests
+namespace OALProgramControl.ParallelTests
 {
     [TestClass]
     public class EXEScopeParallelTests
@@ -12,10 +12,10 @@ namespace AnimationControl.ParallelTests
         [TestMethod]
         public void Execute_Normal_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand
             (
                     new EXEScopeParallel
                     (
@@ -23,7 +23,7 @@ namespace AnimationControl.ParallelTests
                         {
                             new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment
@@ -42,7 +42,7 @@ namespace AnimationControl.ParallelTests
                             ),
                             new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment
@@ -61,7 +61,7 @@ namespace AnimationControl.ParallelTests
                             ),
                             new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment
@@ -82,13 +82,13 @@ namespace AnimationControl.ParallelTests
                     )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "6"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -96,20 +96,20 @@ namespace AnimationControl.ParallelTests
         [TestMethod]
         public void Execute_Normal_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
             EXEScope[] Threads = new EXEScope[20];
             for (int i = 0; i < Threads.Length; i++)
             {
                 Threads[i] = new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment("y", new EXEASTNodeLeaf("0")),
                                     new EXEScopeLoopWhile
                                     (
-                                        Animation.SuperScope,
+                                        OALProgram.SuperScope,
                                         new EXECommand[]
                                         {
                                             new EXECommandAssignment
@@ -151,8 +151,8 @@ namespace AnimationControl.ParallelTests
                             );
             }
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand
             (
                     new EXEScopeParallel
                     (
@@ -160,13 +160,13 @@ namespace AnimationControl.ParallelTests
                     )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "200"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -174,20 +174,20 @@ namespace AnimationControl.ParallelTests
         [TestMethod]
         public void Execute_Normal_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
             EXEScope[] Threads = new EXEScope[20];
             for (int i = 0; i < Threads.Length; i++)
             {
                 Threads[i] = new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment("y", new EXEASTNodeLeaf("0")),
                                     new EXEScopeLoopWhile
                                     (
-                                        Animation.SuperScope,
+                                        OALProgram.SuperScope,
                                         new EXECommand[]
                                         {
                                             new EXECommandAssignment
@@ -229,8 +229,8 @@ namespace AnimationControl.ParallelTests
                             );
             }
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand
             (
                     new EXEScopeParallel
                     (
@@ -238,13 +238,13 @@ namespace AnimationControl.ParallelTests
                     )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "2000"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -252,20 +252,20 @@ namespace AnimationControl.ParallelTests
         [TestMethod]
         public void Execute_Normal_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
             EXEScope[] Threads = new EXEScope[100];
             for (int i = 0; i < Threads.Length; i++)
             {
                 Threads[i] = new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment("y", new EXEASTNodeLeaf("0")),
                                     new EXEScopeLoopWhile
                                     (
-                                        Animation.SuperScope,
+                                        OALProgram.SuperScope,
                                         new EXECommand[]
                                         {
                                             new EXECommandAssignment
@@ -307,8 +307,8 @@ namespace AnimationControl.ParallelTests
                             );
             }
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand
             (
                     new EXEScopeParallel
                     (
@@ -316,13 +316,13 @@ namespace AnimationControl.ParallelTests
                     )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "10000"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -330,20 +330,20 @@ namespace AnimationControl.ParallelTests
         [TestMethod]
         public void Execute_Normal_05()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
             EXEScope[] Threads = new EXEScope[1000];
             for (int i = 0; i < Threads.Length; i++)
             {
                 Threads[i] = new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment("y", new EXEASTNodeLeaf("0")),
                                     new EXEScopeLoopWhile
                                     (
-                                        Animation.SuperScope,
+                                        OALProgram.SuperScope,
                                         new EXECommand[]
                                         {
                                             new EXECommandAssignment
@@ -385,8 +385,8 @@ namespace AnimationControl.ParallelTests
                             );
             }
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("0")));
+            OALProgram.SuperScope.AddCommand
             (
                     new EXEScopeParallel
                     (
@@ -394,13 +394,13 @@ namespace AnimationControl.ParallelTests
                     )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 {"x", "1000"}
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsTrue(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);
@@ -408,14 +408,14 @@ namespace AnimationControl.ParallelTests
         [TestMethod]
         public void Execute_Bad_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
             EXEScope[] Threads = new EXEScope[20];
             for (int i = 0; i < Threads.Length-1; i++)
             {
                 Threads[i] = new EXEScope
                             (
-                                Animation.SuperScope,
+                                OALProgram.SuperScope,
                                 new EXECommand[]
                                 {
                                     new EXECommandAssignment("x", new EXEASTNodeLeaf("2"))
@@ -424,15 +424,15 @@ namespace AnimationControl.ParallelTests
             }
             Threads[Threads.Length - 1] = new EXEScope
                 (
-                    Animation.SuperScope,
+                    OALProgram.SuperScope,
                     new EXECommand[]
                     {
                         new EXECommandQueryDelete("BussinessMan")
                     }
                 );
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("2")));
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("2")));
+            OALProgram.SuperScope.AddCommand
             (
                     new EXEScopeParallel
                     (
@@ -440,13 +440,13 @@ namespace AnimationControl.ParallelTests
                     )
             );
 
-            Boolean Success = Animation.Execute();
+            Boolean Success = OALProgram.Execute();
 
             Dictionary<String, String> ExpectedPrimitiveVarState = new Dictionary<string, string> {
                 { "x", "2" }
             };
 
-            Dictionary<String, String> ActualPrimitiveVarState = Animation.SuperScope.GetStateDictRecursive();
+            Dictionary<String, String> ActualPrimitiveVarState = OALProgram.SuperScope.GetStateDictRecursive();
 
             Assert.IsFalse(Success);
             CollectionAssert.AreEquivalent(ExpectedPrimitiveVarState, ActualPrimitiveVarState);

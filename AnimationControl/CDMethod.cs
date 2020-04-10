@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class CDMethod
     {
@@ -12,18 +12,18 @@ namespace AnimationControl
         public string ReturnType { get; set; }
         public List<CDParameter> Parameters { get; set; }
         public string OALCode { get; set; }
-        public int CallCountInAnimation { get; set; }
+        public int CallCountInOALProgram { get; set; }
         public CDMethod(String Name, String Type)
         {
             this.Name = Name;
             this.ReturnType = ReturnType;
-            this.CallCountInAnimation = 0;
+            this.CallCountInOALProgram = 0;
             this.OALCode = "";
             this.Parameters = new List<CDParameter>();
         }
         public void IncementCallCount()
         {
-            this.CallCountInAnimation++;
+            this.CallCountInOALProgram++;
         }
     }
 }

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     class TestUtil
     {
-        public static List<(String, String, String, String, String)> CreateRelatedVariableTupples(Animation Animation, EXEScope Scope)
+        public static List<(String, String, String, String, String)> CreateRelatedVariableTupples(OALProgram OALProgram, EXEScope Scope)
         {
             List<(String, String, String, String, String)> Result = new List<(String, String, String, String, String)>();
-            List<(String, long, long)> RelTupplesID = Animation.RelationshipSpace.GetAllRelationshipsTupples();
+            List<(String, long, long)> RelTupplesID = OALProgram.RelationshipSpace.GetAllRelationshipsTupples();
 
             List<(String, String)> Inst1Tupples;
             List<(String, String)> Inst2Tupples;

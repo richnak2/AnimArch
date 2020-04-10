@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class ToCodeTests
@@ -12,12 +12,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void ToCode_Normal_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("20")));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("1")));
-            Animation.SuperScope.AddCommand(new EXEScopeCondition(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("20")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("1")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeCondition(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment("y", new EXEASTNodeLeaf("11"))
@@ -40,14 +40,14 @@ namespace AnimationControl.Tests
                 "\ty = 11;\n" +
                 "end if;\n";
 
-            String ActualCode = Animation.SuperScope.ToCode();
+            String ActualCode = OALProgram.SuperScope.ToCode();
 
             Assert.AreEqual(ExpectedCode, ActualCode);
         }
         [TestMethod]
         public void ToCode_Normal_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
             StringBuffer StringBuffer = new StringBuffer();
             EXEScope[] Threads = new EXEScope[10];
@@ -56,7 +56,7 @@ namespace AnimationControl.Tests
                 Threads[i] =
                         new EXEScope
                         (
-                            Animation.SuperScope,
+                            OALProgram.SuperScope,
                             new EXECommand[]
                             {
                                 new EXECommandCallTestDecorator
@@ -81,11 +81,11 @@ namespace AnimationControl.Tests
                         );
             }
 
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXECommandAssignment("x", new EXEASTNodeLeaf("0"))
             );
-            Animation.SuperScope.AddCommand
+            OALProgram.SuperScope.AddCommand
             (
                 new EXEScopeParallel
                 (
@@ -138,19 +138,19 @@ namespace AnimationControl.Tests
                 "\tend thread;\n" +
                 "end par;\n";
 
-            String ActualCode = Animation.SuperScope.ToCode();
+            String ActualCode = OALProgram.SuperScope.ToCode();
 
             Assert.AreEqual(ExpectedCode, ActualCode);
         }
         [TestMethod]
         public void ToCode_Normal_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("1")));
-            Animation.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("\"\"")));
-            Animation.SuperScope.AddCommand(new EXEScopeCondition(
-                Animation.SuperScope,
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("x", new EXEASTNodeLeaf("1")));
+            OALProgram.SuperScope.AddCommand(new EXECommandAssignment("y", new EXEASTNodeLeaf("\"\"")));
+            OALProgram.SuperScope.AddCommand(new EXEScopeCondition(
+                OALProgram.SuperScope,
                 new EXECommand[]
                 {
                     new EXECommandAssignment("y", new EXEASTNodeLeaf("\"Zero\""))
@@ -168,7 +168,7 @@ namespace AnimationControl.Tests
                 {
                     new EXEScopeCondition
                     (
-                        Animation.SuperScope,
+                        OALProgram.SuperScope,
                         new EXECommand[]
                         {
                             new EXECommandAssignment("y", new EXEASTNodeLeaf("\"One\""))
@@ -184,7 +184,7 @@ namespace AnimationControl.Tests
                     ),
                     new EXEScopeCondition
                     (
-                        Animation.SuperScope,
+                        OALProgram.SuperScope,
                         new EXECommand[]
                         {
                             new EXECommandAssignment("y", new EXEASTNodeLeaf("\"Two\""))
@@ -201,7 +201,7 @@ namespace AnimationControl.Tests
                 },
                 new EXEScope
                 (
-                    Animation.SuperScope,
+                    OALProgram.SuperScope,
                     new EXECommand[]
                     {
                         new EXECommandAssignment("y", new EXEASTNodeLeaf("\"None\""))
@@ -222,7 +222,7 @@ namespace AnimationControl.Tests
                 "\ty = \"None\";\n" +
                 "end if;\n";
 
-            String ActualCode = Animation.SuperScope.ToCode();
+            String ActualCode = OALProgram.SuperScope.ToCode();
 
             Assert.AreEqual(ExpectedCode, ActualCode);
         }

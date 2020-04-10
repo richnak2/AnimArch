@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class CDRelationshipPoolTests
@@ -9,90 +9,90 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void RelationshipExists_Normal_01()
         {
-            Animation Animation = new Animation();
-            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            CDRelationship Rel = OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Soldier");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Soldier");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
         public void RelationshipExists_Normal_02()
         {
-            Animation Animation = new Animation();
-            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            CDRelationship Rel = OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Soldier", "Fortress");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Soldier", "Fortress");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
         public void RelationshipExists_Normal_03()
         {
-            Animation Animation = new Animation();
-            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            CDRelationship Rel = OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Soldier");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Soldier");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
         public void RelationshipExists_Normal_04()
         {
-            Animation Animation = new Animation();
-            CDRelationship Rel = Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            CDRelationship Rel = OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
             Rel.CreateRelationship(331, 225);
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Soldier", "Fortress");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Soldier", "Fortress");
             Assert.IsTrue(ActualResult);
         }
         public void RelationshipExists_Normal_05()
         {
-            Animation Animation = new Animation();
-            CDRelationship Rel1 = Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
-            CDRelationship Rel2 = Animation.RelationshipSpace.SpawnRelationship("Shield", "Soldier");
-            CDRelationship Rel3 = Animation.RelationshipSpace.SpawnRelationship("Sword", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            CDRelationship Rel1 = OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            CDRelationship Rel2 = OALProgram.RelationshipSpace.SpawnRelationship("Shield", "Soldier");
+            CDRelationship Rel3 = OALProgram.RelationshipSpace.SpawnRelationship("Sword", "Soldier");
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Sword", "Soldier");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Sword", "Soldier");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
         public void RelationshipExists_Normal_06()
         {
-            Animation Animation = new Animation();
-            CDRelationship Rel1 = Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
-            CDRelationship Rel2 = Animation.RelationshipSpace.SpawnRelationship("Shield", "Soldier");
-            CDRelationship Rel3 = Animation.RelationshipSpace.SpawnRelationship("Sword", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            CDRelationship Rel1 = OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            CDRelationship Rel2 = OALProgram.RelationshipSpace.SpawnRelationship("Shield", "Soldier");
+            CDRelationship Rel3 = OALProgram.RelationshipSpace.SpawnRelationship("Sword", "Soldier");
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Soldier", "Fortress");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Soldier", "Fortress");
             Assert.IsTrue(ActualResult);
         }
         [TestMethod]
         public void RelationshipExists_Bad_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Soldier");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Soldier");
             Assert.IsFalse(ActualResult);
         }
         [TestMethod]
         public void RelationshipExists_Bad_02()
         {
-            Animation Animation = new Animation();
-            Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Sword");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Sword");
             Assert.IsFalse(ActualResult);
         }
         [TestMethod]
         public void RelationshipExists_Bad_03()
         {
-            Animation Animation = new Animation();
-            CDRelationship Rel1 = Animation.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
-            CDRelationship Rel2 = Animation.RelationshipSpace.SpawnRelationship("Shield", "Soldier");
-            CDRelationship Rel3 = Animation.RelationshipSpace.SpawnRelationship("Sword", "Soldier");
+            OALProgram OALProgram = new OALProgram();
+            CDRelationship Rel1 = OALProgram.RelationshipSpace.SpawnRelationship("Fortress", "Soldier");
+            CDRelationship Rel2 = OALProgram.RelationshipSpace.SpawnRelationship("Shield", "Soldier");
+            CDRelationship Rel3 = OALProgram.RelationshipSpace.SpawnRelationship("Sword", "Soldier");
 
-            Boolean ActualResult = Animation.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Sword");
+            Boolean ActualResult = OALProgram.RelationshipSpace.RelationshipExistsByClasses("Fortress", "Sword");
             Assert.IsFalse(ActualResult);
         }
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandQuerySelect : EXECommand
     {
@@ -32,7 +32,7 @@ namespace AnimationControl
         }
 
         // SetUloh2
-        public override bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(OALProgram OALProgram, EXEScope Scope)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in
@@ -42,7 +42,7 @@ namespace AnimationControl
             // Where condition tells us which instances to select from all instances of the class (just do EXEASTNode.Evaluate and return true if the result "true" and false for "false")
             // When making unit tests, do not use the "where" causule yet, because its evaluation is not yet implemented
 
-            CDClass Class = Animation.ExecutionSpace.getClassByName(this.ClassName);
+            CDClass Class = OALProgram.ExecutionSpace.getClassByName(this.ClassName);
             if (Class == null)
             {
                 return false;
@@ -82,7 +82,7 @@ namespace AnimationControl
             // If class has no instances, command may execute successfully, but we better verify references in the WHERE condition
             if (SelectedIds.Count() == 0 && this.WhereCondition != null)
             {
-                return this.WhereCondition.VerifyReferences(Scope, Animation.ExecutionSpace);
+                return this.WhereCondition.VerifyReferences(Scope, OALProgram.ExecutionSpace);
             }
 
             //Console.WriteLine("Select has " + SelectedIds.Count + " potential results");
@@ -104,7 +104,7 @@ namespace AnimationControl
                 {
                     //Console.WriteLine("id check iteration start");
                     SelectedVar.ReferencedInstanceId = Id;
-                    String ConditionResult = this.WhereCondition.Evaluate(Scope, Animation.ExecutionSpace);
+                    String ConditionResult = this.WhereCondition.Evaluate(Scope, OALProgram.ExecutionSpace);
 
                    /* Console.WriteLine("cond evaluated");
                     Console.WriteLine(Id + " : " + ConditionResult == null ? "null" : ConditionResult);*/

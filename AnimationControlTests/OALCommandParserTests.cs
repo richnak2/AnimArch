@@ -1,8 +1,8 @@
-using AnimationControl;
+using OALProgramControl;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace AnimationControlTests
+namespace OALProgramControlTests
 {
     [TestClass]
     public class OALCommandParserTests

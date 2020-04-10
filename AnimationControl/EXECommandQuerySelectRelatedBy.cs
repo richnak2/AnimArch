@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandQuerySelectRelatedBy : EXECommand
     {
@@ -21,7 +21,7 @@ namespace AnimationControl
             this.RelationshipSelection = RelationshipSelection;
         }
         // SetUloh2
-        public override bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(OALProgram OALProgram, EXEScope Scope)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in
@@ -37,7 +37,7 @@ namespace AnimationControl
                 return false;
             }
 
-            CDClass Class = Animation.ExecutionSpace.getClassByName(this.RelationshipSelection.GetLastClassName());
+            CDClass Class = OALProgram.ExecutionSpace.getClassByName(this.RelationshipSelection.GetLastClassName());
             if (Class == null)
             {
                 return false;
@@ -64,7 +64,7 @@ namespace AnimationControl
             }
 
             // Evaluate relationship selection. If it fails, execution fails too
-            List<long> SelectedIds = this.RelationshipSelection.Evaluate(Animation.RelationshipSpace, Scope);
+            List<long> SelectedIds = this.RelationshipSelection.Evaluate(OALProgram.RelationshipSpace, Scope);
             if (SelectedIds == null)
             {
                 return false;
@@ -72,7 +72,7 @@ namespace AnimationControl
             // If class has no instances, command may execute successfully, but we better verify references in the WHERE condition
             if (SelectedIds.Count() == 0 && this.WhereCondition != null)
             {
-                return this.WhereCondition.VerifyReferences(Scope, Animation.ExecutionSpace);
+                return this.WhereCondition.VerifyReferences(Scope, OALProgram.ExecutionSpace);
             }
 
             // Now let's evaluate the condition
@@ -90,7 +90,7 @@ namespace AnimationControl
                 foreach (long Id in SelectedIds)
                 {
                     SelectedVar.ReferencedInstanceId = Id;
-                    String ConditionResult = this.WhereCondition.Evaluate(Scope, Animation.ExecutionSpace);
+                    String ConditionResult = this.WhereCondition.Evaluate(Scope, OALProgram.ExecutionSpace);
                     //Console.Write(Id + " : " + ConditionResult);
 
                     if(!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))

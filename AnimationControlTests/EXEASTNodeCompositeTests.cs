@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXEASTNodeCompositeTests
@@ -12,7 +12,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Bool_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
             Scope.AddVariable(new EXEPrimitiveVariable("i", "0"));
@@ -31,7 +31,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanTrue;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -39,7 +39,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Bool_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanTrue));
             Scope.AddVariable(new EXEPrimitiveVariable("i", "0"));
@@ -58,7 +58,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanFalse;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -66,7 +66,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Bool_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("Over", EXETypes.BooleanFalse));
             Scope.AddVariable(new EXEPrimitiveVariable("i", "15"));
@@ -85,7 +85,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanFalse;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -93,13 +93,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("+");
             AST1.AddOperand(new EXEASTNodeLeaf("\"ahoj \""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"Marisa\""));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "\"ahoj Marisa\"";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -107,14 +107,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("+");
             AST1.AddOperand(new EXEASTNodeLeaf("\"ahoj \""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"Marisa \""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"ako sa mas?\""));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "\"ahoj Marisa ako sa mas?\"";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -122,13 +122,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("<");
             AST1.AddOperand(new EXEASTNodeLeaf("\"ahoj\""));
             AST1.AddOperand(new EXEASTNodeLeaf("\"Marisa\""));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanTrue;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -136,7 +136,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_String_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("<");
 
@@ -151,7 +151,7 @@ namespace AnimationControl.Tests
             AST1.AddOperand(AST2);
             AST1.AddOperand(AST3);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = EXETypes.BooleanFalse;
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -159,13 +159,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("+");
             AST1.AddOperand(new EXEASTNodeLeaf("5"));
             AST1.AddOperand(new EXEASTNodeLeaf("7"));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "12";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -173,7 +173,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("*");
             AST1.AddOperand(new EXEASTNodeLeaf("5"));
@@ -184,7 +184,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "30";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -192,7 +192,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("x", "10"));
             Scope.AddVariable(new EXEPrimitiveVariable("y", "4"));
@@ -206,7 +206,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "80";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -215,7 +215,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_04()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("x", "10"));
             Scope.AddVariable(new EXEPrimitiveVariable("y", "4"));
@@ -234,7 +234,7 @@ namespace AnimationControl.Tests
             AST2.AddOperand(AST3);
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "6";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -242,8 +242,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Int_05()
         {
-            Animation Animation = new Animation();
-            CDClass Class = Animation.ExecutionSpace.SpawnClass("GameObject");
+            OALProgram OALProgram = new OALProgram();
+            CDClass Class = OALProgram.ExecutionSpace.SpawnClass("GameObject");
             Class.AddAttribute(new CDAttribute("x", EXETypes.IntegerTypeName));
             Class.AddAttribute(new CDAttribute("y", EXETypes.IntegerTypeName));
             Class.AddAttribute(new CDAttribute("z", EXETypes.IntegerTypeName));
@@ -251,7 +251,7 @@ namespace AnimationControl.Tests
             CDClassInstance Instance = Class.CreateClassInstance();
             Instance.SetAttribute("x", "1");
 
-            Animation.SuperScope.AddVariable(new EXEReferencingVariable("obj", "GameObject", Instance.UniqueID));
+            OALProgram.SuperScope.AddVariable(new EXEReferencingVariable("obj", "GameObject", Instance.UniqueID));
 
             EXEASTNodeComposite AST = new EXEASTNodeComposite("+", new EXEASTNode[] {
                     new EXEASTNodeComposite(".", new EXEASTNode[] {
@@ -260,7 +260,7 @@ namespace AnimationControl.Tests
                     new EXEASTNodeLeaf("5")
                 });
 
-            String ActualOutput = AST.Evaluate(Animation.SuperScope, Animation.ExecutionSpace);
+            String ActualOutput = AST.Evaluate(OALProgram.SuperScope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "6";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -268,7 +268,7 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Real_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
             Scope.AddVariable(new EXEPrimitiveVariable("x", "2.0"));
             Scope.AddVariable(new EXEPrimitiveVariable("y", "2.2"));
@@ -282,7 +282,7 @@ namespace AnimationControl.Tests
 
             AST1.AddOperand(AST2);
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "13.2";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -290,14 +290,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Real_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite("*");
             AST1.AddOperand(new EXEASTNodeLeaf("1.2"));
             AST1.AddOperand(new EXEASTNodeLeaf("1.2"));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "1.44";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -305,14 +305,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_BuildReal_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite(".");
             AST1.AddOperand(new EXEASTNodeLeaf("1"));
             AST1.AddOperand(new EXEASTNodeLeaf("1"));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "1.1";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -320,14 +320,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_BuildReal_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite(".");
             AST1.AddOperand(new EXEASTNodeLeaf("16"));
             AST1.AddOperand(new EXEASTNodeLeaf("0"));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "16.0";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -335,14 +335,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_BuildReal_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
             EXEScope Scope = new EXEScope();
 
             EXEASTNodeComposite AST1 = new EXEASTNodeComposite(".");
             AST1.AddOperand(new EXEASTNodeLeaf("0"));
             AST1.AddOperand(new EXEASTNodeLeaf("2345"));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "0.2345";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);
@@ -350,8 +350,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Evaluate_Normal_Access_01()
         {
-            Animation Animation = new Animation();
-            CDClass C1 = Animation.ExecutionSpace.SpawnClass("Dog");
+            OALProgram OALProgram = new OALProgram();
+            CDClass C1 = OALProgram.ExecutionSpace.SpawnClass("Dog");
             C1.AddAttribute(new CDAttribute("name", EXETypes.StringTypeName));
             CDClassInstance C1I1 = C1.CreateClassInstance();
             C1I1.SetAttribute("name", "Dunco");
@@ -363,7 +363,7 @@ namespace AnimationControl.Tests
             AST1.AddOperand(new EXEASTNodeLeaf("dog1"));
             AST1.AddOperand(new EXEASTNodeLeaf("name"));
 
-            String ActualOutput = AST1.Evaluate(Scope, Animation.ExecutionSpace);
+            String ActualOutput = AST1.Evaluate(Scope, OALProgram.ExecutionSpace);
             String ExpectedOutput = "Dunco";
 
             Assert.AreEqual(ExpectedOutput, ActualOutput);

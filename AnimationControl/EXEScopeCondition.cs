@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXEScopeCondition : EXEScope
     {
@@ -66,14 +66,14 @@ namespace AnimationControl
             ElifScope.SetSuperScope(this.GetSuperScope());
         }
 
-        public override Boolean SynchronizedExecute(Animation Animation, EXEScope Scope)
+        public override Boolean SynchronizedExecute(OALProgram OALProgram, EXEScope Scope)
         {
-            Boolean Success = this.Execute(Animation, Scope);
+            Boolean Success = this.Execute(OALProgram, Scope);
             return Success;
         }
-        public override Boolean Execute(Animation Animation, EXEScope Scope)
+        public override Boolean Execute(OALProgram OALProgram, EXEScope Scope)
         {
-            this.Animation = Animation;
+            this.OALProgram = OALProgram;
             Boolean Result = true;
             Boolean AScopeWasExecuted = false;
 
@@ -82,9 +82,9 @@ namespace AnimationControl
                 return false;
             }
 
-            Animation.AccessInstanceDatabase();
-            String ConditionResult = this.Condition.Evaluate(Scope, Animation.ExecutionSpace);
-            Animation.LeaveInstanceDatabase();
+            OALProgram.AccessInstanceDatabase();
+            String ConditionResult = this.Condition.Evaluate(Scope, OALProgram.ExecutionSpace);
+            OALProgram.LeaveInstanceDatabase();
             if (ConditionResult == null)
             {
                 return false;
@@ -99,7 +99,7 @@ namespace AnimationControl
             {
                 foreach (EXECommand Command in this.Commands)
                 {
-                    Result = Command.SynchronizedExecute(Animation, this);
+                    Result = Command.SynchronizedExecute(OALProgram, this);
                     if (!Result)
                     {
                         break;
@@ -121,9 +121,9 @@ namespace AnimationControl
                     {
                         return false;
                     }
-                    Animation.AccessInstanceDatabase();
-                    ConditionResult = CurrentElif.Condition.Evaluate(Scope, Animation.ExecutionSpace);
-                    Animation.LeaveInstanceDatabase();
+                    OALProgram.AccessInstanceDatabase();
+                    ConditionResult = CurrentElif.Condition.Evaluate(Scope, OALProgram.ExecutionSpace);
+                    OALProgram.LeaveInstanceDatabase();
 
                     if (ConditionResult == null)
                     {
@@ -137,7 +137,7 @@ namespace AnimationControl
                     
                     if (IfConditionResult)
                     {
-                        Result = CurrentElif.SynchronizedExecute(Animation, CurrentElif);
+                        Result = CurrentElif.SynchronizedExecute(OALProgram, CurrentElif);
                         AScopeWasExecuted = true;
                         break;
                     }
@@ -151,7 +151,7 @@ namespace AnimationControl
 
             if (this.ElseScope != null)
             {
-                Result = this.ElseScope.SynchronizedExecute(Animation, ElseScope);
+                Result = this.ElseScope.SynchronizedExecute(OALProgram, ElseScope);
             }
 
             return Result;

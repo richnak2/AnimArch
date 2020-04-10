@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXEThreadSynchronizator
     {
@@ -15,8 +15,8 @@ namespace AnimationControl
         private Boolean Blocked { get; set; }
         private int Change { get; set; }
 
-        private Animation Animation { get; }
-        public EXEThreadSynchronizator(Animation Animation)
+        private OALProgram OALProgram { get; }
+        public EXEThreadSynchronizator(OALProgram OALProgram)
         {
             this.Syncer = new object();
             this.ThreadCount = 0;
@@ -24,7 +24,7 @@ namespace AnimationControl
             this.InLockCount = 0;
             this.Blocked = false;
             this.Change = 0;
-            this.Animation = Animation;
+            this.OALProgram = OALProgram;
         }
 
         public void RegisterThread(uint count)
@@ -69,7 +69,7 @@ namespace AnimationControl
                 if (this.UntilLockResetCount == 0)
                 {
                     this.Blocked = true;
-                    Animation.RequestNextStep();
+                    OALProgram.RequestNextStep();
                     Monitor.PulseAll(this.Syncer);
                 }
 

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
-    class AnimationMock
+    class OALProgramMock
     {
-        private static void AnimationMock_01()
+        private static void OALProgramMock_01()
         {
-            Animation Animation = new Animation(9);
+            OALProgram OALProgram = new OALProgram(9);
 
         }
     }

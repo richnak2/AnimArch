@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXECommandQueryDeleteTests
@@ -10,12 +10,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_01()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -27,9 +27,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -39,13 +39,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_02()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -58,9 +58,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 1;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -70,13 +70,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_03()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -88,9 +88,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 1;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -100,15 +100,15 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_04()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -120,9 +120,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -132,18 +132,18 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_05()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -155,9 +155,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -167,22 +167,22 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_06()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -194,9 +194,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -206,19 +206,19 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_07()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -232,9 +232,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -244,16 +244,16 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_08()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("SwampCreature");
-            Animation.ExecutionSpace.SpawnClass("SwampSlinger");
-            Animation.ExecutionSpace.SpawnClass("Tretch");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("SwampCreature");
+            OALProgram.ExecutionSpace.SpawnClass("SwampSlinger");
+            OALProgram.ExecutionSpace.SpawnClass("Tretch");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_creature2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "swamp_creature3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_creature2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "swamp_creature3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -269,9 +269,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 2;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -281,17 +281,17 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_09()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("SwampCreature");
-            Animation.ExecutionSpace.SpawnClass("SwampSlinger");
-            Animation.ExecutionSpace.SpawnClass("Tretch");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("SwampCreature");
+            OALProgram.ExecutionSpace.SpawnClass("SwampSlinger");
+            OALProgram.ExecutionSpace.SpawnClass("Tretch");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_creature2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "swamp_creature3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_creature2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "swamp_creature3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -307,9 +307,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 1;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -319,18 +319,18 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_10()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("SwampCreature");
-            Animation.ExecutionSpace.SpawnClass("SwampSlinger");
-            Animation.ExecutionSpace.SpawnClass("Tretch");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("SwampCreature");
+            OALProgram.ExecutionSpace.SpawnClass("SwampSlinger");
+            OALProgram.ExecutionSpace.SpawnClass("Tretch");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_creature2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "swamp_creature3"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature2"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature3"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_creature2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "swamp_creature3"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature2"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature3"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -346,9 +346,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -358,36 +358,36 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_11()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("SwampCreature");
-            Animation.ExecutionSpace.SpawnClass("SwampSlinger");
-            Animation.ExecutionSpace.SpawnClass("Tretch");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("SwampCreature");
+            OALProgram.ExecutionSpace.SpawnClass("SwampSlinger");
+            OALProgram.ExecutionSpace.SpawnClass("Tretch");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampCreature", "swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("SwampSlinger", "swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Tretch", "tretch1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_slinger1"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("tretch1"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -403,9 +403,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -415,10 +415,10 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_12()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("SwampCreature");
-            Animation.ExecutionSpace.SpawnClass("SwampSlinger");
-            Animation.ExecutionSpace.SpawnClass("Tretch");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("SwampCreature");
+            OALProgram.ExecutionSpace.SpawnClass("SwampSlinger");
+            OALProgram.ExecutionSpace.SpawnClass("Tretch");
 
             List<EXECommandQueryCreate> CreateCommands = new List<EXECommandQueryCreate>( new EXECommandQueryCreate[] {
                 new EXECommandQueryCreate("SwampCreature", "swamp_creature1"),
@@ -469,15 +469,15 @@ namespace AnimationControl.Tests
 
                 foreach (EXECommandQueryCreate Command in CreateCommands)
                 {
-                    Animation.SuperScope.AddCommand(Command);
+                    OALProgram.SuperScope.AddCommand(Command);
                 }
                 foreach (EXECommandQueryDelete Command in DeleteCommands)
                 {
-                    Animation.SuperScope.AddCommand(Command);
+                    OALProgram.SuperScope.AddCommand(Command);
                 }
             }
             
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -508,9 +508,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -520,10 +520,10 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Normal_13()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("SwampCreature");
-            Animation.ExecutionSpace.SpawnClass("SwampSlinger");
-            Animation.ExecutionSpace.SpawnClass("Tretch");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("SwampCreature");
+            OALProgram.ExecutionSpace.SpawnClass("SwampSlinger");
+            OALProgram.ExecutionSpace.SpawnClass("Tretch");
 
             List<EXECommandQueryCreate> CreateCommands = new List<EXECommandQueryCreate>(new EXECommandQueryCreate[] {
                 new EXECommandQueryCreate("SwampCreature", "swamp_creature1"),
@@ -574,20 +574,20 @@ namespace AnimationControl.Tests
 
                 foreach (EXECommandQueryCreate Command in CreateCommands)
                 {
-                    Animation.SuperScope.AddCommand(Command);
+                    OALProgram.SuperScope.AddCommand(Command);
                 }
                 foreach (EXECommandQueryDelete Command in DeleteCommands)
                 {
-                    Animation.SuperScope.AddCommand(Command);
+                    OALProgram.SuperScope.AddCommand(Command);
                 }
             }
             TestUtil.ShuffleList<EXECommandQueryCreate>(CreateCommands);
             foreach (EXECommandQueryCreate Command in CreateCommands)
             {
-                Animation.SuperScope.AddCommand(Command);
+                OALProgram.SuperScope.AddCommand(Command);
             }
 
-            Boolean ExecutionSuccess = Animation.Execute();
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -618,9 +618,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 18;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsTrue(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -630,15 +630,15 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_01()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -650,9 +650,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -662,13 +662,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_02()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -679,9 +679,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -691,13 +691,13 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_03()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("swamp_creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -708,9 +708,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -720,14 +720,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_04()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
-            Animation.SuperScope.AddVariable(new EXEReferencingSetVariable("x", "Creature"));
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
+            OALProgram.SuperScope.AddVariable(new EXEReferencingSetVariable("x", "Creature"));
      
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -739,9 +739,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -752,14 +752,14 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_05()
         {
-            Animation Animation = new Animation();
-            Animation.ExecutionSpace.SpawnClass("Creature");
-            Animation.SuperScope.AddVariable(new EXEPrimitiveVariable("x", "15"));
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.ExecutionSpace.SpawnClass("Creature");
+            OALProgram.SuperScope.AddVariable(new EXEPrimitiveVariable("x", "15"));
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -770,9 +770,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -782,12 +782,12 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_06()
         {
-            Animation Animation = new Animation();
-            Animation.SuperScope.AddVariable(new EXEPrimitiveVariable("x", "15"));
+            OALProgram OALProgram = new OALProgram();
+            OALProgram.SuperScope.AddVariable(new EXEPrimitiveVariable("x", "15"));
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
-            Animation.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryCreate("Creature", "swamp_creature"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -797,9 +797,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);
@@ -809,10 +809,10 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void Execute_Bad_07()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            Animation.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
-            Boolean ExecutionSuccess = Animation.Execute();
+            OALProgram.SuperScope.AddCommand(new EXECommandQueryDelete("x"));
+            Boolean ExecutionSuccess = OALProgram.Execute();
 
             Dictionary<string, int> ExpectedInstanceDBHist = new Dictionary<string, int>()
             {
@@ -822,9 +822,9 @@ namespace AnimationControl.Tests
             };
             int ExpectedValidRefVarCount = 0;
 
-            Dictionary<string, int> ActualInstanceDBHist = Animation.ExecutionSpace.ProduceInstanceHistogram();
-            Dictionary<string, string> ActualScopeVars = Animation.SuperScope.GetRefStateDictRecursive();
-            int ActualValidRefVarCount = Animation.SuperScope.ValidVariableReferencingCountRecursive();
+            Dictionary<string, int> ActualInstanceDBHist = OALProgram.ExecutionSpace.ProduceInstanceHistogram();
+            Dictionary<string, string> ActualScopeVars = OALProgram.SuperScope.GetRefStateDictRecursive();
+            int ActualValidRefVarCount = OALProgram.SuperScope.ValidVariableReferencingCountRecursive();
 
             Assert.IsFalse(ExecutionSuccess);
             CollectionAssert.AreEquivalent(ExpectedInstanceDBHist, ActualInstanceDBHist);

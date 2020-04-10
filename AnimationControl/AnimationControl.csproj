@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animation.cs" />
+    <Compile Include="OALProgram.cs" />
     <Compile Include="AnimationMock.cs" />
     <Compile Include="CDAttribute.cs" />
     <Compile Include="CDClass.cs" />

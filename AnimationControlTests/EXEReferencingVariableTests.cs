@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AnimationControl;
+using OALProgramControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AnimationControl.Tests
+namespace OALProgramControl.Tests
 {
     [TestClass]
     public class EXEReferencingVariableTests
@@ -12,8 +12,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void RetrieveReferencedClassInstance_Normal_01()
         {
-            Animation Animation = new Animation();
-            CDClass UserClass = Animation.ExecutionSpace.SpawnClass("User");
+            OALProgram OALProgram = new OALProgram();
+            CDClass UserClass = OALProgram.ExecutionSpace.SpawnClass("User");
             UserClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
@@ -30,7 +30,7 @@ namespace AnimationControl.Tests
             EXEScope Scope = new EXEScope();
 
             EXEReferencingVariable ReferencingVariable = new EXEReferencingVariable("user1", "User", Inst2.UniqueID);
-            CDClassInstance ReferencedInstance = ReferencingVariable.RetrieveReferencedClassInstance(Animation.ExecutionSpace);
+            CDClassInstance ReferencedInstance = ReferencingVariable.RetrieveReferencedClassInstance(OALProgram.ExecutionSpace);
 
             Dictionary<string, string> ExpectedOutput = Inst2.State;
             Dictionary<string, string> ActualOutput = ReferencedInstance.State;
@@ -40,8 +40,8 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void RetrieveReferencedClassInstance_Bad_01()
         {
-            Animation Animation = new Animation();
-            CDClass UserClass = Animation.ExecutionSpace.SpawnClass("User");
+            OALProgram OALProgram = new OALProgram();
+            CDClass UserClass = OALProgram.ExecutionSpace.SpawnClass("User");
             UserClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
@@ -58,15 +58,15 @@ namespace AnimationControl.Tests
             EXEScope Scope = new EXEScope();
 
             EXEReferencingVariable ReferencingVariable = new EXEReferencingVariable("user1", "User", Inst4.UniqueID + 1);
-            CDClassInstance ReferencedInstance = ReferencingVariable.RetrieveReferencedClassInstance(Animation.ExecutionSpace);
+            CDClassInstance ReferencedInstance = ReferencingVariable.RetrieveReferencedClassInstance(OALProgram.ExecutionSpace);
 
             Assert.IsNull(ReferencedInstance);
         }
         [TestMethod]
         public void RetrieveReferencedClassInstance_Bad_02()
         {
-            Animation Animation = new Animation();
-            CDClass UserClass = Animation.ExecutionSpace.SpawnClass("User");
+            OALProgram OALProgram = new OALProgram();
+            CDClass UserClass = OALProgram.ExecutionSpace.SpawnClass("User");
             UserClass.AddAttribute(new CDAttribute("Nick", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Email", EXETypes.StringTypeName));
             UserClass.AddAttribute(new CDAttribute("Age", EXETypes.IntegerTypeName));
@@ -83,7 +83,7 @@ namespace AnimationControl.Tests
             EXEScope Scope = new EXEScope();
 
             EXEReferencingVariable ReferencingVariable = new EXEReferencingVariable("user1", "SomeOtherClass", Inst4.UniqueID );
-            CDClassInstance ReferencedInstance = ReferencingVariable.RetrieveReferencedClassInstance(Animation.ExecutionSpace);
+            CDClassInstance ReferencedInstance = ReferencingVariable.RetrieveReferencedClassInstance(OALProgram.ExecutionSpace);
 
             Assert.IsNull(ReferencedInstance);
         }
@@ -91,21 +91,21 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void FindReferencingVariableByNameTest_Normal_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass UserAccountClass1 = Animation.ExecutionSpace.SpawnClass("UserAccount1");
+            CDClass UserAccountClass1 = OALProgram.ExecutionSpace.SpawnClass("UserAccount1");
             UserAccountClass1.AddAttribute(new CDAttribute("Nick1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("FirstName1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("LastName1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("Email1", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass2 = Animation.ExecutionSpace.SpawnClass("UserAccount2");
+            CDClass UserAccountClass2 = OALProgram.ExecutionSpace.SpawnClass("UserAccount2");
             UserAccountClass2.AddAttribute(new CDAttribute("Nick2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("FirstName2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("LastName2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("Email2", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass3 = Animation.ExecutionSpace.SpawnClass("UserAccount3");
+            CDClass UserAccountClass3 = OALProgram.ExecutionSpace.SpawnClass("UserAccount3");
             UserAccountClass3.AddAttribute(new CDAttribute("Nick3", EXETypes.StringTypeName));
             UserAccountClass3.AddAttribute(new CDAttribute("FirstName3", EXETypes.StringTypeName));
             UserAccountClass3.AddAttribute(new CDAttribute("LastName3", EXETypes.StringTypeName));
@@ -131,9 +131,9 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void FindReferencingVariableByNameTest_Normal_02()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass UserAccountClass1 = Animation.ExecutionSpace.SpawnClass("UserAccount1");
+            CDClass UserAccountClass1 = OALProgram.ExecutionSpace.SpawnClass("UserAccount1");
             UserAccountClass1.AddAttribute(new CDAttribute("Nick1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("FirstName1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("LastName1", EXETypes.StringTypeName));
@@ -168,21 +168,21 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void FindReferencingVariableByNameTest_Normal_03()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass UserAccountClass1 = Animation.ExecutionSpace.SpawnClass("UserAccount1");
+            CDClass UserAccountClass1 = OALProgram.ExecutionSpace.SpawnClass("UserAccount1");
             UserAccountClass1.AddAttribute(new CDAttribute("Nick1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("FirstName1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("LastName1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("Email1", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass2 = Animation.ExecutionSpace.SpawnClass("UserAccount2");
+            CDClass UserAccountClass2 = OALProgram.ExecutionSpace.SpawnClass("UserAccount2");
             UserAccountClass2.AddAttribute(new CDAttribute("Nick2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("FirstName2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("LastName2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("Email2", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass3 = Animation.ExecutionSpace.SpawnClass("UserAccount3");
+            CDClass UserAccountClass3 = OALProgram.ExecutionSpace.SpawnClass("UserAccount3");
             UserAccountClass3.AddAttribute(new CDAttribute("Nick3", EXETypes.StringTypeName));
             UserAccountClass3.AddAttribute(new CDAttribute("FirstName3", EXETypes.StringTypeName));
             UserAccountClass3.AddAttribute(new CDAttribute("LastName3", EXETypes.StringTypeName));
@@ -208,21 +208,21 @@ namespace AnimationControl.Tests
         [TestMethod]
         public void FindReferencingVariableByNameTest_Bad_01()
         {
-            Animation Animation = new Animation();
+            OALProgram OALProgram = new OALProgram();
 
-            CDClass UserAccountClass1 = Animation.ExecutionSpace.SpawnClass("UserAccount1");
+            CDClass UserAccountClass1 = OALProgram.ExecutionSpace.SpawnClass("UserAccount1");
             UserAccountClass1.AddAttribute(new CDAttribute("Nick1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("FirstName1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("LastName1", EXETypes.StringTypeName));
             UserAccountClass1.AddAttribute(new CDAttribute("Email1", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass2 = Animation.ExecutionSpace.SpawnClass("UserAccount2");
+            CDClass UserAccountClass2 = OALProgram.ExecutionSpace.SpawnClass("UserAccount2");
             UserAccountClass2.AddAttribute(new CDAttribute("Nick2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("FirstName2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("LastName2", EXETypes.StringTypeName));
             UserAccountClass2.AddAttribute(new CDAttribute("Email2", EXETypes.StringTypeName));
 
-            CDClass UserAccountClass3 = Animation.ExecutionSpace.SpawnClass("UserAccount3");
+            CDClass UserAccountClass3 = OALProgram.ExecutionSpace.SpawnClass("UserAccount3");
             UserAccountClass3.AddAttribute(new CDAttribute("Nick3", EXETypes.StringTypeName));
             UserAccountClass3.AddAttribute(new CDAttribute("FirstName3", EXETypes.StringTypeName));
             UserAccountClass3.AddAttribute(new CDAttribute("LastName3", EXETypes.StringTypeName));

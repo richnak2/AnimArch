@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnimationControl
+namespace OALProgramControl
 {
     public class EXECommandQueryDelete : EXECommand
     {
@@ -11,13 +11,13 @@ namespace AnimationControl
             this.VariableName = VariableName;
         }
 
-        public override bool Execute(Animation Animation, EXEScope Scope)
+        public override bool Execute(OALProgram OALProgram, EXEScope Scope)
         {
             bool Result = false;
             EXEReferencingVariable Variable = Scope.FindReferencingVariableByName(this.VariableName);
             if (Variable != null)
             {
-                bool DestructionSuccess = Animation.ExecutionSpace.DestroyInstance(Variable.ClassName, Variable.ReferencedInstanceId);
+                bool DestructionSuccess = OALProgram.ExecutionSpace.DestroyInstance(Variable.ClassName, Variable.ReferencedInstanceId);
                 if(DestructionSuccess)
                 {
                     Result = Scope.UnsetReferencingVariables(Variable.ClassName, Variable.ReferencedInstanceId);
