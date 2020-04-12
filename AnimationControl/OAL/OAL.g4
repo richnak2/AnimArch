@@ -148,8 +148,9 @@ expr
     |    expr ('+' | '-') expr
     |    expr ('<' | '>' | '<=' | '>=') expr
 	|	 ('empty ' | 'not_empty ')VariableName
+	|    ('NOT ' | 'not ') expr
     |    expr ('==' | '!=') expr
-    |    ('NOT ' | 'not ') expr | '(' expr ')'
+	|	 '(' expr ')'
     |    expr ('AND' | 'OR' | 'and' | 'or') expr
     ;
 

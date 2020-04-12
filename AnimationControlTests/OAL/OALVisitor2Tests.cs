@@ -83,7 +83,6 @@ namespace AnimationControl.OAL.Tests
             Assert.AreEqual(expectedResult, actualResult);
         }
 
-
         [TestMethod()]
         public void VisitEXECommandQuerySelectRelatedBy_normal_01()
         {
@@ -167,6 +166,8 @@ namespace AnimationControl.OAL.Tests
             //mozme mat viac assertov
             Assert.AreEqual(expectedResult, actualResult);
         }
+
+
 
         private EXEScope Init(String oalexample)
         {

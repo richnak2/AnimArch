@@ -112,6 +112,8 @@ namespace AnimationControl
 
         public override String ToCode(String Indent = "")
         {
+            //TODO
+            Console.WriteLine("->>> " + this.Commands.Count);
             String Result = Indent + "while (" + this.Condition.ToCode() + ")\n";
             foreach (EXECommand Command in this.Commands)
             {

@@ -12,6 +12,12 @@ namespace AnimationControl
         private List<EXEScopeCondition> ElifScopes;
         public EXEScope ElseScope { get; set; }
 
+        public EXEScopeCondition(EXEASTNode Condition) : base()
+        {
+            this.Condition = Condition;
+            this.ElifScopes = null;
+            this.ElseScope = null;
+        }
         public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition) : base(SuperScope, Commands)
         {
             this.Condition = Condition;

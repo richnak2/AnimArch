@@ -179,8 +179,8 @@ namespace AnimationControl
         public static List<String> AllOperators = new List<String>(new String[] { "-", "+", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "and", "or", "not", ".", "=" });
         public static List<List<String>> LeveledOperators = new List<List<String>>(new List<String>[] {
             new List<String> (new String[] { "and", "or"}),
-            new List<String> (new String[] { "not"}),
             new List<String> (new String[] { "==", "!="}),
+            new List<String> (new String[] { "not"}),
             new List<String> (new String[] { "empty", "not_empty"}),
             new List<String> (new String[] { "<=", ">=", "<", ">" }),
             new List<String> (new String[] { "+", "-"}),

@@ -15,12 +15,12 @@ namespace AnimationControl.OAL
     {
         public EXEScope globalExeScope;
         private Stack<EXEScope> stackEXEScope;
-        private Stack<EXEASTNodeComposite> stackEXEASTNode;
+        private Stack<EXEASTNode> stackEXEASTNode;
 
         public OALVisitor2()
         {
             this.globalExeScope = new EXEScope();
-            this.stackEXEASTNode = new Stack<EXEASTNodeComposite>();
+            this.stackEXEASTNode = new Stack<EXEASTNode>();
             this.stackEXEScope = new Stack<EXEScope>();
             this.stackEXEScope.Push(this.globalExeScope);         
 
@@ -135,11 +135,21 @@ namespace AnimationControl.OAL
         public override object VisitExeCommandAssignment([NotNull] OALParser.ExeCommandAssignmentContext context)
         {//TODO priradenie atributu
             String VariableName = context.GetChild(0).GetText().Equals("assign ") ? context.GetChild(1).GetText() : context.GetChild(0).GetText();
+            String AttributeName = null;
 
-            _ = context.GetChild(0).GetText().Equals("assign ") ? Visit(context.GetChild(3)) : Visit(context.GetChild(2));
+            if((context.GetChild(0).GetText().Equals("assign ") ? context.GetChild(2).GetText() : context.GetChild(1).GetText()).Equals("."))
+            {
+                AttributeName = context.GetChild(0).GetText().Equals("assign ") ? context.GetChild(3).GetText() : context.GetChild(2).GetText();
+                _ = context.GetChild(0).GetText().Equals("assign ") ? Visit(context.GetChild(5)) : Visit(context.GetChild(4));
+            }
+            else
+            {
+                _ = context.GetChild(0).GetText().Equals("assign ") ? Visit(context.GetChild(3)) : Visit(context.GetChild(2));
+            }
 
             EXEASTNode expression = stackEXEASTNode.Peek();
-            stackEXEScope.Peek().AddCommand(new EXECommandAssignment(VariableName, expression));
+
+            stackEXEScope.Peek().AddCommand(new EXECommandAssignment(VariableName, AttributeName, expression));
 
             stackEXEASTNode.Clear();
 
@@ -156,7 +166,16 @@ namespace AnimationControl.OAL
             
             if (context.ChildCount == 1)
             {
-                stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText())));
+                if (context.GetChild(0).GetType().Name.Contains("TerminalNode") && stackEXEASTNode.Count() == 0)
+                {
+                    EXEASTNodeLeaf ast = new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText()));
+                    stackEXEASTNode.Push(ast);
+                    //stackEXEASTNode.Peek().AddOperand(new EXEASTNodeComposite(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText())));
+                }
+                else
+                {
+                    ((EXEASTNodeComposite) stackEXEASTNode.Peek()).AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText())));
+                }
             }
             else if(context.ChildCount == 2)
             {               
@@ -167,14 +186,17 @@ namespace AnimationControl.OAL
 
                 if (context.GetChild(0).GetType().Name.Contains("TerminalNode") && !context.GetChild(0).GetText().Equals("not "))
                 {
-                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(1).GetText())));
-                    EXEASTNodeComposite temp = stackEXEASTNode.Pop();
-                    stackEXEASTNode.Peek().AddOperand(temp);
+                    ((EXEASTNodeComposite)stackEXEASTNode.Peek()).AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(1).GetText())));
+                    EXEASTNode temp = stackEXEASTNode.Pop();
+                    ((EXEASTNodeComposite)stackEXEASTNode.Peek()).AddOperand(temp);
                 }
                 else if(context.GetChild(0).GetText().Equals("not "))
                 {
-                    EXEASTNodeComposite temp = stackEXEASTNode.Pop();
-                    stackEXEASTNode.Peek().AddOperand(temp);
+                    if (stackEXEASTNode.Count() > 1)
+                    {
+                        EXEASTNode temp = stackEXEASTNode.Pop();
+                        ((EXEASTNodeComposite)stackEXEASTNode.Peek()).AddOperand(temp);
+                    }
                 }
             }
             else if(context.ChildCount == 3)
@@ -189,15 +211,15 @@ namespace AnimationControl.OAL
                 
                 if (context.GetChild(0).GetType().Name.Contains("TerminalNode") && !context.GetChild(0).GetText().Equals("("))
                 {
-                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText())));
-                    stackEXEASTNode.Peek().AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(2).GetText())));
-                    EXEASTNodeComposite temp = stackEXEASTNode.Pop();
-                    stackEXEASTNode.Peek().AddOperand(temp);
+                    ((EXEASTNodeComposite)stackEXEASTNode.Peek()).AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(0).GetText())));
+                    ((EXEASTNodeComposite)stackEXEASTNode.Peek()).AddOperand(new EXEASTNodeLeaf(ParseUtil.StripWhiteSpace(context.GetChild(2).GetText())));
+                    EXEASTNode temp = stackEXEASTNode.Pop();
+                    ((EXEASTNodeComposite)stackEXEASTNode.Peek()).AddOperand(temp);
                 }
                 else if (stackEXEASTNode.Count > 1 && !context.GetChild(0).GetText().Equals("("))
                 {
-                    EXEASTNodeComposite temp = stackEXEASTNode.Pop();
-                    stackEXEASTNode.Peek().AddOperand(temp);
+                    EXEASTNode temp = stackEXEASTNode.Pop();
+                    ((EXEASTNodeComposite)stackEXEASTNode.Peek()).AddOperand(temp);
                 }
 
             }
@@ -256,6 +278,193 @@ namespace AnimationControl.OAL
 
             return null;
             //return base.VisitExeCommandQuerySelectRelatedBy(context);
+        }
+
+        public override object VisitExeCommandCall([NotNull] OALParser.ExeCommandCallContext context)
+        {
+
+            String CallerClass = ParseUtil.StripWhiteSpace(context.GetChild(1).GetText());
+            String CallerMethod = ParseUtil.StripWhiteSpace(context.GetChild(3).GetText());
+
+            String RelationshipName = context.GetChild(9).GetText().Contains("across") ? ParseUtil.StripWhiteSpace(context.GetChild(10).GetText()) : null;
+
+            String CalledClass = ParseUtil.StripWhiteSpace(context.GetChild(5).GetText());
+            String CalledMethod =  ParseUtil.StripWhiteSpace(context.GetChild(7).GetText());
+
+            stackEXEScope.Peek().AddCommand(new EXECommandCall(CallerClass, CallerMethod, RelationshipName, CalledClass, CalledMethod));
+
+            return null;
+            //return base.VisitExeCommandCall(context);
+        }
+
+        public override object VisitBreakCommand([NotNull] OALParser.BreakCommandContext context)
+        {
+            stackEXEScope.Peek().AddCommand(new EXECommandBreak());
+            
+            return null;
+            //return base.VisitBreakCommand(context);
+        }
+
+        public override object VisitContinueCommand([NotNull] OALParser.ContinueCommandContext context)
+        {
+            stackEXEScope.Peek().AddCommand(new EXECommandContinue());
+
+            return null;
+            //return base.VisitContinueCommand(context);
+        }
+
+        public override object VisitWhileCommand([NotNull] OALParser.WhileCommandContext context)
+        {
+            Visit(context.GetChild(2));
+
+            EXEScopeLoopWhile EXEScopeLoopWhile = new EXEScopeLoopWhile(stackEXEASTNode.Peek());
+            stackEXEASTNode.Clear();
+            stackEXEScope.Push(EXEScopeLoopWhile);
+
+            for (int i = 4; i < context.ChildCount; i++)
+            {
+                if (context.GetChild(i).GetType().Name.Contains("LineContext"))
+                {
+                    Visit(context.GetChild(i));
+                }
+                else if (context.GetChild(i).GetText().Contains("end while;"))
+                {
+                    EXEScope temp = stackEXEScope.Pop();
+                    stackEXEScope.Peek().AddCommand(temp);
+                }
+                
+            }
+            return null;
+            //return base.VisitWhileCommand(context);
+        }
+
+        public override object VisitForeachCommand([NotNull] OALParser.ForeachCommandContext context)
+        {
+            String Iterator = context.GetChild(1).GetText();
+            String Iterable = context.GetChild(3).GetText();
+
+            stackEXEScope.Push(new EXEScopeForEach(Iterator, Iterable));
+
+            for (int i = 4; i < context.ChildCount; i++)
+            {
+                if (context.GetChild(i).GetType().Name.Contains("LineContext"))
+                {
+                    Visit(context.GetChild(i));
+                }
+                else if (context.GetChild(i).GetText().Contains("end for;"))
+                {
+                    EXEScope temp = stackEXEScope.Pop();
+                    stackEXEScope.Peek().AddCommand(temp);
+                }
+
+            }
+            return null;
+            //return base.VisitForeachCommand(context);
+        }
+
+        public override object VisitParCommand([NotNull] OALParser.ParCommandContext context)
+        {
+            stackEXEScope.Push(new EXEScopeParallel());
+
+            for (int i = 1; i < context.ChildCount; i++)
+            {
+                Console.WriteLine(i + " -> " + context.GetChild(i).GetText() + " --- " + context.GetChild(i).GetType().Name);
+                if (context.GetChild(i).GetText().Equals("thread"))
+                {
+                    stackEXEScope.Push(new EXEScope());
+                }
+                else if (context.GetChild(i).GetType().Name.Contains("LineContext"))
+                {
+                    Visit(context.GetChild(i));
+                }
+                else if (context.GetChild(i).GetText().Equals("end thread;"))
+                {
+                    EXEScope temp = stackEXEScope.Pop();
+                    ((EXEScopeParallel)stackEXEScope.Peek()).AddThread(temp);
+                }
+                else if (context.GetChild(i).GetText().Equals("end par;"))
+                {
+                    EXEScope temp = stackEXEScope.Pop();
+                    stackEXEScope.Peek().AddCommand(temp);
+                }
+            }
+
+            return null;
+            //return base.VisitParCommand(context);
+        }
+
+        public override object VisitIfCommnad([NotNull] OALParser.IfCommnadContext context)
+        {
+            Visit(context.GetChild(2));
+
+            EXEScopeCondition EXEScopeCondition = new EXEScopeCondition(stackEXEASTNode.Peek());
+            stackEXEASTNode.Clear();
+            stackEXEScope.Push(EXEScopeCondition);
+
+            Boolean els = false;
+            Boolean elif = false;
+
+            for (int i = 4; i < context.ChildCount; i++)
+            {
+                if (context.GetChild(i).GetType().Name.Contains("LineContext"))
+                {
+                    Console.WriteLine(i + " -> " + context.GetChild(i).GetText());
+                    Visit(context.GetChild(i));
+                }
+                else if (context.GetChild(i).GetText().Equals("else"))
+                {
+                    if (elif)
+                    {
+                        EXEScopeCondition temp3 = ((EXEScopeCondition)stackEXEScope.Pop());
+                        ((EXEScopeCondition)stackEXEScope.Peek()).AddElifScope(temp3);
+                    }
+
+                    els = true;
+                    EXEScope temp2 = new EXEScope();
+                    ((EXEScopeCondition)stackEXEScope.Peek()).ElseScope = temp2;
+
+                    EXEScope temp = stackEXEScope.Pop();
+                    stackEXEScope.Peek().AddCommand(temp);
+                    stackEXEScope.Push(temp2);
+
+                }
+                else if (context.GetChild(i).GetText().Contains("elif"))
+                {
+                    if (elif)
+                    {
+                        EXEScopeCondition temp = ((EXEScopeCondition)stackEXEScope.Pop());
+                        ((EXEScopeCondition)stackEXEScope.Peek()).AddElifScope(temp);
+                    }
+
+                    elif = true;
+                    Console.WriteLine(i + " -> " + context.GetChild(i).GetText());
+                    Console.WriteLine(i + "+ 2 -> " + context.GetChild(i + 2).GetText());
+                    Visit(context.GetChild(i + 2));
+
+                    EXEScopeCondition EXEScopeConditionELIF = new EXEScopeCondition(stackEXEASTNode.Peek());
+                    stackEXEASTNode.Clear();
+                    stackEXEScope.Push(EXEScopeConditionELIF);
+                }
+                else if (context.GetChild(i).GetText().Contains("end if;"))
+                {
+                    Console.WriteLine(i + "-> " + context.GetChild(i).GetText());
+                    EXEScope temp = stackEXEScope.Pop();
+
+                    if (!els && !elif)//TODO ako toto funguje? - napisal tvorca
+                    {
+                        stackEXEScope.Peek().AddCommand(temp);
+                    }
+
+                    if (elif && !els)
+                    {
+                        ((EXEScopeCondition) stackEXEScope.Peek()).AddElifScope((EXEScopeCondition) temp);
+                        EXEScopeCondition temp2 = ((EXEScopeCondition) stackEXEScope.Pop());
+                        stackEXEScope.Peek().AddCommand(temp2);
+                    }
+                }
+            }
+            return null;
+            //return base.VisitIfCommnad(context);
         }
     }
 }

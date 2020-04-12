@@ -77,7 +77,7 @@ namespace AnimationControl
             Console.WriteLine(this.Value);
         }
 
-        public string ToCode()
+        public String ToCode()
         {
             return this.Value;
         }
