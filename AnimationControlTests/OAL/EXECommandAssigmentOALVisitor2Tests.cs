@@ -175,7 +175,7 @@ namespace AnimationControl.OAL.Tests
             EXEScope e = Init(oalexample);
 
             String actualResult = e.ToCode();
-            String expectedResult = "door.locked = not (door.key == used_key);\n";// zly overovaci mechanizmus
+            String expectedResult = "door.locked = not door.key == used_key;\n";// zly overovaci mechanizmus
 
             Assert.AreEqual(expectedResult, actualResult);
         }

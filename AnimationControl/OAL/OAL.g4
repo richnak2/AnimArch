@@ -26,7 +26,7 @@ parCommand
 	;
 
 ifCommnad
-	:	'if''('expr')' line+ ('elif''('expr')' line+)* ('else' line+)? 'end if;'
+	:	'if''('expr')' line* ('elif''('expr')' line+)* ('else' line+)? 'end if;'
 	;
 
 whileCommand

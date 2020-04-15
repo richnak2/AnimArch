@@ -51,6 +51,23 @@ namespace AnimationControl.OAL.Tests
             Assert.AreEqual(expectedResult, actualResult);
         }
 
+        [TestMethod()]
+        public void EXECommandCall_04()
+        {
+            string oalexample = "call from Subject::register() to Subject::addObserver() across R7;\n" +
+                "call from Subject::register() to Subject::addObserver();\n" +
+                "call from Observer::init() to Subject::register() across R4;\n";
+
+            EXEScope e = Init(oalexample);
+
+            String actualResult = e.ToCode();
+            String expectedResult = "call from Subject::register() to Subject::addObserver() across R7;\n" +
+                "call from Subject::register() to Subject::addObserver();\n" +
+                "call from Observer::init() to Subject::register() across R4;\n";
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
         private EXEScope Init(String oalexample)
         {
             ICharStream target = new AntlrInputStream(oalexample);

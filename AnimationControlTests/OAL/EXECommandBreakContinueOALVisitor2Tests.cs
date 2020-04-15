@@ -38,6 +38,25 @@ namespace AnimationControl.OAL.Tests
             Assert.AreEqual(expectedResult, actualResult);
         }
 
+        [TestMethod()]
+        public void EXECommandBreakContinue_01()
+        {
+            string oalexample = "continue;\n" +
+                "continue;\n" +
+                "break;\n" +
+                "break;\n";
+
+            EXEScope e = Init(oalexample);
+
+            String actualResult = e.ToCode();
+            String expectedResult = "continue;\n" +
+                "continue;\n" +
+                "break;\n" +
+                "break;\n";
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
         private EXEScope Init(String oalexample)
         {
             ICharStream target = new AntlrInputStream(oalexample);
