@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OALProgram.cs" />
-    <Compile Include="AnimationMock.cs" />
     <Compile Include="CDAttribute.cs" />
     <Compile Include="CDClass.cs" />
     <Compile Include="CDClassInstance.cs" />
