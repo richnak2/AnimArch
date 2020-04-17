@@ -42,7 +42,7 @@ namespace OALProgramControl
         public override String ToCodeSimple()
         {
             return "call from " + this.CallerClass + "::" + this.CallerMethod + "() to "
-                + this.CalledClass + "::" + this.CalledMethod + "() across " + this.RelationshipName;
+                + this.CalledClass + "::" + this.CalledMethod + "()" + (this.RelationshipName != null ? " across " + this.RelationshipName : "");
         }
     }
 }
