@@ -595,18 +595,15 @@ namespace Parsers
                         parameter.SetAttribute("idref", xmiUri, argumentId);
 
                         var ownedParameter = doc.CreateElement("ownedParameter");
-                        ownedParameter.SetAttribute("name", typeAndName[0]);
-                        ownedParameter.SetAttribute("type", typeAndName[1]);
+                        ownedParameter.SetAttribute("name", typeAndName[1]);
+                        ownedParameter.SetAttribute("type", typeAndName[0]);
                         ownedParameter.SetAttribute("id", xmiUri, argumentId);
                         xmiModel.AppendChild(ownedParameter);
 
-                        parameter.SetAttribute("name", typeAndName[0]);
-                        var type = doc.CreateElement("type");
-                        type.SetAttribute("type", typeAndName[1]);
-                        method.AppendChild(type);
+                        parameter.SetAttribute("name", typeAndName[1]);
 
                         var properties = doc.CreateElement("properties");
-                        properties.SetAttribute("type", typeAndName[1]);
+                        properties.SetAttribute("type", typeAndName[0]);
                         parameter.AppendChild(properties);
 
                         parameters?.AppendChild(parameter);
