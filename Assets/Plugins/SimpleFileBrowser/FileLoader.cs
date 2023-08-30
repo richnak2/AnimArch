@@ -6,6 +6,7 @@ using Parsers;
 using Visualization.Animation;
 using Visualization.ClassDiagram;
 using Visualization.UI;
+using Visualisation.Animation;
 
 public class FileLoader : MonoBehaviour
 {
@@ -18,9 +19,13 @@ public class FileLoader : MonoBehaviour
     private void Start()
     {
 
-        var filters = new FileBrowser.Filter[2];
-        filters[0] = new FileBrowser.Filter("JSON files", ".json");
-        filters[1] = new FileBrowser.Filter("XML files", ".xml");
+        FileBrowser.Filter[] filters
+            = new FileBrowser.Filter[]
+            {
+                new FileBrowser.Filter("JSON files", ".json"),
+                new FileBrowser.Filter("XML files", ".xml"),
+                new FileBrowser.Filter("Python files", ".py")
+            };
         FileBrowser.SetFilters(true, filters);
         FileBrowser.SetDefaultFilter(".json");
         FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
@@ -30,6 +35,28 @@ public class FileLoader : MonoBehaviour
     public void SaveAnimation(Anim newAnim)
     {
         StartCoroutine(SaveAnimationCoroutine(newAnim));
+    }
+    public void SaveAnimationToPython()
+    {
+        if (AnimationData.Instance.getAnimList().Count > 0)
+        {
+            StartCoroutine(SaveAnimationToPythonCoroutine());
+        }
+    }
+    IEnumerator SaveAnimationToPythonCoroutine()
+    {
+        FileBrowser.SetDefaultFilter(".py");
+        yield return FileBrowser.WaitForSaveDialog(false, @"Assets\Resources\Python\", "Save Animation to Python", "Save");
+        if (FileBrowser.Success)
+        {
+            string path = FileBrowser.Result;
+            string fileName = FileBrowserHelpers.GetFilename(FileBrowser.Result);
+            Anim selectedAnim = AnimationData.Instance.selectedAnim;//
+            string pythonCode = selectedAnim.GeneratePythonCode();//
+            File.WriteAllText(path, pythonCode);//
+            //FileBrowserHelpers.CreateFileInDirectory(@"Assets\Resources\Python\",fileName);
+            //HandleTextFile.WriteString(path, selectedAnim.Code/*GetCleanCode(selectedAnim.Code)*/);
+        }
     }
 
     public void SaveDiagram()

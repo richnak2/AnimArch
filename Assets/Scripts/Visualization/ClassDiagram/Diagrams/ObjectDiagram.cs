@@ -3,11 +3,13 @@ using OALProgramControl;
 using TMPro;
 using UMSAGL.Scripts;
 using UnityEngine;
+using Visualization.ClassDiagram;
 using Visualization.ClassDiagram.ClassComponents;
 using Visualization.ClassDiagram.ComponentsInDiagram;
+using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;
 
-namespace Visualization.ClassDiagram.Diagrams
+namespace AnimArch.Visualization.Diagrams
 {
     public class ObjectDiagram : Diagram
     {
@@ -73,9 +75,6 @@ namespace Visualization.ClassDiagram.Diagrams
         public void LoadDiagram()
         {
             CreateGraph();
-
-            GenerateObjects();
-
             //Generate UI objects displaying the diagram
             Generate();
 
@@ -86,14 +85,10 @@ namespace Visualization.ClassDiagram.Diagrams
             graph.transform.position = new Vector3(0, 0, 800);
         }
 
-        private void GenerateObjects()
-        {
-        }
-
-        public Graph CreateGraph()
+        private Graph CreateGraph()
         {
             ResetDiagram();
-            var go = GameObject.Instantiate(DiagramPool.Instance.graphPrefab);
+            var go = Instantiate(DiagramPool.Instance.graphPrefab);
             graph = go.GetComponent<Graph>();
             graph.nodePrefab = DiagramPool.Instance.objectPrefab;
             return graph;
@@ -174,7 +169,7 @@ namespace Visualization.ClassDiagram.Diagrams
             (
                 InterGraphLine.GetComponent<InterGraphRelation>()
             );
-            InterGraphLine.GetComponent<InterGraphRelation>().Hide();
+            // InterGraphLine.GetComponent<InterGraphRelation>().Hide();
         }
 
         public void AddObject(ObjectInDiagram Object)
@@ -190,7 +185,7 @@ namespace Visualization.ClassDiagram.Diagrams
             graph.Layout();
         }
 
-        public ObjectInDiagram AddObject(string className, string variableName, CDClassInstance instance)
+        public ObjectInDiagram AddObjectInDiagram(string className, string variableName, CDClassInstance instance)
         {
             ObjectInDiagram objectInDiagram = new ObjectInDiagram
             {
@@ -202,24 +197,39 @@ namespace Visualization.ClassDiagram.Diagrams
             return objectInDiagram;
         }
 
-        public void AddRelation(string start, long end, string endClass, string type)
+        public void AddRelation(long callerInstanceId, string callerClassName, long calledInstanceId,
+            string calledClassName, string type)
         {
-            if (start.Equals(endClass))
+            if (callerClassName.Equals(calledClassName) || callerInstanceId == calledInstanceId)
             {
                 return;
             }
 
-            CDClass startClass = OALProgram.Instance.ExecutionSpace.getClassByName(start);
-            foreach (var startClassInstance in startClass.Instances)
+            if (callerInstanceId == -1)
             {
-                ObjectRelation relation = new ObjectRelation(graph, startClassInstance.UniqueID,
-                    end, type, "R" + Relations.Count);
+                CDClass startClass = OALProgram.Instance.ExecutionSpace.getClassByName(callerClassName);
+                foreach (var startClassInstance in startClass.Instances)
+                {
+                    ObjectRelation relation = new ObjectRelation(graph, startClassInstance.UniqueID,
+                        calledInstanceId, type, "R" + Relations.Count);
+                    if (!ContainsObjectRelation(relation))
+                    {
+                        Relations.Add(relation);
+                        relation.Generate();
+                    }
+                }
+            }
+            else
+            {
+                ObjectRelation relation = new ObjectRelation(graph, callerInstanceId,
+                    calledInstanceId, type, "R" + Relations.Count);
                 if (!ContainsObjectRelation(relation))
                 {
                     Relations.Add(relation);
                     relation.Generate();
                 }
             }
+
         }
 
         public ObjectInDiagram FindByID(long instanceID)
@@ -243,7 +253,34 @@ namespace Visualization.ClassDiagram.Diagrams
                 return false;
             }
 
-            objectInDiagram.Instance.SetAttribute(attr, expr);
+            // if (objectInDiagram.Instance.GetAttributeValue(attr))
+            // {
+            //     
+            // }
+            // TODO - Lukas commented out the below code
+            //objectInDiagram.Instance.SetAttribute(attr, expr);
+            var background = objectInDiagram.VisualObject.transform.Find("Background");
+            var attributes = background.Find("Attributes");
+            attributes.GetComponent<TextMeshProUGUI>().text = "";
+
+            //Attributes
+            foreach (string AttributeName in objectInDiagram.Instance.State.Keys)
+            {
+                attributes.GetComponent<TextMeshProUGUI>().text +=
+                    AttributeName + " = " + objectInDiagram.Instance.State[AttributeName] + "\n";
+            }
+
+            return true;
+        }
+
+        public bool AddListAttributeValue(long instanceID, string attr, string expr)
+        {
+            ObjectInDiagram objectInDiagram = FindByID(instanceID);
+            if (objectInDiagram == null)
+            {
+                return false;
+            }
+
             var background = objectInDiagram.VisualObject.transform.Find("Background");
             var attributes = background.Find("Attributes");
             attributes.GetComponent<TextMeshProUGUI>().text = "";

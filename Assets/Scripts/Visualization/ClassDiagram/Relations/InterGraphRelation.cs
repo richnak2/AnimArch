@@ -16,6 +16,13 @@ namespace Visualization.ClassDiagram.Relations
         private LineRenderer _lineRenderer;
         public LineTextureMode textureMode = LineTextureMode.RepeatPerSegment;
 
+        private float distance;
+        private float counter;
+
+        public Vector3 p0, p1;
+        public float lineDrawSpeed = 6f;
+        private bool animating;
+
         public void Initialize(ObjectInDiagram Object, ClassInDiagram Class)
         {
             this.Object = Object;
@@ -23,12 +30,19 @@ namespace Visualization.ClassDiagram.Relations
             _lineRenderer = GetComponent<LineRenderer>();
             _lineRenderer.textureMode = textureMode;
             _lineRenderer.material = Resources.Load<Material>("Materials/DashedLine");
-            
-            // _lineRenderer.material.SetTextureScale("_MainTex", new Vector2(100, 1));
              
             _interGraphArrow = Instantiate(DiagramPool.Instance.interGraphArrowPrefab);
             _arrow = _interGraphArrow.GetComponent<Arrow>();
             _arrow.GetComponent<Arrow>().Initialize();
+
+            _prevClassPos = p0 = Class.VisualObject.GetComponent<RectTransform>().position;
+            _prevObjPos = Object.VisualObject.GetComponent<RectTransform>().position;
+
+            p1 = Vector3.MoveTowards(_prevClassPos, _prevObjPos, (_prevClassPos - _prevObjPos).magnitude - 6);
+
+            distance = Vector3.Distance(p0, p1);
+
+            _lineRenderer.SetPosition(0, p0);
         }
 
         void Update()
@@ -50,6 +64,13 @@ namespace Visualization.ClassDiagram.Relations
                 _arrow.UpdatePosition(_prevObjPos, v);
                 _lineRenderer.textureMode = textureMode;
             }
+        }
+
+        public void Animate(float instanceAnimSpeed)
+        {
+            // lineDrawSpeed = instanceAnimSpeed;
+            // Highlight();
+            // animating = true;
         }
 
         public void Hide()

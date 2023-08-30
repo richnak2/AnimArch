@@ -9,12 +9,18 @@ namespace Visualization.Animation
         [SerializeField]
         public string Name;
         [SerializeField]
+        public string SuperClass; //od ktorej dedi
+        [SerializeField]
+        public List<string> Attributes;
+        [SerializeField]
         public List<AnimMethod> Methods;
 
-        public AnimClass(string Name)
+        public AnimClass(string Name, string SuperClass, List<string> Attributes, List<AnimMethod> Methods)
         {
             this.Name = Name;
-            this.Methods = new List<AnimMethod>();
+            this.SuperClass = SuperClass;
+            this.Attributes = Attributes;
+            this.Methods = Methods;
         }
     }
 }

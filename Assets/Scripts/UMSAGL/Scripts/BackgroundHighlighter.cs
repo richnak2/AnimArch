@@ -25,8 +25,8 @@ namespace UMSAGL.Scripts
 			if (highlight == 0)
 			{
 				RectTransform rc = GetComponent<RectTransform>();
-				rc.DOScaleX(1.2f, 0.5f);
-				rc.DOScaleY(1.2f, 0.5f);
+				rc.DOScaleX(1.08f, 0.5f);
+				rc.DOScaleY(1.08f, 0.5f);
 				GetComponentInChildren<Image>().color = Animation.Instance.classColor;
 			}
 			highlight++;

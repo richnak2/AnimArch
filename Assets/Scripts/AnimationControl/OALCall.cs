@@ -26,6 +26,7 @@ namespace OALProgramControl
             this.CalledMethodName = CalledMethodName;
             this.NoRelationship = NoRelationship;
         }
+
         public OALCall(String CallerClassName, String CallerMethodName, String RelationshipName, String CalledClassName, String CalledMethodName, long CalledInstanceId, Boolean NoRelationship)
         {
             this.CallerClassName = CallerClassName;
@@ -35,6 +36,12 @@ namespace OALProgramControl
             this.CalledMethodName = CalledMethodName;
             this.CalledInstanceId = CalledInstanceId;
             this.NoRelationship = NoRelationship;
+        }
+
+        public override string ToString()
+        {
+            return CallerClassName + " " + CallerMethodName + " " + CalledClassName + " " +
+                   CalledInstanceId + " " + CalledMethodName;
         }
     }
 }

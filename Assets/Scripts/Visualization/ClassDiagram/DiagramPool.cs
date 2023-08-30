@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AnimArch.Visualization.Diagrams;
+using System.Collections.Generic;
 using UnityEngine;
 using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;

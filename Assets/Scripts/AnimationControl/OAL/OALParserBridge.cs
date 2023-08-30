@@ -19,8 +19,10 @@ namespace Assets.Scripts.AnimationControl.OAL
                 ICharStream target = new AntlrInputStream(Code);
                 ITokenSource lexer = new OALLexer(target);
                 ITokenStream tokens = new CommonTokenStream(lexer);
-                parser = new OALParser(tokens);
-                parser.BuildParseTree = true;
+                parser = new OALParser(tokens)
+                {
+                    BuildParseTree = true
+                };
             }
             catch (Exception ex)
             {
@@ -56,7 +58,10 @@ namespace Assets.Scripts.AnimationControl.OAL
                 ICharStream target = new AntlrInputStream(Code);
                 ITokenSource lexer = new OALLexer(target);
                 ITokenStream tokens = new CommonTokenStream(lexer);
-                parser = new OALParser(tokens);
+                parser = new OALParser(tokens)
+                {
+                    BuildParseTree = true
+                };
             }
             catch (Exception ex)
             {

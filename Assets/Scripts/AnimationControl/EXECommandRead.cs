@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using Visualization.UI;
 
 namespace OALProgramControl
 {
@@ -46,7 +47,7 @@ namespace OALProgramControl
                 }
             }
 
-            // ConsolePanel.Instance.YieldOutput(Result);
+            ConsolePanel.Instance.YieldOutput(Result);
 
             return true;
         }

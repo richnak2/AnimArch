@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Visualization.UI;
 
 namespace OALProgramControl
 {
@@ -70,7 +71,7 @@ namespace OALProgramControl
                 }
             }
 
-            // ConsolePanel.Instance.YieldOutput(Result);
+            ConsolePanel.Instance.YieldOutput(Result);
 
             return true;
         }

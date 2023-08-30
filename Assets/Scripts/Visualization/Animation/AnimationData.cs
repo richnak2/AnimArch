@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Visualisation.Animation;
 using Visualization.UI;
 
 namespace Visualization.Animation
