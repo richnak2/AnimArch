@@ -27,8 +27,7 @@ namespace Visualization.UI
         [SerializeField] private GameObject PanelInteractiveIntro;
         [SerializeField] private GameObject PanelInteractive;
         [SerializeField] private GameObject PanelMethod;
-        [SerializeField] private TMP_InputField startClass;//
-        [SerializeField] private TMP_InputField startMethod;//
+        [SerializeField] public Button generatePythonBtn;
         public bool isCreating = false;
         [SerializeField] private List<GameObject> methodButtons;
         [SerializeField] private TMP_Text ClassNameTxt;
@@ -104,6 +103,7 @@ namespace Visualization.UI
         {
             createdAnim = new Anim("");
             createdAnim.Initialize();
+            generatePythonBtn.interactable = true;
         }
 
         public void StartAnimate()
@@ -275,8 +275,6 @@ namespace Visualization.UI
 
             scriptCode.GetComponent<CodeHighlighter>().RemoveColors();
             createdAnim.Code = scriptCode.text;
-            createdAnim.SetStartClassName(startClass.text);//
-            createdAnim.SetStartMethodName(startMethod.text);//
             scriptCode.gameObject.SetActive(false);
             fileLoader.SaveAnimation(createdAnim);
             EndAnimate();
@@ -300,8 +298,6 @@ namespace Visualization.UI
                 StartAnimate();
                 createdAnim = AnimationData.Instance.selectedAnim;
                 scriptCode.text = createdAnim.Code;
-                startClass.text = createdAnim.StartClass;//
-                startMethod.text = createdAnim.StartMethod;//
                 scriptCode.text = AnimationData.Instance.selectedAnim.Code;
                 AnimationData.Instance.RemoveAnim(AnimationData.Instance.selectedAnim);
                 UpdateAnimations();

@@ -714,7 +714,7 @@ namespace Visualization.Animation
                             HighlightInstancesMethod(Call, true);
                             break;
                         case 2:
-                            yield return StartCoroutine(AnimateFill(Call));
+                            //yield return StartCoroutine(AnimateFill(Call)); // Lukas - commented this out to prevent unwanted extra line artifact
                             timeModifier = 0f;
                             break;
                         case 3:

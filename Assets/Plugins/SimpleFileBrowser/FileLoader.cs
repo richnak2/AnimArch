@@ -138,6 +138,7 @@ public class FileLoader : MonoBehaviour
 
     public void OpenAnimation()
     {
+        MenuManager.Instance.generatePythonBtn.interactable = true;
         StartCoroutine(LoadAnimationCoroutine());
     }
 }
