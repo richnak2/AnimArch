@@ -4,6 +4,7 @@ namespace OALProgramControl
 {
     public abstract class EXECommand
     {
+        public bool IsActive { get; set; } = false;
         protected EXEScope SuperScope { get; set; }
         public EXEExecutionStack CommandStack { get; set; } = null;
 
@@ -26,6 +27,11 @@ namespace OALProgramControl
         {
             EXEScope CurrentScope = this.SuperScope;
 
+            if (CurrentScope == null && this is EXEScope)
+            {
+                return this as EXEScope;
+            }
+
             while (CurrentScope.SuperScope != null)
             {
                 CurrentScope = CurrentScope.SuperScope;
@@ -45,6 +51,28 @@ namespace OALProgramControl
         public virtual String ToCodeSimple()
         {
             return "Command";
+        }
+        public virtual string ToFormattedCode(String Indent = "")
+        {
+            return HighlightCodeIf(IsActive, ToCode(Indent));
+        }
+        protected string HighlightCodeIf(bool condition, string code)
+        {
+            return condition ? HighlightCode(code) : code;
+        }
+        private string HighlightCode(string code)
+        {
+            return "<b><color=green>" + code + "</color></b>";
+        }
+
+        public void ToggleActiveRecursiveBottomUp(bool active)
+        {
+            this.IsActive = active;
+
+            if (this.SuperScope != null)
+            {
+                this.SuperScope.ToggleActiveRecursiveBottomUp(active);
+            }
         }
     }
 }

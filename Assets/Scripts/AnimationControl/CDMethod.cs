@@ -20,7 +20,12 @@ namespace OALProgramControl
         {
             get
             {
-                return _ExecutableCode == null ?  new EXEScopeMethod() : (EXEScopeMethod)_ExecutableCode.CreateClone();
+                if (_ExecutableCode == null)
+                {
+                    _ExecutableCode = new EXEScopeMethod() { MethodDefinition = new MethodCallRecord(OwningClass.Name, Name)};
+                }
+
+                return (EXEScopeMethod)_ExecutableCode.CreateClone();
             }
             set
             {

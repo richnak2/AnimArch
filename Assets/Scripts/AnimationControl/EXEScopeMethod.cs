@@ -15,6 +15,15 @@ namespace OALProgramControl
             AddCommandsToStack(this.Commands);
             return true;
         }
+        public override string ToFormattedCode(string Indent = "")
+        {
+            String Result = "";
+            foreach (EXECommand Command in this.Commands)
+            {
+                Result += Command.ToFormattedCode(Indent);
+            }
+            return Result;
+        }
 
         protected override EXEScope CreateDuplicateScope()
         {

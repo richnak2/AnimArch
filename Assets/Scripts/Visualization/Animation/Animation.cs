@@ -123,16 +123,29 @@ namespace Visualization.Animation
             Debug.Log("Abt to execute program");
             int i = 0;
 
+            string currentClassName = startClassName;
+            string currentMethodName = startMethodName;
+
             bool Success = true;
             while (Success && Program.CommandStack.HasNext())
             {
                 EXECommand CurrentCommand = Program.CommandStack.Next();
+                CurrentCommand.ToggleActiveRecursiveBottomUp(true);
                 executionSuccess = CurrentCommand.PerformExecution(Program);
 
                 Debug.Log("Command " + i++ + ". Success: " + executionSuccess +
                           ". Command type: " + CurrentCommand.GetType().Name);
 
+                EXEScopeMethod CurrentMethodScope = CurrentCommand.GetTopLevelScope() as EXEScopeMethod;
+
+                currentClassName = CurrentMethodScope.MethodDefinition.ClassName;
+                currentMethodName = CurrentMethodScope.MethodDefinition.MethodName;
+
+                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(currentClassName, currentMethodName, CurrentMethodScope);
+
                 yield return AnimateCommand(CurrentCommand);
+
+                CurrentCommand.ToggleActiveRecursiveBottomUp(false);
 
                 Success = Success && executionSuccess;
             }
@@ -252,6 +265,10 @@ namespace Visualization.Animation
 
                 executionSuccess = executionSuccess && ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue);
                 this.ReadValue = null;
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.3f);
             }
         }
 

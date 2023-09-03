@@ -232,7 +232,7 @@ namespace OALProgramControl
 
         public override String ToCode(string indent = "")
         {
-            return indent + InstanceName + "." + CalledMethod + "();\n";
+            return indent + InstanceName + (AttributeName == null ? string.Empty : ("." + AttributeName)) + "." + CalledMethod + "();\n";
         }
 
         private CDRelationship CallRelationshipInfo(string CallerMethod, string CalledMethod)
