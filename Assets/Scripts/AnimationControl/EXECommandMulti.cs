@@ -2,13 +2,13 @@
 
 namespace OALProgramControl
 {
-    public class EXECommandMultiCall : EXECommand
+    public class EXECommandMulti : EXECommand
     {
-        public List<EXECommandCall> CallCommands;
+        public List<EXECommand> Commands;
 
-        public EXECommandMultiCall(List<EXECommandCall> callCommands)
+        public EXECommandMulti(List<EXECommand> callCommands)
         {
-            this.CallCommands = callCommands;
+            this.Commands = callCommands;
         }
 
         public override EXECommand CreateClone()
@@ -18,9 +18,9 @@ namespace OALProgramControl
 
         protected override bool Execute(OALProgram OALProgram)
         {
-            foreach (EXECommandCall callCommand in this.CallCommands)
+            foreach (EXECommand command in this.Commands)
             {
-                if (!callCommand.PerformExecution(OALProgram))
+                if (!command.PerformExecution(OALProgram))
                 {
                     return false;
                 }

@@ -52,7 +52,7 @@ namespace OALProgramControl
             return true;
         }
 
-        public Boolean AssignReadValue(String Value, OALProgram OALProgram)
+        public Boolean AssignReadValue(String Value)
         {
             Boolean Result = false;
             String ValueType;
@@ -133,7 +133,7 @@ namespace OALProgramControl
             else
             {
                 EXEReferenceEvaluator RefEvaluator = new EXEReferenceEvaluator();
-                Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, SuperScope, OALProgram.ExecutionSpace, Value, ValueType);
+                Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, SuperScope, OALProgram.Instance.ExecutionSpace, Value, ValueType);
             }
 
             return Result;

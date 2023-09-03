@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AnimArch.Visualization.Diagrams;
 using Assets.Scripts.AnimationControl.OAL;
 using OALProgramControl;
@@ -31,6 +32,7 @@ namespace Visualization.Animation
         [HideInInspector] public bool AnimationIsRunning = false;
         [HideInInspector] public bool isPaused = false;
         [HideInInspector] public bool standardPlayMode = true;
+        [HideInInspector] private bool executionSuccess = false;
         public bool nextStep = false;
         private bool prevStep = false;
         private List<GameObject> Fillers;
@@ -39,6 +41,7 @@ namespace Visualization.Animation
 
         public string startClassName;
         public string startMethodName;
+
 
         private void Awake()
         {
@@ -123,148 +126,130 @@ namespace Visualization.Animation
             while (Success && Program.CommandStack.HasNext())
             {
                 EXECommand CurrentCommand = Program.CommandStack.Next();
-                bool ExecutionSuccess = CurrentCommand.PerformExecution(Program);
+                executionSuccess = CurrentCommand.PerformExecution(Program);
 
-                Debug.Log("Command " + i++ + ". Success: " + ExecutionSuccess +
+                Debug.Log("Command " + i++ + ". Success: " + executionSuccess +
                           ". Command type: " + CurrentCommand.GetType().Name);
 
-                if (CurrentCommand.GetType() == typeof(EXECommandCall))
-                {
-                    var exeCommandCall = (EXECommandCall)CurrentCommand;
-                    long callerInstanceId = -1;
+                yield return AnimateCommand(CurrentCommand);
 
-                    var oalCall = exeCommandCall.CreateOALCall();
-
-                    BarrierSize = 1;
-                    CurrentBarrierFill = 0;
-
-                    var referencingVariableName = exeCommandCall.InstanceName;
-                    var instanceId = CurrentCommand.GetSuperScope()
-                        .FindReferencingVariableByName(referencingVariableName).ReferencedInstanceId;
-
-                    objectDiagram.AddRelation(callerInstanceId, exeCommandCall.CallerMethodInfo.ClassName,
-                        instanceId, exeCommandCall.CalledClass, "ASSOCIATION");
-
-                    StartCoroutine(ResolveCallFunct(oalCall));
-
-                    yield return StartCoroutine(BarrierFillCheck());
-                }
-                else if (CurrentCommand.GetType().Equals(typeof(EXECommandMultiCall)))
-                {
-                    EXECommandMultiCall multicallCommand = (EXECommandMultiCall)CurrentCommand;
-                    BarrierSize = multicallCommand.CallCommands.Count;
-                    CurrentBarrierFill = 0;
-
-                    foreach (EXECommandCall callCommand in multicallCommand.CallCommands)
-                    {
-                        StartCoroutine(ResolveCallFunct(callCommand.CreateOALCall()));
-                    }
-
-                    foreach (EXECommandCall callCommand in multicallCommand.CallCommands)
-                    {
-                        ObjectDiagram od = DiagramPool.Instance.ObjectDiagram;
-                        ObjectInDiagram start = null;
-                        ObjectInDiagram end = null;
-                        foreach (var objectInDiagram in od.Objects)
-                        {
-                            var className = objectInDiagram.Class.ClassInfo.Name;
-                            if (className.Equals(callCommand.CallerMethodInfo.ClassName))
-                            {
-                                start = objectInDiagram;
-                            }
-                            else if (className.Equals(callCommand.CalledClass))
-                            {
-                                end = objectInDiagram;
-                            }
-                        }
-
-                        long callerInstanceId = -1;
-                        var referencingVariableName = callCommand.InstanceName;
-                        var instanceId = callCommand.GetSuperScope()
-                            .FindReferencingVariableByName(referencingVariableName).ReferencedInstanceId;
-
-                        objectDiagram.AddRelation(callerInstanceId, callCommand.CallerMethodInfo.ClassName,
-                            instanceId, callCommand.CalledClass, "ASSOCIATION");
-                    }
-
-                    // Debug.LogError(start.VariableName + " " + end.VariableName);
-                    yield return StartCoroutine(BarrierFillCheck());
-                }
-                else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
-                {
-                    BarrierSize = 1;
-                    CurrentBarrierFill = 0;
-                    StartCoroutine(ResolveCreateObject(CurrentCommand));
-                    yield return StartCoroutine(BarrierFillCheck());
-                }
-                else if (CurrentCommand.GetType() == typeof(EXECommandAssignment))
-                {
-                    ResolveAssignment(CurrentCommand);
-                }
-                else if (CurrentCommand.GetType() == typeof(EXECommandAddingToList))
-                {
-                    var addingToList = (EXECommandAddingToList)CurrentCommand;
-
-                    if (addingToList.AttributeName == null) continue;
-
-                    var variableFrom = addingToList.GetSuperScope().FindReferencingVariableByName(addingToList.VariableName);
-                    var variableTo = addingToList.GetSuperScope().FindReferencingVariableByName(addingToList.Item.GetNodeValue());
-                    objectDiagram.AddRelation(variableFrom.ReferencedInstanceId, variableFrom.ClassName,
-                        variableTo.ReferencedInstanceId, variableTo.ClassName, "ASSOCIATION");
-
-                    objectDiagram.AddListAttributeValue(variableFrom.ReferencedInstanceId,
-                        addingToList.AttributeName, addingToList.Item.Evaluate(addingToList.GetSuperScope(), OALProgram.Instance.ExecutionSpace));
-
-                }
-                else if (CurrentCommand.GetType().Equals(typeof(EXECommandRead)))
-                {
-                    BarrierSize = 1;
-                    CurrentBarrierFill = 0;
-
-                    ConsolePanel.Instance.ActivateInputField();
-
-                    yield return StartCoroutine(BarrierFillCheck());
-
-                    ExecutionSuccess = ExecutionSuccess && ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, Program);
-                    this.ReadValue = null;
-                }
-
-                Success = Success && ExecutionSuccess;
+                Success = Success && executionSuccess;
             }
 
-            /*
-            if (Success)
-            {
-                Debug.Log("We have " + ACS.AnimationSteps.Count() + " anim sequences");
-                foreach (List<AnimationCommand> AnimationSequence in ACS.AnimationSteps)
-                {
-                    BarrierSize = AnimationSequence.Count;
-                    Debug.Log("Filling barrier of size " + BarrierSize);
-                    CurrentBarrierFill = 0;
-                    if (!AnimationSequence.Any())
-                    {
-                        continue;
-                    }
-                    if (AnimationSequence[0].IsCall)
-                    {
-                        foreach (AnimationCommand Command in AnimationSequence)
-                        {
-                            StartCoroutine(Command.Execute());
-                        }
-                        yield return StartCoroutine(BarrierFillCheck());
-                    }
-                    else
-                    {
-                        foreach (AnimationCommand Command in AnimationSequence)
-                        {
-                            Command.Execute();
-                        }
-                    }
-                }
-            }
-            */
             Debug.Log("Over");
             AnimationIsRunning = false;
+            executionSuccess = false;
+        }
+
+        private IEnumerator AnimateCommand(EXECommand CurrentCommand)
+        {
+            if (CurrentCommand.GetType() == typeof(EXECommandCall))
+            {
+                var exeCommandCall = (EXECommandCall)CurrentCommand;
+                long callerInstanceId = -1;
+
+                var oalCall = exeCommandCall.CreateOALCall();
+
+                BarrierSize = 1;
+                CurrentBarrierFill = 0;
+
+                var referencingVariableName = exeCommandCall.InstanceName;
+                var instanceId = CurrentCommand.GetSuperScope()
+                    .FindReferencingVariableByName(referencingVariableName).ReferencedInstanceId;
+
+                objectDiagram.AddRelation(callerInstanceId, exeCommandCall.CallerMethodInfo.ClassName,
+                    instanceId, exeCommandCall.CalledClass, "ASSOCIATION");
+
+                StartCoroutine(ResolveCallFunct(oalCall));
+
+                yield return StartCoroutine(BarrierFillCheck());
+            }
+            else if (CurrentCommand.GetType().Equals(typeof(EXECommandMulti)))
+            {
+                EXECommandMulti multicallCommand = (EXECommandMulti)CurrentCommand;
+                BarrierSize = multicallCommand.Commands.Count;
+                CurrentBarrierFill = 0;
+
+                foreach (EXECommand command in multicallCommand.Commands)
+                {
+                    if (command is EXECommandCall)
+                    {
+                        StartCoroutine(ResolveCallFunct(((EXECommandCall)command).CreateOALCall()));
+                    }
+                    else if (command is EXECommandQueryCreate)
+                    {
+                        StartCoroutine(ResolveCreateObject(command));
+                    }
+                }
+
+                foreach (EXECommandCall callCommand in multicallCommand.Commands.Where(command => command is EXECommandCall))
+                {
+                    ObjectDiagram od = DiagramPool.Instance.ObjectDiagram;
+                    ObjectInDiagram start = null;
+                    ObjectInDiagram end = null;
+                    foreach (var objectInDiagram in od.Objects)
+                    {
+                        var className = objectInDiagram.Class.ClassInfo.Name;
+                        if (className.Equals(callCommand.CallerMethodInfo.ClassName))
+                        {
+                            start = objectInDiagram;
+                        }
+                        else if (className.Equals(callCommand.CalledClass))
+                        {
+                            end = objectInDiagram;
+                        }
+                    }
+
+                    long callerInstanceId = -1;
+                    var referencingVariableName = callCommand.InstanceName;
+                    var instanceId = callCommand.GetSuperScope()
+                        .FindReferencingVariableByName(referencingVariableName).ReferencedInstanceId;
+
+                    objectDiagram.AddRelation(callerInstanceId, callCommand.CallerMethodInfo.ClassName,
+                        instanceId, callCommand.CalledClass, "ASSOCIATION");
+                }
+
+                // Debug.LogError(start.VariableName + " " + end.VariableName);
+                yield return StartCoroutine(BarrierFillCheck());
+            }
+            else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
+            {
+                BarrierSize = 1;
+                CurrentBarrierFill = 0;
+                StartCoroutine(ResolveCreateObject(CurrentCommand));
+                yield return StartCoroutine(BarrierFillCheck());
+            }
+            else if (CurrentCommand.GetType() == typeof(EXECommandAssignment))
+            {
+                ResolveAssignment(CurrentCommand);
+            }
+            else if (CurrentCommand.GetType() == typeof(EXECommandAddingToList))
+            {
+                var addingToList = (EXECommandAddingToList)CurrentCommand;
+
+                if (addingToList.AttributeName == null) yield return null;
+
+                var variableFrom = addingToList.GetSuperScope().FindReferencingVariableByName(addingToList.VariableName);
+                var variableTo = addingToList.GetSuperScope().FindReferencingVariableByName(addingToList.Item.GetNodeValue());
+                objectDiagram.AddRelation(variableFrom.ReferencedInstanceId, variableFrom.ClassName,
+                    variableTo.ReferencedInstanceId, variableTo.ClassName, "ASSOCIATION");
+
+                objectDiagram.AddListAttributeValue(variableFrom.ReferencedInstanceId,
+                    addingToList.AttributeName, addingToList.Item.Evaluate(addingToList.GetSuperScope(), OALProgram.Instance.ExecutionSpace));
+
+            }
+            else if (CurrentCommand.GetType().Equals(typeof(EXECommandRead)))
+            {
+                BarrierSize = 1;
+                CurrentBarrierFill = 0;
+
+                ConsolePanel.Instance.ActivateInputField();
+
+                yield return StartCoroutine(BarrierFillCheck());
+
+                executionSuccess = executionSuccess && ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue);
+                this.ReadValue = null;
+            }
         }
 
         private void ResolveAssignment(EXECommand currentCommand)

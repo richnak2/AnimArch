@@ -99,7 +99,7 @@ namespace OALProgramControl
                 EXECommand currentCommand = thread.CommandStack.Next();
 
                 // This thread should wait.
-                if (typeof(EXECommandCall).Equals(currentCommand.GetType()))
+                if (typeof(EXECommandCall).Equals(currentCommand.GetType()) || typeof(EXECommandQueryCreate).Equals(currentCommand.GetType()))
                 {
                     thread.WaitingCommand = currentCommand;
                 }
@@ -111,15 +111,15 @@ namespace OALProgramControl
             }
 
             // If we are here. We have some active threads and they are all waiting. Let us execute the parallel animation now
-            List<EXECommandCall> callCommands = new List<EXECommandCall>();
+            List<EXECommand> commands = new List<EXECommand>();
 
             foreach (EXEExecutionStackParallelThread thread in activeThreads)
             {
-                callCommands.Add((EXECommandCall)thread.WaitingCommand);
+                commands.Add(thread.WaitingCommand);
                 thread.WaitingCommand = null;
             }
 
-            return new EXECommandMultiCall(callCommands);
+            return new EXECommandMulti(commands);
         }
     }
 }
