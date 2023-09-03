@@ -49,13 +49,16 @@ namespace Visualization.UI
         [SerializeField] private TMP_Text classTxt;
         [SerializeField] private TMP_Text methodTxt;
         [SerializeField] private Toggle hideRelToggle;
+        [SerializeField] public GameObject PanelChooseAnimationStartMethod;
+        [SerializeField] public GameObject PanelSourceCodeAnimation;
         public Anim createdAnim;
         public bool isPlaying = false;
         public Button[] playBtns;
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
-        
+
+
         struct InteractiveData
         {
             public string fromClass;
@@ -352,9 +355,14 @@ namespace Visualization.UI
         public void PlayAnimation()
         {
             Debug.Assert(!AnimationData.Instance.selectedAnim.AnimationName.Equals(""));
+
+            PanelChooseAnimationStartMethod.SetActive(true);
+            PanelSourceCodeAnimation.SetActive(false);
+
             isPlaying = true;
             panelAnimationPlay.SetActive(true);
             mainScreen.SetActive(false);
+            introScreen.SetActive(false);
             foreach (Button button in playBtns)
             {
                 button.gameObject.SetActive(false);
@@ -494,6 +502,23 @@ namespace Visualization.UI
             GameObject.Find("MainPanel").transform.Find("Edit").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("MainPanel").transform.Find("Play").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("MainPanel").transform.Find("AnimationSelect").GetComponentInChildren<TMP_Dropdown>().interactable = active;
+        }
+        public void AnimateSourceCodeAtMethodStart(string className, string methodName)
+        {
+            PanelChooseAnimationStartMethod.SetActive(false);
+            PanelSourceCodeAnimation.SetActive(true);
+
+            PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetMethodLabelText(className, methodName);
+
+            string sourceCode
+                = OALProgram
+                    .Instance
+                    .ExecutionSpace
+                    .getClassByName(className)
+                    .getMethodByName(methodName)
+                    .ExecutableCode
+                    .ToCode();
+            PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetSourceCodeText(sourceCode);
         }
     }
 }

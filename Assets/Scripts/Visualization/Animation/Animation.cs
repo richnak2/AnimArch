@@ -118,6 +118,7 @@ namespace Visualization.Animation
 
             OALProgram.Instance.SuperScope = MethodExecutableCode; //StartMethod.ExecutableCode
             //OALProgram.Instance.SuperScope = OALParserBridge.Parse(Code); //Method.ExecutableCode dame namiesto OALParserBridge.Parse(Code) pre metodu ktora bude zacinat
+            UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(startClassName, startMethodName);
 
             Debug.Log("Abt to execute program");
             int i = 0;
@@ -163,6 +164,8 @@ namespace Visualization.Animation
                 StartCoroutine(ResolveCallFunct(oalCall));
 
                 yield return StartCoroutine(BarrierFillCheck());
+
+                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(oalCall.CalledClassName, oalCall.CalledMethodName);
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandMulti)))
             {
