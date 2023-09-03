@@ -5,6 +5,7 @@ namespace OALProgramControl
     public abstract class EXECommand
     {
         protected EXEScope SuperScope { get; set; }
+        public EXEExecutionStack CommandStack { get; set; } = null;
 
         public Boolean PerformExecution(OALProgram OALProgram)
         {
@@ -21,7 +22,7 @@ namespace OALProgramControl
         {
             this.SuperScope = SuperScope;
         }
-        protected EXEScope GetTopLevelScope()
+        public EXEScope GetTopLevelScope()
         {
             EXEScope CurrentScope = this.SuperScope;
 

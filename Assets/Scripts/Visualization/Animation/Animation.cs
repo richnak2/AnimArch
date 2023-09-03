@@ -149,6 +149,47 @@ namespace Visualization.Animation
 
                     yield return StartCoroutine(BarrierFillCheck());
                 }
+                else if (CurrentCommand.GetType().Equals(typeof(EXECommandMultiCall)))
+                {
+                    EXECommandMultiCall multicallCommand = (EXECommandMultiCall)CurrentCommand;
+                    BarrierSize = multicallCommand.CallCommands.Count;
+                    CurrentBarrierFill = 0;
+
+                    foreach (EXECommandCall callCommand in multicallCommand.CallCommands)
+                    {
+                        StartCoroutine(ResolveCallFunct(callCommand.CreateOALCall()));
+                    }
+
+                    foreach (EXECommandCall callCommand in multicallCommand.CallCommands)
+                    {
+                        ObjectDiagram od = DiagramPool.Instance.ObjectDiagram;
+                        ObjectInDiagram start = null;
+                        ObjectInDiagram end = null;
+                        foreach (var objectInDiagram in od.Objects)
+                        {
+                            var className = objectInDiagram.Class.ClassInfo.Name;
+                            if (className.Equals(callCommand.CallerMethodInfo.ClassName))
+                            {
+                                start = objectInDiagram;
+                            }
+                            else if (className.Equals(callCommand.CalledClass))
+                            {
+                                end = objectInDiagram;
+                            }
+                        }
+
+                        long callerInstanceId = -1;
+                        var referencingVariableName = callCommand.InstanceName;
+                        var instanceId = callCommand.GetSuperScope()
+                            .FindReferencingVariableByName(referencingVariableName).ReferencedInstanceId;
+
+                        objectDiagram.AddRelation(callerInstanceId, callCommand.CallerMethodInfo.ClassName,
+                            instanceId, callCommand.CalledClass, "ASSOCIATION");
+                    }
+
+                    // Debug.LogError(start.VariableName + " " + end.VariableName);
+                    yield return StartCoroutine(BarrierFillCheck());
+                }
                 else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
                 {
                     BarrierSize = 1;
@@ -324,7 +365,7 @@ namespace Visualization.Animation
 
             #endregion
 
-            objectDiagram.AddRelation(-1, ((EXEScopeMethod)currentCommand.GetSuperScope()).MethodDefinition.ClassName,
+            objectDiagram.AddRelation(-1, ((EXEScopeMethod)currentCommand.GetTopLevelScope()).MethodDefinition.ClassName,
                 instanceId, className, "ASSOCIATION");
         }
 
@@ -689,7 +730,7 @@ namespace Visualization.Animation
         // Same coroutine is called for play or step mode
         public IEnumerator ResolveCallFunct(OALCall Call)
         {
-            Debug.LogAssertion(Call.ToString());
+            Debug.Log(Call.ToString());
             int step = 0;
             float speedPerAnim = AnimationData.Instance.AnimSpeed;
             float timeModifier = 1f;
@@ -704,12 +745,10 @@ namespace Visualization.Animation
                     switch (step)
                     {
                         case 0:
-                            Debug.LogError("caller ");
                             HighlightClass(Call.CallerClassName, true);
                             HighlightObjects(Call, true);
                             break;
                         case 1:
-                            Debug.LogError("caller method");
                             HighlightMethod(Call.CallerClassName, Call.CallerMethodName, true);
                             HighlightInstancesMethod(Call, true);
                             break;
@@ -722,13 +761,11 @@ namespace Visualization.Animation
                             timeModifier = 0.5f;
                             break;
                         case 4:
-                            Debug.LogError("called ");
                             HighlightClass(Call.CalledClassName, true, Call.CalledInstanceId);
                             HighlightObject(Call.CalledInstanceId, true);
                             timeModifier = 1f;
                             break;
                         case 5:
-                            Debug.LogError("called method");
                             HighlightMethod(Call.CalledClassName, Call.CalledMethodName, true);
                             HighlightObjectMethod(Call.CalledMethodName, Call.CalledInstanceId, true);
                             timeModifier = 1.25f;
