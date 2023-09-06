@@ -136,12 +136,15 @@ namespace Visualization.Animation
                 Debug.Log("Command " + i++ + ". Success: " + executionSuccess +
                           ". Command type: " + CurrentCommand.GetType().Name);
 
-                EXEScopeMethod CurrentMethodScope = CurrentCommand.GetTopLevelScope() as EXEScopeMethod;
+                if (!(CurrentCommand is EXECommandMulti))
+                {
+                    EXEScopeMethod CurrentMethodScope = CurrentCommand.GetTopLevelScope() as EXEScopeMethod;
 
-                currentClassName = CurrentMethodScope.MethodDefinition.ClassName;
-                currentMethodName = CurrentMethodScope.MethodDefinition.MethodName;
+                    currentClassName = CurrentMethodScope.MethodDefinition.ClassName;
+                    currentMethodName = CurrentMethodScope.MethodDefinition.MethodName;
 
-                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(currentClassName, currentMethodName, CurrentMethodScope);
+                    UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(currentClassName, currentMethodName, CurrentMethodScope);
+                }
 
                 yield return AnimateCommand(CurrentCommand);
 
