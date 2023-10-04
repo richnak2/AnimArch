@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using AnimArch.Extensions;
 using UnityEngine;
 using Object = System.Object;
@@ -227,12 +228,15 @@ namespace OALProgramControl
 
         public override String ToCodeSimple()
         {
-            return InstanceName + "." + CalledMethod + "();\n";
-        }
-
-        public override String ToCode(string indent = "")
-        {
-            return indent + InstanceName + (AttributeName == null ? string.Empty : ("." + AttributeName)) + "." + CalledMethod + "();\n";
+            return new StringBuilder()
+                .Append(InstanceName)
+                .Append(AttributeName == null ? string.Empty : ("." + AttributeName))
+                .Append(".")
+                .Append(CalledMethod)
+                .Append("(")
+                .AppendJoin(", ", Parameters.Select(parameter => parameter.ToCode()))
+                .Append(")")
+                .ToString();
         }
 
         private CDRelationship CallRelationshipInfo(string CallerMethod, string CalledMethod)
