@@ -75,26 +75,29 @@ namespace Visualization
 
         private void OnMouseOver()
         {
-            if (Input.GetMouseButtonDown(0) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter &&
-                !IsMouseOverUI())
+            if (!Animation.Animation.Instance.AnimationIsRunning)
             {
-                triggerHighlighAction.Invoke(gameObject);
-            }
+                if (Input.GetMouseButtonDown(0) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter &&
+                    !IsMouseOverUI())
+                {
+                    triggerHighlighAction.Invoke(gameObject);
+                }
 
-            if (Input.GetMouseButtonDown(1) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter &&
-                !IsMouseOverUI())
-            {
-                triggerUnhighlighAction.Invoke(gameObject);
-            }
+                if (Input.GetMouseButtonDown(1) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter &&
+                    !IsMouseOverUI())
+                {
+                    triggerUnhighlighAction.Invoke(gameObject);
+                }
 
-            if (Input.GetMouseButtonDown(0) && MenuManager.Instance.isCreating)
-            {
-                MenuManager.Instance.SelectClass(gameObject.name);
-            }
+                if (Input.GetMouseButtonDown(0) && MenuManager.Instance.isCreating)
+                {
+                    MenuManager.Instance.SelectClass(gameObject.name);
+                }
 
-            if (Input.GetMouseButtonDown(0) && MenuManager.Instance.isPlaying)
-            {
-                MenuManager.Instance.SelectPlayClass(gameObject.name);
+                if (Input.GetMouseButtonDown(0) && MenuManager.Instance.isPlaying)
+                {
+                    MenuManager.Instance.SelectPlayClass(gameObject.name);
+                }
             }
         }
 
