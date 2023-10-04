@@ -113,7 +113,7 @@ namespace Visualization.UI.PopUps
             string _trimmedCustomTypeFieldText = customTypeField.text.Trim();
 
             if (dropdown.options[dropdown.value].text != Custom)
-                return (isArray.isOn ? "[]" : "") + dropdown.options[dropdown.value].text;
+                return dropdown.options[dropdown.value].text + (isArray.isOn ? "[]" : "");
             if (_trimmedCustomTypeFieldText.Length == 0)
             {
                 DisplayError(ErrorTypeEmpty);
@@ -123,7 +123,7 @@ namespace Visualization.UI.PopUps
             if (isArray.isOn && _trimmedCustomTypeFieldText == "void")
                 isArray.isOn = false;
 
-            return (isArray.isOn ? "[]" : "") + EXETypes.ConvertEATypeName(_trimmedCustomTypeFieldText.Replace(" ", "_"));
+            return EXETypes.ConvertEATypeName(_trimmedCustomTypeFieldText.Replace(" ", "_")) + (isArray.isOn ? "[]" : "");
         }
 
         private void UpdateDropdown()
