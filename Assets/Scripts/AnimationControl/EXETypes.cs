@@ -15,7 +15,7 @@ namespace OALProgramControl
         public const String StringTypeName = "string";
         public const String DateTypeName = "date";
         public const String UniqueIDTypeName = "unique_ID";
-        public const String ReferenceTypeName = "reference";
+        //public const String ReferenceTypeName = "reference";
 
         public const String BooleanTrue = "TRUE";
         public const String BooleanFalse = "FALSE";
@@ -75,7 +75,7 @@ namespace OALProgramControl
                 return StringTypeName;
             }
 
-            return ReferenceTypeName;
+            return null;
         }
         public static Boolean IsValidValue(String Value, String Type)
         {

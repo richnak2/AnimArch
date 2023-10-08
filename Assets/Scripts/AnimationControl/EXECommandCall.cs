@@ -33,27 +33,27 @@ namespace OALProgramControl
             this.Parameters = Parameters;
         }
 
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             EXEReferencingVariable Reference = this.SuperScope.FindReferencingVariableByName(this.InstanceName);
 
             if (Reference == null)
             {
-                return false;
+                return Error(ErrorMessage.VariableNotFound(this.InstanceName, this.SuperScope));
             }
 
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(Reference.ClassName);
 
             if (Class == null)
             {
-                return false;
+                return Error(ErrorMessage.ClassNotFound(Reference.ClassName, OALProgram));
             }
 
             Class = Class.GetInstanceClassByIDRecursiveDownward(Reference.ReferencedInstanceId);
 
             if (Class == null)
             {
-                return false;
+                return Error(ErrorMessage.InstanceNotFoundRecursive(Reference.ReferencedInstanceId, Class));
             }
 
             long CalledID = Reference.ReferencedInstanceId;
@@ -64,14 +64,14 @@ namespace OALProgramControl
 
                 if (Attribute == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, Class));
                 }
 
                 CDClass AtrributeClass = OALProgram.ExecutionSpace.getClassByName(Attribute.Type);
 
                 if (AtrributeClass == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.ClassNotFound(Attribute.Type, OALProgram));
                 }
 
                 CalledID = long.Parse(Class.GetInstanceByID(Reference.ReferencedInstanceId).State[Attribute.Name]);
@@ -84,14 +84,14 @@ namespace OALProgramControl
 
             if (Method == null)
             {
-                return false;
+                return Error(ErrorMessage.MethodNotFoundOnClass(this.CalledMethod, Class));
             }
 
             EXEScopeMethod MethodCode = Method.ExecutableCode;
 
             if (MethodCode == null)
             {
-                return true;
+                return Success();
             }
 
             MethodCode.SetSuperScope(null);
@@ -123,7 +123,7 @@ namespace OALProgramControl
                     )
                 )
                 {
-                    return false;
+                    return Error(ErrorMessage.UnresolvedParameterValue(Class.Name, Method.Name, Parameter.Name, this.Parameters[i].ToCode()));
                 }
 
                 if (EXETypes.IsPrimitive(Parameter.Type))
@@ -132,26 +132,25 @@ namespace OALProgramControl
 
                     if (!EXETypes.IsValidValue(Value, Parameter.Type))
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidParameterValue(Class.Name, Method.Name, Parameter.Name, Parameter.Type, Value));
                     }
 
                     MethodCode.AddVariable(new EXEPrimitiveVariable(Parameter.Name, Value, Parameter.Type));
                 }
                 else if ("[]".Equals(Parameter.Type.Substring(Parameter.Type.Length - 2, 2)))
                 {
-                    CDClass ClassDefinition =
-                        OALProgram.ExecutionSpace.getClassByName(Parameter.Type.Substring(0,
-                            Parameter.Type.Length - 2));
+                    string className = Parameter.Type.Substring(0, Parameter.Type.Length - 2);
+                    CDClass ClassDefinition = OALProgram.ExecutionSpace.getClassByName(className);
                     if (ClassDefinition == null)
                     {
-                        return false;
+                        return Error(ErrorMessage.ClassNotFound(className, OALProgram)); ;
                     }
 
                     String Values = this.Parameters[i].Evaluate(this.SuperScope, OALProgram.ExecutionSpace);
 
                     if (!EXETypes.IsValidReferenceValue(Values, Parameter.Type))
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidReference(string.Format("Parameter '{0}' of method '{1}' of class '{2}'", Parameter.Name, Method.Name, Class.Name), Values));
                     }
 
                     long[] IDs = String.Empty.Equals(Values)
@@ -164,7 +163,7 @@ namespace OALProgramControl
                         ClassInstance = ClassDefinition.GetInstanceByID(ID);
                         if (ClassInstance == null)
                         {
-                            return false;
+                            return Error(ErrorMessage.InstanceNotFoundRecursive(ID, ClassDefinition));
                         }
                     }
 
@@ -184,14 +183,14 @@ namespace OALProgramControl
                     CDClass ClassDefinition = OALProgram.ExecutionSpace.getClassByName(Parameter.Type);
                     if (ClassDefinition == null)
                     {
-                        return false;
+                        return Error(ErrorMessage.ClassNotFound(Parameter.Type, OALProgram));
                     }
 
                     string Value = Parameters[i].Evaluate(this.SuperScope, OALProgram.ExecutionSpace);
 
                     if (!EXETypes.IsValidReferenceValue(Value, Parameter.Type))
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidReference(string.Format("Parameter '{0}' of method '{1}' of class '{2}'", Parameter.Name, Method.Name, Class.Name), Value));
                     }
 
                     long ID = long.Parse(Value);
@@ -199,14 +198,14 @@ namespace OALProgramControl
                     CDClassInstance ClassInstance = ClassDefinition.GetInstanceByIDRecursiveDownward(ID);
                     if (ClassInstance == null)
                     {
-                        return false;
+                        return Error(ErrorMessage.InstanceNotFoundRecursive(ID, ClassDefinition));
                     }
 
                     MethodCode.AddVariable(new EXEReferencingVariable(Parameter.Name, ClassDefinition.Name, ID));
                 }
             }
 
-            return true;
+            return Success();
         }
 
         public OALCall CreateOALCall()

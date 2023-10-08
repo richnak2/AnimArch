@@ -32,7 +32,7 @@ namespace Visualization.Animation
         [HideInInspector] public bool AnimationIsRunning = false;
         [HideInInspector] public bool isPaused = false;
         [HideInInspector] public bool standardPlayMode = true;
-        [HideInInspector] private bool executionSuccess = false;
+        [HideInInspector] private EXEExecutionResult executionSuccess = EXEExecutionResult.Success();
         public bool nextStep = false;
         private bool prevStep = false;
         private List<GameObject> Fillers;
@@ -126,15 +126,13 @@ namespace Visualization.Animation
             string currentClassName = startClassName;
             string currentMethodName = startMethodName;
 
-            bool Success = true;
-            while (Success && Program.CommandStack.HasNext())
+            while (executionSuccess.IsSuccess && Program.CommandStack.HasNext())
             {
                 EXECommand CurrentCommand = Program.CommandStack.Next();
                 CurrentCommand.ToggleActiveRecursiveBottomUp(true);
                 executionSuccess = CurrentCommand.PerformExecution(Program);
 
-                Debug.Log("Command " + i++ + ". Success: " + executionSuccess +
-                          ". Command type: " + CurrentCommand.GetType().Name);
+                Debug.Log("Command " + i++ + executionSuccess.ToString());
 
                 if (!(CurrentCommand is EXECommandMulti))
                 {
@@ -149,13 +147,11 @@ namespace Visualization.Animation
                 yield return AnimateCommand(CurrentCommand);
 
                 CurrentCommand.ToggleActiveRecursiveBottomUp(false);
-
-                Success = Success && executionSuccess;
             }
 
             Debug.Log("Over");
             AnimationIsRunning = false;
-            executionSuccess = false;
+            executionSuccess = EXEExecutionResult.Success();
         }
 
         private IEnumerator AnimateCommand(EXECommand CurrentCommand)
@@ -266,7 +262,7 @@ namespace Visualization.Animation
 
                 yield return StartCoroutine(BarrierFillCheck());
 
-                executionSuccess = executionSuccess && ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue);
+                executionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, OALProgram.Instance);
                 this.ReadValue = null;
             }
             else

@@ -35,7 +35,7 @@ namespace OALProgramControl
         }
 
         // SetUloh2
-        protected override bool Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             //Select instances of given class that match the criteria and assign them to variable with given name
             // ClassName tells us which class we are interested in
@@ -48,7 +48,7 @@ namespace OALProgramControl
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(this.ClassName);
             if (Class == null)
             {
-                return false;
+                return Error(ErrorMessage.ClassNotFound(this.ClassName, OALProgram));
             }
 
             CDClassInstance ClassInstance = null; // This is important if we have AttributeName
@@ -58,24 +58,27 @@ namespace OALProgramControl
                 // We need to check, if the variable already exists, it must be of corresponding type
                 if (SuperScope.VariableNameExists(this.VariableName))
                 {
+                    EXEReferencingVariable refVariable = SuperScope.FindReferencingVariableByName(this.VariableName);
+
                     if
                     (
-                        !(
-                            (
-                                EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality)
-                                &&
-                                this.ClassName == SuperScope.FindReferencingVariableByName(this.VariableName).ClassName
-                            )
-                            ||
-                            (
-                                EXECommandQuerySelect.CardinalityMany.Equals(this.Cardinality)
-                                &&
-                                this.ClassName == SuperScope.FindSetReferencingVariableByName(this.VariableName).ClassName
-                            )
-                        )
+                        EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality)
+                        && this.ClassName != refVariable.ClassName
                     )
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidAssignment("", this.ClassName, this.VariableName, refVariable.ClassName));
+                    }
+
+                    EXEReferencingSetVariable setVariable = SuperScope.FindSetReferencingVariableByName(this.VariableName);
+
+                    if
+                    (
+                        EXECommandQuerySelect.CardinalityMany.Equals(this.Cardinality)
+                        &&
+                        this.ClassName != setVariable.ClassName
+                    )
+                    {
+                        return Error(ErrorMessage.InvalidAssignment("", this.ClassName, this.VariableName, refVariable.ClassName));
                     }
                 }
             }
@@ -85,34 +88,44 @@ namespace OALProgramControl
                 EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
                 if (Variable == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
                 if (Attribute == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
                 }
 
                 // We need to check the corresponding type of attribute
                 if ("[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
                 {
-                    if (!Attribute.Type.Equals(this.ClassName + "[]") || EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality))
+                    if (!Attribute.Type.Equals(this.ClassName + "[]"))
                     {
-                        return false;
+                        return Error(ErrorMessage.AssignNewListToVariableHoldingListOfAnotherType(this.VariableName + "." + this.AttributeName, Attribute.Type.Replace("[]", ""), this.ClassName));
+                    }
+
+                    if (EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality))
+                    {
+                        return Error(ErrorMessage.SelectingAnyIntoAnArray());
                     }
                 }
                 else
                 {
-                    if (!Attribute.Type.Equals(this.ClassName) || EXECommandQuerySelect.CardinalityMany.Equals(this.Cardinality))
+                    if (!Attribute.Type.Equals(this.ClassName))
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidAssignment("irrelevant", this.ClassName, this.VariableName + "." + this.AttributeName, Attribute.Type));
+                    }
+
+                    if (EXECommandQuerySelect.CardinalityMany.Equals(this.Cardinality))
+                    {
+                        return Error(ErrorMessage.SelectingManyIntoAReference());
                     }
                 }
 
@@ -120,7 +133,7 @@ namespace OALProgramControl
                 ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
             }
 
@@ -128,16 +141,8 @@ namespace OALProgramControl
             List<long> SelectedIds = Class.GetAllInstanceIDs();
             if (SelectedIds == null)
             {
-                return false;
+                return Error(ErrorMessage.FailedRetrievingAllClassInstanceIds(Class));
             }
-
-            // If class has no instances, command may execute successfully, but we better verify references in the WHERE condition
-            if (SelectedIds.Count() == 0 && this.WhereCondition != null)
-            {
-                return this.WhereCondition.VerifyReferences(SuperScope, OALProgram.ExecutionSpace);
-            }
-
-            //Console.WriteLine("Select has " + SelectedIds.Count + " potential results");
 
             // Now let's evaluate the condition
             if (this.WhereCondition != null && SelectedIds.Any())
@@ -146,10 +151,13 @@ namespace OALProgramControl
 
                 //Console.WriteLine("creating selected var");
                 EXEReferencingVariable SelectedVar = new EXEReferencingVariable(TempSelectedVarName, this.ClassName, -1);
-                if (!SuperScope.AddVariable(SelectedVar))
+                EXEExecutionResult addVariableResult = SuperScope.AddVariable(SelectedVar);
+                addVariableResult.OwningCommand = this;
+                if (!addVariableResult.IsSuccess)
                 {
-                    return false;
+                    return addVariableResult;
                 }
+
                // Console.WriteLine("created selected var");
                 List<long> ResultIds = new List<long>();
                 foreach (long Id in SelectedIds)
@@ -164,7 +172,7 @@ namespace OALProgramControl
                     if (!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {
                         SuperScope.DestroyReferencingVariable(TempSelectedVarName);
-                        return false;
+                        return Error(ErrorMessage.InvalidValueForType(string.Format("Condition in WHERE clause evaluated to '{0}'", ConditionResult), EXETypes.BooleanTypeName));
                     }
 
                     if (EXETypes.BooleanTrue.Equals(ConditionResult))
@@ -172,8 +180,7 @@ namespace OALProgramControl
                         ResultIds.Add(Id);
                     }
                 }
-                //Console.WriteLine("Select has " + SelectedIds.Count + " results");
-                //foreach (long id in ResultIds) Console.WriteLine("RES: " + id);
+
                 SelectedIds = ResultIds;
                 SuperScope.DestroyReferencingVariable(TempSelectedVarName);
             
@@ -188,9 +195,11 @@ namespace OALProgramControl
                     if (Variable == null)
                     {
                         Variable = new EXEReferencingSetVariable(this.VariableName, this.ClassName);
-                        if (!SuperScope.AddVariable(Variable))
+                        EXEExecutionResult addVariableResult = SuperScope.AddVariable(Variable);
+                        addVariableResult.OwningCommand = this;
+                        if (!addVariableResult.IsSuccess)
                         {
-                            return false;
+                            return addVariableResult;
                         }
                     }
 
@@ -205,9 +214,11 @@ namespace OALProgramControl
                 {
                     String Result = String.Join(",", SelectedIds);
 
-                    if (!ClassInstance.SetAttribute(this.AttributeName, Result))
+                    EXEExecutionResult setAttributeResult = ClassInstance.SetAttribute(this.AttributeName, Result);
+                    setAttributeResult.OwningCommand = this;
+                    if (!setAttributeResult.IsSuccess)
                     {
-                        return false;
+                        return setAttributeResult;
                     }
                 }
             }
@@ -223,9 +234,11 @@ namespace OALProgramControl
                     {
                         //Console.WriteLine("Final 'any' id is " + ResultId);
                         Variable = new EXEReferencingVariable(this.VariableName, this.ClassName, ResultId);
-                        if (!SuperScope.AddVariable(Variable))
+                        EXEExecutionResult addVariableResult = SuperScope.AddVariable(Variable);
+                        addVariableResult.OwningCommand = this;
+                        if(!addVariableResult.IsSuccess)
                         {
-                            return false;
+                            return addVariableResult;
                         }
                     }
                     else
@@ -235,18 +248,20 @@ namespace OALProgramControl
                 }
                 else
                 {
-                    if (!ClassInstance.SetAttribute(this.AttributeName, ResultId.ToString()))
+                    EXEExecutionResult setAttributeResult = ClassInstance.SetAttribute(this.AttributeName, ResultId.ToString());
+                    setAttributeResult.OwningCommand = this;
+                    if (!setAttributeResult.IsSuccess)
                     {
-                        return false;
+                        return setAttributeResult;
                     }
                 }
             }
             else
             {
-                return false;
+                return Error(ErrorMessage.UnknownSelectCardinality(this.Cardinality));
             }
 
-            return true;
+            return Success();
         }
         public override string ToCodeSimple()
         {

@@ -17,7 +17,7 @@ namespace OALProgramControl
             this.Item = Item;
         }
 
-        protected override bool Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             String SetVariableClassName;
             EXEReferencingSetVariable SetVariable = null; // This is important if we do not have AttributeName
@@ -29,7 +29,7 @@ namespace OALProgramControl
                 SetVariable = SuperScope.FindSetReferencingVariableByName(this.VariableName);
                 if (SetVariable == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
                 }
 
                 SetVariableClassName = SetVariable.ClassName;
@@ -40,25 +40,25 @@ namespace OALProgramControl
                 EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
                 if (Variable == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
                 if (Attribute == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
                 }
 
                 // We need to check if it is list
                 if (!"[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
                 {
-                    return false;
+                    return Error(ErrorMessage.RemovingFromNotList(this.VariableName + "." + this.AttributeName, Attribute.Type));
                 }
 
                 SetVariableClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
@@ -66,28 +66,29 @@ namespace OALProgramControl
                 ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
             }
 
             // We need to compare class types
+            string itemType = this.SuperScope.DetermineVariableType(this.Item.AccessChain(), OALProgram.ExecutionSpace);
             if
             (
                 !(
                     this.Item.IsReference()
                     &&
-                    Object.Equals(SetVariableClassName, this.SuperScope.DetermineVariableType(this.Item.AccessChain(), OALProgram.ExecutionSpace))
+                    Object.Equals(SetVariableClassName, itemType)
                 )
             )
             {
-                return false;
+                return Error(ErrorMessage.RemovingFromInvalidTypeList(itemType, SetVariableClassName));
             }
 
             String IDValue = this.Item.Evaluate(SuperScope, OALProgram.ExecutionSpace);
 
             if (!EXETypes.IsValidReferenceValue(IDValue, SetVariableClassName))
             {
-                return false;
+                return Error(ErrorMessage.InvalidReference(Item.ToCode(), IDValue));
             }
 
             long ItemInstanceID = long.Parse(IDValue);
@@ -95,15 +96,14 @@ namespace OALProgramControl
             CDClass SetVariableClass = OALProgram.ExecutionSpace.getClassByName(SetVariableClassName);
             if (SetVariableClass == null)
             {
-                return false;
+                return Error(ErrorMessage.ClassNotFound(SetVariableClassName, OALProgram));
             }
 
             CDClassInstance Instance = SetVariableClass.GetInstanceByID(ItemInstanceID);
             if (Instance == null)
             {
-                return false;
+                return Error(ErrorMessage.InstanceNotFound(ItemInstanceID, SetVariableClass));
             }
-
 
             if (this.AttributeName == null)
             {
@@ -123,7 +123,7 @@ namespace OALProgramControl
                 }
             }
 
-            return true;
+            return Success();
         }
 
         public override string ToCodeSimple()

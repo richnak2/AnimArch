@@ -10,10 +10,10 @@ namespace OALProgramControl
         public EXEScopeMethod() : base()
         {
         }
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             AddCommandsToStack(this.Commands);
-            return true;
+            return Success();
         }
         public override string ToFormattedCode(string Indent = "")
         {

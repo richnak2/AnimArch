@@ -23,14 +23,14 @@ namespace OALProgramControl
         }
 
         // SetUloh2
-        protected override bool Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             //Create an instance of given class -> will affect ExecutionSpace.
             //If ReferencingVariableName is provided (is not ""), create a referencing variable pointing to this instance -> will affect scope
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(ClassName);
             if (Class == null)
             {
-                return false;
+                return Error(ErrorMessage.ClassNotFound(ClassName, OALProgram));
             }
 
             EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(ReferencingVariableName);
@@ -39,13 +39,13 @@ namespace OALProgramControl
             {
                 if (Variable != null && !String.Equals(ClassName, Variable.ClassName))
                 {
-                    return false;
+                    return Error(ErrorMessage.InvalidObjectCreation(ClassName, ReferencingVariableName, Variable.ClassName));
                 }
 
                 CDClassInstance NewInstance = Class.CreateClassInstance();
                 if (NewInstance == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.FailedObjectCreation(Class.Name));
                 }
 
                 if (!"".Equals(ReferencingVariableName))
@@ -66,42 +66,42 @@ namespace OALProgramControl
             {
                 if (Variable == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.VariableNotFound(ReferencingAttributeName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(ReferencingAttributeName);
                 if (Attribute == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.AttributeNotFoundOnClass(ReferencingAttributeName, VariableClass));
                 }
 
                 if (!String.Equals(ClassName, Attribute.Type))
                 {
-                    return false;
+                    return Error(ErrorMessage.InvalidObjectCreation(ClassName, ReferencingVariableName + "." + ReferencingAttributeName, Attribute.Type));
                 }
 
                 CDClassInstance ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
 
                 CDClassInstance NewInstance = Class.CreateClassInstance();
                 if (NewInstance == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.FailedObjectCreation(Class.Name));
                 }
 
                 return ClassInstance.SetAttribute(ReferencingAttributeName, NewInstance.UniqueID.ToString());
             }
 
-            return true;
+            return Success();
         }
 
         public override string ToCodeSimple()

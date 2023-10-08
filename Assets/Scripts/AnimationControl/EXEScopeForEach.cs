@@ -30,7 +30,7 @@ namespace OALProgramControl
             int IterableIndex = 0;
         }
 
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             EXEReferencingVariable IteratorVariable = this.FindReferencingVariableByName(this.IteratorName);
             EXEReferencingSetVariable IterableVariable = this.FindSetReferencingVariableByName(this.IterableName);
@@ -44,8 +44,7 @@ namespace OALProgramControl
                 // We cannot iterate over not existing reference set
                 if (IterableVariable == null)
                 {
-                    UnityEngine.Debug.Log("e1"); //
-                    return false;
+                    return Error(ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
                 }
 
                 IterableVariableClassName = IterableVariable.ClassName;
@@ -57,29 +56,25 @@ namespace OALProgramControl
                 EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.IterableName);
                 if (Variable == null)
                 {
-                    UnityEngine.Debug.Log("e2"); //
-                    return false;
+                    return Error(ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    UnityEngine.Debug.Log("e3"); //
-                    return false;
+                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(this.IterableAttributeName);
                 if (Attribute == null)
                 {
-                    UnityEngine.Debug.Log("e4"); //
-                    return false;
+                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.IterableAttributeName, VariableClass));
                 }
 
                 // We cannot iterate over reference that is not a set
                 if (!"[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
                 {
-                    UnityEngine.Debug.Log("e5"); //
-                    return false;
+                    return Error(ErrorMessage.IsNotIterable(Attribute.Type));
                 }
 
                 IterableVariableClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
@@ -88,15 +83,13 @@ namespace OALProgramControl
                 CDClassInstance ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    UnityEngine.Debug.Log("e6"); //
-                    return false;
+                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
 
                 String Values = ClassInstance.GetAttributeValue(this.IterableAttributeName);
                 if (!EXETypes.IsValidReferenceValue(Values, Attribute.Type))
                 {
-                    UnityEngine.Debug.Log("e7"); //
-                    return false;
+                    return Error(ErrorMessage.InvalidReference(this.IterableName + "." + this.IterableAttributeName, Values));
                 }
 
                 if (!String.Empty.Equals(Values))
@@ -110,18 +103,18 @@ namespace OALProgramControl
             // If iterator already exists and its class does not match the iterable class, we cannot do this
             if (IteratorVariable != null && !IteratorVariable.ClassName.Equals(IterableVariableClassName))
             {
-                UnityEngine.Debug.Log("e8"); //
-                return false;
+                return Error(ErrorMessage.IterableAndIteratorTypeMismatch(this.IterableName + (this.IterableAttributeName == null ? "" : ("." + this.IterableAttributeName)), IterableVariableClassName, this.IteratorName, IteratorVariable.ClassName));
             }
 
             // If iterator name is already taken for another variable, we quit again. Otherwise we create the iterator variable
             if (IteratorVariable == null)
             {
                 IteratorVariable = new EXEReferencingVariable(this.IteratorName, IterableVariableClassName, -1);
-                if (!this.GetSuperScope().AddVariable(IteratorVariable))
+                EXEExecutionResult variableAddResult = this.GetSuperScope().AddVariable(IteratorVariable);
+                variableAddResult.OwningCommand = this;
+                if (!variableAddResult.IsSuccess)
                 {
-                    UnityEngine.Debug.Log("e9"); //
-                    return false;
+                    return variableAddResult;
                 }
             }
 
@@ -143,7 +136,7 @@ namespace OALProgramControl
                 this.ClearVariables();
             }
 
-            return true;
+            return Success();
         }
 
         public override String ToCode(String Indent = "")

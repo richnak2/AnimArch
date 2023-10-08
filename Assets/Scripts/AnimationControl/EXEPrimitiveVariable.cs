@@ -32,25 +32,24 @@ namespace OALProgramControl
             }
         }
 
-        public Boolean AssignValue(String name, String NewValue)
+        public EXEExecutionResult AssignValue(String name, String NewValue)
         {
 
-            if (name == EXETypes.UniqueIDTypeName)
+            if (EXETypes.UniqueIDTypeName.Equals(name))
             {
-                return false;
+                return EXEExecutionResult.Error(ErrorMessage.AssignmentToReadonlyProperty(name));
             }
 
             if (EXETypes.UnitializedName.Equals(this.Type))
             {
-                //this.Value = NewValue;
-                return false;
+                return EXEExecutionResult.Error(ErrorMessage.ExistingUndefinedVariable(this.Name));
             }
 
             String NewValueType = EXETypes.DetermineVariableType(name, NewValue);
             if (NewValueType == this.Type || EXETypes.UnitializedName.Equals(NewValue))
             {
                 this.Value = NewValue;
-                return true;
+                return EXEExecutionResult.Success();
             }
 
             if (NewValueType == EXETypes.IntegerTypeName && this.Type == EXETypes.RealTypeName && EXEExecutionGlobals.AllowPromotionOfIntegerToReal)
@@ -58,7 +57,7 @@ namespace OALProgramControl
                 int NewValueInt = int.Parse(NewValue);
                 double newValueDouble = NewValueInt;
                 this.Value = newValueDouble.ToString();
-                return true;
+                return EXEExecutionResult.Success();
             }
 
             if (NewValueType == EXETypes.RealTypeName && this.Type == EXETypes.IntegerTypeName && EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger)
@@ -66,10 +65,10 @@ namespace OALProgramControl
                 decimal newValueDouble = decimal.Parse(NewValue, CultureInfo.InvariantCulture);
                 int newValueInt = (int) newValueDouble;
                 this.Value = newValueInt.ToString();
-                return true;
+                return EXEExecutionResult.Success();
             }
 
-            return false;
+            return EXEExecutionResult.Error(ErrorMessage.InvalidAssignment(NewValue, NewValueType, this.Name, this.Type));
         }
     }
 }

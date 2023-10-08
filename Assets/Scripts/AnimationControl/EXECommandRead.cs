@@ -21,7 +21,7 @@ namespace OALProgramControl
             this.Prompt = Prompt;
         }
 
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             String Result = "";
 
@@ -30,7 +30,7 @@ namespace OALProgramControl
                 Result = this.Prompt.Evaluate(SuperScope, OALProgram.ExecutionSpace);
                 if (Result == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.FailedExpressionEvaluation(Prompt, this.SuperScope));
                 }
 
                 String ResultType = EXETypes.DetermineVariableType("", Result);
@@ -39,22 +39,21 @@ namespace OALProgramControl
                 if (EXETypes.StringTypeName.Equals(ResultType))
                 {
                     // Remove double quotes
-                    Result = Result.Substring(1, Result.Length - 2);
+                    Result = Result.Replace("\"", "");
                 }
                 else if (!EXETypes.UnitializedName.Equals(ResultType))
                 {
-                    return false;
+                    return Error(ErrorMessage.InvalidValueForType(ResultType, EXETypes.StringTypeName));
                 }
             }
 
             ConsolePanel.Instance.YieldOutput(Result);
 
-            return true;
+            return Success();
         }
 
-        public Boolean AssignReadValue(String Value)
+        public EXEExecutionResult AssignReadValue(String Value, OALProgram OALProgram)
         {
-            Boolean Result = false;
             String ValueType;
 
             if (this.ReadType.Contains("int"))
@@ -63,7 +62,7 @@ namespace OALProgramControl
 
                 if (!int.TryParse(Value, out _))
                 {
-                    return false;
+                    return Error(ErrorMessage.InvalidValueForType(Value, EXETypes.IntegerTypeName));
                 }
             }
             else if (this.ReadType.Contains("real"))
@@ -76,7 +75,7 @@ namespace OALProgramControl
                 }
                 catch (Exception e)
                 {
-                    return false;
+                    return Error(ErrorMessage.InvalidValueForType(Value, EXETypes.RealTypeName));
                 }
             }
             else if (this.ReadType.Contains("bool"))
@@ -85,7 +84,7 @@ namespace OALProgramControl
 
                 if (!EXETypes.BooleanTrue.Equals(Value) && !EXETypes.BooleanFalse.Equals(Value))
                 {
-                    return false;
+                    return Error(ErrorMessage.InvalidValueForType(Value, EXETypes.BooleanTypeName));
                 }
             }
             // It must be String
@@ -101,42 +100,44 @@ namespace OALProgramControl
 
                 if (PrimitiveVariable != null)
                 {
-                    if (EXETypes.ReferenceTypeName.Equals(PrimitiveVariable.Type))
-                    {
-                        return false;
-                    }
-
                     // If PrimitiveVariable exists and its type is UNDEFINED
                     if (EXETypes.UnitializedName.Equals(PrimitiveVariable.Type))
                     {
-                        return false;
+                        return Error(ErrorMessage.ExistingUndefinedVariable(PrimitiveVariable.Name));
                     }
 
                     // We need to compare primitive types
                     if (!Object.Equals(PrimitiveVariable.Type, ValueType))
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidAssignment(Value, ValueType, PrimitiveVariable.Name, PrimitiveVariable.Type));
                     }
 
                     // If the types don't match, this fails and returns false
                     Value = EXETypes.AdjustAssignedValue(PrimitiveVariable.Type, Value);
-                    Result = PrimitiveVariable.AssignValue("", Value);
+
+                    EXEExecutionResult assignmentResult =  PrimitiveVariable.AssignValue("", Value);
+                    assignmentResult.OwningCommand = this;
+                    return assignmentResult;
                 }
                 // We must create new Variable, it depends on the type of ValueType
                 else
                 {
                     // If the types don't match, this fails and returns false
                     Value = EXETypes.AdjustAssignedValue(ValueType, Value);
-                    Result = SuperScope.AddVariable(new EXEPrimitiveVariable(this.VariableName, Value, ValueType));
+                    
+                    EXEExecutionResult addVariableResult = SuperScope.AddVariable(new EXEPrimitiveVariable(this.VariableName, Value, ValueType));
+                    addVariableResult.OwningCommand = this;
+                    return addVariableResult;
                 }        
             }
             else
             {
                 EXEReferenceEvaluator RefEvaluator = new EXEReferenceEvaluator();
-                Result = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, SuperScope, OALProgram.Instance.ExecutionSpace, Value, ValueType);
+                
+                EXEExecutionResult setAttributeResult = RefEvaluator.SetAttributeValue(this.VariableName, this.AttributeName, SuperScope, OALProgram, Value, ValueType);
+                setAttributeResult.OwningCommand = this;
+                return setAttributeResult;
             }
-
-            return Result;
         }
 
         public override String ToCodeSimple()

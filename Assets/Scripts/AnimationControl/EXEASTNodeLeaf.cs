@@ -22,17 +22,13 @@ namespace OALProgramControl
             String Result = null;
 
             String ValueType = EXETypes.DetermineVariableType("", this.Value);
-            if (ValueType == null)
-            {
-                return Result;
-            }
 
             // If we have simple value, e.g. 5, 3.14, "hi Madelyn", we are good
-            if (!EXETypes.ReferenceTypeName.Equals(ValueType))
+            if (ValueType != null)
             {
                 if (EXETypes.StringTypeName.Equals(ValueType))
                 {
-                    Result = EXETypes.EvaluateEscapeSequences(this.Value.Substring(1, this.Value.Length - 2));
+                    Result = EXETypes.EvaluateEscapeSequences(this.Value.Replace("\"", ""));
                     Result = '\"' + Result + '\"';
                 }
                 else
@@ -71,7 +67,7 @@ namespace OALProgramControl
         public bool VerifyReferences(EXEScope Scope, CDClassPool ExecutionSpace)
         {
             bool Result = false;
-            if (!EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Value)))
+            if (EXETypes.DetermineVariableType("", this.Value) != null)
             {
                 Result = true;
             }
@@ -106,7 +102,7 @@ namespace OALProgramControl
 
         public bool IsReference()
         {
-            return EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Value));
+            return EXETypes.DetermineVariableType("", this.Value) == null;
         }
 
         public string ToCode()

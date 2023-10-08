@@ -16,17 +16,22 @@ namespace OALProgramControl
             throw new System.NotImplementedException();
         }
 
-        protected override bool Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
+            EXEExecutionResult result;
+
             foreach (EXECommand command in this.Commands)
             {
-                if (!command.PerformExecution(OALProgram))
+                result = command.PerformExecution(OALProgram);
+
+                if (!result.IsSuccess)
                 {
-                    return false;
+                    result.OwningCommand = command;
+                    return result;
                 }
             }
 
-            return true;
+            return Success();
         }
     }
 }

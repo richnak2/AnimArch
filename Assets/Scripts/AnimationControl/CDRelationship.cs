@@ -9,7 +9,7 @@ namespace OALProgramControl
         public String ToClass { set; get; }
         public String RelationshipName { get; }
 
-        private List<(long, long)> InstanceRelationships { get; }
+        public List<(long, long)> InstanceRelationships { get; }
 
         public CDRelationship(String FromClass, String ToClass, String Name)
         {
@@ -68,21 +68,18 @@ namespace OALProgramControl
             }
             return Result;
         }
-        public Boolean DestroyRelationship(long Instance1Id, long Instance2Id)
+        public EXEExecutionResult DestroyRelationship(long Instance1Id, long Instance2Id)
         {
-            Boolean Result = false;
-
             for (int i = 0; i < this.InstanceRelationships.Count; i++)
             {
                 if ((Instance1Id, Instance2Id) == this.InstanceRelationships[i] || (Instance2Id, Instance1Id) == this.InstanceRelationships[i])
                 {
                     this.InstanceRelationships.RemoveAt(i);
-                    Result = true;
-                    break;
+                    return EXEExecutionResult.Success();
                 }
             }
 
-            return Result;
+            return EXEExecutionResult.Error(ErrorMessage.RelationNotFound(Instance1Id, Instance2Id, this));
         }
         public void ClearRelationships()
         {

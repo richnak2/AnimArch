@@ -16,7 +16,7 @@ namespace OALProgramControl
             this.Arguments = Arguments;
         }
 
-        protected override bool Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             String Result = "";
             String ArgumentValue;
@@ -27,7 +27,7 @@ namespace OALProgramControl
                 ArgumentValue = this.Arguments[i].Evaluate(SuperScope, OALProgram.ExecutionSpace);
                 if (ArgumentValue == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.FailedExpressionEvaluation(this.Arguments[i], this.SuperScope));
                 }
 
                 if (this.Arguments[i].IsReference())
@@ -35,22 +35,16 @@ namespace OALProgramControl
                     ArgumentType = SuperScope.DetermineVariableType(this.Arguments[i].AccessChain(), OALProgram.ExecutionSpace);
                     if (ArgumentType == null)
                     {
-                        return false;
-                    }
-
-                    // Check if AssignedType is ReferenceTypeName, it means it is bullshit
-                    if (EXETypes.ReferenceTypeName.Equals(ArgumentType))
-                    {
-                        return false;
+                        return Error(ErrorMessage.FailedExpressionTypeDetermination(string.Join(".", this.Arguments[i].AccessChain())));
                     }
                 }
                 // It must be primitive, not reference
                 else
                 {
                     ArgumentType = EXETypes.DetermineVariableType("", ArgumentValue);
-                    if (ArgumentType == null || EXETypes.ReferenceTypeName.Equals(ArgumentType))
+                    if (ArgumentType == null)
                     {
-                        return false;
+                        return Error(ErrorMessage.FailedExpressionTypeDetermination(ArgumentValue));
                     }
                 }
 
@@ -60,20 +54,20 @@ namespace OALProgramControl
                     if (EXETypes.StringTypeName.Equals(ArgumentType))
                     {
                         // Remove double quotes
-                        ArgumentValue = ArgumentValue.Substring(1, ArgumentValue.Length - 2);
+                        ArgumentValue = ArgumentValue.Replace("\"", "");
                     }
 
                     Result += ArgumentValue;
                 }
                 else
                 {
-                    return false;
+                    return Error(ErrorMessage.PrintValueMustBePrimitive());
                 }
             }
 
             ConsolePanel.Instance.YieldOutput(Result);
 
-            return true;
+            return Success();
         }
 
         public override string ToCodeSimple()

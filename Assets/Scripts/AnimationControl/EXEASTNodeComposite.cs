@@ -109,7 +109,7 @@ namespace OALProgramControl
                         (
                             !EXETypes.IsPrimitive(OperandType)
                             &&
-                            !EXETypes.ReferenceTypeName.Equals(OperandType)
+                            OperandType != null
                         )
                         {
                             String OperandValue = null;
@@ -183,8 +183,10 @@ namespace OALProgramControl
                 {
                     Result = this.Operands[0].GetNodeValue() + "." + this.Operands[1].GetNodeValue();
                 }
-                else if (EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[0].GetNodeValue()))
-                    && EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[1].GetNodeValue()))
+                else if
+                (
+                    EXETypes.DetermineVariableType("", this.Operands[0].GetNodeValue()) == null
+                    && EXETypes.DetermineVariableType("", this.Operands[1].GetNodeValue()) == null
                 )
                 {
                     Result = AccessEvaluator.EvaluateAttributeValue(this.Operands[0].GetNodeValue(), this.Operands[1].GetNodeValue(), Scope, ExecutionSpace);
@@ -219,12 +221,9 @@ namespace OALProgramControl
                 {
                     String OperandType = Scope.DetermineVariableType(this.Operands[0].AccessChain(), ExecutionSpace);
 
-                    if (OperandType != null)
+                    if (OperandType != null && !EXETypes.IsPrimitive(OperandType))
                     {
-                        if (!EXETypes.IsPrimitive(OperandType) && !EXETypes.ReferenceTypeName.Equals(OperandType))
-                        {
-                            Result = true;
-                        }
+                        Result = true;
                     }
                 }
             }
@@ -237,8 +236,10 @@ namespace OALProgramControl
                 {
                     Result = true;
                 }
-                else if (EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[0].GetNodeValue()))
-                    && EXETypes.ReferenceTypeName.Equals(EXETypes.DetermineVariableType("", this.Operands[1].GetNodeValue()))
+                else if
+                (
+                    EXETypes.DetermineVariableType("", this.Operands[0].GetNodeValue()) == null
+                    && EXETypes.DetermineVariableType("", this.Operands[1].GetNodeValue()) == null
                 )
                 {
                     EXEReferencingVariable Variable = Scope.FindReferencingVariableByName(this.Operands[0].GetNodeValue());

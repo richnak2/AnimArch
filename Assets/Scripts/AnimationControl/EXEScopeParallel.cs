@@ -32,11 +32,11 @@ namespace OALProgramControl
             Thread.SetSuperScope(this);
             this.Threads.Add(Thread);
         }
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             this.CommandStack.Fork(this.Threads);
 
-            return true;
+            return Success();
         }
 
         public override String ToCode(String Indent = "")

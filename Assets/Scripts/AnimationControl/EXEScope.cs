@@ -23,6 +23,28 @@ namespace OALProgramControl
             this.Commands = new List<EXECommand>();
         }
 
+        public IEnumerable<EXEScope> ScopesToTop()
+        {
+            EXEScope currentScope = this;
+
+            while (currentScope != null)
+            {
+                yield return currentScope;
+                currentScope = currentScope.SuperScope;
+            }
+        }
+
+        public Dictionary<string, string> AllDeclaredVariables()
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            PrimitiveVariables.ForEach(variable => result.Add(variable.Name, variable.Type));
+            ReferencingVariables.ForEach(variable => result.Add(variable.Name, variable.ClassName));
+            SetReferencingVariables.ForEach(variable => result.Add(variable.Name, variable.ClassName));
+
+            return result;
+        }
+
         public EXEScope(EXEScope SuperScope, EXECommand[] Commands)
         {
             this.PrimitiveVariables = new List<EXEPrimitiveVariable>();
@@ -38,10 +60,10 @@ namespace OALProgramControl
             }
         }
 
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             AddCommandsToStack(this.Commands);
-            return true;
+            return Success();
         }
 
         protected void AddCommandsToStack(List<EXECommand> Commands)
@@ -197,40 +219,52 @@ namespace OALProgramControl
             return Result;
         }
 
-        public bool AddVariable(EXEPrimitiveVariable Variable)
+        public EXEExecutionResult AddVariable(EXEPrimitiveVariable Variable)
         {
-            bool Result = false;
+            EXEExecutionResult Result = null;
 
             if (!VariableNameExists(Variable.Name))
             {
                 this.PrimitiveVariables.Add(Variable);
-                Result = true;
+                Result = EXEExecutionResult.Success();
+            }
+            else
+            {
+                Result = EXEExecutionResult.Error(ErrorMessage.CreatingExistingVariable(Variable.Name));
             }
 
             return Result;
         }
 
-        public bool AddVariable(EXEReferencingVariable Variable)
+        public EXEExecutionResult AddVariable(EXEReferencingVariable Variable)
         {
-            bool Result = false;
+            EXEExecutionResult Result = null;
 
             if (!VariableNameExists(Variable.Name))
             {
                 this.ReferencingVariables.Add(Variable);
-                Result = true;
+                Result = EXEExecutionResult.Success();
+            }
+            else
+            {
+                Result = EXEExecutionResult.Error(ErrorMessage.CreatingExistingVariable(Variable.Name));
             }
 
             return Result;
         }
 
-        public bool AddVariable(EXEReferencingSetVariable Variable)
+        public EXEExecutionResult AddVariable(EXEReferencingSetVariable Variable)
         {
-            bool Result = false;
+            EXEExecutionResult Result = null;
 
             if (!VariableNameExists(Variable.Name))
             {
                 this.SetReferencingVariables.Add(Variable);
-                Result = true;
+                Result = EXEExecutionResult.Success();
+            }
+            else
+            {
+                Result = EXEExecutionResult.Error(ErrorMessage.CreatingExistingVariable(Variable.Name));
             }
 
             return Result;

@@ -21,10 +21,8 @@ namespace OALProgramControl
             this.Condition = Condition;
             this.IterationCounter = 0;
         }
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            Boolean Success = true;
-
             String ConditionResult = this.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
 
             //!!NON-RECURSIVE!!
@@ -32,11 +30,11 @@ namespace OALProgramControl
 
             if (ConditionResult == null)
             {
-                return false;
+                return Error(ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
             }
             if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
             {
-                return false;
+                return Error(ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
             }
 
             bool ConditionTrue = EXETypes.BooleanTrue.Equals(ConditionResult);
@@ -44,7 +42,7 @@ namespace OALProgramControl
             {
                 if (IterationCounter >= EXEExecutionGlobals.LoopIterationCap)
                 {
-                    Success = false;
+                    return Error(ErrorMessage.IterationLoopThresholdCrossed(EXEExecutionGlobals.LoopIterationCap));
                 }
                 else
                 {
@@ -55,7 +53,7 @@ namespace OALProgramControl
                 }
             }
 
-            return Success;
+            return Success();
         }
 
         public override String ToCode(String Indent = "")

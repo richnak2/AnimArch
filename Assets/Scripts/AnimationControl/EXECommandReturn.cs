@@ -10,9 +10,9 @@ namespace OALProgramControl
             this.Expression = Expression;
         }
 
-        protected override bool Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            return true;
+            return Success();
         }
 
         public override string ToCodeSimple()

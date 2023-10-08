@@ -72,25 +72,24 @@ namespace OALProgramControl
             ElifScope.SetSuperScope(this.GetSuperScope());
         }
 
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            Boolean Result = true;
             Boolean AScopeWasExecuted = false;
 
             if (this.Condition == null)
             {
-                return false;
+                return Error(ErrorMessage.ConditionInIfStatementNotSet());
             }
 
             String ConditionResult = this.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
 
             if (ConditionResult == null)
             {
-                return false;
+                return Error(ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
             }
             if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
             {
-                return false;
+                return Error(ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
             }
             Boolean IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
 
@@ -102,8 +101,10 @@ namespace OALProgramControl
 
             if (AScopeWasExecuted)
             {
-                return Result;
+                return Success();
             }
+
+            EXEExecutionResult elifScopeResult = null;
 
             if (this.ElifScopes != null)
             {
@@ -111,7 +112,7 @@ namespace OALProgramControl
                 {
                     if (CurrentElif.Condition == null)
                     {
-                        return false;
+                        return Error(ErrorMessage.ConditionInIfStatementNotSet());
                     }
 
                     ConditionResult = CurrentElif.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
@@ -119,17 +120,17 @@ namespace OALProgramControl
 
                     if (ConditionResult == null)
                     {
-                        return false;
+                        return Error(ErrorMessage.FailedExpressionEvaluation(CurrentElif.Condition, this.SuperScope));
                     }
                     if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
                     }
                     IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
                     
                     if (IfConditionResult)
                     {
-                        Result = CurrentElif.PerformExecution(OALProgram);
+                        elifScopeResult = CurrentElif.PerformExecution(OALProgram);
                         AScopeWasExecuted = true;
                         break;
                     }
@@ -138,15 +139,15 @@ namespace OALProgramControl
 
             if (AScopeWasExecuted)
             {
-                return Result;
+                return elifScopeResult;
             }
 
             if (this.ElseScope != null)
             {
-                Result = this.ElseScope.PerformExecution(OALProgram);
+                return this.ElseScope.PerformExecution(OALProgram);
             }
 
-            return Result;
+            return Success();
         }
         public override String ToCode(String Indent = "")
         {

@@ -37,17 +37,22 @@ namespace OALProgramControl
             return Result;
         }
 
-        public bool SetAttribute(String name, String value)
+        public EXEExecutionResult SetAttribute(String name, String value)
         {
-            bool success = false;
+            EXEExecutionResult result = null;
+
             if (this.State.ContainsKey(name))
             {
                 //Console.WriteLine("CDInstance is assigning " + value + " to its attribute " + name);
                 this.State[name] = value;
-                success = true;
+                result = EXEExecutionResult.Success();
+            }
+            else
+            {
+                result = EXEExecutionResult.Error(ErrorMessage.AttributeNotFoundOnClassInstance(name, this));
             }
 
-            return success;
+            return result;
         }
 
         public Dictionary<string, string> GetStateWithoutID()

@@ -19,12 +19,12 @@ namespace OALProgramControl
             this.Items = Items;
         }
 
-        protected override Boolean Execute(OALProgram OALProgram)
+        protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(this.ClassName);
             if (Class == null)
             {
-                return false;
+                return Error(ErrorMessage.ClassNotFound(this.ClassName, OALProgram));
             }
 
             EXEReferencingSetVariable SetVariable = null; // Important if we do not have AttributeName
@@ -38,7 +38,7 @@ namespace OALProgramControl
                 {
                     if (!String.Equals(this.ClassName, SetVariable.ClassName))
                     {
-                        return false;
+                        return Error(ErrorMessage.AssignNewListToVariableHoldingListOfAnotherType(SetVariable.Name, SetVariable.Type, this.ClassName));
                     }
 
                     SetVariable.ClearVariables();
@@ -46,10 +46,10 @@ namespace OALProgramControl
                 else
                 {
                     SetVariable = new EXEReferencingSetVariable(this.VariableName, Class.Name);
-                    if (!SuperScope.AddVariable(SetVariable))
-                    {
-                        return false;
-                    }
+
+                    EXEExecutionResult result = SuperScope.AddVariable(SetVariable);
+                    result.OwningCommand = this;
+                    return result;
                 }
             }
             else
@@ -57,37 +57,36 @@ namespace OALProgramControl
                 EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
                 if (Variable == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
                 if (Attribute == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
                 }
                 
-                String AttributeClass = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
-                if (!String.Equals(this.ClassName, AttributeClass))
+                String AttributeClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
+                if (!String.Equals(this.ClassName, AttributeClassName))
                 {
-                    return false;
+                    return Error(ErrorMessage.AssignNewListToVariableHoldingListOfAnotherType(VariableName + "." + AttributeName, AttributeClassName, this.ClassName));
                 }
 
                 ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return false;
+                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
 
-                if (!ClassInstance.SetAttribute(this.AttributeName, ""))
-                {
-                    return false;
-                }
+                EXEExecutionResult result = ClassInstance.SetAttribute(this.AttributeName, "");
+                result.OwningCommand = this;
+                return result;
             }
 
             if (this.Items.Any())
@@ -96,23 +95,26 @@ namespace OALProgramControl
 
                 foreach (EXEASTNode item in this.Items)
                 {
+                    string addedItemClassName = this.SuperScope.DetermineVariableType(item.AccessChain(), OALProgram.ExecutionSpace);
+
                     if
                     (
+                        
                         !(
                             item.IsReference()
                             &&
-                            Object.Equals(Class.Name, this.SuperScope.DetermineVariableType(item.AccessChain(), OALProgram.ExecutionSpace))    
+                            Object.Equals(Class.Name, addedItemClassName)    
                         )
                     )
                     {
-                        return false;
+                        return Error(ErrorMessage.AddInvalidValueToList(VariableName + (AttributeName == null ? string.Empty : ("." + AttributeName)), Class.Name, item.ToCode(), addedItemClassName));
                     }
 
                     String IDValue = item.Evaluate(SuperScope, OALProgram.ExecutionSpace);
 
                     if (!EXETypes.IsValidReferenceValue(IDValue, Class.Name))
                     {
-                        return false;
+                        return Error(ErrorMessage.InvalidValueForType(Class.Name, IDValue));
                     }
 
                     long ID = long.Parse(IDValue);
@@ -120,7 +122,7 @@ namespace OALProgramControl
                     CDClassInstance Instance = Class.GetInstanceByID(ID);
                     if (Instance == null)
                     {
-                        return false;
+                        return Error(ErrorMessage.InstanceNotFound(ID, Class));
                     }
 
                     if (this.AttributeName == null)
@@ -140,7 +142,7 @@ namespace OALProgramControl
                 }
             }
             
-            return true;
+            return Success();
         }
 
         public override string ToCodeSimple()

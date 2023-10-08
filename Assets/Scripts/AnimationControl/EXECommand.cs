@@ -8,13 +8,22 @@ namespace OALProgramControl
         protected EXEScope SuperScope { get; set; }
         public EXEExecutionStack CommandStack { get; set; } = null;
 
-        public Boolean PerformExecution(OALProgram OALProgram)
+        public EXEExecutionResult PerformExecution(OALProgram OALProgram)
         {
-            Boolean Result = Execute(OALProgram);
+            EXEExecutionResult Result = Execute(OALProgram);
 
             return Result;
         }
-        protected abstract Boolean Execute(OALProgram OALProgram);
+        protected abstract EXEExecutionResult Execute(OALProgram OALProgram);
+
+        protected EXEExecutionResult Success()
+        {
+            return EXEExecutionResult.Success(this);
+        }
+        protected EXEExecutionResult Error(string errorMessage)
+        {
+            return EXEExecutionResult.Error(errorMessage, this);
+        }
         public EXEScope GetSuperScope()
         {
             return this.SuperScope;
