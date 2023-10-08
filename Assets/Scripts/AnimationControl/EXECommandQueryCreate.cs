@@ -30,7 +30,7 @@ namespace OALProgramControl
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(ClassName);
             if (Class == null)
             {
-                return Error(ErrorMessage.ClassNotFound(ClassName, OALProgram));
+                return Error("XEC1054", ErrorMessage.ClassNotFound(ClassName, OALProgram));
             }
 
             EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(ReferencingVariableName);
@@ -39,13 +39,13 @@ namespace OALProgramControl
             {
                 if (Variable != null && !String.Equals(ClassName, Variable.ClassName))
                 {
-                    return Error(ErrorMessage.InvalidObjectCreation(ClassName, ReferencingVariableName, Variable.ClassName));
+                    return Error("XEC1055", ErrorMessage.InvalidObjectCreation(ClassName, ReferencingVariableName, Variable.ClassName));
                 }
 
                 CDClassInstance NewInstance = Class.CreateClassInstance();
                 if (NewInstance == null)
                 {
-                    return Error(ErrorMessage.FailedObjectCreation(Class.Name));
+                    return Error("XEC1056", ErrorMessage.FailedObjectCreation(Class.Name));
                 }
 
                 if (!"".Equals(ReferencingVariableName))
@@ -66,36 +66,36 @@ namespace OALProgramControl
             {
                 if (Variable == null)
                 {
-                    return Error(ErrorMessage.VariableNotFound(ReferencingAttributeName, this.SuperScope));
+                    return Error("XEC1057", ErrorMessage.VariableNotFound(ReferencingAttributeName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
+                    return Error("XEC1058", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(ReferencingAttributeName);
                 if (Attribute == null)
                 {
-                    return Error(ErrorMessage.AttributeNotFoundOnClass(ReferencingAttributeName, VariableClass));
+                    return Error("XEC1059", ErrorMessage.AttributeNotFoundOnClass(ReferencingAttributeName, VariableClass));
                 }
 
                 if (!String.Equals(ClassName, Attribute.Type))
                 {
-                    return Error(ErrorMessage.InvalidObjectCreation(ClassName, ReferencingVariableName + "." + ReferencingAttributeName, Attribute.Type));
+                    return Error("XEC1060", ErrorMessage.InvalidObjectCreation(ClassName, ReferencingVariableName + "." + ReferencingAttributeName, Attribute.Type));
                 }
 
                 CDClassInstance ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
+                    return Error("XEC1061", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
 
                 CDClassInstance NewInstance = Class.CreateClassInstance();
                 if (NewInstance == null)
                 {
-                    return Error(ErrorMessage.FailedObjectCreation(Class.Name));
+                    return Error("XEC1062", ErrorMessage.FailedObjectCreation(Class.Name));
                 }
 
                 return ClassInstance.SetAttribute(ReferencingAttributeName, NewInstance.UniqueID.ToString());

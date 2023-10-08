@@ -230,7 +230,7 @@ namespace OALProgramControl
             }
             else
             {
-                Result = EXEExecutionResult.Error(ErrorMessage.CreatingExistingVariable(Variable.Name));
+                Result = EXEExecutionResult.Error("XEC1180", ErrorMessage.CreatingExistingVariable(Variable.Name));
             }
 
             return Result;
@@ -247,7 +247,7 @@ namespace OALProgramControl
             }
             else
             {
-                Result = EXEExecutionResult.Error(ErrorMessage.CreatingExistingVariable(Variable.Name));
+                Result = EXEExecutionResult.Error("XEC1181", ErrorMessage.CreatingExistingVariable(Variable.Name));
             }
 
             return Result;
@@ -264,7 +264,7 @@ namespace OALProgramControl
             }
             else
             {
-                Result = EXEExecutionResult.Error(ErrorMessage.CreatingExistingVariable(Variable.Name));
+                Result = EXEExecutionResult.Error("XEC1182", ErrorMessage.CreatingExistingVariable(Variable.Name));
             }
 
             return Result;

@@ -44,7 +44,7 @@ namespace OALProgramControl
                 // We cannot iterate over not existing reference set
                 if (IterableVariable == null)
                 {
-                    return Error(ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
+                    return Error("XEC1150", ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
                 }
 
                 IterableVariableClassName = IterableVariable.ClassName;
@@ -56,25 +56,25 @@ namespace OALProgramControl
                 EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.IterableName);
                 if (Variable == null)
                 {
-                    return Error(ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
+                    return Error("XEC1151", ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
+                    return Error("XEC1152", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(this.IterableAttributeName);
                 if (Attribute == null)
                 {
-                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.IterableAttributeName, VariableClass));
+                    return Error("XEC1153", ErrorMessage.AttributeNotFoundOnClass(this.IterableAttributeName, VariableClass));
                 }
 
                 // We cannot iterate over reference that is not a set
                 if (!"[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
                 {
-                    return Error(ErrorMessage.IsNotIterable(Attribute.Type));
+                    return Error("XEC1154", ErrorMessage.IsNotIterable(Attribute.Type));
                 }
 
                 IterableVariableClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
@@ -83,13 +83,13 @@ namespace OALProgramControl
                 CDClassInstance ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
+                    return Error("XEC1155", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
 
                 String Values = ClassInstance.GetAttributeValue(this.IterableAttributeName);
                 if (!EXETypes.IsValidReferenceValue(Values, Attribute.Type))
                 {
-                    return Error(ErrorMessage.InvalidReference(this.IterableName + "." + this.IterableAttributeName, Values));
+                    return Error("XEC1156", ErrorMessage.InvalidReference(this.IterableName + "." + this.IterableAttributeName, Values));
                 }
 
                 if (!String.Empty.Equals(Values))
@@ -103,7 +103,7 @@ namespace OALProgramControl
             // If iterator already exists and its class does not match the iterable class, we cannot do this
             if (IteratorVariable != null && !IteratorVariable.ClassName.Equals(IterableVariableClassName))
             {
-                return Error(ErrorMessage.IterableAndIteratorTypeMismatch(this.IterableName + (this.IterableAttributeName == null ? "" : ("." + this.IterableAttributeName)), IterableVariableClassName, this.IteratorName, IteratorVariable.ClassName));
+                return Error("XEC1157", ErrorMessage.IterableAndIteratorTypeMismatch(this.IterableName + (this.IterableAttributeName == null ? "" : ("." + this.IterableAttributeName)), IterableVariableClassName, this.IteratorName, IteratorVariable.ClassName));
             }
 
             // If iterator name is already taken for another variable, we quit again. Otherwise we create the iterator variable

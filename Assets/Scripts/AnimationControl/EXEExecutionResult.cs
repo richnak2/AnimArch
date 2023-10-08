@@ -8,13 +8,15 @@ namespace OALProgramControl
     {
         public readonly bool IsSuccess;
         public readonly string ErrorMessage;
+        public readonly string ErrorCode;
         public EXECommand OwningCommand { get; set; }
 
-        private EXEExecutionResult(bool success, EXECommand owningCommand) : this(success, string.Empty, owningCommand) { }
-        private EXEExecutionResult(bool success, string errorMessage, EXECommand owningCommand)
+        private EXEExecutionResult(bool success, EXECommand owningCommand) : this(success, string.Empty, string.Empty, owningCommand) { }
+        private EXEExecutionResult(bool success, string errorMessage, string errorCode, EXECommand owningCommand)
         {
             this.IsSuccess = success;
             this.ErrorMessage = errorMessage;
+            this.ErrorCode = errorCode;
             this.OwningCommand = owningCommand;
         }
 
@@ -27,13 +29,13 @@ namespace OALProgramControl
             return new EXEExecutionResult(true, owningCommand);
         }
 
-        public static EXEExecutionResult Error(string errorMessage)
+        public static EXEExecutionResult Error(string errorMessage, string errorCode)
         {
-            return Error(errorMessage, null);
+            return Error(errorMessage, errorCode, null);
         }
-        public static EXEExecutionResult Error(string errorMessage, EXECommand owningCommand)
+        public static EXEExecutionResult Error(string errorMessage, string errorCode, EXECommand owningCommand)
         {
-            return new EXEExecutionResult(false, errorMessage, owningCommand);
+            return new EXEExecutionResult(false, errorMessage, errorCode, owningCommand);
         }
 
         public override string ToString()
@@ -41,11 +43,12 @@ namespace OALProgramControl
             return string
                     .Format
                     (
-                        "{{\n\tsuccess: '{0}',\n\tcommand: '{1}',\n\tcommandType: '{2}',\n\terrorMessage\n\t: '{3}'\n}}",
+                        "{{\n\tsuccess: '{0}',\n\tcommand: '{1}',\n\tcommandType: '{2}',\n\terrorMessage: '{3}',\n\terrorCode: '{4}'\n}}",
                         this.IsSuccess,
                         OwningCommand == null ? string.Empty : this.OwningCommand.ToCode(),
                         OwningCommand == null ? string.Empty : this.OwningCommand.GetType().Name,
-                        ErrorMessage ?? string.Empty
+                        ErrorMessage ?? string.Empty,
+                        ErrorCode ?? string.Empty
                     );
         }
     }

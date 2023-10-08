@@ -29,7 +29,7 @@ namespace OALProgramControl
                 SetVariable = SuperScope.FindSetReferencingVariableByName(this.VariableName);
                 if (SetVariable == null)
                 {
-                    return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
+                    return Error("XEC1130", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
                 }
 
                 SetVariableClassName = SetVariable.ClassName;
@@ -40,25 +40,25 @@ namespace OALProgramControl
                 EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
                 if (Variable == null)
                 {
-                    return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
+                    return Error("XEC1131", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
+                    return Error("XEC1132", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
                 if (Attribute == null)
                 {
-                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
+                    return Error("XEC1133", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
                 }
 
                 // We need to check if it is list
                 if (!"[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
                 {
-                    return Error(ErrorMessage.RemovingFromNotList(this.VariableName + "." + this.AttributeName, Attribute.Type));
+                    return Error("XEC1134", ErrorMessage.RemovingFromNotList(this.VariableName + "." + this.AttributeName, Attribute.Type));
                 }
 
                 SetVariableClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
@@ -66,7 +66,7 @@ namespace OALProgramControl
                 ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
+                    return Error("XEC1135", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
             }
 
@@ -81,14 +81,14 @@ namespace OALProgramControl
                 )
             )
             {
-                return Error(ErrorMessage.RemovingFromInvalidTypeList(itemType, SetVariableClassName));
+                return Error("XEC1136", ErrorMessage.RemovingFromInvalidTypeList(itemType, SetVariableClassName));
             }
 
             String IDValue = this.Item.Evaluate(SuperScope, OALProgram.ExecutionSpace);
 
             if (!EXETypes.IsValidReferenceValue(IDValue, SetVariableClassName))
             {
-                return Error(ErrorMessage.InvalidReference(Item.ToCode(), IDValue));
+                return Error("XEC1137", ErrorMessage.InvalidReference(Item.ToCode(), IDValue));
             }
 
             long ItemInstanceID = long.Parse(IDValue);
@@ -96,13 +96,13 @@ namespace OALProgramControl
             CDClass SetVariableClass = OALProgram.ExecutionSpace.getClassByName(SetVariableClassName);
             if (SetVariableClass == null)
             {
-                return Error(ErrorMessage.ClassNotFound(SetVariableClassName, OALProgram));
+                return Error("XEC1138", ErrorMessage.ClassNotFound(SetVariableClassName, OALProgram));
             }
 
             CDClassInstance Instance = SetVariableClass.GetInstanceByID(ItemInstanceID);
             if (Instance == null)
             {
-                return Error(ErrorMessage.InstanceNotFound(ItemInstanceID, SetVariableClass));
+                return Error("XEC1139", ErrorMessage.InstanceNotFound(ItemInstanceID, SetVariableClass));
             }
 
             if (this.AttributeName == null)

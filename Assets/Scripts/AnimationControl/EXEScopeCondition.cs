@@ -78,18 +78,18 @@ namespace OALProgramControl
 
             if (this.Condition == null)
             {
-                return Error(ErrorMessage.ConditionInIfStatementNotSet());
+                return Error("XEC1144", ErrorMessage.ConditionInIfStatementNotSet());
             }
 
             String ConditionResult = this.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
 
             if (ConditionResult == null)
             {
-                return Error(ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
+                return Error("XEC1145", ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
             }
             if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
             {
-                return Error(ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
+                return Error("XEC1146", ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
             }
             Boolean IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
 
@@ -112,7 +112,7 @@ namespace OALProgramControl
                 {
                     if (CurrentElif.Condition == null)
                     {
-                        return Error(ErrorMessage.ConditionInIfStatementNotSet());
+                        return Error("XEC1147", ErrorMessage.ConditionInIfStatementNotSet());
                     }
 
                     ConditionResult = CurrentElif.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
@@ -120,11 +120,11 @@ namespace OALProgramControl
 
                     if (ConditionResult == null)
                     {
-                        return Error(ErrorMessage.FailedExpressionEvaluation(CurrentElif.Condition, this.SuperScope));
+                        return Error("XEC1148", ErrorMessage.FailedExpressionEvaluation(CurrentElif.Condition, this.SuperScope));
                     }
                     if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
                     {
-                        return Error(ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
+                        return Error("XEC1149", ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
                     }
                     IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
                     

@@ -36,14 +36,14 @@ namespace OALProgramControl
 
             if (this.RelationshipSelection == null)
             {
-                return Error(ErrorMessage.NoRelationshipSelectionOnSelectByRelationship());
+                return Error("XEC1097", ErrorMessage.NoRelationshipSelectionOnSelectByRelationship());
             }
 
             string className = this.RelationshipSelection.GetLastClassName();
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(className);
             if (Class == null)
             {
-                return Error(ErrorMessage.ClassNotFound(className, OALProgram));
+                return Error("XEC1098", ErrorMessage.ClassNotFound(className, OALProgram));
             }
             
             CDClassInstance ClassInstance = null; // This is important if we have AttributeName
@@ -62,7 +62,7 @@ namespace OALProgramControl
                         && className != refVariable.ClassName
                     )
                     {
-                        return Error(ErrorMessage.InvalidAssignment("", className, this.VariableName, refVariable.ClassName));
+                        return Error("XEC1099", ErrorMessage.InvalidAssignment("", className, this.VariableName, refVariable.ClassName));
                     }
 
                     EXEReferencingSetVariable setVariable = SuperScope.FindSetReferencingVariableByName(this.VariableName);
@@ -74,7 +74,7 @@ namespace OALProgramControl
                         className != setVariable.ClassName
                     )
                     {
-                        return Error(ErrorMessage.InvalidAssignment("", className, this.VariableName, refVariable.ClassName));
+                        return Error("XEC1100", ErrorMessage.InvalidAssignment("", className, this.VariableName, refVariable.ClassName));
                     }
                 }
             }
@@ -84,19 +84,19 @@ namespace OALProgramControl
                 EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
                 if (Variable == null)
                 {
-                    return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
+                    return Error("XEC1101", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
                 }
 
                 CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                 if (VariableClass == null)
                 {
-                    return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
+                    return Error("XEC1102", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                 }
 
                 CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
                 if (Attribute == null)
                 {
-                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
+                    return Error("XEC1103", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
                 }
 
                 // We need to check the corresponding type of attribute
@@ -104,24 +104,24 @@ namespace OALProgramControl
                 {
                     if (!Attribute.Type.Equals(className + "[]"))
                     {
-                        return Error(ErrorMessage.AssignNewListToVariableHoldingListOfAnotherType(this.VariableName + "." + this.AttributeName, Attribute.Type.Replace("[]", ""), className));
+                        return Error("XEC1104", ErrorMessage.AssignNewListToVariableHoldingListOfAnotherType(this.VariableName + "." + this.AttributeName, Attribute.Type.Replace("[]", ""), className));
                     }
 
                     if (EXECommandQuerySelect.CardinalityAny.Equals(this.Cardinality))
                     {
-                        return Error(ErrorMessage.SelectingAnyIntoAnArray());
+                        return Error("XEC1105", ErrorMessage.SelectingAnyIntoAnArray());
                     }
                 }
                 else
                 {
                     if (!Attribute.Type.Equals(className))
                     {
-                        return Error(ErrorMessage.InvalidAssignment("irrelevant", className, this.VariableName + "." + this.AttributeName, Attribute.Type));
+                        return Error("XEC1106", ErrorMessage.InvalidAssignment("irrelevant", className, this.VariableName + "." + this.AttributeName, Attribute.Type));
                     }
 
                     if (EXECommandQuerySelect.CardinalityMany.Equals(this.Cardinality))
                     {
-                        return Error(ErrorMessage.SelectingManyIntoAReference());
+                        return Error("XEC1107", ErrorMessage.SelectingManyIntoAReference());
                     }
                 }
 
@@ -129,7 +129,7 @@ namespace OALProgramControl
                 ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                 if (ClassInstance == null)
                 {
-                    return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
+                    return Error("XEC1108", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                 }
             }
 
@@ -137,7 +137,7 @@ namespace OALProgramControl
             List<long> SelectedIds = this.RelationshipSelection.Evaluate(OALProgram, SuperScope);
             if (SelectedIds == null)
             {
-                return Error(ErrorMessage.FailedRetrievingAllClassInstanceIds(Class));
+                return Error("XEC1109", ErrorMessage.FailedRetrievingAllClassInstanceIds(Class));
             }
 
             // Now let's evaluate the condition
@@ -163,7 +163,7 @@ namespace OALProgramControl
                     if(!EXETypes.IsValidValue(ConditionResult, EXETypes.BooleanTypeName))
                     {
                         SuperScope.DestroyReferencingVariable(TempSelectedVarName);
-                        return Error(ErrorMessage.InvalidValueForType(string.Format("Condition in WHERE clause evaluated to '{0}'", ConditionResult), EXETypes.BooleanTypeName));
+                        return Error("XEC1110", ErrorMessage.InvalidValueForType(string.Format("Condition in WHERE clause evaluated to '{0}'", ConditionResult), EXETypes.BooleanTypeName));
                     }
 
                     if (EXETypes.BooleanTrue.Equals(ConditionResult))
@@ -247,7 +247,7 @@ namespace OALProgramControl
             }
             else
             {
-                return Error(ErrorMessage.UnknownSelectCardinality(this.Cardinality));
+                return Error("XEC1111", ErrorMessage.UnknownSelectCardinality(this.Cardinality));
             }
 
             return Success();

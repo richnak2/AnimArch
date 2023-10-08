@@ -27,7 +27,7 @@ namespace OALProgramControl
                 ArgumentValue = this.Arguments[i].Evaluate(SuperScope, OALProgram.ExecutionSpace);
                 if (ArgumentValue == null)
                 {
-                    return Error(ErrorMessage.FailedExpressionEvaluation(this.Arguments[i], this.SuperScope));
+                    return Error("XEC1140", ErrorMessage.FailedExpressionEvaluation(this.Arguments[i], this.SuperScope));
                 }
 
                 if (this.Arguments[i].IsReference())
@@ -35,7 +35,7 @@ namespace OALProgramControl
                     ArgumentType = SuperScope.DetermineVariableType(this.Arguments[i].AccessChain(), OALProgram.ExecutionSpace);
                     if (ArgumentType == null)
                     {
-                        return Error(ErrorMessage.FailedExpressionTypeDetermination(string.Join(".", this.Arguments[i].AccessChain())));
+                        return Error("XEC1141", ErrorMessage.FailedExpressionTypeDetermination(string.Join(".", this.Arguments[i].AccessChain())));
                     }
                 }
                 // It must be primitive, not reference
@@ -44,7 +44,7 @@ namespace OALProgramControl
                     ArgumentType = EXETypes.DetermineVariableType("", ArgumentValue);
                     if (ArgumentType == null)
                     {
-                        return Error(ErrorMessage.FailedExpressionTypeDetermination(ArgumentValue));
+                        return Error("XEC1142", ErrorMessage.FailedExpressionTypeDetermination(ArgumentValue));
                     }
                 }
 
@@ -61,7 +61,7 @@ namespace OALProgramControl
                 }
                 else
                 {
-                    return Error(ErrorMessage.PrintValueMustBePrimitive());
+                    return Error("XEC1143", ErrorMessage.PrintValueMustBePrimitive());
                 }
             }
 

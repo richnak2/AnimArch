@@ -39,21 +39,21 @@ namespace OALProgramControl
 
             if (Reference == null)
             {
-                return Error(ErrorMessage.VariableNotFound(this.InstanceName, this.SuperScope));
+                return Error("XEC1030", ErrorMessage.VariableNotFound(this.InstanceName, this.SuperScope));
             }
 
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(Reference.ClassName);
 
             if (Class == null)
             {
-                return Error(ErrorMessage.ClassNotFound(Reference.ClassName, OALProgram));
+                return Error("XEC1031", ErrorMessage.ClassNotFound(Reference.ClassName, OALProgram));
             }
 
             Class = Class.GetInstanceClassByIDRecursiveDownward(Reference.ReferencedInstanceId);
 
             if (Class == null)
             {
-                return Error(ErrorMessage.InstanceNotFoundRecursive(Reference.ReferencedInstanceId, Class));
+                return Error("XEC1032", ErrorMessage.InstanceNotFoundRecursive(Reference.ReferencedInstanceId, Class));
             }
 
             long CalledID = Reference.ReferencedInstanceId;
@@ -64,14 +64,14 @@ namespace OALProgramControl
 
                 if (Attribute == null)
                 {
-                    return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, Class));
+                    return Error("XEC1033", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, Class));
                 }
 
                 CDClass AtrributeClass = OALProgram.ExecutionSpace.getClassByName(Attribute.Type);
 
                 if (AtrributeClass == null)
                 {
-                    return Error(ErrorMessage.ClassNotFound(Attribute.Type, OALProgram));
+                    return Error("XEC1034", ErrorMessage.ClassNotFound(Attribute.Type, OALProgram));
                 }
 
                 CalledID = long.Parse(Class.GetInstanceByID(Reference.ReferencedInstanceId).State[Attribute.Name]);
@@ -84,7 +84,7 @@ namespace OALProgramControl
 
             if (Method == null)
             {
-                return Error(ErrorMessage.MethodNotFoundOnClass(this.CalledMethod, Class));
+                return Error("XEC1035", ErrorMessage.MethodNotFoundOnClass(this.CalledMethod, Class));
             }
 
             EXEScopeMethod MethodCode = Method.ExecutableCode;
@@ -123,7 +123,7 @@ namespace OALProgramControl
                     )
                 )
                 {
-                    return Error(ErrorMessage.UnresolvedParameterValue(Class.Name, Method.Name, Parameter.Name, this.Parameters[i].ToCode()));
+                    return Error("XEC1036", ErrorMessage.UnresolvedParameterValue(Class.Name, Method.Name, Parameter.Name, this.Parameters[i].ToCode()));
                 }
 
                 if (EXETypes.IsPrimitive(Parameter.Type))
@@ -132,7 +132,7 @@ namespace OALProgramControl
 
                     if (!EXETypes.IsValidValue(Value, Parameter.Type))
                     {
-                        return Error(ErrorMessage.InvalidParameterValue(Class.Name, Method.Name, Parameter.Name, Parameter.Type, Value));
+                        return Error("XEC1037", ErrorMessage.InvalidParameterValue(Class.Name, Method.Name, Parameter.Name, Parameter.Type, Value));
                     }
 
                     MethodCode.AddVariable(new EXEPrimitiveVariable(Parameter.Name, Value, Parameter.Type));
@@ -143,14 +143,14 @@ namespace OALProgramControl
                     CDClass ClassDefinition = OALProgram.ExecutionSpace.getClassByName(className);
                     if (ClassDefinition == null)
                     {
-                        return Error(ErrorMessage.ClassNotFound(className, OALProgram)); ;
+                        return Error("XEC1038", ErrorMessage.ClassNotFound(className, OALProgram)); ;
                     }
 
                     String Values = this.Parameters[i].Evaluate(this.SuperScope, OALProgram.ExecutionSpace);
 
                     if (!EXETypes.IsValidReferenceValue(Values, Parameter.Type))
                     {
-                        return Error(ErrorMessage.InvalidReference(string.Format("Parameter '{0}' of method '{1}' of class '{2}'", Parameter.Name, Method.Name, Class.Name), Values));
+                        return Error("XEC1039", ErrorMessage.InvalidReference(string.Format("Parameter '{0}' of method '{1}' of class '{2}'", Parameter.Name, Method.Name, Class.Name), Values));
                     }
 
                     long[] IDs = String.Empty.Equals(Values)
@@ -163,7 +163,7 @@ namespace OALProgramControl
                         ClassInstance = ClassDefinition.GetInstanceByID(ID);
                         if (ClassInstance == null)
                         {
-                            return Error(ErrorMessage.InstanceNotFoundRecursive(ID, ClassDefinition));
+                            return Error("XEC1040", ErrorMessage.InstanceNotFoundRecursive(ID, ClassDefinition));
                         }
                     }
 
@@ -183,14 +183,14 @@ namespace OALProgramControl
                     CDClass ClassDefinition = OALProgram.ExecutionSpace.getClassByName(Parameter.Type);
                     if (ClassDefinition == null)
                     {
-                        return Error(ErrorMessage.ClassNotFound(Parameter.Type, OALProgram));
+                        return Error("XEC1041", ErrorMessage.ClassNotFound(Parameter.Type, OALProgram));
                     }
 
                     string Value = Parameters[i].Evaluate(this.SuperScope, OALProgram.ExecutionSpace);
 
                     if (!EXETypes.IsValidReferenceValue(Value, Parameter.Type))
                     {
-                        return Error(ErrorMessage.InvalidReference(string.Format("Parameter '{0}' of method '{1}' of class '{2}'", Parameter.Name, Method.Name, Class.Name), Value));
+                        return Error("XEC1042", ErrorMessage.InvalidReference(string.Format("Parameter '{0}' of method '{1}' of class '{2}'", Parameter.Name, Method.Name, Class.Name), Value));
                     }
 
                     long ID = long.Parse(Value);
@@ -198,7 +198,7 @@ namespace OALProgramControl
                     CDClassInstance ClassInstance = ClassDefinition.GetInstanceByIDRecursiveDownward(ID);
                     if (ClassInstance == null)
                     {
-                        return Error(ErrorMessage.InstanceNotFoundRecursive(ID, ClassDefinition));
+                        return Error("XEC1043", ErrorMessage.InstanceNotFoundRecursive(ID, ClassDefinition));
                     }
 
                     MethodCode.AddVariable(new EXEReferencingVariable(Parameter.Name, ClassDefinition.Name, ID));

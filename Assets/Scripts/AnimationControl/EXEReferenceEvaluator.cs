@@ -28,38 +28,38 @@ namespace OALProgramControl
             EXEReferencingVariable ReferencingVariable = Scope.FindReferencingVariableByName(ReferencingVariableName);
             if (ReferencingVariable == null)
             {
-                return EXEExecutionResult.Error(ErrorMessage.VariableNotFound(ReferencingVariableName, Scope));
+                return EXEExecutionResult.Error("XEC1166", ErrorMessage.VariableNotFound(ReferencingVariableName, Scope));
             }
 
             CDClass Class = OALProgram.ExecutionSpace.getClassByName(ReferencingVariable.ClassName);
             if (Class == null)
             {
-                return EXEExecutionResult.Error(ErrorMessage.ClassNotFound(ReferencingVariable.ClassName, OALProgram));
+                return EXEExecutionResult.Error("XEC1167", ErrorMessage.ClassNotFound(ReferencingVariable.ClassName, OALProgram));
             }
 
             CDClassInstance ClassInstance = Class.GetInstanceByID(ReferencingVariable.ReferencedInstanceId);
             if (ClassInstance == null)
             {
-                return EXEExecutionResult.Error(ErrorMessage.InstanceNotFound(ReferencingVariable.ReferencedInstanceId, Class));
+                return EXEExecutionResult.Error("XEC1168", ErrorMessage.InstanceNotFound(ReferencingVariable.ReferencedInstanceId, Class));
             }
 
             //TODO: Typ attributu nemoze byt ReferenceTypeName alebo UnitializedTypeName ci ?
             CDAttribute Attribute = Class.GetAttributeByName(AttributeName);
             if (Attribute == null)
             {
-                return EXEExecutionResult.Error(ErrorMessage.AttributeNotFoundOnClass(AttributeName, Class));
+                return EXEExecutionResult.Error("XEC1169", ErrorMessage.AttributeNotFoundOnClass(AttributeName, Class));
             }
 
             if (!EXETypes.CanBeAssignedToAttribute(AttributeName, Attribute.Type, NewValueType))
             {
-                return EXEExecutionResult.Error(ErrorMessage.InvalidAssignment(NewValue, NewValueType, ReferencingVariableName + "." + AttributeName, Attribute.Type));
+                return EXEExecutionResult.Error("XEC1170", ErrorMessage.InvalidAssignment(NewValue, NewValueType, ReferencingVariableName + "." + AttributeName, Attribute.Type));
             }
 
             if (EXETypes.IsPrimitive(Attribute.Type))
             {
                 if (!EXETypes.IsValidValue(NewValue, Attribute.Type))
                 {
-                    return EXEExecutionResult.Error(ErrorMessage.InvalidValueForType(NewValue, Attribute.Type));
+                    return EXEExecutionResult.Error("XEC1171", ErrorMessage.InvalidValueForType(NewValue, Attribute.Type));
                 }
 
                 return ClassInstance.SetAttribute(AttributeName, EXETypes.AdjustAssignedValue(Attribute.Type, NewValue));
@@ -70,12 +70,12 @@ namespace OALProgramControl
                 CDClass AttributeClass = OALProgram.ExecutionSpace.getClassByName(className);
                 if (AttributeClass == null)
                 {
-                    return EXEExecutionResult.Error(ErrorMessage.ClassNotFound(className, OALProgram));
+                    return EXEExecutionResult.Error("XEC1172", ErrorMessage.ClassNotFound(className, OALProgram));
                 }
 
                 if (!EXETypes.IsValidReferenceValue(NewValue, Attribute.Type))
                 {
-                    return EXEExecutionResult.Error(ErrorMessage.InvalidReference(ReferencingVariableName + "." + AttributeName, NewValue ));
+                    return EXEExecutionResult.Error("XEC1173", ErrorMessage.InvalidReference(ReferencingVariableName + "." + AttributeName, NewValue ));
                 }
 
                 long[] IDs = String.Empty.Equals(NewValue) ? new long[] { } : NewValue.Split(',').Select(id => long.Parse(id)).ToArray();
@@ -86,7 +86,7 @@ namespace OALProgramControl
                     Instance = AttributeClass.GetInstanceByID(ID);
                     if (Instance == null)
                     {
-                        return EXEExecutionResult.Error(ErrorMessage.InstanceNotFound(ID, AttributeClass));
+                        return EXEExecutionResult.Error("XEC1174", ErrorMessage.InstanceNotFound(ID, AttributeClass));
                     }
                 }
 
@@ -97,18 +97,18 @@ namespace OALProgramControl
                 CDClass AttributeClass = OALProgram.ExecutionSpace.getClassByName(Attribute.Type);
                 if (AttributeClass == null)
                 {
-                    return EXEExecutionResult.Error(ErrorMessage.ClassNotFound(AttributeClass.Name, OALProgram));
+                    return EXEExecutionResult.Error("XEC1175", ErrorMessage.ClassNotFound(AttributeClass.Name, OALProgram));
                 }
 
                 CDClass NewValueClass = OALProgram.ExecutionSpace.getClassByName(NewValueType);
                 if (NewValueClass == null)
                 {
-                    return EXEExecutionResult.Error(ErrorMessage.ClassNotFound(NewValueClass.Name, OALProgram));
+                    return EXEExecutionResult.Error("XEC1176", ErrorMessage.ClassNotFound(NewValueClass.Name, OALProgram));
                 }
 
                 if (!EXETypes.IsValidReferenceValue(NewValue, AttributeClass.Name))
                 {
-                    return EXEExecutionResult.Error(ErrorMessage.InvalidReference(ReferencingVariableName + "." + AttributeName, NewValue));
+                    return EXEExecutionResult.Error("XEC1177", ErrorMessage.InvalidReference(ReferencingVariableName + "." + AttributeName, NewValue));
                 }
 
                 long IDValue = long.Parse(NewValue);
@@ -116,13 +116,13 @@ namespace OALProgramControl
                 CDClassInstance Instance = NewValueClass.GetInstanceByID(IDValue);
                 if (Instance == null)
                 {
-                    return EXEExecutionResult.Error(ErrorMessage.InstanceNotFound(IDValue, AttributeClass));
+                    return EXEExecutionResult.Error("XEC1178", ErrorMessage.InstanceNotFound(IDValue, AttributeClass));
                 }
 
                 return ClassInstance.SetAttribute(AttributeName, NewValue);
             }
 
-            return EXEExecutionResult.Error(ErrorMessage.AttributeNotFoundOnClass(AttributeName, Class));
+            return EXEExecutionResult.Error("XEC1179", ErrorMessage.AttributeNotFoundOnClass(AttributeName, Class));
         }     
     }
 }

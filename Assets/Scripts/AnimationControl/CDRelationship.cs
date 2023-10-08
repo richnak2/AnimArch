@@ -79,7 +79,7 @@ namespace OALProgramControl
                 }
             }
 
-            return EXEExecutionResult.Error(ErrorMessage.RelationNotFound(Instance1Id, Instance2Id, this));
+            return EXEExecutionResult.Error("XEC1164", ErrorMessage.RelationNotFound(Instance1Id, Instance2Id, this));
         }
         public void ClearRelationships()
         {

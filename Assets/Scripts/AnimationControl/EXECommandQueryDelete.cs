@@ -27,36 +27,36 @@ namespace OALProgramControl
                     CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
                     if (VariableClass == null)
                     {
-                        return Error(ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
+                        return Error("XEC1063", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
                     }
 
                     CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
                     if (Attribute == null)
                     {
-                        return Error(ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
+                        return Error("XEC1064", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
                     }
 
                     if ("[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
                     {
-                        return Error(ErrorMessage.IsNotArray(Variable.Name + "." + Attribute.Name));
+                        return Error("XEC1065", ErrorMessage.IsNotArray(Variable.Name + "." + Attribute.Name));
                     }
 
                     CDClassInstance ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
                     if (ClassInstance == null)
                     {
-                        return Error(ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
+                        return Error("XEC1066", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
                     }
 
                     if (!long.TryParse(ClassInstance.GetAttributeValue(this.AttributeName), out VariableInstanceId))
                     {
-                        return Error(ErrorMessage.InvalidReference(this.VariableName + "." + this.AttributeName, ClassInstance.GetAttributeValue(this.AttributeName)));
+                        return Error("XEC1067", ErrorMessage.InvalidReference(this.VariableName + "." + this.AttributeName, ClassInstance.GetAttributeValue(this.AttributeName)));
                     }
 
                     // We need to check if Attribute.Type is type of some class, not primitive type
                     CDClass AttributeClass = OALProgram.ExecutionSpace.getClassByName(Attribute.Type);
                     if (AttributeClass == null)
                     {
-                        return Error(ErrorMessage.ClassNotFound(Attribute.Type, OALProgram));
+                        return Error("XEC1068", ErrorMessage.ClassNotFound(Attribute.Type, OALProgram));
                     }
 
                     VariableClassName = Attribute.Type;
@@ -69,11 +69,11 @@ namespace OALProgramControl
                 }
                 else
                 {
-                    return Error(ErrorMessage.FailedObjectDestruction(VariableName + (AttributeName == null ? string.Empty : ("." + AttributeName))));
+                    return Error("XEC1069", ErrorMessage.FailedObjectDestruction(VariableName + (AttributeName == null ? string.Empty : ("." + AttributeName))));
                 }
             }
 
-            return Error(ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
+            return Error("XEC1070", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
         }
         public override string ToCodeSimple()
         {

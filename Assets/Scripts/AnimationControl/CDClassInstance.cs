@@ -49,7 +49,7 @@ namespace OALProgramControl
             }
             else
             {
-                result = EXEExecutionResult.Error(ErrorMessage.AttributeNotFoundOnClassInstance(name, this));
+                result = EXEExecutionResult.Error("XEC1163", ErrorMessage.AttributeNotFoundOnClassInstance(name, this));
             }
 
             return result;

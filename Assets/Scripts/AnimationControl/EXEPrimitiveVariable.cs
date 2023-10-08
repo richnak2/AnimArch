@@ -37,12 +37,12 @@ namespace OALProgramControl
 
             if (EXETypes.UniqueIDTypeName.Equals(name))
             {
-                return EXEExecutionResult.Error(ErrorMessage.AssignmentToReadonlyProperty(name));
+                return EXEExecutionResult.Error("XEC1161", ErrorMessage.AssignmentToReadonlyProperty(name));
             }
 
             if (EXETypes.UnitializedName.Equals(this.Type))
             {
-                return EXEExecutionResult.Error(ErrorMessage.ExistingUndefinedVariable(this.Name));
+                return EXEExecutionResult.Error("XEC1162", ErrorMessage.ExistingUndefinedVariable(this.Name));
             }
 
             String NewValueType = EXETypes.DetermineVariableType(name, NewValue);
@@ -68,7 +68,7 @@ namespace OALProgramControl
                 return EXEExecutionResult.Success();
             }
 
-            return EXEExecutionResult.Error(ErrorMessage.InvalidAssignment(NewValue, NewValueType, this.Name, this.Type));
+            return EXEExecutionResult.Error("XEC1165", ErrorMessage.InvalidAssignment(NewValue, NewValueType, this.Name, this.Type));
         }
     }
 }

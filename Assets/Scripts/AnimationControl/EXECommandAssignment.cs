@@ -27,7 +27,7 @@ namespace OALProgramControl
             String AssignedValue = this.AssignedExpression.Evaluate(SuperScope, OALProgram.ExecutionSpace);
             if (AssignedValue == null)
             {
-                return Error(ErrorMessage.FailedExpressionEvaluation(AssignedExpression, this.SuperScope));
+                return Error("XEC1010", ErrorMessage.FailedExpressionEvaluation(AssignedExpression, this.SuperScope));
             }
 
             // We find the type of AssignedExpression
@@ -37,7 +37,7 @@ namespace OALProgramControl
                 AssignedType = SuperScope.DetermineVariableType(this.AssignedExpression.AccessChain(), OALProgram.ExecutionSpace);
                 if (AssignedType == null)
                 {
-                    return Error(ErrorMessage.FailedExpressionTypeDetermination(AssignedExpression));
+                    return Error("XEC1011", ErrorMessage.FailedExpressionTypeDetermination(AssignedExpression));
                 }
             }
             // It must be primitive, not reference
@@ -46,7 +46,7 @@ namespace OALProgramControl
                 AssignedType = EXETypes.DetermineVariableType("", AssignedValue);
                 if (AssignedType == null)
                 {
-                    return Error(ErrorMessage.FailedExpressionTypeDetermination(AssignedValue));
+                    return Error("XEC1012", ErrorMessage.FailedExpressionTypeDetermination(AssignedValue));
                 }
             }
 
@@ -62,13 +62,13 @@ namespace OALProgramControl
                     // If PrimitiveVariable exists and its type is UNDEFINED
                     if (EXETypes.UnitializedName.Equals(PrimitiveVariable.Type))
                     {
-                        return Error(ErrorMessage.ExistingUndefinedVariable(PrimitiveVariable.Name));
+                        return Error("XEC1013", ErrorMessage.ExistingUndefinedVariable(PrimitiveVariable.Name));
                     }
 
                     // If we are assigning value of type A to variable of type B
                     if (!Object.Equals(PrimitiveVariable.Type, AssignedType))
                     {
-                        return Error(ErrorMessage.InvalidAssignment(AssignedValue, AssignedType, PrimitiveVariable.Name, PrimitiveVariable.Type));
+                        return Error("XEC1014", ErrorMessage.InvalidAssignment(AssignedValue, AssignedType, PrimitiveVariable.Name, PrimitiveVariable.Type));
                     }
 
                     // If the types don't match, this fails and returns false
@@ -81,19 +81,19 @@ namespace OALProgramControl
                     CDClass Class = OALProgram.ExecutionSpace.getClassByName(ReferencingVariable.ClassName);
                     if (Class == null)
                     {
-                        return Error(ErrorMessage.ClassNotFound(ReferencingVariable.ClassName, OALProgram));
+                        return Error("XEC1015", ErrorMessage.ClassNotFound(ReferencingVariable.ClassName, OALProgram));
                     }
 
 
                     if (!this.AssignedExpression.IsReference() || !string.Equals(ReferencingVariable.ClassName, AssignedType))
                     {
-                        return Error(ErrorMessage.InvalidAssignment(AssignedExpression.ToCode(), AssignedType, ReferencingVariable.Name, ReferencingVariable.ClassName));
+                        return Error("XEC1016", ErrorMessage.InvalidAssignment(AssignedExpression.ToCode(), AssignedType, ReferencingVariable.Name, ReferencingVariable.ClassName));
                     }
 
 
                     if (!EXETypes.IsValidReferenceValue(AssignedValue, Class.Name))
                     {
-                        return Error(ErrorMessage.InvalidReference(AssignedExpression.ToCode(), AssignedValue));
+                        return Error("XEC1017", ErrorMessage.InvalidReference(AssignedExpression.ToCode(), AssignedValue));
                     }
 
                     long IDValue = long.Parse(AssignedValue);
@@ -101,7 +101,7 @@ namespace OALProgramControl
                     CDClassInstance ClassInstance = Class.GetInstanceByID(IDValue);
                     if (ClassInstance == null)
                     {
-                        return Error(ErrorMessage.InstanceNotFound(IDValue, Class));
+                        return Error("XEC1018", ErrorMessage.InstanceNotFound(IDValue, Class));
                     }
 
                     ReferencingVariable.ReferencedInstanceId = IDValue;
@@ -112,18 +112,18 @@ namespace OALProgramControl
                     CDClass Class = OALProgram.ExecutionSpace.getClassByName(SetVariable.ClassName);
                     if (Class == null)
                     {
-                        return Error(ErrorMessage.ClassNotFound(SetVariable.ClassName, OALProgram));
+                        return Error("XEC1019", ErrorMessage.ClassNotFound(SetVariable.ClassName, OALProgram));
                     }
 
                     if (!this.AssignedExpression.IsReference() || !string.Equals(SetVariable.ClassName, AssignedType))
                     {
-                        return Error(ErrorMessage.InvalidAssignment(AssignedExpression.ToCode(), AssignedType, SetVariable.Name, SetVariable.ClassName));
+                        return Error("XEC1020", ErrorMessage.InvalidAssignment(AssignedExpression.ToCode(), AssignedType, SetVariable.Name, SetVariable.ClassName));
                     }
 
 
                     if (!EXETypes.IsValidReferenceValue(AssignedValue, Class.Name))
                     {
-                        return Error(ErrorMessage.InvalidReference(AssignedExpression.ToCode(), AssignedValue));
+                        return Error("XEC1021", ErrorMessage.InvalidReference(AssignedExpression.ToCode(), AssignedValue));
                     }
 
                     long[] IDs = String.Empty.Equals(AssignedValue) ? new long[] { } : AssignedValue.Split(',').Select(id => long.Parse(id)).ToArray();
@@ -134,7 +134,7 @@ namespace OALProgramControl
                         ClassInstance = Class.GetInstanceByID(ID);
                         if (ClassInstance == null)
                         {
-                            return Error(ErrorMessage.InstanceNotFound(ID, Class));
+                            return Error("XEC1022", ErrorMessage.InstanceNotFound(ID, Class));
                         }
                     }
 
@@ -152,7 +152,7 @@ namespace OALProgramControl
                     // Its type is UNDEFINED
                     if (EXETypes.UnitializedName.Equals(AssignedType))
                     {
-                        return Error(ErrorMessage.CreatingUndefinedVariable(VariableName));
+                        return Error("XEC1023", ErrorMessage.CreatingUndefinedVariable(VariableName));
                     }
                     else if (EXETypes.IsPrimitive(AssignedType))
                     {
@@ -169,12 +169,12 @@ namespace OALProgramControl
                         CDClass Class = OALProgram.ExecutionSpace.getClassByName(className);
                         if (Class == null)
                         {
-                            return Error(ErrorMessage.ClassNotFound(className, OALProgram));
+                            return Error("XEC1024", ErrorMessage.ClassNotFound(className, OALProgram));
                         }
 
                         if (!EXETypes.IsValidReferenceValue(AssignedValue, AssignedType))
                         {
-                            return Error(ErrorMessage.InvalidReference(this.VariableName, AssignedValue));
+                            return Error("XEC1025", ErrorMessage.InvalidReference(this.VariableName, AssignedValue));
                         }
 
                         long[] IDs = String.Empty.Equals(AssignedValue) ? new long[] { } : AssignedValue.Split(',').Select(id => long.Parse(id)).ToArray();
@@ -185,7 +185,7 @@ namespace OALProgramControl
                             ClassInstance = Class.GetInstanceByID(ID);
                             if (ClassInstance == null)
                             {
-                                return Error(ErrorMessage.InstanceNotFound(ID, Class));
+                                return Error("XEC1026", ErrorMessage.InstanceNotFound(ID, Class));
                             }
                         }
 
@@ -205,12 +205,12 @@ namespace OALProgramControl
                         CDClass Class = OALProgram.ExecutionSpace.getClassByName(AssignedType);
                         if (Class == null)
                         {
-                            return Error(ErrorMessage.ClassNotFound(AssignedType, OALProgram));
+                            return Error("XEC1027", ErrorMessage.ClassNotFound(AssignedType, OALProgram));
                         }
 
                         if (!EXETypes.IsValidReferenceValue(AssignedValue, AssignedType))
                         {
-                            return Error(ErrorMessage.InvalidReference(this.VariableName, AssignedValue));
+                            return Error("XEC1028", ErrorMessage.InvalidReference(this.VariableName, AssignedValue));
                         }
 
                         long ID = long.Parse(AssignedValue);
@@ -218,7 +218,7 @@ namespace OALProgramControl
                         CDClassInstance ClassInstance = Class.GetInstanceByID(ID);
                         if (ClassInstance == null)
                         {
-                            return Error(ErrorMessage.InstanceNotFound(ID, Class));
+                            return Error("XEC1029", ErrorMessage.InstanceNotFound(ID, Class));
                         }
 
                         EXEExecutionResult Result = SuperScope.AddVariable(new EXEReferencingVariable(this.VariableName, Class.Name, ID));

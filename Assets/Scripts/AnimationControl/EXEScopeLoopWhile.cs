@@ -30,11 +30,11 @@ namespace OALProgramControl
 
             if (ConditionResult == null)
             {
-                return Error(ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
+                return Error("XEC1158", ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
             }
             if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
             {
-                return Error(ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
+                return Error("XEC1159", ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
             }
 
             bool ConditionTrue = EXETypes.BooleanTrue.Equals(ConditionResult);
@@ -42,7 +42,7 @@ namespace OALProgramControl
             {
                 if (IterationCounter >= EXEExecutionGlobals.LoopIterationCap)
                 {
-                    return Error(ErrorMessage.IterationLoopThresholdCrossed(EXEExecutionGlobals.LoopIterationCap));
+                    return Error("XEC1160", ErrorMessage.IterationLoopThresholdCrossed(EXEExecutionGlobals.LoopIterationCap));
                 }
                 else
                 {

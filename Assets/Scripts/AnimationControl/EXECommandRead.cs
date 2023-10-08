@@ -30,7 +30,7 @@ namespace OALProgramControl
                 Result = this.Prompt.Evaluate(SuperScope, OALProgram.ExecutionSpace);
                 if (Result == null)
                 {
-                    return Error(ErrorMessage.FailedExpressionEvaluation(Prompt, this.SuperScope));
+                    return Error("XEC1123", ErrorMessage.FailedExpressionEvaluation(Prompt, this.SuperScope));
                 }
 
                 String ResultType = EXETypes.DetermineVariableType("", Result);
@@ -43,7 +43,7 @@ namespace OALProgramControl
                 }
                 else if (!EXETypes.UnitializedName.Equals(ResultType))
                 {
-                    return Error(ErrorMessage.InvalidValueForType(ResultType, EXETypes.StringTypeName));
+                    return Error("XEC1124", ErrorMessage.InvalidValueForType(ResultType, EXETypes.StringTypeName));
                 }
             }
 
@@ -62,7 +62,7 @@ namespace OALProgramControl
 
                 if (!int.TryParse(Value, out _))
                 {
-                    return Error(ErrorMessage.InvalidValueForType(Value, EXETypes.IntegerTypeName));
+                    return Error("XEC1125", ErrorMessage.InvalidValueForType(Value, EXETypes.IntegerTypeName));
                 }
             }
             else if (this.ReadType.Contains("real"))
@@ -75,7 +75,7 @@ namespace OALProgramControl
                 }
                 catch (Exception e)
                 {
-                    return Error(ErrorMessage.InvalidValueForType(Value, EXETypes.RealTypeName));
+                    return Error("XEC1126", ErrorMessage.InvalidValueForType(Value, EXETypes.RealTypeName));
                 }
             }
             else if (this.ReadType.Contains("bool"))
@@ -84,7 +84,7 @@ namespace OALProgramControl
 
                 if (!EXETypes.BooleanTrue.Equals(Value) && !EXETypes.BooleanFalse.Equals(Value))
                 {
-                    return Error(ErrorMessage.InvalidValueForType(Value, EXETypes.BooleanTypeName));
+                    return Error("XEC1127", ErrorMessage.InvalidValueForType(Value, EXETypes.BooleanTypeName));
                 }
             }
             // It must be String
@@ -103,13 +103,13 @@ namespace OALProgramControl
                     // If PrimitiveVariable exists and its type is UNDEFINED
                     if (EXETypes.UnitializedName.Equals(PrimitiveVariable.Type))
                     {
-                        return Error(ErrorMessage.ExistingUndefinedVariable(PrimitiveVariable.Name));
+                        return Error("XEC1128", ErrorMessage.ExistingUndefinedVariable(PrimitiveVariable.Name));
                     }
 
                     // We need to compare primitive types
                     if (!Object.Equals(PrimitiveVariable.Type, ValueType))
                     {
-                        return Error(ErrorMessage.InvalidAssignment(Value, ValueType, PrimitiveVariable.Name, PrimitiveVariable.Type));
+                        return Error("XEC1129", ErrorMessage.InvalidAssignment(Value, ValueType, PrimitiveVariable.Name, PrimitiveVariable.Type));
                     }
 
                     // If the types don't match, this fails and returns false

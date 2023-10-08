@@ -20,9 +20,9 @@ namespace OALProgramControl
         {
             return EXEExecutionResult.Success(this);
         }
-        protected EXEExecutionResult Error(string errorMessage)
+        protected EXEExecutionResult Error(string errorCode, string errorMessage)
         {
-            return EXEExecutionResult.Error(errorMessage, this);
+            return EXEExecutionResult.Error(errorMessage, errorCode, this);
         }
         public EXEScope GetSuperScope()
         {
