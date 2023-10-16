@@ -1,1 +1,0 @@
-{"Code":"create object instance newclass_1_1 of NewClass_1;\nnewclass_1_1.dsa();\n","AnimationName":"sad","MethodsCodes":[{"Name":"NewClass_0","Methods":[{"Name":"sad","Code":"create object instance newclass_1_1 of NewClass_1;\nnewclass_1_1.dsa();\n"}]}]}

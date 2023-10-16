@@ -1,2 +1,0 @@
-call from Component_Componentovany::operationB() to Leaf::operationB() across R2;
-

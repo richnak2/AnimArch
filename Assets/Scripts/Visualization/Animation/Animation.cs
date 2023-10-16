@@ -134,6 +134,11 @@ namespace Visualization.Animation
 
                 Debug.Log("Command " + i++ + executionSuccess.ToString());
 
+                if (!executionSuccess.IsSuccess)
+                {
+                    break;
+                }
+
                 if (!(CurrentCommand is EXECommandMulti))
                 {
                     EXEScopeMethod CurrentMethodScope = CurrentCommand.GetTopLevelScope() as EXEScopeMethod;

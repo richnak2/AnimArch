@@ -1,3 +1,0 @@
-call from OfferVisitor::visitSilverCreditCard() to HotelOfferVisitor::visitSilverCreditCard() across R14;
-call from GasOfferVisitor::visitSilverCreditCard() to BronzeCreditCard::accept() across R3;
-

@@ -1,3 +1,0 @@
-call from GasOfferVisitor::visitBronzeCreditCard() to BronzeCreditCard::accept() across R3;
-call from BronzeCreditCard::accept() to CreditCard::accept() across R2;
-

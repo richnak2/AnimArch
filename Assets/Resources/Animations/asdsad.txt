@@ -1,4 +1,0 @@
-call from GasOfferVisitor::visitSilverCreditCard() to OfferVisitor::visitSilverCreditCard() across R8;
-call from GoldCreditCard::getGoldCardValue() to OfferVisitor::visitSilverCreditCard() across R11;
-call from BronzeCreditCard::getBronzeCardValue() to CreditCard::accept() across R2;
-

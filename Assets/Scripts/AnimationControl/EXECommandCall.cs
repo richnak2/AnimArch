@@ -217,10 +217,11 @@ namespace OALProgramControl
             (
                 _CallerMethodInfo.ClassName,
                 _CallerMethodInfo.MethodName,
-                IsSelfCall ? null : _RelationshipInfo.RelationshipName,
+                IsSelfCall ? null : _RelationshipInfo?.RelationshipName,
                 this.CalledClass,
                 this.CalledMethod,
-                SuperScope.FindReferencingVariableByName(InstanceName).ReferencedInstanceId,
+                SuperScope.VariableNameExists(InstanceName) ?
+                    SuperScope.FindReferencingVariableByName(InstanceName).ReferencedInstanceId : -1,
                 IsSelfCall
             );
         }
