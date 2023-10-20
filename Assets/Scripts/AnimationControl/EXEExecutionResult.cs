@@ -11,6 +11,18 @@ namespace OALProgramControl
         public readonly string ErrorCode;
         public EXECommand OwningCommand { get; set; }
 
+        // When a command is being executed, sometimes it will require another command to be executed first (e.g. when its parameter is a method call).
+        // Such "Pending" command is to be stored here.
+        public EXECommand PendingCommand { get; set; }
+        public EXEValueBase ReturnedOutput { get; set; }
+        public bool IsDone
+        {
+            get
+            {
+                return PendingCommand == null;
+            }
+        }
+
         private EXEExecutionResult(bool success, EXECommand owningCommand) : this(success, string.Empty, string.Empty, owningCommand) { }
         private EXEExecutionResult(bool success, string errorMessage, string errorCode, EXECommand owningCommand)
         {
@@ -18,6 +30,8 @@ namespace OALProgramControl
             this.ErrorMessage = errorMessage;
             this.ErrorCode = errorCode;
             this.OwningCommand = owningCommand;
+            this.PendingCommand = null;
+            this.ReturnedOutput = null;
         }
 
         public static EXEExecutionResult Success()

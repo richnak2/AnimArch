@@ -11,10 +11,10 @@ namespace OALProgramControl
         public String Cardinality { get; set; }
         public String VariableName { get; set; }
         public String AttributeName { get; set; }
-        public EXEASTNode WhereCondition { get; set; }
+        public EXEASTNodeBase WhereCondition { get; set; }
         public EXERelationshipSelection RelationshipSelection {get; set;}
 
-        public EXECommandQuerySelectRelatedBy(String Cardinality, String VariableName, String AttributeName, EXEASTNode WhereCondition, EXERelationshipSelection RelationshipSelection)
+        public EXECommandQuerySelectRelatedBy(String Cardinality, String VariableName, String AttributeName, EXEASTNodeBase WhereCondition, EXERelationshipSelection RelationshipSelection)
         {
             this.Cardinality = Cardinality;
             this.VariableName = VariableName;

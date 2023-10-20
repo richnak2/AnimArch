@@ -22,7 +22,7 @@ namespace OALProgramControl
             {
                 if (_ExecutableCode == null)
                 {
-                    _ExecutableCode = new EXEScopeMethod() { MethodDefinition = new MethodCallRecord(OwningClass.Name, Name)};
+                    _ExecutableCode = new EXEScopeMethod(this);
                 }
 
                 return (EXEScopeMethod)_ExecutableCode.CreateClone();
@@ -32,7 +32,7 @@ namespace OALProgramControl
                 _ExecutableCode = value;
                 if (_ExecutableCode != null)
                 {
-                    _ExecutableCode.MethodDefinition = new MethodCallRecord(this.OwningClass.Name, this.Name);
+                    _ExecutableCode.MethodDefinition = this;
                 }
             }
         }

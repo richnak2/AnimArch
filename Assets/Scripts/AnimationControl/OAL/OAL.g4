@@ -126,6 +126,7 @@ returnCommand
 
 expr
     :   NUM | NAME | BOOL | STRING
+    |   exeCommandCall
     |   NAME '.' NAME
     |   'cardinality ' instanceHandle
     |   ('empty ' | 'not_empty ') instanceHandle

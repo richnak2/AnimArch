@@ -11,63 +11,33 @@ namespace OALProgramControl
     {
         public long UniqueID { get; }
         // Attributes
-        public Dictionary<string, string> State { get; }
+        public Dictionary<string, EXEValueBase> State { get; }
+        public readonly CDClass OwningClass;
 
-        public CDClassInstance(long UniqueID, List<CDAttribute> attributes)
+        public CDClassInstance(long UniqueID, List<CDAttribute> attributes, CDClass owningClass)
         {
-           this.State = new Dictionary<string, string>();
+           this.State = new Dictionary<string, EXEValueBase>();
 
             foreach (CDAttribute Attribute in attributes)
             {
-                this.State.Add(Attribute.Name, EXETypes.UnitializedName);
+                this.State.Add(Attribute.Name, Tuple mu);
             }
 
             this.UniqueID = UniqueID;
-            this.State.Add(EXETypes.UniqueIDAttributeName, UniqueID.ToString());
+            this.State.Add(EXETypes.UniqueIDAttributeName, new EXEValueInt(UniqueID.ToString()));
+
+            this.OwningClass = owningClass;
         }
 
-        public String GetAttributeValue(String name)
+        public EXEValueBase GetAttributeValue(String name)
         {
-            String Result = null;
+            EXEValueBase Result = null;
             if (this.State.ContainsKey(name))
             {
                 Result = this.State[name];
             }
 
             return Result;
-        }
-
-        public EXEExecutionResult SetAttribute(String name, String value)
-        {
-            EXEExecutionResult result = null;
-
-            if (this.State.ContainsKey(name))
-            {
-                //Console.WriteLine("CDInstance is assigning " + value + " to its attribute " + name);
-                this.State[name] = value;
-                result = EXEExecutionResult.Success();
-            }
-            else
-            {
-                result = EXEExecutionResult.Error("XEC1163", ErrorMessage.AttributeNotFoundOnClassInstance(name, this));
-            }
-
-            return result;
-        }
-
-        public Dictionary<string, string> GetStateWithoutID()
-        {
-            Dictionary<string, string> State = new Dictionary<string, string>();
-            
-            foreach (var Item in this.State)
-            {
-                if (!EXETypes.UniqueIDAttributeName.Equals(Item.Key))
-                {
-                    State[Item.Key] = Item.Value;
-                }
-            }
-
-            return State;
         }
     }
 }

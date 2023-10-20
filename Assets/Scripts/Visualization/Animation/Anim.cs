@@ -95,7 +95,7 @@ namespace Visualisation.Animation
                     {
                         methodItem.Code = "";
 
-                        CDMethod Method = OALProgram.Instance.ExecutionSpace.getClassByName(className).getMethodByName(methodName);
+                        CDMethod Method = OALProgram.Instance.ExecutionSpace.getClassByName(className).GetMethodByName(methodName);
                         Method.ExecutableCode = null;
                     }
                     else

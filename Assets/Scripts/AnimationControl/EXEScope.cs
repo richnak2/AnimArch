@@ -6,19 +6,14 @@ namespace OALProgramControl
 {
     public class EXEScope : EXECommand
     {
-        private List<EXEPrimitiveVariable> PrimitiveVariables;
-        private List<EXEReferencingVariable> ReferencingVariables;
-        private List<EXEReferencingSetVariable> SetReferencingVariables;
-
+        protected readonly List<EXEVariable> LocalVariables;
         public List<EXECommand> Commands { get; protected set; }
 
         public String OALCode;
 
         public EXEScope()
         {
-            this.PrimitiveVariables = new List<EXEPrimitiveVariable>();
-            this.ReferencingVariables = new List<EXEReferencingVariable>();
-            this.SetReferencingVariables = new List<EXEReferencingSetVariable>();
+            this.LocalVariables = new List<EXEVariable>();
             this.SuperScope = null;
             this.Commands = new List<EXECommand>();
         }
@@ -219,183 +214,46 @@ namespace OALProgramControl
             return Result;
         }
 
-        public EXEExecutionResult AddVariable(EXEPrimitiveVariable Variable)
+        public EXEExecutionResult AddVariable(EXEVariable variable)
         {
-            EXEExecutionResult Result = null;
+            EXEExecutionResult Result;
 
-            if (!VariableNameExists(Variable.Name))
+            if (!VariableExists(variable.Name))
             {
-                this.PrimitiveVariables.Add(Variable);
+                this.LocalVariables.Add(variable);
                 Result = EXEExecutionResult.Success();
             }
             else
             {
-                Result = EXEExecutionResult.Error("XEC1180", ErrorMessage.CreatingExistingVariable(Variable.Name));
+                Result = EXEExecutionResult.Error("XEC1180", ErrorMessage.CreatingExistingVariable(variable.Name));
             }
 
             return Result;
         }
 
-        public EXEExecutionResult AddVariable(EXEReferencingVariable Variable)
+        public bool VariableExists(String seekedVariableName)
         {
-            EXEExecutionResult Result = null;
-
-            if (!VariableNameExists(Variable.Name))
-            {
-                this.ReferencingVariables.Add(Variable);
-                Result = EXEExecutionResult.Success();
-            }
-            else
-            {
-                Result = EXEExecutionResult.Error("XEC1181", ErrorMessage.CreatingExistingVariable(Variable.Name));
-            }
-
-            return Result;
+            return FindVariable(seekedVariableName) != null;
         }
 
-        public EXEExecutionResult AddVariable(EXEReferencingSetVariable Variable)
+        public EXEVariable FindVariable(String seekedVariableName)
         {
-            EXEExecutionResult Result = null;
+            EXEVariable result = null;
 
-            if (!VariableNameExists(Variable.Name))
+            foreach (EXEScope scope in ScopesToTop())
             {
-                this.SetReferencingVariables.Add(Variable);
-                Result = EXEExecutionResult.Success();
-            }
-            else
-            {
-                Result = EXEExecutionResult.Error("XEC1182", ErrorMessage.CreatingExistingVariable(Variable.Name));
-            }
+                result = scope.LocalVariables.Where(variable => string.Equals(seekedVariableName, variable.Name)).FirstOrDefault();
 
-            return Result;
-        }
-
-        public bool VariableNameExists(String VariableName)
-        {
-            bool Result = false;
-            if (FindPrimitiveVariableByName(VariableName) != null)
-            {
-                Result = true;
-            }
-            else if (FindReferencingVariableByName(VariableName) != null)
-            {
-                Result = true;
-            }
-            else if (FindSetReferencingVariableByName(VariableName) != null)
-            {
-                Result = true;
+                if (result != null)
+                {
+                    break;
+                }
             }
 
-            return Result;
-        }
-
-        public string FindVariable(String VariableName)
-        {
-            Object Result = FindPrimitiveVariableByName(VariableName);
-            if (Result != null)
-            {
-                return ((EXEPrimitiveVariable) Result).Name;
-            }
-
-            Result = FindReferencingVariableByName(VariableName);
-            if (Result != null)
-            {
-                return ((EXEReferencingVariable) Result).Name;
-            }
-            
-            Result = FindSetReferencingVariableByName(VariableName);
-            if (Result != null)
-            {
-                return ((EXEReferencingSetVariable) Result).Name;
-            }
-
-            return null;
+            return result;
         }
 
         // SetUloh1 - this method is done. Do the same with two similar methods below it
-        public EXEPrimitiveVariable FindPrimitiveVariableByName(String Name)
-        {
-            EXEPrimitiveVariable Result = null;
-            EXEScope CurrentScope = this;
-            while (CurrentScope != null)
-            {
-                foreach (EXEPrimitiveVariable CurrentVariable in CurrentScope.PrimitiveVariables)
-                {
-                    if (CurrentVariable.Name == Name)
-                    {
-                        Result = CurrentVariable;
-                        break;
-                    }
-                }
-
-                if (Result != null)
-                {
-                    break;
-                }
-
-                CurrentScope = CurrentScope.SuperScope;
-            }
-
-            return Result;
-        }
-
-        public EXEReferenceHandle FindReferenceHandleByName(String Name)
-        {
-            EXEReferenceHandle Result = FindReferencingVariableByName(Name);
-            if (Result == null)
-            {
-                Result = FindSetReferencingVariableByName(Name);
-            }
-
-            return Result;
-        }
-
-        public EXEReferencingVariable FindReferencingVariableByName(String Name)
-        {
-            EXEReferencingVariable Result = null;
-            EXEScope CurrentScope = this;
-
-            while (CurrentScope != null)
-            {
-                foreach (EXEReferencingVariable CurrentVariable in CurrentScope.ReferencingVariables)
-                {
-                    if (String.Equals(CurrentVariable.Name, Name))
-                    {
-                        Result = CurrentVariable;
-                        break;
-                    }
-                }
-
-                if (Result != null)
-                {
-                    break;
-                }
-
-                CurrentScope = CurrentScope.SuperScope;
-            }
-
-            return Result;
-        }
-
-        public EXEReferencingSetVariable FindSetReferencingVariableByName(String Name)
-        {
-            EXEScope CurrentScope = this;
-
-            while (CurrentScope != null)
-            {
-                foreach (EXEReferencingSetVariable ReferencingSetVariable in CurrentScope.SetReferencingVariables)
-                {
-                    if (String.Equals(ReferencingSetVariable.Name, Name))
-                    {
-                        return ReferencingSetVariable;
-                    }
-                }
-
-                CurrentScope = CurrentScope.SuperScope;
-            }
-
-            return null;
-        }
 
         public void AddCommand(EXECommand Command)
         {

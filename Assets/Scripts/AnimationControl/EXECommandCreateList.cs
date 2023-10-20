@@ -9,9 +9,9 @@ namespace OALProgramControl
         private String VariableName { get; }
         private String AttributeName { get; }
         private String ClassName { get; }
-        private List<EXEASTNode> Items { get; }
+        private List<EXEASTNodeBase> Items { get; }
 
-        public EXECommandCreateList(String VariableName, String AttributeName, String ClassName, List<EXEASTNode> Items)
+        public EXECommandCreateList(String VariableName, String AttributeName, String ClassName, List<EXEASTNodeBase> Items)
         {
             this.VariableName = VariableName;
             this.AttributeName = AttributeName;
@@ -93,7 +93,7 @@ namespace OALProgramControl
             {
                 String Result = "";
 
-                foreach (EXEASTNode item in this.Items)
+                foreach (EXEASTNodeBase item in this.Items)
                 {
                     string addedItemClassName = this.SuperScope.DetermineVariableType(item.AccessChain(), OALProgram.ExecutionSpace);
 

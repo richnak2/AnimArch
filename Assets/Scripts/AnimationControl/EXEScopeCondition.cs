@@ -8,35 +8,35 @@ namespace OALProgramControl
 {
     public class EXEScopeCondition : EXEScope
     {
-        public EXEASTNode Condition { get; set; }
+        public EXEASTNodeBase Condition { get; set; }
         private List<EXEScopeCondition> ElifScopes;
         public EXEScope ElseScope { get; set; }
 
-        public EXEScopeCondition(EXEASTNode Condition) : base()
+        public EXEScopeCondition(EXEASTNodeBase Condition) : base()
         {
             this.Condition = Condition;
             this.ElifScopes = null;
             this.ElseScope = null;
         }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition) : base(SuperScope, Commands)
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition) : base(SuperScope, Commands)
         {
             this.Condition = Condition;
             this.ElifScopes = null;
             this.ElseScope = null;
         }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition, EXEScope ElseScope) : base(SuperScope, Commands)
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition, EXEScope ElseScope) : base(SuperScope, Commands)
         {
             this.Condition = Condition;
             this.ElifScopes = null;
             this.ElseScope = ElseScope;
         }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition, EXEScopeCondition[] ElifScopes) : base(SuperScope, Commands)
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition, EXEScopeCondition[] ElifScopes) : base(SuperScope, Commands)
         {
             this.Condition = Condition;
             this.ElifScopes = ElifScopes.ToList();
             this.ElseScope = null;
         }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition, EXEScopeCondition[] ElifScopes, EXEScope ElseScope) : base(SuperScope, Commands)
+        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition, EXEScopeCondition[] ElifScopes, EXEScope ElseScope) : base(SuperScope, Commands)
         {
             this.Condition = Condition;
             this.ElifScopes = ElifScopes.ToList();

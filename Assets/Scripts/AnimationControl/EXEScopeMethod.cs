@@ -5,10 +5,14 @@ namespace OALProgramControl
 {
     public class EXEScopeMethod : EXEScope
     {
-        public MethodCallRecord MethodDefinition;
+        public CDMethod MethodDefinition;
 
         public EXEScopeMethod() : base()
         {
+        }
+        public EXEScopeMethod(CDMethod methodDefinition) : base()
+        {
+            this.MethodDefinition = methodDefinition;
         }
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
@@ -27,7 +31,7 @@ namespace OALProgramControl
 
         protected override EXEScope CreateDuplicateScope()
         {
-            return new EXEScopeMethod() { MethodDefinition = MethodDefinition };
+            return new EXEScopeMethod(this.MethodDefinition);
         }
     }
 }

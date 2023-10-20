@@ -93,7 +93,7 @@ namespace OALProgramControl
         {
             long NewInstanceID = EXEInstanceIDSeed.GetInstance().GenerateID();
 
-            CDClassInstance Instance = new CDClassInstance(NewInstanceID, this.Attributes);
+            CDClassInstance Instance = new CDClassInstance(NewInstanceID, this.Attributes, this);
             this.Instances.Add(Instance);
 
             return Instance;
@@ -163,7 +163,7 @@ namespace OALProgramControl
             return Result;
         }
 
-        public CDMethod getMethodByName(String MethodName)
+        public CDMethod GetMethodByName(String MethodName)
         {
             CDMethod Result = null;
 

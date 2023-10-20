@@ -181,7 +181,7 @@ namespace OALProgramControl
                         Stringify(variableType)
                     );
         }
-        public static string FailedExpressionEvaluation(EXEASTNode expression, EXEScope currentScope)
+        public static string FailedExpressionEvaluation(EXEASTNodeBase expression, EXEScope currentScope)
         {
             return string
                     .Format
@@ -191,7 +191,7 @@ namespace OALProgramControl
                         VariableNameList(currentScope)
                     );
         }
-        public static string FailedExpressionTypeDetermination(EXEASTNode expression)
+        public static string FailedExpressionTypeDetermination(EXEASTNodeBase expression)
         {
             return FailedExpressionTypeDetermination(expression.ToCode());
         }

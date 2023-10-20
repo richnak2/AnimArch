@@ -15,7 +15,7 @@ namespace OALProgramControl
         public String ClassName { get; set; }
         public String VariableName { get; set; }
         public String AttributeName { get; set; }
-        public EXEASTNode WhereCondition { get; set; }
+        public EXEASTNodeBase WhereCondition { get; set; }
 
         public EXECommandQuerySelect(String Cardinality, String ClassName, String VariableName, String AttributeName)
         {
@@ -25,7 +25,7 @@ namespace OALProgramControl
             this.AttributeName = AttributeName;
             this.WhereCondition = null;
         }
-        public EXECommandQuerySelect(String Cardinality, String ClassName, String VariableName, String AttributeName, EXEASTNode WhereCondition)
+        public EXECommandQuerySelect(String Cardinality, String ClassName, String VariableName, String AttributeName, EXEASTNodeBase WhereCondition)
         {
             this.Cardinality = Cardinality;
             this.ClassName = ClassName;

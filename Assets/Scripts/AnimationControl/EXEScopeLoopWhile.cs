@@ -8,15 +8,15 @@ namespace OALProgramControl
 {
     public class EXEScopeLoopWhile : EXEScope
     {
-        public EXEASTNode Condition;
+        public EXEASTNodeBase Condition;
         private int IterationCounter;
 
-        public EXEScopeLoopWhile(EXEASTNode Condition) : base()
+        public EXEScopeLoopWhile(EXEASTNodeBase Condition) : base()
         {
             this.Condition = Condition;
             this.IterationCounter = 0;
         }
-        public EXEScopeLoopWhile(EXEScope SuperScope, EXECommand[] Commands, EXEASTNode Condition) : base(SuperScope, Commands)
+        public EXEScopeLoopWhile(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition) : base(SuperScope, Commands)
         {
             this.Condition = Condition;
             this.IterationCounter = 0;

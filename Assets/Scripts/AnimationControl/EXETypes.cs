@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OALProgramControl
@@ -15,6 +16,7 @@ namespace OALProgramControl
         public const String StringTypeName = "string";
         public const String DateTypeName = "date";
         public const String UniqueIDTypeName = "unique_ID";
+        public const String SelfReferenceName = "self";
         //public const String ReferenceTypeName = "reference";
 
         public const String BooleanTrue = "TRUE";
@@ -23,9 +25,9 @@ namespace OALProgramControl
         public static String UnitializedName = "UNDEFINED";
         public const String UniqueIDAttributeName = "ID";
 
-        private static readonly List<String> IntNames = new List<string>(new String[] { "int", "integer", "long", "long int", "long integer"});
+        private static readonly List<String> IntNames = new List<string>(new String[] { "int", "integer", "long", "long int", "long integer" });
         private static readonly List<String> RealNames = new List<string>(new String[] { "real", "float", "double", "decimal", "floating", "floating point" });
-        private static readonly List<String> BoolNames = new List<string>(new String[] { "bool", "boolean"});
+        private static readonly List<String> BoolNames = new List<string>(new String[] { "bool", "boolean" });
         private static readonly List<String> StringNames = new List<string>(new String[] { "string", "char[]", "char", "List<char>" });
         private static readonly List<String> PrimitiveNames = new List<string>(new String[] { IntegerTypeName, RealTypeName, BooleanTypeName, StringTypeName, DateTypeName, UniqueIDTypeName });
         private static readonly Dictionary<Char, String> EscapeChars = new Dictionary<Char, String>() { { '\"', "\"" }, { '\'', "\'" }, { 't', "\t" }, { 'n', "\n" }, { '\\', "\\" } };
@@ -33,6 +35,90 @@ namespace OALProgramControl
         public static bool IsPrimitive(String typeName)
         {
             return PrimitiveNames.Contains(typeName.ToLower());
+        }
+
+        public static EPrimitiveType DeterminePrimitiveType(string value)
+        {
+            if (IsValidIntValue(value))
+            {
+                return EPrimitiveType.Integer;
+            }
+
+            if (IsValidRealValue(value))
+            {
+                return EPrimitiveType.Real;
+            }
+
+            if (IsValidBoolValue(value))
+            {
+                return EPrimitiveType.Bool;
+            }
+
+            if (IsValidStringValue(value))
+            {
+                return EPrimitiveType.String;
+            }
+
+            return EPrimitiveType.NotPrimitive;
+        }
+        public static EXEValuePrimitive DeterminePrimitiveValue(string value)
+        {
+            EPrimitiveType primitiveType = DeterminePrimitiveType(value);
+
+            switch (primitiveType)
+            {
+                case EPrimitiveType.Integer:
+                    return new EXEValueInt(value);
+                case EPrimitiveType.Real:
+                    return new EXEValueReal(value);
+                case EPrimitiveType.String:
+                    return new EXEValueString(value);
+                case EPrimitiveType.Bool:
+                    return new EXEValueBool(value);
+                case EPrimitiveType.NotPrimitive:
+                    return null;
+                default:
+                    throw new Exception(string.Format("Invalid value of enum EPrimitiveType type: \"{0}\".", primitiveType));
+            }
+        }
+        public static bool DetermineBoolValue(string value)
+        {
+            if (IsBoolTrue(value))
+            {
+                return true;
+            }
+            else if (IsBoolFalse(value))
+            {
+                return false;
+            }
+            else
+            {
+                throw new ArgumentException(string.Format("\"{0}\" is not a valid bool value.", value));
+            }
+        }
+        public static bool IsValidBoolValue(string value)
+        {
+            return IsBoolTrue(value) || IsBoolFalse(value);
+        }
+        public static bool IsBoolTrue(string value)
+        {
+            return BooleanTrue.Equals(value.ToUpper());
+        }
+        public static bool IsBoolFalse(string value)
+        {
+            return BooleanFalse.Equals(value.ToUpper());
+        }
+        public static bool IsValidIntValue(string value)
+        {
+            return Regex.IsMatch(value, @"^((0)|([1-9]+[0-9]*))$");
+        }
+        public static bool IsValidRealValue(string value)
+        {
+            return Regex.IsMatch(value, @"^(((0)|([1-9]+[0-9]*))\.[0-9]+)$");
+        }
+        public static bool IsValidStringValue(string value)
+        {
+            return value[0] == '"' && value[value.Length - 1] == '"';
         }
         public static String DetermineVariableType(String name, String value)
         {

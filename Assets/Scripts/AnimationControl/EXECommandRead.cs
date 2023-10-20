@@ -11,9 +11,9 @@ namespace OALProgramControl
         private String VariableName { get; }
         private String AttributeName { get; }
         private String ReadType { get; }
-        private EXEASTNode Prompt { get; }  // Must be String type
+        private EXEASTNodeBase Prompt { get; }  // Must be String type
 
-        public EXECommandRead(String VariableName, String AttributeName, String ReadType, EXEASTNode Prompt)
+        public EXECommandRead(String VariableName, String AttributeName, String ReadType, EXEASTNodeBase Prompt)
         {
             this.VariableName = VariableName;
             this.AttributeName = AttributeName;

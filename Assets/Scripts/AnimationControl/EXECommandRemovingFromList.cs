@@ -8,9 +8,9 @@ namespace OALProgramControl
     {
         private String VariableName { get; }
         private String AttributeName { get; }
-        private EXEASTNode Item { get; }
+        private EXEASTNodeBase Item { get; }
 
-        public EXECommandRemovingFromList(String VariableName, String AttributeName, EXEASTNode Item)
+        public EXECommandRemovingFromList(String VariableName, String AttributeName, EXEASTNodeBase Item)
         {
             this.VariableName = VariableName;
             this.AttributeName = AttributeName;

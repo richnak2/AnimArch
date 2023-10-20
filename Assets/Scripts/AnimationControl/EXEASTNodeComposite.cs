@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace OALProgramControl
 {
-    public class EXEASTNodeComposite : EXEASTNode
+    public class EXEASTNodeComposite : EXEASTNodeBase
     {
         public String Operation { get; set; }
-        public List<EXEASTNode> Operands { get; }
+        public List<EXEASTNodeBase> Operands { get; }
 
         public static List<List<String>> LeveledOperators = new List<List<String>>(new List<String>[] {
             new List<String> (new String[] { "and", "or"}),
@@ -27,15 +27,15 @@ namespace OALProgramControl
         public EXEASTNodeComposite(String Operation)
         {
             this.Operation = Operation;
-            this.Operands = new List<EXEASTNode>();
+            this.Operands = new List<EXEASTNodeBase>();
         }
-        public EXEASTNodeComposite(String Operation, EXEASTNode[] Operands)
+        public EXEASTNodeComposite(String Operation, EXEASTNodeBase[] Operands)
         {
             this.Operation = Operation;
-            this.Operands = new List<EXEASTNode>(Operands);
+            this.Operands = new List<EXEASTNodeBase>(Operands);
         }
 
-        public void AddOperand(EXEASTNode Operand)
+        public void AddOperand(EXEASTNodeBase Operand)
         {
             if (Operand == null)
             {
@@ -60,7 +60,7 @@ namespace OALProgramControl
             if (Evaluator.IsSimpleOperator(this.Operation))
             {
                 List<String> EvaluatedOperands = new List<String>();
-                foreach (EXEASTNode Operand in this.Operands)
+                foreach (EXEASTNodeBase Operand in this.Operands)
                 {
                     EvaluatedOperands.Add(Operand.Evaluate(Scope, ExecutionSpace));
                 }
@@ -205,7 +205,7 @@ namespace OALProgramControl
             // If we just calculate with ints, reals, bools, strings
             if (Evaluator.IsSimpleOperator(this.Operation))
             {
-                foreach (EXEASTNode Operand in this.Operands)
+                foreach (EXEASTNodeBase Operand in this.Operands)
                 {
                     if (!Operand.VerifyReferences(Scope, ExecutionSpace))
                     {
@@ -312,7 +312,7 @@ namespace OALProgramControl
             else if (this.Operands.Count > 1)
             {
                 Result = "";
-                foreach (EXEASTNode Operand in this.Operands)
+                foreach (EXEASTNodeBase Operand in this.Operands)
                 {
                     if (!"".Equals(Result))
                     {

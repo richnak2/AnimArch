@@ -515,7 +515,7 @@ namespace Visualization.UI
                     .Instance
                     .ExecutionSpace
                     .getClassByName(className)
-                    .getMethodByName(methodName)
+                    .GetMethodByName(methodName)
                     .ExecutableCode
                     .ToFormattedCode();
             PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetSourceCodeText(sourceCode);

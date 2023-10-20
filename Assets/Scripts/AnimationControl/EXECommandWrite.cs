@@ -9,9 +9,9 @@ namespace OALProgramControl
 {
     public class EXECommandWrite : EXECommand
     {
-        private List<EXEASTNode> Arguments { get; }
+        private List<EXEASTNodeBase> Arguments { get; }
 
-        public EXECommandWrite(List<EXEASTNode> Arguments)
+        public EXECommandWrite(List<EXEASTNodeBase> Arguments)
         {
             this.Arguments = Arguments;
         }

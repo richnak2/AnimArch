@@ -81,7 +81,7 @@ namespace Visualization.Animation
 
                 foreach (AnimMethod methodItem in classItem.Methods)
                 {
-                    CDMethod Method = Class.getMethodByName(methodItem.Name);
+                    CDMethod Method = Class.GetMethodByName(methodItem.Name);
 
                     //ak je methodItem.Code nie je prazdny retazec tak parsuj
                     //if (!string.IsNullOrWhiteSpace(methodItem.Code))        //toto asi uz nebude potrebne
@@ -101,7 +101,7 @@ namespace Visualization.Animation
                 Debug.LogError(string.Format("Error, Class \"{0}\" not found", startClassName ?? "NULL"));
             }
 
-            CDMethod startMethod = startClass.getMethodByName(startMethodName);
+            CDMethod startMethod = startClass.GetMethodByName(startMethodName);
             if (startMethod == null)
             {
                 Debug.LogError(string.Format("Error, Method \"{0}\" not found", startMethodName ?? "NULL"));
@@ -109,7 +109,7 @@ namespace Visualization.Animation
 
             //najdeme startMethod z daneho class stringu a method stringu, ak startMethod.ExecutableCode je null tak return null alebo yield break
             EXEScopeMethod MethodExecutableCode = Program.ExecutionSpace.getClassByName(startClassName)
-                .getMethodByName(startMethodName).ExecutableCode;
+                .GetMethodByName(startMethodName).ExecutableCode;
             if (MethodExecutableCode == null)
             {
                 Debug.Log("Warning, EXEScopeMethod of selected Method is null");
@@ -161,9 +161,9 @@ namespace Visualization.Animation
 
         private IEnumerator AnimateCommand(EXECommand CurrentCommand)
         {
-            if (CurrentCommand.GetType() == typeof(EXECommandCall))
+            if (CurrentCommand.GetType() == typeof(EXECommandCallBase))
             {
-                var exeCommandCall = (EXECommandCall)CurrentCommand;
+                var exeCommandCall = (EXECommandCallBase)CurrentCommand;
                 long callerInstanceId = -1;
 
                 var oalCall = exeCommandCall.CreateOALCall();
@@ -192,9 +192,9 @@ namespace Visualization.Animation
 
                 foreach (EXECommand command in multicallCommand.Commands)
                 {
-                    if (command is EXECommandCall)
+                    if (command is EXECommandCallBase)
                     {
-                        StartCoroutine(ResolveCallFunct(((EXECommandCall)command).CreateOALCall()));
+                        StartCoroutine(ResolveCallFunct(((EXECommandCallBase)command).CreateOALCall()));
                     }
                     else if (command is EXECommandQueryCreate)
                     {
@@ -202,7 +202,7 @@ namespace Visualization.Animation
                     }
                 }
 
-                foreach (EXECommandCall callCommand in multicallCommand.Commands.Where(command => command is EXECommandCall))
+                foreach (EXECommandCallBase callCommand in multicallCommand.Commands.Where(command => command is EXECommandCallBase))
                 {
                     ObjectDiagram od = DiagramPool.Instance.ObjectDiagram;
                     ObjectInDiagram start = null;

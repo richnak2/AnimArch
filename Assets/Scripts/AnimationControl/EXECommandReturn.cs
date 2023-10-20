@@ -3,9 +3,9 @@ namespace OALProgramControl
 {
     public class EXECommandReturn : EXECommand
     {
-        private EXEASTNode Expression { get; }
+        private EXEASTNodeBase Expression { get; }
 
-        public EXECommandReturn(EXEASTNode Expression)
+        public EXECommandReturn(EXEASTNodeBase Expression)
         {
             this.Expression = Expression;
         }

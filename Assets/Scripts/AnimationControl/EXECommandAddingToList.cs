@@ -8,9 +8,9 @@ namespace OALProgramControl
     {
         public String VariableName { get; private set; }
         public String AttributeName { get; private set; }
-        public EXEASTNode Item { get; private set; }
+        public EXEASTNodeBase Item { get; private set; }
 
-        public EXECommandAddingToList(String VariableName, String AttributeName, EXEASTNode Item)
+        public EXECommandAddingToList(String VariableName, String AttributeName, EXEASTNodeBase Item)
         {
             this.VariableName = VariableName;
             this.AttributeName = AttributeName;
