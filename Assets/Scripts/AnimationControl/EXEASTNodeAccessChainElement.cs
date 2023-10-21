@@ -43,5 +43,10 @@
 
             return this.NextNode.Evaluate(currentScope, currentProgramInstance);
         }
+
+        public EXEASTNodeAccessChainElement Clone()
+        {
+            return new EXEASTNodeAccessChainElement(this.NodeValue.Clone());
+        }
     }
 }

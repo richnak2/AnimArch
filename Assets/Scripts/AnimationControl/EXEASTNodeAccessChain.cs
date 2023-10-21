@@ -27,6 +27,18 @@ namespace OALProgramControl
             return FirstElement.Evaluate(currentScope, currentProgramInstance);
         }
 
+        public IEnumerable<EXEASTNodeAccessChainElement> GetElements()
+        {
+            EXEASTNodeAccessChainElement currentElement = this.FirstElement;
+
+            while (currentElement != null)
+            {
+                yield return currentElement;
+
+                currentElement = currentElement.NextNode;
+            }
+        }
+
         public void AddElement(EXEASTNodeBase elementValue)
         {
             EXEASTNodeAccessChainElement element = new EXEASTNodeAccessChainElement(elementValue);
@@ -53,6 +65,18 @@ namespace OALProgramControl
         public override string ToCode()
         {
             throw new System.NotImplementedException();
+        }
+
+        public override EXEASTNodeBase Clone()
+        {
+            EXEASTNodeAccessChain result = new EXEASTNodeAccessChain();
+
+            foreach (EXEASTNodeAccessChainElement chainElement in this.GetElements())
+            {
+                result.AddElement(chainElement.NodeValue.Clone());
+            }
+
+            return result;
         }
     }
 }

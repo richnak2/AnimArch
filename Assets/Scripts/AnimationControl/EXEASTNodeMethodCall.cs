@@ -8,11 +8,28 @@ namespace OALProgramControl
     {
         public readonly string MethodName;
         public readonly List<EXEASTNodeBase> Arguments;
+        public CDMethod Method { get; private set; }
+        public EXEValueBase OwningObject { get; private set; }
+        private EXEExecutionResult evaluationResult { get; set; }
+        public override EXEExecutionResult EvaluationResult
+        {
+            get => this.EvaluationResult;
+            set
+            {
+                this.evaluationResult = value;
+
+                if (this.evaluationResult != null && this.evaluationResult.IsDone)
+                {
+                    this.EvaluationState = EEvaluationState.HasBeenEvaluated;
+                }
+            }
+        }
 
         public EXEASTNodeMethodCall(string methodName)
         {
             this.MethodName = methodName;
             this.Arguments = new List<EXEASTNodeBase>();
+            this.Method = null;
         }
 
         public override EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null)
@@ -24,43 +41,49 @@ namespace OALProgramControl
 
             this.EvaluationState = EEvaluationState.IsBeingEvaluated;
 
-            CDMethod method = null;
-
             if (valueContext == null || valueContext.CurrentValue == null)
             {
                 // We want to access a method of the current method owning object
                 EXEVariable selfVariable = currentScope.FindVariable(EXETypes.SelfReferenceName);
-                if (selfVariable.Value.MethodExists(this.MethodName))
-                {
-                    // Method exists
-                    method = selfVariable.Value.FindMethod(this.MethodName);
-                }
-                else
-                {
-                   // Method does not exist, time to raise an error
-                   Error
-                }
+                OwningObject = selfVariable.Value;
             }
             else
             {
                 // We want to access a method of an object given by the context
-                if (valueContext.CurrentValue.MethodExists(this.MethodName))
-                {
-                    // Method exists
-                    method = valueContext.CurrentValue.FindMethod(this.MethodName);
-                }
-                else
-                {
-                    // Method does not exist, time to raise an error
-                    Error
-                }
+                OwningObject = valueContext.CurrentValue;
+            }
+
+            if (OwningObject.MethodExists(this.MethodName))
+            {
+                // Method exists
+                Method = OwningObject.FindMethod(this.MethodName);
+            }
+            else
+            {
+                // Method does not exist, time to raise an error
+                return EXEExecutionResult.Error(ErrorMessage.MethodNotFoundOnClass(this.MethodName, this.OwningObject.TypeName), "XEC2015");
+            }
+
+            if (this.Arguments.Count != this.Method.Parameters.Count)
+            {
+                return EXEExecutionResult.Error
+                    (
+                        ErrorMessage.InvalidParameterCount
+                        (
+                            this.Method.OwningClass.Name,
+                            this.MethodName,
+                            this.Method.Parameters.Count,
+                            this.Arguments.Count
+                        ),
+                        "XEC2016"
+                    );
             }
 
             // Now, let us evaluate the args and invoke the method
             EXEExecutionResult argumentExecutionResult;
-            foreach (EXEASTNodeBase argument in this.Arguments)
+            for (int i = 0; i < this.Arguments.Count; i++)
             {
-                argumentExecutionResult = argument.Evaluate(currentScope, currentProgramInstance);
+                argumentExecutionResult = this.Arguments[i].Evaluate(currentScope, currentProgramInstance);
 
                 if (!argumentExecutionResult.IsSuccess)
                 {
@@ -75,12 +98,27 @@ namespace OALProgramControl
                 }
 
                 // Current argument evaluation finished and did not produce an error
-                Check match of argument and parameter type
+
+                // Check if the returned value matches the expected parameter type
+                if (!EXETypes.CanBeAssignedTo(argumentExecutionResult.ReturnedOutput, this.Method.Parameters[i].Type, currentProgramInstance.ExecutionSpace))
+                {
+                    return EXEExecutionResult.Error
+                    (
+                        ErrorMessage.InvalidParameterValue
+                        (
+                            this.Method.OwningClass.Name,
+                            this.MethodName,
+                            this.Method.Parameters[i].Name,
+                            this.Method.Parameters[i].Type, argumentExecutionResult.ReturnedOutput.ToText()
+                        ),
+                        "XEC2017"
+                    );
+                }
             }
 
             // All arguments have been evaluated and without an error
             this.EvaluationResult = EXEExecutionResult.Success();
-            this.EvaluationResult.PendingCommand = new EXECommandCallPreEvaluated(this);
+            this.EvaluationResult.PendingCommand = new EXECommandCallPreEvaluated(OwningObject, this);
             return this.EvaluationResult;
         }
 
@@ -92,6 +130,11 @@ namespace OALProgramControl
         public override string ToCode()
         {
             throw new System.NotImplementedException();
+        }
+
+        public override EXEASTNodeBase Clone()
+        {
+            return new EXEASTNodeMethodCall(this.MethodName);
         }
     }
 }

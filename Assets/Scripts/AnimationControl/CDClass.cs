@@ -13,7 +13,6 @@ namespace OALProgramControl
         public List<CDMethod> Methods { get; }
         public List<CDClassInstance> Instances { get; }
         private CDClass _SuperClass { get; set; }
-
         public CDClass SuperClass
         {
             get { return _SuperClass; }
@@ -26,10 +25,10 @@ namespace OALProgramControl
                 }
             }
         }
-
         public List<CDClass> SubClasses { get; }
+        public readonly CDClassPool OwningClassPool;
 
-        public CDClass(String Name)
+        public CDClass(String Name, CDClassPool owningClassPool)
         {
             this.Name = Name;
 
@@ -42,51 +41,8 @@ namespace OALProgramControl
             this.SuperClass = null;
 
             this.SubClasses = new List<CDClass>();
-        }
 
-        public CDClass(String Name, CDAttribute[] Attributes)
-        {
-            this.Name = Name;
-
-            this.Attributes = new List<CDAttribute>(Attributes);
-
-            this.Methods = new List<CDMethod>();
-
-            this.Instances = new List<CDClassInstance>();
-
-            this.SuperClass = null;
-
-            this.SubClasses = new List<CDClass>();
-        }
-
-        public CDClass(String Name, CDMethod[] Methods)
-        {
-            this.Name = Name;
-
-            this.Attributes = new List<CDAttribute>();
-
-            this.Methods = new List<CDMethod>(Methods);
-
-            this.Instances = new List<CDClassInstance>();
-
-            this.SuperClass = null;
-
-            this.SubClasses = new List<CDClass>();
-        }
-
-        public CDClass(String Name, CDAttribute[] Attributes, CDMethod[] Methods)
-        {
-            this.Name = Name;
-
-            this.Attributes = new List<CDAttribute>(Attributes);
-
-            this.Methods = new List<CDMethod>(Methods);
-
-            this.Instances = new List<CDClassInstance>();
-
-            this.SuperClass = null;
-
-            this.SubClasses = new List<CDClass>();
+            this.OwningClassPool = owningClassPool;
         }
 
         public CDClassInstance CreateClassInstance()

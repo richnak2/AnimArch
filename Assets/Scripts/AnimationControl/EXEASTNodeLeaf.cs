@@ -8,7 +8,7 @@ namespace OALProgramControl
     {
         private String Value { get; }
 
-        public EXEASTNodeLeaf(String Value)
+        public EXEASTNodeLeaf(String Value) : base()
         {
             this.Value = Value;
         }
@@ -115,6 +115,11 @@ namespace OALProgramControl
         public override string ToCode()
         {
             throw new NotImplementedException();
+        }
+
+        public override EXEASTNodeBase Clone()
+        {
+            return new EXEASTNodeLeaf(this.Value);
         }
     }
 }

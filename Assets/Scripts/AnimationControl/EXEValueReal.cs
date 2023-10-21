@@ -6,40 +6,38 @@ namespace OALProgramControl
 {
     public class EXEValueReal : EXEValuePrimitive
     {
-        protected string WholePart;
-        protected string DecimalPart;
-        protected bool IsNegative;
+        public decimal Value { get; protected set; }
+
         public override string TypeName => EXETypes.RealTypeName;
 
         public EXEValueReal(EXEValueReal original)
         {
             CopyValues(original, this);
         }
+        public EXEValueReal(EXEValueInt value)
+        {
+            this.Value = value.Value;
+        }
         public EXEValueReal(string value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("Real value cannot be determined from null nor from an empty string.");
-            }
-
-            if (value[0] == '-')
-            {
-                this.IsNegative = true;
-                value = value.Substring(1, value.Length - 1);
-            }
-
             if (!EXETypes.IsValidRealValue(value))
             {
                 throw new ArgumentException(string.Format("\"{0}\" is not a valid real value.", value));
             }
 
-            string[] parts = value.Split(".");
-            this.WholePart = parts[0];
-            this.DecimalPart = parts[0];
+            this.Value = decimal.Parse(value);
+        }
+        public EXEValueReal(decimal value)
+        {
+            this.Value = value;
         }
         public override EXEValueBase DeepClone()
         {
             return new EXEValueReal(this);
+        }
+        public override string ToText()
+        {
+            return this.Value.ToString();
         }
         public override EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
         {
@@ -47,15 +45,206 @@ namespace OALProgramControl
         }
         public override EXEExecutionResult AssignValueTo(EXEValueReal assignmentTarget)
         {
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
             CopyValues(this, assignmentTarget);
 
             return EXEExecutionResult.Success();
         }
-        private void CopyValues(EXEValueReal source, EXEValueReal target)
+        public override EXEExecutionResult AssignValueTo(EXEValueInt assignmentTarget)
         {
-            target.WholePart = source.WholePart;
-            target.DecimalPart = source.DecimalPart;
-            target.IsNegative = source.IsNegative;
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            if (!EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger)
+            {
+                return EXEExecutionResult.Error("Assigning real to integer is not currently allowed.", "XEC2017");
+            }
+
+            EXEValueInt.CopyValues(new EXEValueInt(this.Value), assignmentTarget);
+
+            return EXEExecutionResult.Success();
+        }
+        public static void CopyValues(EXEValueReal source, EXEValueReal target)
+        {
+            target.Value = source.Value;
+        }
+        public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
+        {
+            if (!this.WasInitialized || !operand.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            EXEExecutionResult result = null;
+
+            if ("<=".Equals(operation))
+            {
+                if (operand is not EXEValueReal)
+                {
+                    if (operand is EXEValueInt)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value <= (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if (">=".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value >= (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if ("<".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value < (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if (">".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value > (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if ("==".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value == (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if ("!=".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value != (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if ("+".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueReal(this.Value + (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if ("-".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueReal(this.Value - (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if ("*".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueReal(this.Value * (operand as EXEValueReal).Value);
+                return result;
+            }
+            else if ("/".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    if (operand is EXEValueReal)
+                    {
+                        return this.ApplyOperator(operation, new EXEValueReal(operand as EXEValueInt));
+                    }
+
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueReal(this.Value / (operand as EXEValueReal).Value);
+                return result;
+            }
+
+            return base.ApplyOperator(operation, operand);
         }
     }
 }

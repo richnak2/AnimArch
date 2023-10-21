@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,19 +32,109 @@ namespace OALProgramControl
         {
             return new EXEValueString(this);
         }
+        public override string ToText()
+        {
+            return "\"" + this.Value + "\"";
+        }
         public override EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
         {
             return assignmentSource.AssignValueTo(this);
         }
         public override EXEExecutionResult AssignValueTo(EXEValueString assignmentTarget)
         {
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
             CopyValues(this, assignmentTarget);
+            this.WasInitialized = true;
 
             return EXEExecutionResult.Success();
         }
         private void CopyValues(EXEValueString source, EXEValueString target)
         {
             target.Value = source.Value;
+        }
+        public override EXEExecutionResult ApplyOperator(string operation)
+        {
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            EXEExecutionResult result = null;
+
+            if ("cardinality".Equals(operation))
+            {
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueInt(this.Value.Length);
+                return result;
+            }
+
+            return base.ApplyOperator(operation);
+        }
+        public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
+        {
+            if (!this.WasInitialized || !operand.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            EXEExecutionResult result = null;
+
+            if ("==".Equals(operation))
+            {
+                if (operand is not EXEValueString)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value == (operand as EXEValueString).Value);
+                return result;
+            }
+            else if ("!=".Equals(operation))
+            {
+                if (operand is not EXEValueString)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.Value != (operand as EXEValueString).Value);
+                return result;
+            }
+            else if ("+".Equals(operation))
+            {
+                if (operand is not EXEValueString)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueString(this.Value + (operand as EXEValueString).Value);
+                return result;
+            }
+            else if ("*".Equals(operation))
+            {
+                if (operand is not EXEValueInt)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput
+                    = new EXEValueString
+                    (
+                        Enumerable
+                            .Range(0, (int)(operand as EXEValueInt).Value)
+                            .Aggregate("", (acc, x) => acc + x)
+                    );
+                return result;
+            }
+
+            return base.ApplyOperator(operation, operand);
         }
     }
 }

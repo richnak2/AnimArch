@@ -16,9 +16,17 @@ namespace OALProgramControl
         {
             this.Value = EXETypes.DetermineBoolValue(value);
         }
+        public EXEValueBool(bool value)
+        {
+            this.Value = value;
+        }
         public override EXEValueBase DeepClone()
         {
             return new EXEValueBool(this);
+        }
+        public override string ToText()
+        {
+            return this.Value ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
         }
         public override EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
         {
@@ -26,12 +34,98 @@ namespace OALProgramControl
         }
         public override EXEExecutionResult AssignValueTo(EXEValueBool assignmentTarget)
         {
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
             CopyValues(this, assignmentTarget);
+            this.WasInitialized = true;
+
             return EXEExecutionResult.Success();
         }
         private void CopyValues(EXEValueBool source, EXEValueBool target)
         {
             target.Value = source.Value;
+        }
+        public override EXEExecutionResult ApplyOperator(string operation)
+        {
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            EXEExecutionResult result;
+
+            if ("not".Equals(operation))
+            {
+                this.Value = !this.Value;
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = this;
+                return result;
+            }
+
+            return base.ApplyOperator(operation);
+        }
+        public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
+        {
+            if (!this.WasInitialized || !operand.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            EXEExecutionResult result = base.ApplyOperator(operation, operand);
+
+            if ("or".Equals(operation))
+            {
+                if (operand is not EXEValueBool)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                this.Value = this.Value || (operand as EXEValueBool).Value;
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = this;
+                return result;
+            }
+            else if ("and".Equals(operation))
+            {
+                if (operand is not EXEValueBool)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                this.Value = this.Value && (operand as EXEValueBool).Value;
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = this;
+                return result;
+            }
+            else if ("==".Equals(operation))
+            {
+                if (operand is not EXEValueBool)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                this.Value = this.Value == (operand as EXEValueBool).Value;
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = this;
+                return result;
+            }
+            else if ("!=".Equals(operation))
+            {
+                if (operand is not EXEValueBool)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                this.Value = this.Value != (operand as EXEValueBool).Value;
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = this;
+                return result;
+            }
+
+            return base.ApplyOperator(operation, operand);
         }
     }
 }

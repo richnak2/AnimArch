@@ -22,18 +22,24 @@ namespace OALProgramControl
         public override EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
         {
             // Value has not yet been initialized, so anything can be assigned to this
-            if (ValueAfterInitialization == null)
+            if (this.ValueAfterInitialization == null)
             {
                 this.ValueAfterInitialization = assignmentSource.DeepClone();
+                this.WasInitialized = true;
                 return EXEExecutionResult.Success();
             }
 
             // Value has already been initialized, so we're typed
-            return ValueAfterInitialization.AssignValueFrom(assignmentSource);
+            return this.ValueAfterInitialization.AssignValueFrom(assignmentSource);
         }
         private void CopyValues(EXEValueUnitialized source, EXEValueUnitialized target)
         {
             target.ValueAfterInitialization = source.ValueAfterInitialization.DeepClone();
+        }
+
+        public override string ToText()
+        {
+            return EXETypes.UnitializedName;
         }
     }
 }

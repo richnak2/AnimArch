@@ -18,52 +18,7 @@ namespace OALProgramControl
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            String Result = "";
-            String ArgumentValue;
-            String ArgumentType;
-
-            for (int i = 0; i < this.Arguments.Count; i++)
-            {
-                ArgumentValue = this.Arguments[i].Evaluate(SuperScope, OALProgram.ExecutionSpace);
-                if (ArgumentValue == null)
-                {
-                    return Error("XEC1140", ErrorMessage.FailedExpressionEvaluation(this.Arguments[i], this.SuperScope));
-                }
-
-                if (this.Arguments[i].IsReference())
-                {
-                    ArgumentType = SuperScope.DetermineVariableType(this.Arguments[i].AccessChain(), OALProgram.ExecutionSpace);
-                    if (ArgumentType == null)
-                    {
-                        return Error("XEC1141", ErrorMessage.FailedExpressionTypeDetermination(string.Join(".", this.Arguments[i].AccessChain())));
-                    }
-                }
-                // It must be primitive, not reference
-                else
-                {
-                    ArgumentType = EXETypes.DetermineVariableType("", ArgumentValue);
-                    if (ArgumentType == null)
-                    {
-                        return Error("XEC1142", ErrorMessage.FailedExpressionTypeDetermination(ArgumentValue));
-                    }
-                }
-
-                //TODO: zatial to nemoze byt instancia, a ani pole instancii
-                if (EXETypes.IsPrimitive(ArgumentType) || EXETypes.UnitializedName.Equals(ArgumentType))
-                {
-                    if (EXETypes.StringTypeName.Equals(ArgumentType))
-                    {
-                        // Remove double quotes
-                        ArgumentValue = ArgumentValue.Replace("\"", "");
-                    }
-
-                    Result += ArgumentValue;
-                }
-                else
-                {
-                    return Error("XEC1143", ErrorMessage.PrintValueMustBePrimitive());
-                }
-            }
+            
 
             ConsolePanel.Instance.YieldOutput(Result);
 
@@ -90,7 +45,7 @@ namespace OALProgramControl
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandWrite(Arguments);
+            return new EXECommandWrite(Arguments.Select(argument => argument.Clone()).ToList());
         }
     }
 }

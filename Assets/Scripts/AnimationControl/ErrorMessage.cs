@@ -40,6 +40,16 @@ namespace OALProgramControl
                         MethodNameList(owningClass)
                     );
         }
+        public static string MethodNotFoundOnClass(string methodName, string owningClassName)
+        {
+            return string
+                    .Format
+                    (
+                        "Method '{0}' not found on class '{1}'.",
+                        Stringify(methodName),
+                        Stringify(owningClassName)
+                    );
+        }
         public static string AttributeNotFoundOnClassInstance(string attributeName, CDClassInstance classInstance)
         {
             return string
@@ -81,6 +91,18 @@ namespace OALProgramControl
                         id,
                         Stringify(owningClass.Name),
                         InstanceIdListRecursive(owningClass)
+                    );
+        }
+        public static string InvalidParameterCount(string className, string methodName, int expectedParamCount, int actualArgumentCount)
+        {
+            return string
+                    .Format
+                    (
+                        "Invalid count of arguments of of method '{0}' of class '{1}'. Expected {2}, provided {3}.",
+                        Stringify(methodName),
+                        Stringify(className),
+                        expectedParamCount,
+                        actualArgumentCount
                     );
         }
         public static string InvalidParameterValue(string className, string methodName, string parameterName, string parameterType, string value)

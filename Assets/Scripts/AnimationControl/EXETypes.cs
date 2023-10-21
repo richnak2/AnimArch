@@ -110,15 +110,56 @@ namespace OALProgramControl
         }
         public static bool IsValidIntValue(string value)
         {
-            return Regex.IsMatch(value, @"^((0)|([1-9]+[0-9]*))$");
+            return Regex.IsMatch(value, @"^(-)?((0)|([1-9]+[0-9]*))$");
         }
         public static bool IsValidRealValue(string value)
         {
-            return Regex.IsMatch(value, @"^(((0)|([1-9]+[0-9]*))\.[0-9]+)$");
+            return Regex.IsMatch(value, @"^(-)?(((0)|([1-9]+[0-9]*))\.[0-9]+)$");
         }
         public static bool IsValidStringValue(string value)
         {
             return value[0] == '"' && value[value.Length - 1] == '"';
+        }
+        public static EXEValueBase DefaultValue(string typeName, CDClassPool classPool)
+        {
+            if (string.IsNullOrEmpty(typeName))
+            {
+                throw new ArgumentException("Type name cannot be null nor an empty string.");
+            }
+
+            EXEValueBase result = null;
+
+            if (IntegerTypeName.Equals(typeName))
+            {
+                result = new EXEValueInt("0");
+            }
+            else if (RealTypeName.Equals(typeName))
+            {
+                result = new EXEValueReal("0.0");
+            }
+            else if (StringTypeName.Equals(typeName))
+            {
+                result = new EXEValueString("\"\"");
+            }
+            else if (BooleanTypeName.Equals(typeName))
+            {
+                result = new EXEValueBool(BooleanFalse);
+            }
+            else if (programInstance.ExecutionSpace.ClassExists(typeName))
+            {
+                result = new EXEValueReference(programInstance.ExecutionSpace.getClassByName(typeName));
+            }
+
+            if (result != null)
+            {
+                return result;
+            }
+
+            throw new Exception(string.Format("Cannot create default value of unknown type \"{0}\".", typeName));
+        }
+        public static bool CanBeAssignedTo(EXEValueBase sourceValue, string targetType, CDClassPool classPool)
+        {
+            return DefaultValue(targetType, classPool).AssignValueFrom(sourceValue).IsSuccess;
         }
         public static String DetermineVariableType(String name, String value)
         {

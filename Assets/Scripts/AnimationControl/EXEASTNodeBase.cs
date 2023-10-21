@@ -8,8 +8,8 @@ namespace OALProgramControl
 {
     public abstract class EXEASTNodeBase
     {
-        public EEvaluationState EvaluationState;
-        protected EXEExecutionResult EvaluationResult;
+        public EEvaluationState EvaluationState { get; protected set; }
+        public virtual EXEExecutionResult EvaluationResult { get; set; }
 
         public EXEASTNodeBase()
         {
@@ -19,6 +19,7 @@ namespace OALProgramControl
 
         public abstract EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null);
         public abstract void PrintPretty(string indent, bool last);
+        public abstract EXEASTNodeBase Clone();
         public abstract string ToCode();
     }
 }

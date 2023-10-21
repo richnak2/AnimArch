@@ -18,7 +18,7 @@ namespace OALProgramControl
             this.Commands = new List<EXECommand>();
         }
 
-        public IEnumerable<EXEScope> ScopesToTop()
+        public override IEnumerable<EXEScope> ScopesToTop()
         {
             EXEScope currentScope = this;
 

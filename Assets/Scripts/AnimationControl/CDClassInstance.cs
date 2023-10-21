@@ -20,7 +20,10 @@ namespace OALProgramControl
 
             foreach (CDAttribute Attribute in attributes)
             {
-                this.State.Add(Attribute.Name, Tuple mu);
+                EXEValueBase attributeValue = EXETypes.DefaultValue(Attribute.Type, owningClass.OwningClassPool);
+                attributeValue.WasInitialized = false;
+
+                this.State.Add(Attribute.Name, attributeValue);
             }
 
             this.UniqueID = UniqueID;

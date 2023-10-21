@@ -5,5 +5,6 @@ namespace OALProgramControl
 {
     public abstract class EXEValuePrimitive : EXEValueBase
     {
+
     }
 }

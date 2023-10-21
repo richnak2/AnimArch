@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace OALProgramControl
 {
@@ -7,6 +9,20 @@ namespace OALProgramControl
         public bool IsActive { get; set; } = false;
         protected EXEScope SuperScope { get; set; }
         public EXEExecutionStack CommandStack { get; set; } = null;
+        public virtual IEnumerable<EXEScope> ScopesToTop()
+        {
+            EXEScope currentScope = this.SuperScope;
+
+            while (currentScope != null)
+            {
+                yield return currentScope;
+                currentScope = currentScope.SuperScope;
+            }
+        }
+        public EXEScopeMethod GetCurrentMethodScope()
+        {
+            return ScopesToTop().Where(scope => scope is EXEScopeMethod).Select(scope => scope as EXEScopeMethod).FirstOrDefault();
+        }
 
         public EXEExecutionResult PerformExecution(OALProgram OALProgram)
         {
@@ -15,6 +31,10 @@ namespace OALProgramControl
             return Result;
         }
         protected abstract EXEExecutionResult Execute(OALProgram OALProgram);
+        public virtual bool CollectReturn(EXEValueBase returnedValue, OALProgram programInstance)
+        {
+            return false;
+        }
 
         protected EXEExecutionResult Success()
         {

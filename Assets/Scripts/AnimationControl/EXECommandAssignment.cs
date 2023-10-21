@@ -59,18 +59,12 @@ namespace OALProgramControl
 
         public override String ToCodeSimple()
         {
-            String Result = this.VariableName;
-            if (this.AttributeName != null)
-            {
-                Result += "." + this.AttributeName;
-            }
-            Result += " = " + this.AssignedExpression.ToCode();
-            return Result;
+            return "Placeholder";
         }
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandAssignment(VariableName, AttributeName, AssignedExpression);
+            return new EXECommandAssignment((EXEASTNodeAccessChain)this.AssignmentTarget.Clone(), this.AssignedExpression.Clone());
         }
     }
 }

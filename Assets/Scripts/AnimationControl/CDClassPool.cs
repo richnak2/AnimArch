@@ -35,7 +35,7 @@ namespace OALProgramControl
             CDClass NewClass = null;
             if (!ClassExists(Name))
             {
-                NewClass = new CDClass(Name);
+                NewClass = new CDClass(Name, this);
                 this.ClassPool.Add(NewClass);
             }
             return NewClass;
