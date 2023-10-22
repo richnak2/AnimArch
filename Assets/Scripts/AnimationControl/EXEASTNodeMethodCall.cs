@@ -25,7 +25,7 @@ namespace OALProgramControl
             }
         }
 
-        public EXEASTNodeMethodCall(string methodName)
+        public EXEASTNodeMethodCall(string methodName) : base()
         {
             this.MethodName = methodName;
             this.Arguments = new List<EXEASTNodeBase>();

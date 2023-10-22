@@ -10,12 +10,13 @@ namespace OALProgramControl
         public EXEASTNodeAccessChainElement LastElement { get; private set; }
         public bool CreateVariableIfItDoesNotExist;
 
-        public EXEASTNodeAccessChain()
+        public EXEASTNodeAccessChain() : base()
         {
             this.FirstElement = null;
             this.LastElement = null;
             this.CreateVariableIfItDoesNotExist = false;
         }
+
 
         public override EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null)
         {
@@ -24,7 +25,13 @@ namespace OALProgramControl
                 return EXEExecutionResult.Error("Access chain with no elements.", "XEC2000", null);
             }
 
-            return FirstElement.Evaluate(currentScope, currentProgramInstance);
+            if (this.FirstElement == this.LastElement)
+            {
+                valueContext = valueContext ?? new EXEASTNodeAccessChainContext();
+                valueContext.CreateVariableIfItDoesNotExist = true;
+            }
+            
+            return FirstElement.Evaluate(currentScope, currentProgramInstance, valueContext);
         }
 
         public IEnumerable<EXEASTNodeAccessChainElement> GetElements()

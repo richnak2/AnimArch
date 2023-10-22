@@ -9,8 +9,8 @@ namespace OALProgramControl
         public override string TypeName => ClassInstance.OwningClass.Name;
         public override bool CanHaveAttributes => true;
         public override bool CanHaveMethods => true;
-        protected CDClass TypeClass;
-        protected CDClassInstance ClassInstance;
+        public CDClass TypeClass { get; protected set; }
+        public CDClassInstance ClassInstance { get; protected set; }
         public EXEValueReference()
         {
             this.ClassInstance = null;
@@ -20,6 +20,12 @@ namespace OALProgramControl
         {
             this.ClassInstance = null;
             this.TypeClass = typeClass;
+        }
+        public EXEValueReference(CDClassInstance classInstance)
+        {
+            this.ClassInstance = null;
+            this.TypeClass = classInstance.OwningClass;
+            this.ClassInstance = classInstance;
         }
         public EXEValueReference(EXEValueReference original)
         {
@@ -109,7 +115,6 @@ namespace OALProgramControl
             }
 
             CopyValues(this, assignmentTarget);
-            this.WasInitialized = true;
 
             return EXEExecutionResult.Success();
         }
@@ -181,6 +186,10 @@ namespace OALProgramControl
             }
 
             return base.ApplyOperator(operation, operand);
+        }
+        public void Dereference()
+        {
+            this.ClassInstance = null;
         }
     }
 }

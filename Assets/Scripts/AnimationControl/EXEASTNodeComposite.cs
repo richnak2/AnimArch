@@ -12,12 +12,12 @@ namespace OALProgramControl
         public String Operation { get; set; }
         public List<EXEASTNodeBase> Operands { get; }
 
-        public EXEASTNodeComposite(String Operation)
+        public EXEASTNodeComposite(String Operation) : base()
         {
             this.Operation = Operation;
             this.Operands = new List<EXEASTNodeBase>();
         }
-        public EXEASTNodeComposite(String Operation, EXEASTNodeBase[] Operands)
+        public EXEASTNodeComposite(String Operation, EXEASTNodeBase[] Operands) : base()
         {
             this.Operation = Operation;
             this.Operands = new List<EXEASTNodeBase>(Operands);

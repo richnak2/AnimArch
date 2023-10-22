@@ -7,7 +7,6 @@
         public EXEASTNodeAccessChainElement PreviousNode;
         public EXEASTNodeAccessChainElement NextNode;
         public EXEValueBase EvaluationResult;
-        public bool CreateNewVariableIfItDoesNotExist;
 
         public EXEASTNodeAccessChainElement(EXEASTNodeBase nodeValue)
         {
@@ -15,15 +14,14 @@
             this.PreviousNode = null;
             this.NextNode = null;
             this.EvaluationResult = null;
-            this.CreateNewVariableIfItDoesNotExist = false;
         }
 
-        public EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance)
+        public EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext)
         {
             EXEASTNodeAccessChainContext evaluationContext
                 = new EXEASTNodeAccessChainContext()
                 {
-                    CreateVariableIfItDoesNotExist = this.CreateNewVariableIfItDoesNotExist,
+                    CreateVariableIfItDoesNotExist = valueContext.CreateVariableIfItDoesNotExist,
                     CurrentValue = this.PreviousNode == null ? null : PreviousNode.EvaluationResult
                 };
 
@@ -41,7 +39,7 @@
                 return executionResult;
             }
 
-            return this.NextNode.Evaluate(currentScope, currentProgramInstance);
+            return this.NextNode.Evaluate(currentScope, currentProgramInstance, evaluationContext);
         }
 
         public EXEASTNodeAccessChainElement Clone()

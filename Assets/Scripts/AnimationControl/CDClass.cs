@@ -59,6 +59,11 @@ namespace OALProgramControl
         {
             bool Result = false;
 
+            foreach (CDClassInstance classInstance in this.Instances.Where(instance => instance.UniqueID == InstanceId))
+            {
+                classInstance.Destroy();
+            }
+
             int RemovedCount = this.Instances.RemoveAll(x => x.UniqueID == InstanceId);
             if (RemovedCount == 1)
             {
@@ -67,6 +72,11 @@ namespace OALProgramControl
             else if (RemovedCount > 1)
             {
                 throw new Exception("We removed more than 1 instance of class " + this.Name + " with given ID (" +
+                                    InstanceId.ToString() + "), something must have gone terribly wrong");
+            }
+            else if (RemovedCount == 0)
+            {
+                throw new Exception("We removed 0 instances of class " + this.Name + " with given ID (" +
                                     InstanceId.ToString() + "), something must have gone terribly wrong");
             }
 

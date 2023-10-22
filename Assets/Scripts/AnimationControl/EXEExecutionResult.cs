@@ -6,9 +6,9 @@ namespace OALProgramControl
 {
     public class EXEExecutionResult
     {
-        public readonly bool IsSuccess;
-        public readonly string ErrorMessage;
-        public readonly string ErrorCode;
+        public bool IsSuccess { get; set; }
+        public string ErrorMessage { get; set; }
+        public string ErrorCode { get; set; }
         public EXECommand OwningCommand { get; set; }
 
         // When a command is being executed, sometimes it will require another command to be executed first (e.g. when its parameter is a method call).

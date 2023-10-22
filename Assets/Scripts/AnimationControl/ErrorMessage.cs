@@ -8,14 +8,14 @@ namespace OALProgramControl
     public static class ErrorMessage
     {
 
-        public static string ClassNotFound(string className, OALProgram program)
+        public static string ClassNotFound(string className, CDClassPool classPool)
         {
             return string
                     .Format
                     (
                         "Class '{0}' not found. Known classes are:\n{1}.",
                         Stringify(className),
-                        ClassNameList(program)
+                        ClassNameList(classPool)
                     );
         }
         public static string AttributeNotFoundOnClass(string attributeName, CDClass owningClass)
@@ -452,9 +452,9 @@ namespace OALProgramControl
                         )
                 );
         }
-        private static string ClassNameList(OALProgram program)
+        private static string ClassNameList(CDClassPool classPool)
         {
-            return string.Join(",\n", program.ExecutionSpace.ClassPool.Select(_class => _class.Name));
+            return string.Join(",\n", classPool.Classes.Select(_class => _class.Name));
         }
         private static string AttributeNameList(CDClass owningClass)
         {

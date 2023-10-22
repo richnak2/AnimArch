@@ -14,6 +14,8 @@ namespace OALProgramControl
         public Dictionary<string, EXEValueBase> State { get; }
         public readonly CDClass OwningClass;
 
+        private readonly List<EXEValueReference> ReferencingValues;
+
         public CDClassInstance(long UniqueID, List<CDAttribute> attributes, CDClass owningClass)
         {
            this.State = new Dictionary<string, EXEValueBase>();
@@ -30,6 +32,8 @@ namespace OALProgramControl
             this.State.Add(EXETypes.UniqueIDAttributeName, new EXEValueInt(UniqueID.ToString()));
 
             this.OwningClass = owningClass;
+
+            this.ReferencingValues = new List<EXEValueReference>();
         }
 
         public EXEValueBase GetAttributeValue(String name)
@@ -41,6 +45,14 @@ namespace OALProgramControl
             }
 
             return Result;
+        }
+
+        public void Destroy()
+        {
+            foreach (EXEValueReference referencingValue in this.ReferencingValues)
+            {
+                referencingValue.Dereference();
+            }
         }
     }
 }

@@ -112,7 +112,7 @@ namespace Visualization.ClassDiagram.Editors
 
         public static void DeleteNode(ClassInDiagram classInDiagram)
         {
-            OALProgram.Instance.ExecutionSpace.ClassPool.Remove(classInDiagram.ClassInfo);
+            OALProgram.Instance.ExecutionSpace.Classes.Remove(classInDiagram.ClassInfo);
         }
 
         public static void DeleteRelation(RelationInDiagram relationInDiagram)

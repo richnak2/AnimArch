@@ -120,6 +120,10 @@ namespace OALProgramControl
         {
             return value[0] == '"' && value[value.Length - 1] == '"';
         }
+        public static bool IsValidArrayType(string typeName)
+        {
+            return !string.IsNullOrEmpty(typeName) && typeName.Length > 2 && "[]".Equals(typeName.Substring(typeName.Length - 2, 2));
+        }
         public static EXEValueBase DefaultValue(string typeName, CDClassPool classPool)
         {
             if (string.IsNullOrEmpty(typeName))
@@ -145,9 +149,14 @@ namespace OALProgramControl
             {
                 result = new EXEValueBool(BooleanFalse);
             }
-            else if (programInstance.ExecutionSpace.ClassExists(typeName))
+            else if (classPool.ClassExists(typeName))
             {
-                result = new EXEValueReference(programInstance.ExecutionSpace.getClassByName(typeName));
+                result = new EXEValueReference(classPool.getClassByName(typeName));
+            }
+            else if (typeName.Length > 2 && "[]".Equals(typeName.Substring(0, typeName.Length - 2)))
+            {
+                result = new EXEValueArray(typeName);
+                ((EXEValueArray)result).InitializeEmptyArray();
             }
 
             if (result != null)

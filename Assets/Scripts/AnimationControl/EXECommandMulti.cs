@@ -1,34 +1,38 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace OALProgramControl
 {
     public class EXECommandMulti : EXECommand
     {
         public List<EXECommand> Commands;
+        private int CurrentCommand;
 
         public EXECommandMulti(List<EXECommand> callCommands)
         {
+            this.CurrentCommand = 0;
             this.Commands = callCommands;
         }
 
         public override EXECommand CreateClone()
         {
-            throw new System.NotImplementedException();
+            return new EXECommandMulti(this.Commands.Select(command => command.CreateClone()).ToList());
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            EXEExecutionResult result;
+            EXEExecutionResult commandExecutionResult;
 
-            foreach (EXECommand command in this.Commands)
+            while (this.CurrentCommand < this.Commands.Count)
             {
-                result = command.PerformExecution(OALProgram);
+                commandExecutionResult = this.Commands[this.CurrentCommand].PerformExecution(OALProgram);
 
-                if (!result.IsSuccess)
+                if (!HandleSingleShotASTEvaluation(commandExecutionResult))
                 {
-                    result.OwningCommand = command;
-                    return result;
+                    return commandExecutionResult;
                 }
+
+                this.CurrentCommand++;
             }
 
             return Success();

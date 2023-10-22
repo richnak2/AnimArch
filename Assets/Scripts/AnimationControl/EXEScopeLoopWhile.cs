@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OALProgramControl
 {
-    public class EXEScopeLoopWhile : EXEScope
+    public class EXEScopeLoopWhile : EXEScopeLoop
     {
         public EXEASTNodeBase Condition;
         private int IterationCounter;

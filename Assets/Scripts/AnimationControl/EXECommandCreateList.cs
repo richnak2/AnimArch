@@ -6,167 +6,89 @@ namespace OALProgramControl
 {
     public class EXECommandCreateList : EXECommand
     {
-        private String VariableName { get; }
-        private String AttributeName { get; }
-        private String ClassName { get; }
+        private string ArrayType { get; }
+        private EXEASTNodeAccessChain AssignmentTarget { get; }
         private List<EXEASTNodeBase> Items { get; }
 
-        public EXECommandCreateList(String VariableName, String AttributeName, String ClassName, List<EXEASTNodeBase> Items)
+        public EXECommandCreateList(string arrayType, EXEASTNodeAccessChain assignmentTarget, List<EXEASTNodeBase> items)
         {
-            this.VariableName = VariableName;
-            this.AttributeName = AttributeName;
-            this.ClassName = ClassName;
-            this.Items = Items;
+            this.ArrayType = arrayType;
+            this.AssignmentTarget = assignmentTarget;
+            this.Items = items;
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            CDClass Class = OALProgram.ExecutionSpace.getClassByName(this.ClassName);
-            if (Class == null)
+            EXEExecutionResult itemEvaluationResult = null;
+
+            // Acquire the variable to assign the array to
+            EXEExecutionResult evaluationResultOfAssignmentTarget = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram);
+
+            if (!HandleRepeatableASTEvaluation(evaluationResultOfAssignmentTarget))
             {
-                return Error("XEC1044", ErrorMessage.ClassNotFound(this.ClassName, OALProgram));
+                return evaluationResultOfAssignmentTarget;
             }
 
-            EXEReferencingSetVariable SetVariable = null; // Important if we do not have AttributeName
-            CDClassInstance ClassInstance = null; // Important if we have AttributeName
-
-            if (this.AttributeName == null)
+            // Prepare the items to populate the array with
+            foreach (EXEASTNodeBase item in this.Items)
             {
-                SetVariable = SuperScope.FindSetReferencingVariableByName(this.VariableName);
+                itemEvaluationResult = item.Evaluate(this.SuperScope, OALProgram);
 
-                if (SetVariable != null)
+                if (!HandleRepeatableASTEvaluation(itemEvaluationResult))
                 {
-                    if (!String.Equals(this.ClassName, SetVariable.ClassName))
-                    {
-                        return Error("XEC1045", ErrorMessage.AssignNewListToVariableHoldingListOfAnotherType(SetVariable.Name, SetVariable.Type, this.ClassName));
-                    }
-
-                    SetVariable.ClearVariables();
-                }
-                else
-                {
-                    SetVariable = new EXEReferencingSetVariable(this.VariableName, Class.Name);
-
-                    EXEExecutionResult result = SuperScope.AddVariable(SetVariable);
-                    result.OwningCommand = this;
-                    return result;
+                    return itemEvaluationResult;
                 }
             }
-            else
+
+            // Create the array
+            EXEExecutionResult arrayCreationResult = EXEValueArray.CreateArray(this.ArrayType);
+
+            if (!HandleSingleShotASTEvaluation(arrayCreationResult))
             {
-                EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
-                if (Variable == null)
-                {
-                    return Error("XEC1046", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
-                }
-
-                CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
-                if (VariableClass == null)
-                {
-                    return Error("XEC1047", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
-                }
-
-                CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
-                if (Attribute == null)
-                {
-                    return Error("XEC1048", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
-                }
-                
-                String AttributeClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
-                if (!String.Equals(this.ClassName, AttributeClassName))
-                {
-                    return Error("XEC1049", ErrorMessage.AssignNewListToVariableHoldingListOfAnotherType(VariableName + "." + AttributeName, AttributeClassName, this.ClassName));
-                }
-
-                ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
-                if (ClassInstance == null)
-                {
-                    return Error("XEC1050", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
-                }
-
-                EXEExecutionResult result = ClassInstance.SetAttribute(this.AttributeName, "");
-                result.OwningCommand = this;
-                return result;
+                return arrayCreationResult;
             }
 
-            if (this.Items.Any())
+            // Populate the array
+            EXEValueArray array = arrayCreationResult.ReturnedOutput as EXEValueArray;
+            array.InitializeEmptyArray();
+
+            EXEExecutionResult itemAppendmentResult = null;
+            foreach (EXEASTNodeBase item in this.Items)
             {
-                String Result = "";
-
-                foreach (EXEASTNodeBase item in this.Items)
+                itemAppendmentResult = array.AppendElement(item.EvaluationResult.ReturnedOutput, OALProgram.ExecutionSpace);
+                if (!HandleSingleShotASTEvaluation(itemAppendmentResult))
                 {
-                    string addedItemClassName = this.SuperScope.DetermineVariableType(item.AccessChain(), OALProgram.ExecutionSpace);
-
-                    if
-                    (
-                        
-                        !(
-                            item.IsReference()
-                            &&
-                            Object.Equals(Class.Name, addedItemClassName)    
-                        )
-                    )
-                    {
-                        return Error("XEC1051", ErrorMessage.AddInvalidValueToList(VariableName + (AttributeName == null ? string.Empty : ("." + AttributeName)), Class.Name, item.ToCode(), addedItemClassName));
-                    }
-
-                    String IDValue = item.Evaluate(SuperScope, OALProgram.ExecutionSpace);
-
-                    if (!EXETypes.IsValidReferenceValue(IDValue, Class.Name))
-                    {
-                        return Error("XEC1052", ErrorMessage.InvalidValueForType(Class.Name, IDValue));
-                    }
-
-                    long ID = long.Parse(IDValue);
-
-                    CDClassInstance Instance = Class.GetInstanceByID(ID);
-                    if (Instance == null)
-                    {
-                        return Error("XEC1053", ErrorMessage.InstanceNotFound(ID, Class));
-                    }
-
-                    if (this.AttributeName == null)
-                    {
-                        SetVariable.AddReferencingVariable(new EXEReferencingVariable("", Class.Name, ID));
-                    }
-                    else
-                    {
-                        Result += IDValue + ",";
-                    }
-                }
-
-                if (this.AttributeName != null)
-                {
-                    Result = Result.Remove(Result.Length - 1, 1); // Remove last ","
-                    ClassInstance.SetAttribute(this.AttributeName, Result);
+                    return itemAppendmentResult;
                 }
             }
-            
+
+            // Perform the assignment
+            EXEExecutionResult arrayAssignmentResult = evaluationResultOfAssignmentTarget.ReturnedOutput.AssignValueFrom(arrayCreationResult.ReturnedOutput);
+
+            if (!HandleSingleShotASTEvaluation(arrayAssignmentResult))
+            {
+                return arrayAssignmentResult;
+            }
+
             return Success();
         }
 
         public override string ToCodeSimple()
         {
-            String Result = "create list " + (this.AttributeName == null ? this.VariableName : (this.VariableName + "." + this.AttributeName))
-                + " of " + this.ClassName;
-
-            if (this.Items.Any())
-            {
-                Result += " { " + this.Items[0].ToCode();
-
-                for (int i = 1; i < this.Items.Count; i++)
-                {
-                    Result += ", " + this.Items[i].ToCode();
-                }
-                Result += " }";
-            }
-            
-            return Result;
+            return "create list " + this.AssignmentTarget.ToCode()
+                + " of " + this.ArrayType + " { " + string.Join(", ", this.Items.Select(item => item.ToCode())) + " }";
         }
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandCreateList(VariableName, AttributeName, ClassName, Items);
+            return new EXECommandCreateList
+            (
+                this.ArrayType,
+                this.AssignmentTarget.Clone() as EXEASTNodeAccessChain,
+                this.Items
+                    .Select(item => item.Clone())
+                    .ToList()
+            );
         }
     }
 }

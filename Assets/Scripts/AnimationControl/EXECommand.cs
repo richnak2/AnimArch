@@ -21,9 +21,16 @@ namespace OALProgramControl
         }
         public EXEScopeMethod GetCurrentMethodScope()
         {
-            return ScopesToTop().Where(scope => scope is EXEScopeMethod).Select(scope => scope as EXEScopeMethod).FirstOrDefault();
+            return ScopesToTop()
+                .FirstOrDefault(scope => scope is EXEScopeMethod)
+                as EXEScopeMethod;
         }
-
+        public EXEScopeLoop GetCurrentLoopScope()
+        {
+            return ScopesToTop()
+                .FirstOrDefault(scope => scope is EXEScopeLoop)
+                as EXEScopeLoop;
+        }
         public EXEExecutionResult PerformExecution(OALProgram OALProgram)
         {
             EXEExecutionResult Result = Execute(OALProgram);
@@ -35,7 +42,6 @@ namespace OALProgramControl
         {
             return false;
         }
-
         protected EXEExecutionResult Success()
         {
             return EXEExecutionResult.Success(this);
@@ -93,7 +99,6 @@ namespace OALProgramControl
         {
             return "<b><color=green>" + code + "</color></b>";
         }
-
         public void ToggleActiveRecursiveBottomUp(bool active)
         {
             this.IsActive = active;
@@ -102,6 +107,40 @@ namespace OALProgramControl
             {
                 this.SuperScope.ToggleActiveRecursiveBottomUp(active);
             }
+        }
+        /**Use this when evaluating AST nodes and Execute might need to be called again.**/
+        protected bool HandleRepeatableASTEvaluation(EXEExecutionResult executionResult)
+        {
+            if (!executionResult.IsDone)
+            {
+                // It's a stack-like structure, so we enqueue the current command first, then the pending command.
+                this.CommandStack.Enqueue(this);
+                this.CommandStack.Enqueue(executionResult.PendingCommand);
+                return false;
+            }
+
+            if (!executionResult.IsSuccess)
+            {
+                executionResult.OwningCommand = this;
+                return false;
+            }
+
+            return true;
+        }
+        /**Use this when performing an action and Execute cannot be called again.**/
+        protected bool HandleSingleShotASTEvaluation(EXEExecutionResult executionResult)
+        {
+            executionResult.OwningCommand = this;
+
+            if (!executionResult.IsDone)
+            {
+                executionResult.IsSuccess = false;
+                executionResult.ErrorMessage = "Unexpected request to re-evaluate during command execution";
+                executionResult.ErrorCode = "XEC2024";
+                return false;
+            }
+
+            return executionResult.IsSuccess;
         }
     }
 }

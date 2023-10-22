@@ -4,85 +4,48 @@ namespace OALProgramControl
 {
     public class EXECommandQueryDelete : EXECommand
     {
-        private String VariableName { get; }
-        private String AttributeName { get; }
+        private EXEASTNodeAccessChain DeletedVariable;
 
-        public EXECommandQueryDelete(String VariableName, String AttributeName)
+        public EXECommandQueryDelete(EXEASTNodeAccessChain deletedVariable)
         {
-            this.VariableName = VariableName;
-            this.AttributeName = AttributeName;
+            this.DeletedVariable = deletedVariable;
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
+            EXEExecutionResult deletedVariableExecutionResult = DeletedVariable.Evaluate(this.SuperScope, OALProgram);
 
-            if (Variable != null)
+            if (!HandleRepeatableASTEvaluation(deletedVariableExecutionResult))
             {
-                String VariableClassName = Variable.ClassName;
-                long VariableInstanceId = Variable.ReferencedInstanceId;
-
-                if (this.AttributeName != null)
-                {
-                    CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
-                    if (VariableClass == null)
-                    {
-                        return Error("XEC1063", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
-                    }
-
-                    CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
-                    if (Attribute == null)
-                    {
-                        return Error("XEC1064", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
-                    }
-
-                    if ("[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
-                    {
-                        return Error("XEC1065", ErrorMessage.IsNotArray(Variable.Name + "." + Attribute.Name));
-                    }
-
-                    CDClassInstance ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
-                    if (ClassInstance == null)
-                    {
-                        return Error("XEC1066", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
-                    }
-
-                    if (!long.TryParse(ClassInstance.GetAttributeValue(this.AttributeName), out VariableInstanceId))
-                    {
-                        return Error("XEC1067", ErrorMessage.InvalidReference(this.VariableName + "." + this.AttributeName, ClassInstance.GetAttributeValue(this.AttributeName)));
-                    }
-
-                    // We need to check if Attribute.Type is type of some class, not primitive type
-                    CDClass AttributeClass = OALProgram.ExecutionSpace.getClassByName(Attribute.Type);
-                    if (AttributeClass == null)
-                    {
-                        return Error("XEC1068", ErrorMessage.ClassNotFound(Attribute.Type, OALProgram));
-                    }
-
-                    VariableClassName = Attribute.Type;
-                }
-
-                bool DestructionSuccess = OALProgram.ExecutionSpace.DestroyInstance(VariableClassName, VariableInstanceId);
-                if (DestructionSuccess && SuperScope.UnsetReferencingVariables(VariableClassName, VariableInstanceId))
-                {
-                    return Success();
-                }
-                else
-                {
-                    return Error("XEC1069", ErrorMessage.FailedObjectDestruction(VariableName + (AttributeName == null ? string.Empty : ("." + AttributeName))));
-                }
+                return deletedVariableExecutionResult;
             }
 
-            return Error("XEC1070", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
+            EXEValueReference referencedValue = deletedVariableExecutionResult.ReturnedOutput as EXEValueReference;
+
+            if (!OALProgram.ExecutionSpace.DestroyInstance(referencedValue.TypeClass.Name, referencedValue.ClassInstance.UniqueID))
+            {
+                return Error
+                (
+                    string.Format
+                    (
+                        "Failed to destroy instance \"{0}\" of class \"{1}\".",
+                        referencedValue.ClassInstance.UniqueID,
+                        referencedValue.TypeClass.Name
+                    ),
+                    "XEC2024"
+                );
+            }
+
+            return Success();
         }
         public override string ToCodeSimple()
         {
-            return "delete object instance " + (this.AttributeName == null ? this.VariableName : (this.VariableName + "." + this.AttributeName));
+            return "delete object instance " + this.DeletedVariable.ToCode();
         }
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandQueryDelete(VariableName, AttributeName);
+            return new EXECommandQueryDelete(this.DeletedVariable.Clone() as EXEASTNodeAccessChain);
         }
     }
 }

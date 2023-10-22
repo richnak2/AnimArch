@@ -379,7 +379,7 @@ namespace AnimationControl.OAL
                 }
             }
 
-            stackEXEScope.Peek().AddCommand(new EXECommandCallBase(InstanceName, AttributeName, MethodName, ParametersList));
+            stackEXEScope.Peek().AddCommand(new EXECommandCall(InstanceName, AttributeName, MethodName, ParametersList));
 
             return null;
             //return base.VisitExeCommandCall(context);

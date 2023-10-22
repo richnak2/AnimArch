@@ -55,6 +55,14 @@ namespace OALProgramControl
         {
             return EXEExecutionResult.Error(AssignmentErrorMessage(this.TypeName, assignmentTarget.TypeName), "XEC2012");
         }
+        public virtual EXEExecutionResult AssignValueTo(EXEValueArray assignmentTarget)
+        {
+            return EXEExecutionResult.Error(AssignmentErrorMessage(this.TypeName, assignmentTarget.TypeName), "XEC2012");
+        }
+        public virtual EXEExecutionResult AppendElement(EXEValueBase appendedElement, CDClassPool classPool)
+        {
+            return EXEExecutionResult.Error(string.Format("Cannot append element \"{0}\" of type \"{1}\" to \"{2}\".", appendedElement.ToText(), appendedElement.TypeName, this.TypeName), "XEC2018");
+        }
         public virtual EXEExecutionResult ApplyOperator(string operation)
         {
             return EXEExecutionResult.Error(string.Format("Cannot apply unary operation \"{0}\" on operand \"{1}\".", operation, this.ToText()), "XEC2017");

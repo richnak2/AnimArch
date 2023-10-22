@@ -46,7 +46,7 @@ namespace Visualisation.Animation
 
         public void Initialize()
         {
-            List<CDClass> ClassPool = OALProgram.Instance.ExecutionSpace.ClassPool;
+            List<CDClass> ClassPool = OALProgram.Instance.ExecutionSpace.Classes;
 
             if (ClassPool.Any())
             {

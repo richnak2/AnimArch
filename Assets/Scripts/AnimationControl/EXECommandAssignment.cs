@@ -17,49 +17,35 @@ namespace OALProgramControl
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
+            EXEExecutionResult evaluationResultOfAssignedExpression = this.AssignedExpression.Evaluate(this.SuperScope, OALProgram);
+            if (!HandleRepeatableASTEvaluation(evaluationResultOfAssignedExpression))
+            {
+                return evaluationResultOfAssignedExpression;
+            }
+
             EXEExecutionResult evaluationResultOfAssignmentTarget = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram);
 
-            if (!evaluationResultOfAssignmentTarget.IsDone)
+            if (!HandleRepeatableASTEvaluation(evaluationResultOfAssignmentTarget))
             {
-                // It's a stack-like structure, so we enqueue the current command first, then the pending command.
-                this.CommandStack.Enqueue(this);
-                this.CommandStack.Enqueue(evaluationResultOfAssignmentTarget.PendingCommand);
                 return evaluationResultOfAssignmentTarget;
-            }
-
-            if (!evaluationResultOfAssignmentTarget.IsSuccess)
-            {
-                evaluationResultOfAssignmentTarget.OwningCommand = this;
-                return evaluationResultOfAssignmentTarget;
-            }
-
-            EXEExecutionResult evaluationResultOfAssignedExpression = this.AssignedExpression.Evaluate(this.SuperScope, OALProgram);
-            if (!evaluationResultOfAssignedExpression.IsDone)
-            {
-                // It's a stack-like structure, so we enqueue the current command first, then the pending command.
-                this.CommandStack.Enqueue(this);
-                this.CommandStack.Enqueue(evaluationResultOfAssignedExpression.PendingCommand);
-                return evaluationResultOfAssignedExpression;
-            }
-
-            if (!evaluationResultOfAssignedExpression.IsSuccess)
-            {
-                evaluationResultOfAssignedExpression.OwningCommand = this;
-                return evaluationResultOfAssignedExpression;
             }
 
             EXEExecutionResult assignmentResult
                 = evaluationResultOfAssignmentTarget
                     .ReturnedOutput
                     .AssignValueFrom(evaluationResultOfAssignedExpression.ReturnedOutput);
-            assignmentResult.OwningCommand = this;
 
-            return assignmentResult;
+            if (!HandleSingleShotASTEvaluation(assignmentResult))
+            {
+                return assignmentResult;
+            }
+
+            return Success();
         }
 
         public override String ToCodeSimple()
         {
-            return "Placeholder";
+            return this.AssignmentTarget.ToCode() + " = " + this.AssignedExpression.ToCode();
         }
 
         public override EXECommand CreateClone()

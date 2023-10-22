@@ -6,129 +6,39 @@ namespace OALProgramControl
 {
     public class EXECommandAddingToList : EXECommand
     {
-        public String VariableName { get; private set; }
-        public String AttributeName { get; private set; }
-        public EXEASTNodeBase Item { get; private set; }
+        public EXEASTNodeBase Array { get; }
+        public EXEASTNodeBase AddedElement { get; }
 
-        public EXECommandAddingToList(String VariableName, String AttributeName, EXEASTNodeBase Item)
+        public EXECommandAddingToList(EXEASTNodeBase array, EXEASTNodeBase addedElement)
         {
-            this.VariableName = VariableName;
-            this.AttributeName = AttributeName;
-            this.Item = Item;
+            this.Array = array;
+            this.AddedElement = addedElement;
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            String SetVariableClassName;
-            EXEReferencingSetVariable SetVariable = null; // This is important if we do not have AttributeName
-            CDClassInstance ClassInstance = null; // This is important if we have AttributeName
+            EXEExecutionResult evaluationResultOfAddedElement = this.AddedElement.Evaluate(this.SuperScope, OALProgram);
 
-            if (this.AttributeName == null)
+            if (!HandleRepeatableASTEvaluation(evaluationResultOfAddedElement))
             {
-                // If we do not have AttributeName, VariableName must be set variable reference
-                SetVariable = SuperScope.FindSetReferencingVariableByName(this.VariableName);
-                if (SetVariable == null)
-                {
-                    return Error("XEC1000", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
-                }
-
-                SetVariableClassName = SetVariable.ClassName;
-            }
-            else
-            {
-                // If we have AttributeName, VariableName must be reference (not set variable)
-                EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
-                if (Variable == null)
-                {
-                    return Error("XEC1001", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
-                }
-
-                CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
-                if (VariableClass == null)
-                {
-                    return Error("XEC1002", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
-                }
-
-                CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
-                if (Attribute == null)
-                {
-                    return Error("XEC1003", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
-                }
-
-                // We need to check if it is list
-                if (Attribute.Type.Length < 2 || !"[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
-                {
-                    return Error("XEC1004", ErrorMessage.AddingToNotList(this.VariableName + "." + this.AttributeName, Attribute.Type));
-                }
-
-                SetVariableClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
-
-                ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
-                if (ClassInstance == null)
-                {
-                    return Error("XEC1005", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
-                }
+                return evaluationResultOfAddedElement;
             }
 
-            // We need to compare class types
-            string listType = this.SuperScope.DetermineVariableType(this.Item.AccessChain(), OALProgram.ExecutionSpace);
+            EXEExecutionResult evaluationResultOfArray = this.Array.Evaluate(this.SuperScope, OALProgram);
 
-            if (!this.Item.IsReference() || !Object.Equals(SetVariableClassName, listType))
+            if (!HandleRepeatableASTEvaluation(evaluationResultOfArray))
             {
-                return Error("XEC1006", ErrorMessage.AddingToInvalidTypeList(SetVariableClassName, listType));
-            }
-            
-            String IDValue = this.Item.Evaluate(SuperScope, OALProgram.ExecutionSpace);
-
-            if (!EXETypes.IsValidReferenceValue(IDValue, SetVariableClassName))
-            {
-                return Error
-                    (
-                        "XEC1007",
-                        ErrorMessage.IsNotReference
-                        (
-                            string.Join(".", this.Item.AccessChain()),
-                            EXETypes.DetermineVariableType
-                            (
-                                string.Join(".", this.Item.AccessChain()),
-                                this.Item.Evaluate(this.SuperScope, OALProgram.ExecutionSpace)
-                            )
-                        )
-                    );
+                return evaluationResultOfArray;
             }
 
-            long ItemInstanceID = long.Parse(IDValue);
+            EXEExecutionResult elementAppendmentResult
+                = evaluationResultOfArray
+                    .ReturnedOutput
+                    .AppendElement(evaluationResultOfAddedElement.ReturnedOutput, OALProgram.ExecutionSpace);
 
-            CDClass SetVariableClass = OALProgram.ExecutionSpace.getClassByName(SetVariableClassName);
-            if (SetVariableClass == null)
+            if (!HandleSingleShotASTEvaluation(elementAppendmentResult))
             {
-                return Error("XEC1008", ErrorMessage.ClassNotFound(SetVariableClassName, OALProgram));
-            }
-
-            CDClassInstance Instance = SetVariableClass.GetInstanceByIDRecursiveDownward(ItemInstanceID);
-            if (Instance == null)
-            {
-                return Error("XEC1009", ErrorMessage.InstanceNotFound(ItemInstanceID, SetVariableClass));
-            }
-
-
-            if (this.AttributeName == null)
-            {
-                SetVariable.AddReferencingVariable(new EXEReferencingVariable("", SetVariableClassName, ItemInstanceID));
-            }
-            else
-            {
-                String Values = ClassInstance.GetAttributeValue(this.AttributeName);
-
-                if (Values.Length > 0 && !EXETypes.UnitializedName.Equals(Values))
-                {
-                    Values += "," + ItemInstanceID.ToString();
-                    ClassInstance.SetAttribute(this.AttributeName, Values);
-                }
-                else
-                {
-                    ClassInstance.SetAttribute(this.AttributeName, ItemInstanceID.ToString());
-                }
+                return elementAppendmentResult;
             }
 
             return Success();
@@ -136,13 +46,12 @@ namespace OALProgramControl
 
         public override string ToCodeSimple()
         {
-            return "add " + this.Item.ToCode()
-                + " to " + (this.AttributeName == null ? this.VariableName : (this.VariableName + "." + this.AttributeName));
+            return "add " + this.AddedElement.ToCode() + " to " + this.Array.ToCode();
         }
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandAddingToList(VariableName, AttributeName, Item);
+            return new EXECommandAddingToList(this.Array.Clone(), this.AddedElement.Clone());
         }
     }
 }

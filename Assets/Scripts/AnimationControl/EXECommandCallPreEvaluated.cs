@@ -14,7 +14,7 @@ namespace OALProgramControl
 
         public override EXECommand CreateClone()
         {
-            throw new System.NotImplementedException();
+            return new EXECommandCallPreEvaluated(this.OwningObject, this.MethodCall.Clone() as EXEASTNodeMethodCall);
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
@@ -27,17 +27,8 @@ namespace OALProgramControl
                     new EXEASTNodeAccessChainContext() { CurrentValue = this.OwningObject }
                 );
 
-            if (!methodCallResolvingResult.IsDone)
+            if (!HandleRepeatableASTEvaluation(methodCallResolvingResult))
             {
-                // It's a stack-like structure, so we enqueue the current command first, then the pending command.
-                this.CommandStack.Enqueue(this);
-                this.CommandStack.Enqueue(methodCallResolvingResult.PendingCommand);
-                return methodCallResolvingResult;
-            }
-
-            if (!methodCallResolvingResult.IsSuccess)
-            {
-                methodCallResolvingResult.OwningCommand = this;
                 return methodCallResolvingResult;
             }
 
@@ -52,7 +43,7 @@ namespace OALProgramControl
             EXEExecutionResult variableCreationResult
                 = MethodCode.AddVariable(new EXEVariable(EXETypes.SelfReferenceName, this.MethodCall.OwningObject));
 
-            if (!variableCreationResult.IsSuccess)
+            if (!HandleSingleShotASTEvaluation(variableCreationResult))
             {
                 return variableCreationResult;
             }
@@ -69,7 +60,7 @@ namespace OALProgramControl
                         )
                     );
 
-                if (!variableCreationResult.IsSuccess)
+                if (!HandleSingleShotASTEvaluation(variableCreationResult))
                 {
                     return variableCreationResult;
                 }

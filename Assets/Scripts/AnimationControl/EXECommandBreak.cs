@@ -4,7 +4,32 @@
     {
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            return Success();//return SuperScope.PropagateControlCommand(LoopControlStructure.Break);
+            EXEScopeLoop currentLoop = this.SuperScope.GetCurrentLoopScope();
+
+            if (currentLoop == null)
+            {
+                return Error("Tried to break out of something that is not a loop.", "XEC2019");
+            }
+
+            bool success = false;
+
+            while (this.CommandStack.HasNext())
+            {
+                EXECommand peek = this.CommandStack.Next();
+
+                if (peek == currentLoop)
+                {
+                    success = true;
+                    break;
+                }
+            }
+
+            if (!success)
+            {
+                return Error("Failed to find the current loop to break out from.", "XEC2020");
+            }
+
+            return Success();
         }
         public override string ToCodeSimple()
         {

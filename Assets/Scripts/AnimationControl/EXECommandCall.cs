@@ -14,36 +14,23 @@ namespace OALProgramControl
 
         public override EXECommand CreateClone()
         {
-            throw new System.NotImplementedException();
+            return new EXECommandCall(this.MethodAccessChain, this.MethodCall);
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            if (this.MethodAccessChain.EvaluationState == EEvaluationState.HasBeenEvaluated)
+            EXEExecutionResult methodOwningObjectEvaluationResult = this.MethodAccessChain.Evaluate(this.SuperScope, OALProgram);
+
+            if (!HandleRepeatableASTEvaluation(methodOwningObjectEvaluationResult))
             {
-                CreateExeCommandCallPreEvaluated(OALProgram);
-                Success();
+                return methodOwningObjectEvaluationResult;
             }
 
-            if (!this.MethodAccessChain.EvaluationResult.IsDone)
-            {
-                // It's a stack-like structure, so we enqueue the current command first, then the pending command.
-                this.CommandStack.Enqueue(this);
-                this.CommandStack.Enqueue(this.MethodAccessChain.EvaluationResult.PendingCommand);
-                return this.MethodAccessChain.EvaluationResult;
-            }
-
-            if (!this.MethodAccessChain.EvaluationResult.IsSuccess)
-            {
-                this.MethodAccessChain.EvaluationResult.OwningCommand = this;
-                return this.MethodAccessChain.EvaluationResult;
-            }
-
-            CreateExeCommandCallPreEvaluated(OALProgram);
+            CreateExeCommandCallPreEvaluated();
 
             return Success();
         }
-        private void CreateExeCommandCallPreEvaluated(OALProgram programInstance)
+        private void CreateExeCommandCallPreEvaluated()
         {
             EXECommandCallPreEvaluated newCommand
                 = new EXECommandCallPreEvaluated(this.MethodAccessChain.EvaluationResult.ReturnedOutput, this.MethodCall);

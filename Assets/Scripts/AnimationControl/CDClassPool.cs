@@ -9,17 +9,17 @@ namespace OALProgramControl
     public class CDClassPool
     {
         private long ClassIDPrefix;
-        public List<CDClass> ClassPool { get; }
+        public List<CDClass> Classes { get; }
 
         public CDClassPool()
         {
-            this.ClassPool = new List<CDClass>();
+            this.Classes = new List<CDClass>();
         }
 
         public CDClassInstance GetClassInstanceById(String ClassName, long Id)
         {
             CDClassInstance Result = null;
-            foreach (CDClass Class in this.ClassPool)
+            foreach (CDClass Class in this.Classes)
             {
                 if (String.Equals(Class.Name, ClassName))
                 {
@@ -36,7 +36,7 @@ namespace OALProgramControl
             if (!ClassExists(Name))
             {
                 NewClass = new CDClass(Name, this);
-                this.ClassPool.Add(NewClass);
+                this.Classes.Add(NewClass);
             }
             return NewClass;
         }
@@ -60,7 +60,7 @@ namespace OALProgramControl
         {
             Boolean Result = false;
 
-            foreach (CDClass Class in this.ClassPool)
+            foreach (CDClass Class in this.Classes)
             {
                 if (Class.Name.Equals(ClassName))
                 {
@@ -76,7 +76,7 @@ namespace OALProgramControl
         {
             CDClass Result = null;
 
-            foreach (CDClass Class in this.ClassPool)
+            foreach (CDClass Class in this.Classes)
             {
                 if (Class.Name.Equals(ClassName))
                 {
@@ -97,7 +97,7 @@ namespace OALProgramControl
 
             CDClass SearchedClass = null;
 
-            foreach (CDClass Class in this.ClassPool)
+            foreach (CDClass Class in this.Classes)
             {
                 if (Class.Name.Equals(ClassName))
                 {
@@ -113,23 +113,34 @@ namespace OALProgramControl
 
             return SearchedClass.MethodExists(MethodName);
         }
-
-        public bool DestroyInstance(String ClassName, long InstanceId)
+        public EXEExecutionResult CreateInstance(string className)
         {
-            bool Result = false;
-            CDClass Class = this.getClassByName(ClassName);
-            if (Class != null)
+            if (!ClassExists(className))
             {
-                Result = Class.DestroyInstance(InstanceId);
+                return EXEExecutionResult.Error(ErrorMessage.ClassNotFound(className, this), "XEC2023");
             }
 
-            return Result;
+            CDClass targetClass = getClassByName(className);
+            CDClassInstance createdInstance = targetClass.CreateClassInstance();
+
+            EXEExecutionResult result = EXEExecutionResult.Success();
+            result.ReturnedOutput = new EXEValueReference(createdInstance);
+
+            return result;
+        }
+        public bool DestroyInstance(String ClassName, long InstanceId)
+        {
+            return getClassByName(ClassName).DestroyInstance(InstanceId);
+        }
+        public bool DestroyInstance(CDClass Class, long InstanceId)
+        {
+            return Class.DestroyInstance(InstanceId);
         }
 
         public Dictionary<String, long> ProduceInstanceDatabase()
         {
             Dictionary<String, long> InstanceDatabase = new Dictionary<String, long>();
-            foreach (CDClass Class in this.ClassPool)
+            foreach (CDClass Class in this.Classes)
             {
                 Class.AppendToInstanceDatabase(InstanceDatabase);
             }
@@ -139,7 +150,7 @@ namespace OALProgramControl
         public Dictionary<String, int> ProduceInstanceHistogram()
         {
             Dictionary<String, int> InstanceHistogram = new Dictionary<String, int>();
-            foreach (CDClass Class in this.ClassPool)
+            foreach (CDClass Class in this.Classes)
             {
                 InstanceHistogram.Add(Class.Name, Class.InstanceCount());
             }
