@@ -6,121 +6,37 @@ namespace OALProgramControl
 {
     public class EXECommandRemovingFromList : EXECommand
     {
-        private String VariableName { get; }
-        private String AttributeName { get; }
+        private EXEASTNodeAccessChain Array { get; }
         private EXEASTNodeBase Item { get; }
 
-        public EXECommandRemovingFromList(String VariableName, String AttributeName, EXEASTNodeBase Item)
+        public EXECommandRemovingFromList(EXEASTNodeAccessChain array, EXEASTNodeBase item)
         {
-            this.VariableName = VariableName;
-            this.AttributeName = AttributeName;
-            this.Item = Item;
+            this.Array = array;
+            this.Item = item;
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            String SetVariableClassName;
-            EXEReferencingSetVariable SetVariable = null; // This is important if we do not have AttributeName
-            CDClassInstance ClassInstance = null; // This is important if we have AttributeName
+            EXEExecutionResult itemEvaluationResult = this.Item.Evaluate(this.SuperScope, OALProgram);
 
-            if (this.AttributeName == null)
+            if (!HandleRepeatableASTEvaluation(itemEvaluationResult))
             {
-                // If we do not have AttributeName, VariableName must be set variable reference
-                SetVariable = SuperScope.FindSetReferencingVariableByName(this.VariableName);
-                if (SetVariable == null)
-                {
-                    return Error("XEC1130", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
-                }
-
-                SetVariableClassName = SetVariable.ClassName;
-            }
-            else
-            {
-                // If we have AttributeName, VariableName must be reference (not set variable)
-                EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.VariableName);
-                if (Variable == null)
-                {
-                    return Error("XEC1131", ErrorMessage.VariableNotFound(this.VariableName, this.SuperScope));
-                }
-
-                CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
-                if (VariableClass == null)
-                {
-                    return Error("XEC1132", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
-                }
-
-                CDAttribute Attribute = VariableClass.GetAttributeByName(this.AttributeName);
-                if (Attribute == null)
-                {
-                    return Error("XEC1133", ErrorMessage.AttributeNotFoundOnClass(this.AttributeName, VariableClass));
-                }
-
-                // We need to check if it is list
-                if (!"[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
-                {
-                    return Error("XEC1134", ErrorMessage.RemovingFromNotList(this.VariableName + "." + this.AttributeName, Attribute.Type));
-                }
-
-                SetVariableClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
-
-                ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
-                if (ClassInstance == null)
-                {
-                    return Error("XEC1135", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
-                }
+                return itemEvaluationResult;
             }
 
-            // We need to compare class types
-            string itemType = this.SuperScope.DetermineVariableType(this.Item.AccessChain(), OALProgram.ExecutionSpace);
-            if
-            (
-                !(
-                    this.Item.IsReference()
-                    &&
-                    Object.Equals(SetVariableClassName, itemType)
-                )
-            )
+            EXEExecutionResult arrayEvaluationResult = this.Array.Evaluate(this.SuperScope, OALProgram);
+
+            if (!HandleRepeatableASTEvaluation(arrayEvaluationResult))
             {
-                return Error("XEC1136", ErrorMessage.RemovingFromInvalidTypeList(itemType, SetVariableClassName));
+                return arrayEvaluationResult;
             }
 
-            String IDValue = this.Item.Evaluate(SuperScope, OALProgram.ExecutionSpace);
+            EXEExecutionResult itemRemovalResult
+                = arrayEvaluationResult.ReturnedOutput.RemoveElement(itemEvaluationResult.ReturnedOutput, OALProgram.ExecutionSpace);
 
-            if (!EXETypes.IsValidReferenceValue(IDValue, SetVariableClassName))
+            if (!HandleSingleShotASTEvaluation(itemRemovalResult))
             {
-                return Error("XEC1137", ErrorMessage.InvalidReference(Item.ToCode(), IDValue));
-            }
-
-            long ItemInstanceID = long.Parse(IDValue);
-
-            CDClass SetVariableClass = OALProgram.ExecutionSpace.getClassByName(SetVariableClassName);
-            if (SetVariableClass == null)
-            {
-                return Error("XEC1138", ErrorMessage.ClassNotFound(SetVariableClassName, OALProgram));
-            }
-
-            CDClassInstance Instance = SetVariableClass.GetInstanceByID(ItemInstanceID);
-            if (Instance == null)
-            {
-                return Error("XEC1139", ErrorMessage.InstanceNotFound(ItemInstanceID, SetVariableClass));
-            }
-
-            if (this.AttributeName == null)
-            {
-                SetVariable.UnsetVariables(ItemInstanceID);
-            }
-            else
-            {
-                String Values = ClassInstance.GetAttributeValue(this.AttributeName);
-
-                if (Values.Length > 0 && !EXETypes.UnitializedName.Equals(Values))
-                {
-                    List<String> IDs = Values.Split(',').ToList();
-                    IDs.RemoveAll(id => id == ItemInstanceID.ToString());
-                    Values = String.Join(",", IDs);
-
-                    ClassInstance.SetAttribute(this.AttributeName, Values);
-                }
+                return itemRemovalResult;
             }
 
             return Success();
@@ -128,13 +44,12 @@ namespace OALProgramControl
 
         public override string ToCodeSimple()
         {
-            return "remove " + this.Item.ToCode()
-                + " from " + (this.AttributeName == null ? this.VariableName : (this.VariableName + "." + this.AttributeName));
+            return "remove " + this.Item.ToCode() + " from " + this.Array.ToCode();
         }
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandRemovingFromList(VariableName, AttributeName, Item);
+            return new EXECommandRemovingFromList(this.Array.Clone() as EXEASTNodeAccessChain, this.Item.Clone());
         }
     }
 }

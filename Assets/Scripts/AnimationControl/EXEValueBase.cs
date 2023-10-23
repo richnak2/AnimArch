@@ -59,9 +59,17 @@ namespace OALProgramControl
         {
             return EXEExecutionResult.Error(AssignmentErrorMessage(this.TypeName, assignmentTarget.TypeName), "XEC2012");
         }
+        public virtual EXEExecutionResult IsEqualTo(EXEValueBase comparedValue)
+        {
+            return ApplyOperator("==", comparedValue);
+        }
         public virtual EXEExecutionResult AppendElement(EXEValueBase appendedElement, CDClassPool classPool)
         {
             return EXEExecutionResult.Error(string.Format("Cannot append element \"{0}\" of type \"{1}\" to \"{2}\".", appendedElement.ToText(), appendedElement.TypeName, this.TypeName), "XEC2018");
+        }
+        public virtual EXEExecutionResult RemoveElement(EXEValueBase removedElement, CDClassPool classPool)
+        {
+            return EXEExecutionResult.Error(string.Format("Cannot remove element \"{0}\" of type \"{1}\" from \"{2}\".", removedElement.ToText(), removedElement.TypeName, this.TypeName), "XEC2018");
         }
         public virtual EXEExecutionResult ApplyOperator(string operation)
         {

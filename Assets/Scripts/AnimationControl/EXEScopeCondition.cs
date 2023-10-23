@@ -9,37 +9,26 @@ namespace OALProgramControl
     public class EXEScopeCondition : EXEScope
     {
         public EXEASTNodeBase Condition { get; set; }
-        private List<EXEScopeCondition> ElifScopes;
+        public List<EXEScopeCondition> ElifScopes { get; private set; }
         public EXEScope ElseScope { get; set; }
+        private IEnumerable<EXEScopeCondition> AllConditionedScopes
+        {
+            get
+            {
+                yield return this;
 
-        public EXEScopeCondition(EXEASTNodeBase Condition) : base()
-        {
-            this.Condition = Condition;
-            this.ElifScopes = null;
-            this.ElseScope = null;
+                foreach (EXEScopeCondition elifScope in this.ElifScopes)
+                {
+                    yield return elifScope;
+                }
+            }
         }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition) : base(SuperScope, Commands)
+
+        public EXEScopeCondition(EXEASTNodeBase Condition) : this(Condition, new List<EXEScopeCondition>(), null) {}
+        public EXEScopeCondition(EXEASTNodeBase Condition, List<EXEScopeCondition> ElifScopes, EXEScope ElseScope) : base()
         {
             this.Condition = Condition;
-            this.ElifScopes = null;
-            this.ElseScope = null;
-        }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition, EXEScope ElseScope) : base(SuperScope, Commands)
-        {
-            this.Condition = Condition;
-            this.ElifScopes = null;
-            this.ElseScope = ElseScope;
-        }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition, EXEScopeCondition[] ElifScopes) : base(SuperScope, Commands)
-        {
-            this.Condition = Condition;
-            this.ElifScopes = ElifScopes.ToList();
-            this.ElseScope = null;
-        }
-        public EXEScopeCondition(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition, EXEScopeCondition[] ElifScopes, EXEScope ElseScope) : base(SuperScope, Commands)
-        {
-            this.Condition = Condition;
-            this.ElifScopes = ElifScopes.ToList();
+            this.ElifScopes = ElifScopes;
             this.ElseScope = ElseScope;
         }
 
@@ -74,77 +63,30 @@ namespace OALProgramControl
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            Boolean AScopeWasExecuted = false;
-
-            if (this.Condition == null)
+            foreach (EXEScopeCondition scope in this.AllConditionedScopes)
             {
-                return Error("XEC1144", ErrorMessage.ConditionInIfStatementNotSet());
-            }
+                EXEExecutionResult conditionEvaluationResult = Condition.Evaluate(scope.SuperScope, OALProgram);
 
-            String ConditionResult = this.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
-
-            if (ConditionResult == null)
-            {
-                return Error("XEC1145", ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
-            }
-            if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
-            {
-                return Error("XEC1146", ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
-            }
-            Boolean IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
-
-            if (IfConditionResult)
-            {
-                AddCommandsToStack(this.Commands);
-                AScopeWasExecuted = true;
-            }
-
-            if (AScopeWasExecuted)
-            {
-                return Success();
-            }
-
-            EXEExecutionResult elifScopeResult = null;
-
-            if (this.ElifScopes != null)
-            {
-                foreach (EXEScopeCondition CurrentElif in this.ElifScopes)
+                if (!HandleRepeatableASTEvaluation(conditionEvaluationResult))
                 {
-                    if (CurrentElif.Condition == null)
-                    {
-                        return Error("XEC1147", ErrorMessage.ConditionInIfStatementNotSet());
-                    }
-
-                    ConditionResult = CurrentElif.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
-
-
-                    if (ConditionResult == null)
-                    {
-                        return Error("XEC1148", ErrorMessage.FailedExpressionEvaluation(CurrentElif.Condition, this.SuperScope));
-                    }
-                    if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
-                    {
-                        return Error("XEC1149", ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
-                    }
-                    IfConditionResult = EXETypes.BooleanTrue.Equals(ConditionResult) ? true : false;
-                    
-                    if (IfConditionResult)
-                    {
-                        elifScopeResult = CurrentElif.PerformExecution(OALProgram);
-                        AScopeWasExecuted = true;
-                        break;
-                    }
+                    return conditionEvaluationResult;
                 }
-            }
 
-            if (AScopeWasExecuted)
-            {
-                return elifScopeResult;
+                if (conditionEvaluationResult.ReturnedOutput is not EXEValueBool)
+                {
+                    return Error(ErrorMessage.InvalidValueForType(conditionEvaluationResult.ReturnedOutput.ToText(), EXETypes.BooleanTypeName), "XEC2027");
+                }
+
+                if ((conditionEvaluationResult.ReturnedOutput as EXEValueBool).Value)
+                {
+                    AddCommandsToStack(scope.Commands);
+                    return Success();
+                }
             }
 
             if (this.ElseScope != null)
             {
-                return this.ElseScope.PerformExecution(OALProgram);
+                AddCommandsToStack(this.ElseScope.Commands);
             }
 
             return Success();
@@ -191,11 +133,12 @@ namespace OALProgramControl
 
         protected override EXEScope CreateDuplicateScope()
         {
-            return new EXEScopeCondition(Condition)
-            {
-                ElifScopes = ElifScopes == null ? null : ElifScopes.Select(x => (EXEScopeCondition)x.CreateClone()).ToList(),
-                ElseScope = ElseScope == null ? null : (EXEScope)ElseScope.CreateClone()
-            };
+            return new EXEScopeCondition
+            (
+                Condition.Clone(),
+                ElifScopes?.Select(x => (EXEScopeCondition)x.CreateClone()).ToList() ?? new List<EXEScopeCondition>(),
+                ElseScope == null ? null : (EXEScope)ElseScope.CreateClone()
+            );
         }
     }
 }

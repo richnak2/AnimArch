@@ -4,14 +4,13 @@ namespace OALProgramControl
 {
     public abstract class EXEScopeLoop : EXEScope
     {
-        protected abstract EXEExecutionResult HandleIterationStart(out bool startNewIteration);
+        protected abstract EXEExecutionResult HandleIterationStart(OALProgram OALProgram, out bool startNewIteration);
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             bool startNewIteration;
-            EXEExecutionResult iterationStartResult = HandleIterationStart(out startNewIteration);
+            EXEExecutionResult iterationStartResult = HandleIterationStart(OALProgram, out startNewIteration);
 
-            // If it is null, there is no need for further evaluation
-            if (iterationStartResult != null && !HandleRepeatableASTEvaluation(iterationStartResult))
+            if (!HandleRepeatableASTEvaluation(iterationStartResult))
             {
                 return iterationStartResult;
             }

@@ -6,137 +6,17 @@ using System.Threading.Tasks;
 
 namespace OALProgramControl
 {
-    public class EXEScopeForEach : EXEScope
+    public class EXEScopeForEach : EXEScopeLoop
     {
         public String IteratorName { get; set; }
-        public String IterableName { get; set; }
-        public String IterableAttributeName { get; set; }
-        private int IterableIndex;
+        public EXEASTNodeBase Iterable { get; set; }
+        private int CurrentIterableIndex;
 
-        public EXEScopeForEach(String Iterator, String Iterable, String IterableAttribute) : base()
+        public EXEScopeForEach(String iteratorName, EXEASTNodeBase iterable) : base()
         {
-            this.IteratorName = Iterator;
-            this.IterableName = Iterable;
-            this.IterableAttributeName = IterableAttribute;
-            int IterableIndex = 0;
-        }
-
-        public EXEScopeForEach(EXEScope SuperScope, EXECommand[] Commands, String Iterator, String Iterable,
-            String IterableAttribute) : base(SuperScope, Commands)
-        {
-            this.IteratorName = Iterator;
-            this.IterableName = Iterable;
-            this.IterableAttributeName = IterableAttribute;
-            int IterableIndex = 0;
-        }
-
-        protected override EXEExecutionResult Execute(OALProgram OALProgram)
-        {
-            EXEReferencingVariable IteratorVariable = this.FindReferencingVariableByName(this.IteratorName);
-            EXEReferencingSetVariable IterableVariable = this.FindSetReferencingVariableByName(this.IterableName);
-
-            String IterableVariableClassName = "";
-            int ReferencingVariablesCount = 0;
-            List<long> ReferencingVariablesIDs = new List<long>(); // This is important if we have IterableAttributeName
-
-            if (this.IterableAttributeName == null)
-            {
-                // We cannot iterate over not existing reference set
-                if (IterableVariable == null)
-                {
-                    return Error("XEC1150", ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
-                }
-
-                IterableVariableClassName = IterableVariable.ClassName;
-                ReferencingVariablesCount = IterableVariable.GetReferencingVariables().Count;
-            }
-            else
-            {
-                // If we have IterableAttributeName, IterableName must be reference and not reference set 
-                EXEReferencingVariable Variable = SuperScope.FindReferencingVariableByName(this.IterableName);
-                if (Variable == null)
-                {
-                    return Error("XEC1151", ErrorMessage.VariableNotFound(this.IterableName, this.SuperScope));
-                }
-
-                CDClass VariableClass = OALProgram.ExecutionSpace.getClassByName(Variable.ClassName);
-                if (VariableClass == null)
-                {
-                    return Error("XEC1152", ErrorMessage.ClassNotFound(Variable.ClassName, OALProgram));
-                }
-
-                CDAttribute Attribute = VariableClass.GetAttributeByName(this.IterableAttributeName);
-                if (Attribute == null)
-                {
-                    return Error("XEC1153", ErrorMessage.AttributeNotFoundOnClass(this.IterableAttributeName, VariableClass));
-                }
-
-                // We cannot iterate over reference that is not a set
-                if (!"[]".Equals(Attribute.Type.Substring(Attribute.Type.Length - 2, 2)))
-                {
-                    return Error("XEC1154", ErrorMessage.IsNotIterable(Attribute.Type));
-                }
-
-                IterableVariableClassName = Attribute.Type.Substring(0, Attribute.Type.Length - 2);
-
-                // Get instance representing IterableName
-                CDClassInstance ClassInstance = VariableClass.GetInstanceByID(Variable.ReferencedInstanceId);
-                if (ClassInstance == null)
-                {
-                    return Error("XEC1155", ErrorMessage.InstanceNotFound(Variable.ReferencedInstanceId, VariableClass));
-                }
-
-                String Values = ClassInstance.GetAttributeValue(this.IterableAttributeName);
-                if (!EXETypes.IsValidReferenceValue(Values, Attribute.Type))
-                {
-                    return Error("XEC1156", ErrorMessage.InvalidReference(this.IterableName + "." + this.IterableAttributeName, Values));
-                }
-
-                if (!String.Empty.Equals(Values))
-                {
-                    ReferencingVariablesIDs = Values.Split(',').Select(id => long.Parse(id)).ToList();
-                }
-
-                ReferencingVariablesCount = ReferencingVariablesIDs.Count;
-            }
-
-            // If iterator already exists and its class does not match the iterable class, we cannot do this
-            if (IteratorVariable != null && !IteratorVariable.ClassName.Equals(IterableVariableClassName))
-            {
-                return Error("XEC1157", ErrorMessage.IterableAndIteratorTypeMismatch(this.IterableName + (this.IterableAttributeName == null ? "" : ("." + this.IterableAttributeName)), IterableVariableClassName, this.IteratorName, IteratorVariable.ClassName));
-            }
-
-            // If iterator name is already taken for another variable, we quit again. Otherwise we create the iterator variable
-            if (IteratorVariable == null)
-            {
-                IteratorVariable = new EXEReferencingVariable(this.IteratorName, IterableVariableClassName, -1);
-                EXEExecutionResult variableAddResult = this.GetSuperScope().AddVariable(IteratorVariable);
-                variableAddResult.OwningCommand = this;
-                if (!variableAddResult.IsSuccess)
-                {
-                    return variableAddResult;
-                }
-            }
-
-            if (IterableIndex < ReferencingVariablesCount)
-            {
-                if (this.IterableAttributeName == null)
-                {
-                    EXEReferencingVariable CurrentItem = IterableVariable.GetReferencingVariables()[IterableIndex];
-                    IteratorVariable.ReferencedInstanceId = CurrentItem.ReferencedInstanceId;
-                }
-                else
-                {
-                    IteratorVariable.ReferencedInstanceId = ReferencingVariablesIDs[IterableIndex];
-                }
-
-                IterableIndex++;
-                OALProgram.CommandStack.Enqueue(this);
-                AddCommandsToStack(this.Commands);
-                this.ClearVariables();
-            }
-
-            return Success();
+            this.IteratorName = iteratorName;
+            this.Iterable = iterable;
+            this.CurrentIterableIndex = 0;
         }
 
         public override String ToCode(String Indent = "")
@@ -155,7 +35,7 @@ namespace OALProgramControl
                 (
                     Highlight,
                     Indent + "for each " + this.IteratorName + " in "
-                    + (this.IterableAttributeName == null ? this.IterableName : (this.IterableName + "." + this.IterableAttributeName))
+                    + this.Iterable.ToCode()
                     + "\n"
                 );
             foreach (EXECommand Command in this.Commands)
@@ -168,7 +48,83 @@ namespace OALProgramControl
 
         protected override EXEScope CreateDuplicateScope()
         {
-            return new EXEScopeForEach(IteratorName, IterableName, IterableAttributeName);
+            return new EXEScopeForEach(IteratorName, Iterable.Clone());
+        }
+
+        protected override EXEExecutionResult HandleIterationStart(OALProgram OALProgram, out bool startNewIteration)
+        {
+            startNewIteration = false;
+
+            EXEExecutionResult iterableEvaluationResult = this.Iterable.Evaluate(this.SuperScope, OALProgram);
+
+            if (!HandleRepeatableASTEvaluation(iterableEvaluationResult))
+            {
+                return iterableEvaluationResult;
+            }
+
+            if (iterableEvaluationResult.ReturnedOutput is not EXEValueArray)
+            {
+                return Error(ErrorMessage.IsNotIterable(iterableEvaluationResult.ReturnedOutput.ToText()), "XEC2028");
+            }
+
+            EXEValueArray iterableValue = iterableEvaluationResult.ReturnedOutput as EXEValueArray;
+
+            if (EXETypes.UnitializedName.Equals(iterableValue.ToText()))
+            {
+                return Error("Cannot iterate over uninitialized collection.", "XEC2027");
+            }
+
+            EXEVariable iteratorVariable = this.SuperScope.FindVariable(this.IteratorName);
+
+            if (iteratorVariable != null)
+            {
+                if (!EXETypes.CanBeAssignedTo(iterableValue.ElementTypeName, iterableValue, OALProgram.ExecutionSpace))
+                {
+                    return Error
+                    (
+                        ErrorMessage.IterableAndIteratorTypeMismatch
+                        (
+                            this.Iterable.ToCode(),
+                            iterableValue.ElementTypeName,
+                            this.IteratorName,
+                            iteratorVariable.Value.TypeName
+                        ),
+                        "XEC2029"
+                    );
+                }
+            }
+            else if (this.CurrentIterableIndex == 0)
+            {
+                iteratorVariable
+                        = new EXEVariable
+                        (
+                            this.IteratorName,
+                            EXETypes.DefaultValue(iterableValue.ElementTypeName, OALProgram.ExecutionSpace)
+                        );
+
+                EXEExecutionResult iteratorVariableCreationResult = this.SuperScope.AddVariable(iteratorVariable);
+
+                if (!HandleSingleShotASTEvaluation(iteratorVariableCreationResult))
+                {
+                    return iteratorVariableCreationResult;
+                }
+            }
+            else
+            {
+                return Error("Unexpected modification of iterator variable during foreach loop execution.", "XEC2029");
+            };
+
+            EXEExecutionResult iteratorAssignmentResult
+                = iteratorVariable.Value.AssignValueFrom(iterableValue.GetElementAt(this.CurrentIterableIndex));
+
+            if (!HandleSingleShotASTEvaluation(iteratorAssignmentResult))
+            {
+                return iteratorAssignmentResult;
+            }
+
+            this.CurrentIterableIndex++;
+            startNewIteration = true;
+            return Success();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace OALProgramControl
 {
     public class EXEValueArray : EXEValueBase
     {
-        private string ElementTypeName { get; set; }
+        public string ElementTypeName { get; private set; }
         public override string TypeName => ElementTypeName + "[]";
         private List<EXEValueBase> Elements;
 
@@ -108,7 +108,31 @@ namespace OALProgramControl
             this.Elements.Append(appendedElement);
             return EXEExecutionResult.Success();
         }
+        public override EXEExecutionResult RemoveElement(EXEValueBase removedElement, CDClassPool classPool)
+        {
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
 
+            if (!string.Equals(this.ElementTypeName, removedElement.TypeName))
+            {
+                return base.RemoveElement(removedElement, classPool);
+            }
+
+            if (this.Elements == null)
+            {
+                return EXEExecutionResult.Error("Tried to remove an element from an uninitialized array.", "XEC2027");
+            }
+
+            this.Elements.RemoveAll(element => element.Equals(removedElement));
+
+            return EXEExecutionResult.Success();
+        }
+        public EXEValueBase GetElementAt(int index)
+        {
+            return this.Elements[index];
+        }
         private void CopyValues(EXEValueArray source, EXEValueArray target)
         {
             target.ElementTypeName = source.ElementTypeName;
@@ -143,6 +167,93 @@ namespace OALProgramControl
             }
 
             return base.ApplyOperator(operation);
+        }
+        public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
+        {
+            if (!this.WasInitialized || !operand.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            EXEExecutionResult result = null;
+
+            if ("==".Equals(operation))
+            {
+                if (operand is not EXEValueArray)
+                {
+                    return base.ApplyOperator(operation, operand);
+                }
+
+                bool areEqual = false;
+                EXEValueArray typedOperand = operand as EXEValueArray;
+
+                if (this.Elements == null)
+                {
+                    areEqual = this.Elements == typedOperand.Elements;
+                }
+                else if (typedOperand.Elements == null)
+                {
+                    areEqual = false;
+                }
+                else if (this.Elements.Count != typedOperand.Elements.Count)
+                {
+                    areEqual = false;
+                }
+                else
+                {
+                    areEqual = true;
+
+                    for (int i = 0; i < this.Elements.Count; i++)
+                    {
+                        if (!(this.Elements[i].IsEqualTo(typedOperand.Elements[i]).ReturnedOutput as EXEValueBool).Value)
+                        {
+                            areEqual = false;
+                            break;
+                        }
+                    }
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(areEqual);
+                return result;
+            }
+            else if ("!=".Equals(operation))
+            {
+                bool areEqual = true;
+                EXEValueArray typedOperand = operand as EXEValueArray;
+
+                if (this.Elements == null)
+                {
+                    areEqual = this.Elements != typedOperand.Elements;
+                }
+                else if (typedOperand.Elements == null)
+                {
+                    areEqual = true;
+                }
+                else if (this.Elements.Count != typedOperand.Elements.Count)
+                {
+                    areEqual = true;
+                }
+                else
+                {
+                    areEqual = false;
+
+                    for (int i = 0; i < this.Elements.Count; i++)
+                    {
+                        if ((this.Elements[i].IsEqualTo(typedOperand.Elements[i]).ReturnedOutput as EXEValueBool).Value)
+                        {
+                            areEqual = true;
+                            break;
+                        }
+                    }
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(areEqual);
+                return result;
+            }
+
+            return base.ApplyOperator(operation, operand);
         }
     }
 }

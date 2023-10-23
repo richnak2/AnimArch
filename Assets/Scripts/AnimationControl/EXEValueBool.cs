@@ -5,7 +5,7 @@ namespace OALProgramControl
 {
     public class EXEValueBool : EXEValuePrimitive
     {
-        protected bool Value;
+        public bool Value;
         public override string TypeName => EXETypes.BooleanTypeName;
 
         public EXEValueBool(EXEValueBool original)

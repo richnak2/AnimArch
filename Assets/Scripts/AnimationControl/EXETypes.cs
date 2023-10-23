@@ -170,6 +170,10 @@ namespace OALProgramControl
         {
             return DefaultValue(targetType, classPool).AssignValueFrom(sourceValue).IsSuccess;
         }
+        public static bool CanBeAssignedTo(string sourceType, EXEValueBase targetValue, CDClassPool classPool)
+        {
+            return targetValue.DeepClone().AssignValueFrom(DefaultValue(sourceType, classPool)).IsSuccess;
+        }
         public static String DetermineVariableType(String name, String value)
         {
             if (name == UniqueIDAttributeName)

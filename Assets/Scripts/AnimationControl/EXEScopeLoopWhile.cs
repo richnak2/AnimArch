@@ -9,51 +9,10 @@ namespace OALProgramControl
     public class EXEScopeLoopWhile : EXEScopeLoop
     {
         public EXEASTNodeBase Condition;
-        private int IterationCounter;
 
         public EXEScopeLoopWhile(EXEASTNodeBase Condition) : base()
         {
             this.Condition = Condition;
-            this.IterationCounter = 0;
-        }
-        public EXEScopeLoopWhile(EXEScope SuperScope, EXECommand[] Commands, EXEASTNodeBase Condition) : base(SuperScope, Commands)
-        {
-            this.Condition = Condition;
-            this.IterationCounter = 0;
-        }
-        protected override EXEExecutionResult Execute(OALProgram OALProgram)
-        {
-            String ConditionResult = this.Condition.Evaluate(SuperScope, OALProgram.ExecutionSpace);
-
-            //!!NON-RECURSIVE!!
-            this.ClearVariables();
-
-            if (ConditionResult == null)
-            {
-                return Error("XEC1158", ErrorMessage.FailedExpressionEvaluation(this.Condition, this.SuperScope));
-            }
-            if (!EXETypes.BooleanTypeName.Equals(EXETypes.DetermineVariableType("", ConditionResult)))
-            {
-                return Error("XEC1159", ErrorMessage.InvalidValueForType(ConditionResult, EXETypes.BooleanTypeName));
-            }
-
-            bool ConditionTrue = EXETypes.BooleanTrue.Equals(ConditionResult);
-            if (ConditionTrue)
-            {
-                if (IterationCounter >= EXEExecutionGlobals.LoopIterationCap)
-                {
-                    return Error("XEC1160", ErrorMessage.IterationLoopThresholdCrossed(EXEExecutionGlobals.LoopIterationCap));
-                }
-                else
-                {
-                    IterationCounter++;
-                    OALProgram.CommandStack.Enqueue(this);
-                    AddCommandsToStack(this.Commands);
-                    this.ClearVariables();
-                }
-            }
-
-            return Success();
         }
 
         public override String ToCode(String Indent = "")
@@ -77,7 +36,28 @@ namespace OALProgramControl
 
         protected override EXEScope CreateDuplicateScope()
         {
-            return new EXEScopeLoopWhile(Condition);
+            return new EXEScopeLoopWhile(Condition.Clone());
+        }
+
+        protected override EXEExecutionResult HandleIterationStart(OALProgram OALProgram, out bool startNewIteration)
+        {
+            EXEExecutionResult conditionEvaluationResult = this.Condition.Evaluate(this.SuperScope, OALProgram);
+
+            if (!HandleRepeatableASTEvaluation(conditionEvaluationResult))
+            {
+                startNewIteration = false;
+                return conditionEvaluationResult;
+            }
+
+            if (conditionEvaluationResult.ReturnedOutput is not EXEValueBool)
+            {
+                startNewIteration = false;
+                return Error(ErrorMessage.InvalidValueForType(conditionEvaluationResult.ReturnedOutput.ToText(), EXETypes.BooleanTypeName), "XEC2028");
+            }
+
+            startNewIteration = (conditionEvaluationResult.ReturnedOutput as EXEValueBool).Value;
+
+            return Success();
         }
     }
 }

@@ -18,17 +18,8 @@ namespace OALProgramControl
             {
                 returnedExpressionEvaluationResult = Expression.Evaluate(this.SuperScope, OALProgram);
 
-                if (!returnedExpressionEvaluationResult.IsDone)
+                if (!HandleRepeatableASTEvaluation(returnedExpressionEvaluationResult))
                 {
-                    // It's a stack-like structure, so we enqueue the current command first, then the pending command.
-                    this.CommandStack.Enqueue(this);
-                    this.CommandStack.Enqueue(returnedExpressionEvaluationResult.PendingCommand);
-                    return returnedExpressionEvaluationResult;
-                }
-
-                if (!returnedExpressionEvaluationResult.IsSuccess)
-                {
-                    returnedExpressionEvaluationResult.OwningCommand = this;
                     return returnedExpressionEvaluationResult;
                 }
             }

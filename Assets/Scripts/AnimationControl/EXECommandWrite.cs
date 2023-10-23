@@ -10,7 +10,7 @@ namespace OALProgramControl
     public class EXECommandWrite : EXECommand
     {
         private List<EXEASTNodeBase> Arguments { get; }
-
+        public EXECommandWrite() : this(new List<EXEASTNodeBase>()) {}
         public EXECommandWrite(List<EXEASTNodeBase> Arguments)
         {
             this.Arguments = Arguments;
@@ -18,27 +18,27 @@ namespace OALProgramControl
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            
+            EXEExecutionResult argumentEvaluationResult;
+            foreach (EXEASTNodeBase argument in this.Arguments)
+            {
+                argumentEvaluationResult = argument.Evaluate(this.SuperScope, OALProgram);
 
-            ConsolePanel.Instance.YieldOutput(Result);
+                if (!HandleRepeatableASTEvaluation(argumentEvaluationResult))
+                {
+                    return argumentEvaluationResult;
+                }
+            }
+
+            string result = string.Join(", ", this.Arguments.Select(argument => argument.EvaluationResult.ReturnedOutput.ToText()));
+
+            ConsolePanel.Instance.YieldOutput(result);
 
             return Success();
         }
 
         public override string ToCodeSimple()
         {
-            String Result = "write(";
-
-            if (this.Arguments.Any())
-            {
-                Result += this.Arguments[0].ToCode();
-
-                for (int i = 1; i < this.Arguments.Count; i++)
-                {
-                    Result += ", " + this.Arguments[i].ToCode();
-                }
-            }
-            Result += ")";
+            String Result = "write(" + string.Join(", ", this.Arguments.Select(argument => argument.ToCode())) + ")";
 
             return Result;
         }
