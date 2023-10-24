@@ -63,7 +63,7 @@ namespace OALProgramControl
             this.CommandStack.Enqueue(Commands);
         }
 
-        public EXEExecutionResult AddVariable(EXEVariable variable)
+        public virtual EXEExecutionResult AddVariable(EXEVariable variable)
         {
             EXEExecutionResult Result;
 

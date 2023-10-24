@@ -83,34 +83,38 @@ namespace OALProgramControl
             return Result;
         }
 
-        public void AddMethod(CDMethod newMethod)
+        public Boolean AddMethod(CDMethod newMethod)
         {
-            var result = Methods.All(method => method.Name != newMethod.Name);
-
-            if (result)
+            if (GetAttributeByName(newMethod.Name) != null)
             {
-                Methods.Add(newMethod);
+                return false;
             }
+
+            if (MethodExists(newMethod.Name))
+            {
+                return false;
+            }
+
+            this.Methods.Add(newMethod);
+
+            return true;
         }
 
         public Boolean AddAttribute(CDAttribute NewAttribute)
         {
-            Boolean Result = true;
-            foreach (CDAttribute Attribute in this.Attributes)
+            if (GetAttributeByName(NewAttribute.Name) != null)
             {
-                if (Attribute.Name == NewAttribute.Name)
-                {
-                    Result = false;
-                    break;
-                }
+                return false;
             }
 
-            if (Result)
+            if (MethodExists(NewAttribute.Name))
             {
-                this.Attributes.Add(NewAttribute);
+                return false;
             }
 
-            return Result;
+            this.Attributes.Add(NewAttribute);
+
+            return true;
         }
 
         public Boolean MethodExists(String MethodName)
