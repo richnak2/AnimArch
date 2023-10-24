@@ -127,5 +127,10 @@ namespace OALProgramControl
 
             return base.ApplyOperator(operation, operand);
         }
+
+        public override string ToObjectDiagramText()
+        {
+            return this.Value ? EXETypes.BooleanTrue : EXETypes.BooleanFalse;
+        }
     }
 }

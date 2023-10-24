@@ -191,5 +191,10 @@ namespace OALProgramControl
         {
             this.ClassInstance = null;
         }
+
+        public override string ToObjectDiagramText()
+        {
+            return this.ClassInstance.UniqueID.ToString();
+        }
     }
 }

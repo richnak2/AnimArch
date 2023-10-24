@@ -35,7 +35,6 @@ namespace OALProgramControl
 
             this.ReferencingValues = new List<EXEValueReference>();
         }
-
         public EXEValueBase GetAttributeValue(String name)
         {
             EXEValueBase Result = null;
@@ -46,13 +45,16 @@ namespace OALProgramControl
 
             return Result;
         }
-
         public void Destroy()
         {
             foreach (EXEValueReference referencingValue in this.ReferencingValues)
             {
                 referencingValue.Dereference();
             }
+        }
+        public string AttributeValuesForClassDiagram()
+        {
+            return string.Join("\n", this.State.Keys.Select(key => key + " = " + this.State[key]));
         }
     }
 }

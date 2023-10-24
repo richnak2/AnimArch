@@ -7,14 +7,16 @@ namespace OALProgramControl
     {
         public CDMethod MethodDefinition;
         public EXEASTNodeMethodCall MethodCallOrigin;
+        public CDClassInstance OwningObject;
 
-        public EXEScopeMethod() : base()
+        public EXEScopeMethod() : this(null)
         {
-            this.MethodCallOrigin = null;
         }
         public EXEScopeMethod(CDMethod methodDefinition) : base()
         {
             this.MethodDefinition = methodDefinition;
+            this.MethodCallOrigin = null;
+            this.OwningObject = null;
         }
         public override bool CollectReturn(EXEValueBase returnedValue, OALProgram programInstance)
         {

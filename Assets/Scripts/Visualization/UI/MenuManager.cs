@@ -216,8 +216,7 @@ namespace Visualization.UI
                 InteractiveText.GetComponent<DotsAnimation>().currentText =
                     "Select target class\nfor call function\ndirectly in diagram\n.";
                 interactiveData.fromMethod = methodName;
-                Animation.Animation.Instance.HighlightMethod(interactiveData.fromClass, interactiveData.fromMethod,
-                    true);
+                Animation.Animation.Instance.HighlightMethod(interactiveData.fromClass, interactiveData.fromMethod, true);
                 sepInput.interactable = true;
                 sepInput.text = createdAnim.GetMethodBody(interactiveData.fromClass, interactiveData.fromMethod);
                 UpdateInteractiveShow();
@@ -503,31 +502,16 @@ namespace Visualization.UI
             GameObject.Find("MainPanel").transform.Find("Play").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("MainPanel").transform.Find("AnimationSelect").GetComponentInChildren<TMP_Dropdown>().interactable = active;
         }
-        public void AnimateSourceCodeAtMethodStart(string className, string methodName)
+        public void AnimateSourceCodeAtMethodStart(CDMethod calledMethod)
         {
             PanelChooseAnimationStartMethod.SetActive(false);
             PanelSourceCodeAnimation.SetActive(true);
 
-            PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetMethodLabelText(className, methodName);
+            PanelSourceCodeAnimation
+                .GetComponent<PanelSourceCodeAnimation>()
+                .SetMethodLabelText(calledMethod.OwningClass.Name, calledMethod.Name);
 
-            string sourceCode
-                = OALProgram
-                    .Instance
-                    .ExecutionSpace
-                    .getClassByName(className)
-                    .GetMethodByName(methodName)
-                    .ExecutableCode
-                    .ToFormattedCode();
-            PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetSourceCodeText(sourceCode);
-        }
-        public void AnimateSourceCodeAtMethodStart(string className, string methodName, EXEScope scope)
-        {
-            PanelChooseAnimationStartMethod.SetActive(false);
-            PanelSourceCodeAnimation.SetActive(true);
-
-            PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetMethodLabelText(className, methodName);
-
-            string sourceCode = scope.ToFormattedCode();
+            string sourceCode = calledMethod.ExecutableCode.ToFormattedCode();
             PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetSourceCodeText(sourceCode);
         }
     }

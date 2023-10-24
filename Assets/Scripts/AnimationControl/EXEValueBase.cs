@@ -11,6 +11,7 @@ namespace OALProgramControl
         public bool WasInitialized = true;
         public abstract EXEValueBase DeepClone();
         public abstract string ToText();
+        public abstract string ToObjectDiagramText();
         public virtual bool AttributeExists(string attributeName)
         {
             return false;

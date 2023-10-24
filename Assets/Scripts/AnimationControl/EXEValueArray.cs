@@ -255,5 +255,9 @@ namespace OALProgramControl
 
             return base.ApplyOperator(operation, operand);
         }
+        public override string ToObjectDiagramText()
+        {
+            return string.Format("[{0} ]", string.Join(", ", this.Elements.Select(element => element.ToObjectDiagramText())));
+        }
     }
 }

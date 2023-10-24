@@ -136,5 +136,10 @@ namespace OALProgramControl
 
             return base.ApplyOperator(operation, operand);
         }
+
+        public override string ToObjectDiagramText()
+        {
+            return string.Format("\"{0}\"", this.Value);
+        }
     }
 }

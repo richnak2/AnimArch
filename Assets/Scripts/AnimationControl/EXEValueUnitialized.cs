@@ -41,5 +41,10 @@ namespace OALProgramControl
         {
             return EXETypes.UnitializedName;
         }
+
+        public override string ToObjectDiagramText()
+        {
+            return EXETypes.UnitializedName;
+        }
     }
 }

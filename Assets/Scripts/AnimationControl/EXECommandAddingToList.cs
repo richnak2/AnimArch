@@ -53,5 +53,13 @@ namespace OALProgramControl
         {
             return new EXECommandAddingToList(this.Array.Clone(), this.AddedElement.Clone());
         }
+        public CDClassInstance GetAssignmentTargetOwner()
+        {
+            return (this.Array as EXEASTNodeAccessChain)?.GetFinalValueOwner();
+        }
+        public CDClassInstance GetAppendedElementInstance()
+        {
+            return (this.AddedElement.EvaluationResult.ReturnedOutput as EXEValueReference)?.ClassInstance;
+        }
     }
 }

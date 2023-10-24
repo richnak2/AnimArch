@@ -52,5 +52,9 @@ namespace OALProgramControl
         {
             return new EXECommandAssignment((EXEASTNodeAccessChain)this.AssignmentTarget.Clone(), this.AssignedExpression.Clone());
         }
+        public CDClassInstance GetAssignmentTargetOwner()
+        {
+            return this.AssignmentTarget.GetFinalValueOwner();
+        }
     }
 }

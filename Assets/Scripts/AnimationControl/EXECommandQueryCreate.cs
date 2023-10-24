@@ -60,5 +60,9 @@ namespace OALProgramControl
         {
             return new EXECommandQueryCreate(this.ClassName, this.AssignmentTarget?.Clone() as EXEASTNodeAccessChain);
         }
+        public CDClassInstance GetCreatedInstance()
+        {
+            return (this.AssignmentTarget.LastElement.EvaluationResult as EXEValueReference)?.ClassInstance;
+        }
     }
 }

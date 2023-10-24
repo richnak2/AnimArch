@@ -6,10 +6,12 @@ namespace OALProgramControl
     public class EXECommandCallPreEvaluated : EXECommandCallBase
     {
         public readonly EXEValueBase OwningObject;
+        public MethodInvocationInfo CallInfo { get; private set;}
 
         public EXECommandCallPreEvaluated(EXEValueBase owningObject, EXEASTNodeMethodCall methodCall) : base(methodCall)
         {
             this.OwningObject = owningObject;
+            this.CallInfo = null;
         }
 
         public override EXECommand CreateClone()
@@ -35,6 +37,7 @@ namespace OALProgramControl
             // We are here, which means that all parameter values have been resolved successfully
 
             EXEScopeMethod MethodCode = this.MethodCall.Method.ExecutableCode;
+            MethodCode.OwningObject = (this.OwningObject as EXEValueReference)?.ClassInstance;
             MethodCode.SetSuperScope(null);
             MethodCode.CommandStack = this.CommandStack;
             MethodCode.MethodCallOrigin = this.MethodCall;
@@ -66,7 +69,32 @@ namespace OALProgramControl
                 }
             }
 
+            this.CallInfo
+                = new MethodInvocationInfo
+                (
+                    GetCurrentMethodScope().MethodDefinition,
+                    MethodCode.MethodDefinition,
+                    OALProgram
+                        .RelationshipSpace
+                        .GetRelationshipByClasses
+                        (
+                            GetCurrentMethodScope().MethodDefinition.OwningClass.Name,
+                            MethodCode.MethodDefinition.OwningClass.Name
+                        ),
+                    GetCurrentMethodScope().OwningObject,
+                    GetCalledObject()
+                );
+
             return Success();
+        }
+
+        public CDClassInstance GetCalledObject()
+        {
+            return (this.OwningObject as EXEValueReference)?.ClassInstance;
+        }
+        private CDRelationship CallRelationshipInfo(string CallerMethod, string CalledMethod)
+        {
+            return OALProgram.Instance.RelationshipSpace.GetRelationshipByClasses(CallerMethod, CalledMethod);
         }
     }
 }

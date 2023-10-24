@@ -85,5 +85,16 @@ namespace OALProgramControl
 
             return result;
         }
+        public CDClassInstance GetFinalValueOwner()
+        {
+            List<EXEASTNodeAccessChainElement> reversedElements = GetElements().SkipLast(1).Reverse().ToList();
+
+            if (!reversedElements.Any())
+            {
+                return null;
+            }
+
+            return (reversedElements.First().EvaluationResult as EXEValueReference)?.ClassInstance;
+        }
     }
 }

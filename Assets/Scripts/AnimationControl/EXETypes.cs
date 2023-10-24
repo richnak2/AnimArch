@@ -22,7 +22,7 @@ namespace OALProgramControl
         public const String BooleanTrue = "TRUE";
         public const String BooleanFalse = "FALSE";
 
-        public static String UnitializedName = "UNDEFINED";
+        public const String UnitializedName = "UNDEFINED";
         public const String UniqueIDAttributeName = "ID";
 
         private static readonly List<String> IntNames = new List<string>(new String[] { "int", "integer", "long", "long int", "long integer" });

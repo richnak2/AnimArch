@@ -185,11 +185,11 @@ namespace AnimArch.Visualization.Diagrams
             graph.Layout();
         }
 
-        public ObjectInDiagram AddObjectInDiagram(string className, string variableName, CDClassInstance instance)
+        public ObjectInDiagram AddObjectInDiagram(string variableName, CDClassInstance instance)
         {
             ObjectInDiagram objectInDiagram = new ObjectInDiagram
             {
-                Class = DiagramPool.Instance.ClassDiagram.FindClassByName(className),
+                Class = DiagramPool.Instance.ClassDiagram.FindClassByName(instance.OwningClass.Name),
                 Instance = instance,
                 VisualObject = null,
                 VariableName = variableName
@@ -197,39 +197,20 @@ namespace AnimArch.Visualization.Diagrams
             return objectInDiagram;
         }
 
-        public void AddRelation(long callerInstanceId, string callerClassName, long calledInstanceId,
-            string calledClassName, string type)
+        public void AddRelation(CDClassInstance classInstanceStart, CDClassInstance classInstanceEnd, string relationType)
         {
-            if (callerClassName.Equals(calledClassName) || callerInstanceId == calledInstanceId)
+            if (classInstanceStart == classInstanceEnd || classInstanceStart.UniqueID == classInstanceEnd.UniqueID)
             {
                 return;
             }
 
-            if (callerInstanceId == -1)
+            ObjectRelation relation = new ObjectRelation(graph, classInstanceStart.UniqueID,
+                classInstanceEnd.UniqueID, relationType, "R" + Relations.Count);
+            if (!ContainsObjectRelation(relation))
             {
-                CDClass startClass = OALProgram.Instance.ExecutionSpace.getClassByName(callerClassName);
-                foreach (var startClassInstance in startClass.Instances)
-                {
-                    ObjectRelation relation = new ObjectRelation(graph, startClassInstance.UniqueID,
-                        calledInstanceId, type, "R" + Relations.Count);
-                    if (!ContainsObjectRelation(relation))
-                    {
-                        Relations.Add(relation);
-                        relation.Generate();
-                    }
-                }
+                Relations.Add(relation);
+                relation.Generate();
             }
-            else
-            {
-                ObjectRelation relation = new ObjectRelation(graph, callerInstanceId,
-                    calledInstanceId, type, "R" + Relations.Count);
-                if (!ContainsObjectRelation(relation))
-                {
-                    Relations.Add(relation);
-                    relation.Generate();
-                }
-            }
-
         }
 
         public ObjectInDiagram FindByID(long instanceID)
@@ -245,37 +226,24 @@ namespace AnimArch.Visualization.Diagrams
             return null;
         }
 
-        public bool AddAttributeValue(long instanceID, string attr, string expr)
+        public bool AddAttributeValue(CDClassInstance classInstance)
         {
-            ObjectInDiagram objectInDiagram = FindByID(instanceID);
+            ObjectInDiagram objectInDiagram = FindByID(classInstance.UniqueID);
             if (objectInDiagram == null)
             {
                 return false;
             }
 
-            // if (objectInDiagram.Instance.GetAttributeValue(attr))
-            // {
-            //     
-            // }
-            // TODO - Lukas commented out the below code
-            //objectInDiagram.Instance.SetAttribute(attr, expr);
             var background = objectInDiagram.VisualObject.transform.Find("Background");
             var attributes = background.Find("Attributes");
-            attributes.GetComponent<TextMeshProUGUI>().text = "";
-
-            //Attributes
-            foreach (string AttributeName in objectInDiagram.Instance.State.Keys)
-            {
-                attributes.GetComponent<TextMeshProUGUI>().text +=
-                    AttributeName + " = " + objectInDiagram.Instance.State[AttributeName] + "\n";
-            }
+            attributes.GetComponent<TextMeshProUGUI>().text = classInstance.AttributeValuesForClassDiagram();
 
             return true;
         }
 
-        public bool AddListAttributeValue(long instanceID, string attr, string expr)
+        public bool AddListAttributeValue(CDClassInstance classInstance)
         {
-            ObjectInDiagram objectInDiagram = FindByID(instanceID);
+            ObjectInDiagram objectInDiagram = FindByID(classInstance.UniqueID);
             if (objectInDiagram == null)
             {
                 return false;
@@ -283,14 +251,7 @@ namespace AnimArch.Visualization.Diagrams
 
             var background = objectInDiagram.VisualObject.transform.Find("Background");
             var attributes = background.Find("Attributes");
-            attributes.GetComponent<TextMeshProUGUI>().text = "";
-
-            //Attributes
-            foreach (string AttributeName in objectInDiagram.Instance.State.Keys)
-            {
-                attributes.GetComponent<TextMeshProUGUI>().text +=
-                    AttributeName + " = " + objectInDiagram.Instance.State[AttributeName] + "\n";
-            }
+            attributes.GetComponent<TextMeshProUGUI>().text = classInstance.AttributeValuesForClassDiagram();
 
             return true;
         }
