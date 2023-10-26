@@ -81,7 +81,7 @@ namespace Visualization.ClassDiagram.Diagrams
         {
             GameObject result = null;
 
-            var rel = OALProgram.Instance.RelationshipSpace.GetRelationshipByClasses(fromClass, toClass);
+            var rel = Animation.Animation.Instance.CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(fromClass, toClass);
             if (rel != null)
             {
                 result = FindEdge(rel.RelationshipName);

@@ -92,9 +92,5 @@ namespace OALProgramControl
         {
             return (this.OwningObject as EXEValueReference)?.ClassInstance;
         }
-        private CDRelationship CallRelationshipInfo(string CallerMethod, string CalledMethod)
-        {
-            return OALProgram.Instance.RelationshipSpace.GetRelationshipByClasses(CallerMethod, CalledMethod);
-        }
     }
 }

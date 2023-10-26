@@ -46,7 +46,7 @@ namespace Visualisation.Animation
 
         public void Initialize()
         {
-            List<CDClass> ClassPool = OALProgram.Instance.ExecutionSpace.Classes;
+            List<CDClass> ClassPool = Visualization.Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.Classes;
 
             if (ClassPool.Any())
             {
@@ -95,7 +95,7 @@ namespace Visualisation.Animation
                     {
                         methodItem.Code = "";
 
-                        CDMethod Method = OALProgram.Instance.ExecutionSpace.getClassByName(className).GetMethodByName(methodName);
+                        CDMethod Method = Visualization.Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.getClassByName(className).GetMethodByName(methodName);
                         Method.ExecutableCode = null;
                     }
                     else

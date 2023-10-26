@@ -207,6 +207,12 @@ namespace AnimationControl.OAL
             {
                 parsedChild = Visit(context.children[i]);
 
+                if (parsedChild == null)
+                {
+                    HandleError("Parsed command is null.", context);
+                    return null;
+                }
+
                 if (parsedChild is EXEComment)
                 {
                     continue;
@@ -221,7 +227,7 @@ namespace AnimationControl.OAL
                 HandleError(string.Format("Lines contain something that is not a command - '{0}'.", context.children[i].GetText()), context);
             }
 
-            if (!"EOF".Equals(context.children.Last()))
+            if (!"<EOF>".Equals(context.children.Last().GetText()))
             {
                 HandleError(string.Format("Last element in lines is something other than EOF - '{0}'.", context.children.Last().GetText()), context);
             }

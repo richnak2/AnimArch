@@ -315,60 +315,6 @@ namespace OALProgramControl
 
             return EAType;
         }
-        public static bool CanBeAssignedToAttribute(String AttributeName, String AttributeType, String NewValueType)
-        {
-            if (AttributeName == null || AttributeType == null || NewValueType == null)
-            {
-                return false;
-            }
-
-            if (EXETypes.UniqueIDAttributeName.Equals(AttributeName))
-            {
-                return false;
-            }
-
-            if (EXETypes.UnitializedName.Equals(NewValueType) && EXETypes.IsPrimitive(AttributeType))
-            {
-                return true;
-            }
-
-            if (String.Equals(AttributeType, NewValueType))
-            {
-                return true;
-            }
-
-            CDClass NewValueTypeClass = OALProgram.Instance.ExecutionSpace.getClassByName(NewValueType);
-            CDClass AttributeTypeClass = OALProgram.Instance.ExecutionSpace.getClassByName(AttributeType);
-
-            if (NewValueTypeClass != null && AttributeTypeClass != null && NewValueTypeClass.CanBeAssignedTo(AttributeTypeClass))
-            {
-                return true;
-            }
-
-            if (
-                EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger
-                && EXETypes.IntegerTypeName.Equals(AttributeType)
-                && EXETypes.RealTypeName.Equals(NewValueType)
-            )
-            {
-                return true;
-            }
-
-            if (
-               EXEExecutionGlobals.AllowPromotionOfIntegerToReal
-               && EXETypes.RealTypeName.Equals(AttributeType)
-               && EXETypes.IntegerTypeName.Equals(NewValueType)
-            )
-            {
-                return true;
-            }
-
-            return false;
-        }
-        public static bool CanBeAssignedToVariable(String VariableType, String NewValueType)
-        {
-            return CanBeAssignedToAttribute("", VariableType, NewValueType);
-        }
         public static String AdjustAssignedValue(String VariableType, String NewValue)
         {
             String NewValueType = DetermineVariableType("", NewValue);

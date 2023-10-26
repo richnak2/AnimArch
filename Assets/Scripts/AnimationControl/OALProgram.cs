@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace OALProgramControl
 {
-    public class OALProgram : Singleton<OALProgram>
+    public class OALProgram
     {
         public CDClassPool ExecutionSpace { get; set; }
         public CDRelationshipPool RelationshipSpace { get; set; }

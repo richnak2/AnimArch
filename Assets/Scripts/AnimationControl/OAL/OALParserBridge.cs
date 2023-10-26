@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.AnimationControl.OAL
 {
-    class OALParserBridge
+    public class OALParserBridge
     {
         public static EXEScopeMethod Parse(String Code)
         {

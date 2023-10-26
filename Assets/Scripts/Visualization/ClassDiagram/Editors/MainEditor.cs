@@ -308,7 +308,7 @@ namespace Visualization.ClassDiagram.Editors
                 DiagramPool.Instance.ClassDiagram.graph = null;
             }
 
-            OALProgram.Instance.Reset();
+            Animation.Animation.Instance.CurrentProgramInstance.Reset();
 
             AnimationData.Instance.ClearData();
         }

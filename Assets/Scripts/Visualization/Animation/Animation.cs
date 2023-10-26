@@ -42,6 +42,8 @@ namespace Visualization.Animation
         public string startClassName;
         public string startMethodName;
 
+        [HideInInspector] public OALProgram CurrentProgramInstance;
+
 
         private void Awake()
         {
@@ -53,6 +55,8 @@ namespace Visualization.Animation
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
         public IEnumerator Animate()
         {
+            CurrentProgramInstance = new OALProgram();
+
             Fillers = new List<GameObject>();
 
             if (AnimationIsRunning)
@@ -69,7 +73,6 @@ namespace Visualization.Animation
                     selectedAnimation = animations[0];
             }
 
-            OALProgram Program = OALProgram.Instance;
             List<AnimClass> MethodsCodes = selectedAnimation.GetMethodsCodesList(); //Filip
             string Code = selectedAnimation.Code; //toto potom mozno pojde prec
             Debug.Log("Code: ");
@@ -77,7 +80,7 @@ namespace Visualization.Animation
 
             foreach (AnimClass classItem in MethodsCodes) //Filip
             {
-                CDClass Class = Program.ExecutionSpace.getClassByName(classItem.Name);
+                CDClass Class = CurrentProgramInstance.ExecutionSpace.getClassByName(classItem.Name);
 
                 foreach (AnimMethod methodItem in classItem.Methods)
                 {
@@ -95,7 +98,7 @@ namespace Visualization.Animation
                 }
             }
 
-            CDClass startClass = Program.ExecutionSpace.getClassByName(startClassName);
+            CDClass startClass = CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName);
             if (startClass == null)
             {
                 Debug.LogError(string.Format("Error, Class \"{0}\" not found", startClassName ?? "NULL"));
@@ -108,7 +111,7 @@ namespace Visualization.Animation
             }
 
             //najdeme startMethod z daneho class stringu a method stringu, ak startMethod.ExecutableCode je null tak return null alebo yield break
-            EXEScopeMethod MethodExecutableCode = Program.ExecutionSpace.getClassByName(startClassName)
+            EXEScopeMethod MethodExecutableCode = CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName)
                 .GetMethodByName(startMethodName).ExecutableCode;
             if (MethodExecutableCode == null)
             {
@@ -116,7 +119,7 @@ namespace Visualization.Animation
                 yield break;
             }
 
-            OALProgram.Instance.SuperScope = MethodExecutableCode; //StartMethod.ExecutableCode
+            CurrentProgramInstance.SuperScope = MethodExecutableCode; //StartMethod.ExecutableCode
             //OALProgram.Instance.SuperScope = OALParserBridge.Parse(Code); //Method.ExecutableCode dame namiesto OALParserBridge.Parse(Code) pre metodu ktora bude zacinat
             UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(startMethod);
 
@@ -126,11 +129,11 @@ namespace Visualization.Animation
             string currentClassName = startClassName;
             string currentMethodName = startMethodName;
 
-            while (executionSuccess.IsSuccess && Program.CommandStack.HasNext())
+            while (executionSuccess.IsSuccess && CurrentProgramInstance.CommandStack.HasNext())
             {
-                EXECommand CurrentCommand = Program.CommandStack.Next();
+                EXECommand CurrentCommand = CurrentProgramInstance.CommandStack.Next();
                 CurrentCommand.ToggleActiveRecursiveBottomUp(true);
-                executionSuccess = CurrentCommand.PerformExecution(Program);
+                executionSuccess = CurrentCommand.PerformExecution(CurrentProgramInstance);
 
                 Debug.Log("Command " + i++ + executionSuccess.ToString());
 
@@ -236,7 +239,7 @@ namespace Visualization.Animation
 
                 yield return StartCoroutine(BarrierFillCheck());
 
-                executionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, OALProgram.Instance);
+                executionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, CurrentProgramInstance);
                 this.ReadValue = null;
             }
             else

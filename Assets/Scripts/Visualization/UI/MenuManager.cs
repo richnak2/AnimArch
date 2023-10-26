@@ -246,7 +246,7 @@ namespace Visualization.UI
                 scriptCode.text += "\n";
             scriptCode.text += OALScriptBuilder.GetInstance().AddCall(
                 interactiveData.fromClass, interactiveData.fromMethod,
-                OALProgram.Instance.RelationshipSpace
+                Animation.Animation.Instance.CurrentProgramInstance.RelationshipSpace
                     .GetRelationshipByClasses(interactiveData.fromClass, interactiveData.toClass).RelationshipName,
                 interactiveData.toClass,
                 interactiveData.toMethod
@@ -255,7 +255,7 @@ namespace Visualization.UI
                 sepInput.text += "\n";
             sepInput.text += OALScriptBuilder.GetInstance().AddCall(
                 interactiveData.fromClass, interactiveData.fromMethod,
-                OALProgram.Instance.RelationshipSpace
+                Animation.Animation.Instance.CurrentProgramInstance.RelationshipSpace
                     .GetRelationshipByClasses(interactiveData.fromClass, interactiveData.toClass).RelationshipName,
                 interactiveData.toClass,
                 interactiveData.toMethod

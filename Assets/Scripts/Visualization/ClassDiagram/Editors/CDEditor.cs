@@ -17,7 +17,7 @@ namespace Visualization.ClassDiagram.Editors
             while (cdClass == null)
             {
                 newClass.Name = baseName + (i == 0 ? "" : i.ToString());
-                cdClass = OALProgram.Instance.ExecutionSpace.SpawnClass(newClass.Name);
+                cdClass = Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.SpawnClass(newClass.Name);
                 i++;
                 if (i > 1000) break;
             }
@@ -85,15 +85,15 @@ namespace Visualization.ClassDiagram.Editors
         public static CDRelationship CreateRelation(Relation relation)
         {
             var cdRelationship =
-                OALProgram.Instance.RelationshipSpace.SpawnRelationship(relation.FromClass, relation.ToClass)
+                Animation.Animation.Instance.CurrentProgramInstance.RelationshipSpace.SpawnRelationship(relation.FromClass, relation.ToClass)
                 ?? throw new ArgumentNullException(nameof(relation));
             relation.OALName = cdRelationship.RelationshipName;
 
             if (!"Generalization".Equals(relation.PropertiesEaType) && !"Realisation".Equals(relation.PropertiesEaType))
                 return cdRelationship;
 
-            var fromClass = OALProgram.Instance.ExecutionSpace.getClassByName(relation.FromClass);
-            var toClass = OALProgram.Instance.ExecutionSpace.getClassByName(relation.ToClass);
+            var fromClass = Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.getClassByName(relation.FromClass);
+            var toClass = Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.getClassByName(relation.ToClass);
 
             if (fromClass != null && toClass != null) fromClass.SuperClass = toClass;
 
@@ -112,22 +112,22 @@ namespace Visualization.ClassDiagram.Editors
 
         public static void DeleteNode(ClassInDiagram classInDiagram)
         {
-            OALProgram.Instance.ExecutionSpace.Classes.Remove(classInDiagram.ClassInfo);
+            Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.Classes.Remove(classInDiagram.ClassInfo);
         }
 
         public static void DeleteRelation(RelationInDiagram relationInDiagram)
         {
-            OALProgram.Instance.RelationshipSpace.RemoveRelationship(relationInDiagram.RelationInfo);
+            Animation.Animation.Instance.CurrentProgramInstance.RelationshipSpace.RemoveRelationship(relationInDiagram.RelationInfo);
 
             if (!"Generalization".Equals(relationInDiagram.ParsedRelation.PropertiesEaType) &&
                 !"Realisation".Equals(relationInDiagram.ParsedRelation.PropertiesEaType))
                 return;
 
-            var fromClass = OALProgram.Instance.ExecutionSpace.getClassByName(relationInDiagram.RelationInfo.FromClass);
-            OALProgram.Instance.ExecutionSpace.getClassByName(relationInDiagram.RelationInfo.FromClass)
+            var fromClass = Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.getClassByName(relationInDiagram.RelationInfo.FromClass);
+            Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.getClassByName(relationInDiagram.RelationInfo.FromClass)
                 .SuperClass = null;
 
-            OALProgram.Instance.ExecutionSpace.getClassByName(relationInDiagram.RelationInfo.ToClass).SubClasses
+            Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace.getClassByName(relationInDiagram.RelationInfo.ToClass).SubClasses
                 .Remove(fromClass);
         }
     }
