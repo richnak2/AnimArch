@@ -54,48 +54,48 @@ namespace AnimationControl.OAL
             return null;
         }
 
-        public override String VisitExeCommandQueryRelate([NotNull] OALParser.ExeCommandQueryRelateContext context)
-        {
-            return base.VisitExeCommandQueryRelate(context);
-        }
+        //public override String VisitExeCommandQueryRelate([NotNull] OALParser.ExeCommandQueryRelateContext context)
+        //{
+        //    return base.VisitExeCommandQueryRelate(context);
+        //}
 
-        public override String VisitExeCommandQuerySelect([NotNull] OALParser.ExeCommandQuerySelectContext context)
-        {        
-            String instanceName = Visit(context.GetChild(1));
-            String keyLetter = context.GetChild(3).GetText();
+        //public override String VisitExeCommandQuerySelect([NotNull] OALParser.ExeCommandQuerySelectContext context)
+        //{        
+        //    String instanceName = Visit(context.GetChild(1));
+        //    String keyLetter = context.GetChild(3).GetText();
 
-            if (context.GetChild(0).GetText().Contains("many"))
-            {
-                if (context.GetChild(4).GetText().Contains("where"))
-                {
-                    String expr = Visit(context.GetChild(5));
-                    return instanceName + " = [selected for selected in " + keyLetter + ".instances if " + expr + "]";
-                }
-                else
-                {
-                    return instanceName + " = " + keyLetter + ".instances";
-                }
-            }
-            else if (context.GetChild(0).GetText().Contains("any"))
-            {
-                if (context.GetChild(4).GetText().Contains("where"))
-                {
-                    String expr = Visit(context.GetChild(5));
-                    return instanceName + " = next((selected for selected in " + keyLetter + ".instances if " + expr + "), None)";  //berieme prvy nalez
-                }
-                else
-                {
-                    return instanceName + " = " + keyLetter + ".instances[0] if " + keyLetter + ".instances else None"; //berieme prvy prvok 
-                }
-            }
+        //    if (context.GetChild(0).GetText().Contains("many"))
+        //    {
+        //        if (context.GetChild(4).GetText().Contains("where"))
+        //        {
+        //            String expr = Visit(context.GetChild(5));
+        //            return instanceName + " = [selected for selected in " + keyLetter + ".instances if " + expr + "]";
+        //        }
+        //        else
+        //        {
+        //            return instanceName + " = " + keyLetter + ".instances";
+        //        }
+        //    }
+        //    else if (context.GetChild(0).GetText().Contains("any"))
+        //    {
+        //        if (context.GetChild(4).GetText().Contains("where"))
+        //        {
+        //            String expr = Visit(context.GetChild(5));
+        //            return instanceName + " = next((selected for selected in " + keyLetter + ".instances if " + expr + "), None)";  //berieme prvy nalez
+        //        }
+        //        else
+        //        {
+        //            return instanceName + " = " + keyLetter + ".instances[0] if " + keyLetter + ".instances else None"; //berieme prvy prvok 
+        //        }
+        //    }
             
-            return null;
-        }
+        //    return null;
+        //}
 
-        public override String VisitExeCommandQuerySelectRelatedBy([NotNull] OALParser.ExeCommandQuerySelectRelatedByContext context)
-        {
-            return base.VisitExeCommandQuerySelectRelatedBy(context);
-        }
+        //public override String VisitExeCommandQuerySelectRelatedBy([NotNull] OALParser.ExeCommandQuerySelectRelatedByContext context)
+        //{
+        //    return base.VisitExeCommandQuerySelectRelatedBy(context);
+        //}
 
         public override String VisitExeCommandQueryDelete([NotNull] OALParser.ExeCommandQueryDeleteContext context)
         {   //problem je s delete alebo "select any" pretoze nevieme pozistovat vsetky referencie na odstranenie
@@ -104,10 +104,10 @@ namespace AnimationControl.OAL
             return "del " + instanceName;
         }
 
-        public override String VisitExeCommandQueryUnrelate([NotNull] OALParser.ExeCommandQueryUnrelateContext context)
-        {
-            return base.VisitExeCommandQueryUnrelate(context);
-        }
+        //public override String VisitExeCommandQueryUnrelate([NotNull] OALParser.ExeCommandQueryUnrelateContext context)
+        //{
+        //    return base.VisitExeCommandQueryUnrelate(context);
+        //}
 
         public override String VisitExeCommandAssignment([NotNull] OALParser.ExeCommandAssignmentContext context)
         {   // nemusime pozerat ci je attribute lebo to robime v expression commande
@@ -397,24 +397,24 @@ namespace AnimationControl.OAL
             return context.GetText();
         }
 
-        public override String VisitInstanceHandle([NotNull] OALParser.InstanceHandleContext context)
-        {
-            String instanceName = context.GetChild(0).GetText();
+        //public override String VisitInstanceHandle([NotNull] OALParser.InstanceHandleContext context)
+        //{
+        //    String instanceName = context.GetChild(0).GetText();
 
-            /*if (this.attributesList.Contains(instanceName)) //mozno budeme potrebovat neskor
-            {
-                instanceName = "self." + instanceName;
-            }*/
+        //    /*if (this.attributesList.Contains(instanceName)) //mozno budeme potrebovat neskor
+        //    {
+        //        instanceName = "self." + instanceName;
+        //    }*/
 
-            if (context.ChildCount == 1)
-            {
-                return instanceName;
-            }
-            else
-            {
-                return instanceName + "." + context.GetChild(2).GetText();
-            }
-        }
+        //    if (context.ChildCount == 1)
+        //    {
+        //        return instanceName;
+        //    }
+        //    else
+        //    {
+        //        return instanceName + "." + context.GetChild(2).GetText();
+        //    }
+        //}
 
         public override String VisitExpr([NotNull] OALParser.ExprContext context)
         {

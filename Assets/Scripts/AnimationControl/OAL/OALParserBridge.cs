@@ -13,41 +13,22 @@ namespace Assets.Scripts.AnimationControl.OAL
     {
         public static EXEScopeMethod Parse(String Code)
         {
-            OALParser parser = null;
-            try
+            ICharStream target = new AntlrInputStream(Code);
+            ITokenSource lexer = new OALLexer(target);
+            ITokenStream tokens = new CommonTokenStream(lexer);
+            OALParser parser = new OALParser(tokens)
             {
-                ICharStream target = new AntlrInputStream(Code);
-                ITokenSource lexer = new OALLexer(target);
-                ITokenStream tokens = new CommonTokenStream(lexer);
-                parser = new OALParser(tokens)
-                {
-                    BuildParseTree = true
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-
-            }
+                BuildParseTree = true
+            };
 
             //ExprParser.LiteralContext result = parser.literal();
-            OALParser.LinesContext result = parser.lines();
-            Console.Write(result.ToStringTree());
-            Console.WriteLine();
+            OALParser.LinesContext parsedLines = parser.lines();
 
-            OALVisitor2 test = new OALVisitor2();
+            OALVisitorConcrete visitor = new OALVisitorConcrete();
 
-            try
-            {
-                test.VisitLines(result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
+            EXEScopeMethod result = visitor.VisitLines(parsedLines) as EXEScopeMethod;
 
-            }
-
-            return test.globalExeScope;
+            return result;
         }
 
         public static String PythonParse(String Code, List<String> Attributes)

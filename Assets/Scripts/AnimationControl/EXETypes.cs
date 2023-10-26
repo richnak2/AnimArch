@@ -25,6 +25,9 @@ namespace OALProgramControl
         public const String UnitializedName = "UNDEFINED";
         public const String UniqueIDAttributeName = "ID";
 
+        private static readonly List<string> UnaryOperators = new List<string>() { "cardinality", "empty", "not_empty", "not", "NOT" };
+        private static readonly List<string> BinaryOperators = new List<string>() { "*", "/", "%", "+", "-", "<", ">", "<=", ">=", "==", "!=", "and", "AND", "or", "OR" };
+
         private static readonly List<String> IntNames = new List<string>(new String[] { "int", "integer", "long", "long int", "long integer" });
         private static readonly List<String> RealNames = new List<string>(new String[] { "real", "float", "double", "decimal", "floating", "floating point" });
         private static readonly List<String> BoolNames = new List<string>(new String[] { "bool", "boolean" });
@@ -173,6 +176,14 @@ namespace OALProgramControl
         public static bool CanBeAssignedTo(string sourceType, EXEValueBase targetValue, CDClassPool classPool)
         {
             return targetValue.DeepClone().AssignValueFrom(DefaultValue(sourceType, classPool)).IsSuccess;
+        }
+        public static bool IsUnaryOperator(string _operator)
+        {
+            return UnaryOperators.Contains(_operator);
+        }
+        public static bool IsBinaryOperator(string _operator)
+        {
+            return BinaryOperators.Contains(_operator);
         }
         public static String DetermineVariableType(String name, String value)
         {

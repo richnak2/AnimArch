@@ -60,6 +60,18 @@ public partial class OALBaseListener : IOALListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLine([NotNull] OALParser.LineContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.commands"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCommands([NotNull] OALParser.CommandsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.commands"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCommands([NotNull] OALParser.CommandsContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.parCommand"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -72,6 +84,18 @@ public partial class OALBaseListener : IOALListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParCommand([NotNull] OALParser.ParCommandContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.threadCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterThreadCommand([NotNull] OALParser.ThreadCommandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.threadCommand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitThreadCommand([NotNull] OALParser.ThreadCommandContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.ifCommand"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -83,6 +107,42 @@ public partial class OALBaseListener : IOALListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIfCommand([NotNull] OALParser.IfCommandContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.elif"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterElif([NotNull] OALParser.ElifContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.elif"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitElif([NotNull] OALParser.ElifContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.else"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterElse([NotNull] OALParser.ElseContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.else"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitElse([NotNull] OALParser.ElseContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCondition([NotNull] OALParser.ConditionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCondition([NotNull] OALParser.ConditionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.whileCommand"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -156,42 +216,6 @@ public partial class OALBaseListener : IOALListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExeCommandQueryCreate([NotNull] OALParser.ExeCommandQueryCreateContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.exeCommandQueryRelate"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExeCommandQueryRelate([NotNull] OALParser.ExeCommandQueryRelateContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.exeCommandQueryRelate"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExeCommandQueryRelate([NotNull] OALParser.ExeCommandQueryRelateContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.exeCommandQuerySelect"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExeCommandQuerySelect([NotNull] OALParser.ExeCommandQuerySelectContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.exeCommandQuerySelect"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExeCommandQuerySelect([NotNull] OALParser.ExeCommandQuerySelectContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.exeCommandQuerySelectRelatedBy"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExeCommandQuerySelectRelatedBy([NotNull] OALParser.ExeCommandQuerySelectRelatedByContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.exeCommandQuerySelectRelatedBy"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExeCommandQuerySelectRelatedBy([NotNull] OALParser.ExeCommandQuerySelectRelatedByContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.exeCommandQueryDelete"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -203,18 +227,6 @@ public partial class OALBaseListener : IOALListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExeCommandQueryDelete([NotNull] OALParser.ExeCommandQueryDeleteContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.exeCommandQueryUnrelate"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExeCommandQueryUnrelate([NotNull] OALParser.ExeCommandQueryUnrelateContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.exeCommandQueryUnrelate"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExeCommandQueryUnrelate([NotNull] OALParser.ExeCommandQueryUnrelateContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.exeCommandAssignment"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -251,6 +263,18 @@ public partial class OALBaseListener : IOALListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExeCommandCreateList([NotNull] OALParser.ExeCommandCreateListContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.listLiteral"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterListLiteral([NotNull] OALParser.ListLiteralContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.listLiteral"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitListLiteral([NotNull] OALParser.ListLiteralContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.exeCommandAddingToList"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -324,53 +348,53 @@ public partial class OALBaseListener : IOALListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpr([NotNull] OALParser.ExprContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.instanceHandle"/>.
+	/// Enter a parse tree produced by <see cref="OALParser.accessChain"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterInstanceHandle([NotNull] OALParser.InstanceHandleContext context) { }
+	public virtual void EnterAccessChain([NotNull] OALParser.AccessChainContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.instanceHandle"/>.
+	/// Exit a parse tree produced by <see cref="OALParser.accessChain"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitInstanceHandle([NotNull] OALParser.InstanceHandleContext context) { }
+	public virtual void ExitAccessChain([NotNull] OALParser.AccessChainContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.instanceName"/>.
+	/// Enter a parse tree produced by <see cref="OALParser.methodCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterInstanceName([NotNull] OALParser.InstanceNameContext context) { }
+	public virtual void EnterMethodCall([NotNull] OALParser.MethodCallContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.instanceName"/>.
+	/// Exit a parse tree produced by <see cref="OALParser.methodCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitInstanceName([NotNull] OALParser.InstanceNameContext context) { }
+	public virtual void ExitMethodCall([NotNull] OALParser.MethodCallContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.keyLetter"/>.
+	/// Enter a parse tree produced by <see cref="OALParser.params"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterKeyLetter([NotNull] OALParser.KeyLetterContext context) { }
+	public virtual void EnterParams([NotNull] OALParser.ParamsContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.keyLetter"/>.
+	/// Exit a parse tree produced by <see cref="OALParser.params"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitKeyLetter([NotNull] OALParser.KeyLetterContext context) { }
+	public virtual void ExitParams([NotNull] OALParser.ParamsContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.whereExpression"/>.
+	/// Enter a parse tree produced by <see cref="OALParser.bracketedExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWhereExpression([NotNull] OALParser.WhereExpressionContext context) { }
+	public virtual void EnterBracketedExpr([NotNull] OALParser.BracketedExprContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.whereExpression"/>.
+	/// Exit a parse tree produced by <see cref="OALParser.bracketedExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWhereExpression([NotNull] OALParser.WhereExpressionContext context) { }
+	public virtual void ExitBracketedExpr([NotNull] OALParser.BracketedExprContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.className"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -419,30 +443,6 @@ public partial class OALBaseListener : IOALListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAttribute([NotNull] OALParser.AttributeContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.relationshipLink"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRelationshipLink([NotNull] OALParser.RelationshipLinkContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.relationshipLink"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRelationshipLink([NotNull] OALParser.RelationshipLinkContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="OALParser.relationshipSpecification"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRelationshipSpecification([NotNull] OALParser.RelationshipSpecificationContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="OALParser.relationshipSpecification"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRelationshipSpecification([NotNull] OALParser.RelationshipSpecificationContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

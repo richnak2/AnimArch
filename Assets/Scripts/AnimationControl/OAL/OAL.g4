@@ -9,11 +9,7 @@ lines
 
 line
 	:	exeCommandQueryCreate
-	|	exeCommandQueryRelate
-	|	exeCommandQuerySelect
-	|	exeCommandQuerySelectRelatedBy
 	|	exeCommandQueryDelete
-	|	exeCommandQueryUnrelate
 	|	exeCommandAssignment
 	|	exeCommandCall
 	|	exeCommandCreateList
@@ -31,20 +27,40 @@ line
 	|	commentCommand
 	;
 
+commands
+    : line*
+    ;
+
 parCommand
-    :   'par' 'thread' line+ 'end thread' ';' ('thread' line+ 'end thread' ';')+ 'end par' ';'
+    :   'par' threadCommand+ 'end par' ';'
+    ;
+
+threadCommand
+    :   'thread' commands 'end thread' ';'
     ;
 
 ifCommand
-    :   'if' expr line* ('elif' '(' expr ')' line+)* ('else' line+)? 'end if' ';'  //zatvorky maju byt povinne alebo nemusia? moze byt v ifelse aj * pri line?
+    :   'if' condition commands (elif)* (else)? 'end if' ';'
+    ;
+
+elif
+    :   'elif' condition commands
+    ;
+
+else
+    :   'else' commands
+    ;
+
+condition
+    :   '(' expr ')'
     ;
 
 whileCommand
-    :   'while' '(' expr ')' line+ 'end while' ';'
+    :   'while' condition commands 'end while' ';'
     ;
 
 foreachCommand
-    :   'for each ' variableName ' in ' instanceHandle line+ 'end for' ';'
+    :   'for each ' variableName ' in ' expr commands 'end for' ';'
     ;
 
 continueCommand
@@ -60,51 +76,36 @@ commentCommand
     ;
 
 exeCommandQueryCreate
-    :   'create object instance ' instanceHandle ' of ' keyLetter ';'
-    |   'create object instance of ' keyLetter ';'
-    ;
-
-exeCommandQueryRelate
-    :   'relate ' instanceHandle ' to ' instanceHandle ' across ' relationshipSpecification ';'
-    ;
-
-exeCommandQuerySelect
-    :   'select any ' instanceHandle ' from instances of ' keyLetter (' where ' whereExpression)? ';'
-    |   'select many ' instanceHandle ' from instances of ' keyLetter (' where ' whereExpression)? ';'
-    ;
-
-exeCommandQuerySelectRelatedBy
-    :   'select any ' instanceHandle ' related by ' instanceHandle '->' className relationshipLink ('->' className relationshipLink)* (' where ' whereExpression)? ';'
-    |   'select many ' instanceHandle ' related by ' instanceHandle '->' className relationshipLink ('->' className relationshipLink)* (' where ' whereExpression)? ';'
+    :   'create object instance ' accessChain ' of ' className ';'
+    |   'create object instance of ' className ';'
     ;
 
 exeCommandQueryDelete
-    :   'delete object instance ' instanceHandle ';'
-    ;
-
-exeCommandQueryUnrelate
-    :   'unrelate ' instanceHandle ' from ' instanceHandle ' across ' relationshipSpecification ';'
+    :   'delete object instance ' accessChain ';'
     ;
 
 exeCommandAssignment
-    :   ('assign ')? instanceHandle '=' expr ';'
+    :   ('assign ')? accessChain '=' expr ';'
     ;
 
 exeCommandCall
-    :   instanceHandle '.' methodName '(' (expr (',' expr)*)? ')' ';'
-    // |   'call from ' keyLetter '::' methodName '(' ')' ' to ' keyLetter '::' methodName '(' ')' (' across ' relationshipSpecification)? ';'
+    :   (accessChain '.')? methodCall ';'
     ;
 
 exeCommandCreateList
-    :   'create list ' instanceHandle ' of ' keyLetter ('{' instanceHandle (',' instanceHandle)* '}')? ';'
+    :   'create list ' accessChain ' of ' className (listLiteral)? ';'
+    ;
+
+listLiteral
+    :   '{' params '}'
     ;
 
 exeCommandAddingToList
-    :   'add ' instanceHandle ' to ' instanceHandle ';'
+    :   'add ' expr ' to ' expr ';'
     ;
 
 exeCommandRemovingFromList
-    :   'remove ' instanceHandle ' from ' instanceHandle ';'
+    :   'remove ' expr ' from ' expr ';'
     ;
 
 exeCommandWrite
@@ -112,7 +113,7 @@ exeCommandWrite
     ;
 
 exeCommandRead
-    :   ('assign ')? instanceHandle '=' (
+    :   ('assign ')? accessChain '=' (
                                         'read(' expr? ')'
                                         | 'int(read(' expr? ')' ')'
                                         | 'real(read(' expr? ')' ')'
@@ -125,12 +126,11 @@ returnCommand
     ;
 
 expr
-    :   NUM | NAME | BOOL | STRING
-    |   exeCommandCall
-    |   NAME '.' NAME
-    |   'cardinality ' instanceHandle
-    |   ('empty ' | 'not_empty ') instanceHandle
-    |   '(' expr ')'
+    :   NUM | BOOL | STRING
+    |   accessChain
+    |   'cardinality ' expr
+    |   ('empty ' | 'not_empty ') expr
+    |   bracketedExpr
     |   '-' expr 
     |   expr ('*' | '/' | '%') expr
     |   expr ('+' | '-')  expr
@@ -140,21 +140,23 @@ expr
     |   expr (' or ' | ' OR ') expr
     ;
 
-instanceHandle
-    :   instanceName
-    |   instanceName '.' attribute
+accessChain
+    :   methodCall '.' accessChain
+    |   NAME '.' accessChain
+    |   methodCall
+    |   NAME
     ;
 
-instanceName
-    :   NAME
+methodCall
+    :   methodName '(' params ')'
     ;
 
-keyLetter
-    :   NAME
+params
+    :   expr (',' params)?
     ;
 
-whereExpression
-    :   expr
+bracketedExpr
+    :   '(' expr ')'
     ;
 
 className
@@ -173,19 +175,7 @@ attribute
     :	NAME
     ;
 
-relationshipLink
-    :   '['RELATIONSHIP_SPECIFICATION']'
-    ;
-
-relationshipSpecification
-    :   RELATIONSHIP_SPECIFICATION
-    ;
-
 // Lexer Rules
-
-RELATIONSHIP_SPECIFICATION
-    :   'R'[0-9]+
-    ;
 
 BOOL
     :   'TRUE' | 'FALSE'
@@ -204,10 +194,12 @@ NUM
     ;
 
 fragment INT
-    :   '0' | [1-9][0-9]*
+    :   '0'
+    | [1-9][0-9]*
     ;
 fragment DECIMAL
-    :   [0-9]+'.'[0-9]+  //   '0''.'[0-9]+ | [1-9][0-9]*'.'[0-9]+
+    :   '0' '.' [0-9]+
+        | [1-9][0-9]*'.'[0-9]+
     ;
 
 COMMENT
