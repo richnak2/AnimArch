@@ -17,7 +17,27 @@ namespace OALProgramControl
 
         public MethodInvocationInfo(CDMethod callerMethod, CDMethod calledMethod, CDRelationship relation, CDClassInstance callerObject, CDClassInstance calledObject)
         {
-            this.CalledMethod = callerMethod;
+            if (callerMethod == null)
+            {
+                throw new ArgumentNullException("callerMethod");
+            }
+
+            if (calledMethod == null)
+            {
+                throw new ArgumentNullException("calledMethod");
+            }
+
+            if (callerObject == null)
+            {
+                throw new ArgumentNullException("callerObject");
+            }
+
+            if (calledObject == null)
+            {
+                throw new ArgumentNullException("calledObject");
+            }
+
+            this.CallerMethod = callerMethod;
             this.CalledMethod = calledMethod;
             this.Relation = relation;
             this.CallerObject = callerObject;
@@ -31,11 +51,11 @@ namespace OALProgramControl
                 " ",
                 new string[]
                 {
-                    this.CallerMethod.OwningClass.Name,
-                    this.CallerMethod.Name,
-                    this.Relation.RelationshipName,
-                    this.CalledMethod.OwningClass.Name,
-                    this.CalledMethod.Name
+                    this.CallerMethod?.OwningClass?.Name ?? "NULL",
+                    this.CallerMethod?.Name ?? "NULL",
+                    this.Relation?.RelationshipName ?? "NULL",
+                    this.CalledMethod?.OwningClass?.Name ?? "NULL",
+                    this.CalledMethod?.Name ?? "NULL"
                 }
             );
         }

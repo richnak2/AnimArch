@@ -99,7 +99,7 @@ namespace OALProgramControl
                 EXECommand currentCommand = thread.CommandStack.Next();
 
                 // This thread should wait.
-                if (typeof(EXECommandCallBase).Equals(currentCommand.GetType()) || typeof(EXECommandQueryCreate).Equals(currentCommand.GetType()))
+                if (typeof(EXECommandCall).Equals(currentCommand.GetType()) || typeof(EXECommandQueryCreate).Equals(currentCommand.GetType()))
                 {
                     thread.WaitingCommand = currentCommand;
                 }

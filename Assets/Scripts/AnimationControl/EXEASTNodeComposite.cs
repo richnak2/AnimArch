@@ -95,11 +95,6 @@ namespace OALProgramControl
             return this.EvaluationResult;
         }
 
-        public override void PrintPretty(string indent, bool last)
-        {
-            throw new NotImplementedException();
-        }
-
         public override string ToCode()
         {
             return

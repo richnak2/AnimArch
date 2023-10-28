@@ -502,16 +502,16 @@ namespace Visualization.UI
             GameObject.Find("MainPanel").transform.Find("Play").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("MainPanel").transform.Find("AnimationSelect").GetComponentInChildren<TMP_Dropdown>().interactable = active;
         }
-        public void AnimateSourceCodeAtMethodStart(CDMethod calledMethod)
+        public void AnimateSourceCodeAtMethodStart(EXEScopeMethod currentMethodScope)
         {
             PanelChooseAnimationStartMethod.SetActive(false);
             PanelSourceCodeAnimation.SetActive(true);
 
             PanelSourceCodeAnimation
                 .GetComponent<PanelSourceCodeAnimation>()
-                .SetMethodLabelText(calledMethod.OwningClass.Name, calledMethod.Name);
+                .SetMethodLabelText(currentMethodScope.MethodDefinition.OwningClass.Name, currentMethodScope.MethodDefinition.Name);
 
-            string sourceCode = calledMethod.ExecutableCode.ToFormattedCode();
+            string sourceCode = currentMethodScope.ToFormattedCode();
             PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetSourceCodeText(sourceCode);
         }
     }

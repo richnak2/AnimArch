@@ -187,6 +187,12 @@ namespace AnimArch.Visualization.Diagrams
 
         public ObjectInDiagram AddObjectInDiagram(string variableName, CDClassInstance instance)
         {
+            var dcba = instance.OwningClass;
+            var edcba = instance.OwningClass.Name;
+            var cba = DiagramPool.Instance;
+            var ba = DiagramPool.Instance.ClassDiagram;
+            var a = DiagramPool.Instance.ClassDiagram.FindClassByName(instance.OwningClass.Name);
+
             ObjectInDiagram objectInDiagram = new ObjectInDiagram
             {
                 Class = DiagramPool.Instance.ClassDiagram.FindClassByName(instance.OwningClass.Name),

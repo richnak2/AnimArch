@@ -22,7 +22,8 @@ namespace OALProgramControl
             EXEExecutionResult itemEvaluationResult = null;
 
             // Acquire the variable to assign the array to
-            EXEExecutionResult evaluationResultOfAssignmentTarget = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram);
+            EXEExecutionResult evaluationResultOfAssignmentTarget
+                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
 
             if (!HandleRepeatableASTEvaluation(evaluationResultOfAssignmentTarget))
             {

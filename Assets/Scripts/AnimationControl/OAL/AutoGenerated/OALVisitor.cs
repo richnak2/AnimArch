@@ -74,11 +74,11 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitElif([NotNull] OALParser.ElifContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="OALParser.else"/>.
+	/// Visit a parse tree produced by <see cref="OALParser.elseBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitElse([NotNull] OALParser.ElseContext context);
+	Result VisitElseBlock([NotNull] OALParser.ElseBlockContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.condition"/>.
 	/// </summary>
@@ -200,11 +200,11 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMethodCall([NotNull] OALParser.MethodCallContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="OALParser.params"/>.
+	/// Visit a parse tree produced by <see cref="OALParser.parameterList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParams([NotNull] OALParser.ParamsContext context);
+	Result VisitParameterList([NotNull] OALParser.ParameterListContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.bracketedExpr"/>.
 	/// </summary>

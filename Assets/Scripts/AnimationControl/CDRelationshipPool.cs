@@ -62,6 +62,7 @@ namespace OALProgramControl
                     break;
                 }
             }
+
             return Result;
         }
         public Boolean RelationshipExists(String RelationshipName, String Class1, String Class2)

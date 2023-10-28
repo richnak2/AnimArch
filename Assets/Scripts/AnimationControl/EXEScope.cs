@@ -11,10 +11,9 @@ namespace OALProgramControl
 
         public String OALCode;
 
-        public EXEScope()
+        public EXEScope() : base()
         {
             this.LocalVariables = new List<EXEVariable>();
-            this.SuperScope = null;
             this.Commands = new List<EXECommand>();
         }
 
@@ -105,10 +104,7 @@ namespace OALProgramControl
         public void AddCommand(EXECommand Command)
         {
             this.Commands.Add(Command);
-            if (Command.IsComposite())
-            {
-                ((EXEScope) Command).SetSuperScope(this);
-            }
+            SetSuperScope(this);
         }
 
         public override Boolean IsComposite()
@@ -158,8 +154,14 @@ namespace OALProgramControl
         public override EXECommand CreateClone()
         {
             EXEScope Clone = CreateDuplicateScope();
+            
             Clone.OALCode = this.OALCode;
-            Clone.Commands = this.Commands.Select(x => x.CreateClone()).ToList();
+            Clone.CommandStack = this.CommandStack;
+
+            foreach (EXECommand command in this.Commands.Select(command => command.CreateClone()))
+            {
+                Clone.AddCommand(command);
+            }
 
             return Clone;
         }

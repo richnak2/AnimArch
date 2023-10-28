@@ -37,7 +37,7 @@ namespace OALProgramControl
         }
         public override string ToText()
         {
-            throw new NotImplementedException();
+            return this.TypeName + "<" + this.ClassInstance.UniqueID + ">";
         }
         public override bool AttributeExists(string attributeName)
         {

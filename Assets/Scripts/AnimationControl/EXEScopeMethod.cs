@@ -46,12 +46,10 @@ namespace OALProgramControl
             }
             return Result;
         }
-
         protected override EXEScope CreateDuplicateScope()
         {
             return new EXEScopeMethod(this.MethodDefinition);
         }
-
         public override EXEExecutionResult AddVariable(EXEVariable variable)
         {
             if (this.MethodDefinition.Parameters.Select(parameter => parameter.Name).Contains(variable.Name))

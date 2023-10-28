@@ -4,9 +4,9 @@ namespace OALProgramControl
 {
     public class EXECommandQueryDelete : EXECommand
     {
-        private EXEASTNodeAccessChain DeletedVariable;
+        private EXEASTNodeBase DeletedVariable { get; }
 
-        public EXECommandQueryDelete(EXEASTNodeAccessChain deletedVariable)
+        public EXECommandQueryDelete(EXEASTNodeBase deletedVariable)
         {
             this.DeletedVariable = deletedVariable;
         }

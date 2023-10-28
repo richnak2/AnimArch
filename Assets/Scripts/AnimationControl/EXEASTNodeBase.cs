@@ -10,6 +10,7 @@ namespace OALProgramControl
     {
         public EEvaluationState EvaluationState { get; protected set; }
         public virtual EXEExecutionResult EvaluationResult { get; set; }
+        public int BracketLevel { get; private set; }
 
         public EXEASTNodeBase()
         {
@@ -18,8 +19,11 @@ namespace OALProgramControl
         }
 
         public abstract EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null);
-        public abstract void PrintPretty(string indent, bool last);
         public abstract EXEASTNodeBase Clone();
         public abstract string ToCode();
+        public void IncementBracketLevel()
+        {
+            this.BracketLevel++;
+        }
     }
 }

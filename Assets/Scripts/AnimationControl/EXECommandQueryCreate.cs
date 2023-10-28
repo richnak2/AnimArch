@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace OALProgramControl
 {
@@ -6,6 +7,7 @@ namespace OALProgramControl
     {
         public String ClassName { get; }
         public EXEASTNodeAccessChain AssignmentTarget { get; }
+        //private CDClassInstance CreatedInstance { get; set; }
 
         public EXECommandQueryCreate(String ClassName) : this(ClassName, null)
         {
@@ -14,6 +16,7 @@ namespace OALProgramControl
         {
             this.ClassName = ClassName;
             this.AssignmentTarget = assignmentTarget;
+            //this.CreatedInstance = null;
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
@@ -22,7 +25,8 @@ namespace OALProgramControl
 
             if (this.AssignmentTarget != null)
             {
-                assignmentTargetEvaluationResult = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram);
+                assignmentTargetEvaluationResult
+                    = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
 
                 if (!HandleRepeatableASTEvaluation(assignmentTargetEvaluationResult))
                 {
@@ -36,6 +40,8 @@ namespace OALProgramControl
             {
                 return classInstanceCreationResult;
             }
+
+            //this.CreatedInstance = (classInstanceCreationResult.ReturnedOutput as EXEValueReference).ClassInstance;
 
             if (this.AssignmentTarget != null)
             {
@@ -53,7 +59,7 @@ namespace OALProgramControl
 
         public override string ToCodeSimple()
         {
-            return "create object instance " + (this.AssignmentTarget?.ToCode() ?? string.Empty) + "of " + this.ClassName;
+            return "create object instance " + (this.AssignmentTarget?.ToCode() ?? string.Empty) + " of " + this.ClassName;
         }
 
         public override EXECommand CreateClone()
@@ -62,7 +68,7 @@ namespace OALProgramControl
         }
         public CDClassInstance GetCreatedInstance()
         {
-            return (this.AssignmentTarget.LastElement.EvaluationResult as EXEValueReference)?.ClassInstance;
+            return (this.AssignmentTarget.LastElement.EvaluationResult.GetCurrentValue() as EXEValueReference)?.ClassInstance;
         }
     }
 }

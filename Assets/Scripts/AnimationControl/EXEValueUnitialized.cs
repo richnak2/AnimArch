@@ -46,5 +46,9 @@ namespace OALProgramControl
         {
             return EXETypes.UnitializedName;
         }
+        public override EXEValueBase GetCurrentValue()
+        {
+            return this.ValueAfterInitialization ?? this;
+        }
     }
 }

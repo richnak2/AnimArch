@@ -23,7 +23,8 @@ namespace OALProgramControl
                 return evaluationResultOfAssignedExpression;
             }
 
-            EXEExecutionResult evaluationResultOfAssignmentTarget = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram);
+            EXEExecutionResult evaluationResultOfAssignmentTarget
+                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
 
             if (!HandleRepeatableASTEvaluation(evaluationResultOfAssignmentTarget))
             {

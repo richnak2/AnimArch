@@ -19,7 +19,7 @@ namespace AnimationControl.OAL
 
         private void HandleError(string errorMessage, ParserRuleContext context)
         {
-            throw new Exception(string.Format("Error while processing '{0}'.\n-------------------\n{1}", errorMessage, context.GetText()));
+            throw new Exception(string.Format("Error while processing '{0}'.\n-------------------\n{1}\nChildren-wise: '{2}'", errorMessage, context.GetText(), string.Join(", ", context.children.Select(child => child.GetText()))));
         }
 
         // AccessChain
@@ -51,11 +51,24 @@ namespace AnimationControl.OAL
         {
             if (context.methodCall() != null)
             {
-                existingChain.AddElement(VisitMethodCall(context.methodCall()) as EXEASTNodeMethodCall);
+                object methodCall = VisitMethodCall(context.methodCall());
+
+                if (methodCall is not EXEASTNodeMethodCall || methodCall == null)
+                {
+                    HandleError(string.Format("Method call in AccessChain is not supposed to be '{0}'.", methodCall?.GetType().Name ?? "NULL"), context);
+                }
+
+                existingChain.AddElement(methodCall as EXEASTNodeMethodCall);
             }
             else if (context.NAME() != null)
             {
-                existingChain.AddElement(VisitTerminal(context.NAME()) as EXEASTNodeLeaf);
+                object name = VisitTerminal(context.NAME());
+
+                if (name is not EXEASTNodeLeaf || name == null)
+                {
+                    HandleError(string.Format("Name in AccessChain is not supposed to be '{0}'.", name?.GetType().Name ?? "NULL"), context);
+                }
+                existingChain.AddElement(name as EXEASTNodeLeaf);
             }
 
             if (context.accessChain() != null)
@@ -88,14 +101,187 @@ namespace AnimationControl.OAL
 
             object expression = VisitExpr(context.expr());
 
-            if (expression is not EXEASTNodeBase)
+            if (expression is not EXEASTNodeBase || expression == null)
             {
                 HandleError(string.Format("Bracketed expression contains '{0}' instead of EXEASTNodeBase.", expression?.GetType().Name ?? "NULL"), context);
             }
 
+            (expression as EXEASTNodeBase).IncementBracketLevel();
+
             return expression;
         }
 
+        // Break command
+        public override object VisitBreakCommand([NotNull] OALParser.BreakCommandContext context)
+        {
+            if (context.ChildCount != 2 && "break".Equals(context.GetChild(0)))
+            {
+                HandleError("Malformed break command.", context);
+            }
+
+            return new EXECommandBreak();
+        }
+        // Class name
+        public override object VisitClassName([NotNull] OALParser.ClassNameContext context)
+        {
+            string name = context.GetChild(0).GetText();
+
+            if (context.ChildCount != 1 || !EXETypes.IsValidClassName(name))
+            {
+                HandleError("Malformed class name.", context);
+            }
+
+            return name;
+        }
+        // A sequence of commands, e.g. in IF or WHILE block
+        public override object VisitCommands([NotNull] OALParser.CommandsContext context)
+        {
+            object parsedChild;
+
+            int i = 0;
+            List<EXECommand> result = new List<EXECommand>();
+            foreach (IParseTree child in context.children)
+            {
+                parsedChild = Visit(child);
+
+                if (parsedChild is EXEComment && parsedChild != null)
+                {
+                    continue;
+                }
+
+                if (child is not EXECommand || child == null)
+                {
+                    HandleError(string.Format("{0}th child of 'Commands' is not a command, instead it is '{1}'.", i, child?.GetType().Name ?? "NULL"), context);
+                    return null;
+                }
+
+                result.Add(child as EXECommand);
+
+                i++;
+            }
+
+            return result;
+        }
+        // A comment in code
+        public override object VisitCommentCommand([NotNull] OALParser.CommentCommandContext context)
+        {
+            if (!"//".Equals(context.GetChild(0)))
+            {
+                HandleError("Malformed comment.", context);
+            }
+
+            string commentText = string.Join(string.Empty, context.children.Skip(1).Select(child => child.GetText()));
+
+            return new EXEComment(commentText);
+        }
+        // Condition (expression and brackets) of IF and WHILE block
+        public override object VisitCondition([NotNull] OALParser.ConditionContext context)
+        {
+            if
+            (
+                !(
+                    context.ChildCount == 3
+                    && "(".Equals(context.GetChild(0).GetText())
+                    && context.expr() != null
+                    && ")".Equals(context.GetChild(2).GetText())
+                )
+            )
+            {
+                HandleError("Malformed condition.", context);
+            }
+
+            object expression = VisitExpr(context.expr());
+
+            if (expression is not EXEASTNodeBase || expression == null)
+            {
+                HandleError(string.Format("Condition contains '{0}' instead of EXEASTNodeBase.", expression?.GetType().Name ?? "NULL"), context);
+            }
+
+            return expression;
+        }
+        // Continue command
+        public override object VisitContinueCommand([NotNull] OALParser.ContinueCommandContext context)
+        {
+            if (context.ChildCount != 2 && "continue".Equals(context.GetChild(0)))
+            {
+                HandleError("Malformed continue command.", context);
+            }
+
+            return new EXECommandContinue();
+        }
+        // Elif block in an IF command
+        public override object VisitElif([NotNull] OALParser.ElifContext context)
+        {
+            if (context.ChildCount != 3 || !"elif".Equals(context.GetChild(0)))
+            {
+                HandleError("Malformed 'elif'.", context);
+            }
+
+            object condition = Visit(context.GetChild(1));
+
+            if (condition is not EXEASTNodeBase || condition == null)
+            {
+                HandleError(string.Format("Condition in 'elif' is '{0}' instead of an expression.", condition?.GetType().Name ?? "NULL"), context);
+            }
+
+            object commands = Visit(context.GetChild(2));
+
+            if (commands is not List<EXECommand> || commands == null)
+            {
+                HandleError(string.Format("Commands in 'elif' is '{0}' instead of a list commands.", commands?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXEScopeCondition result = new EXEScopeCondition(condition as EXEASTNodeBase);
+            (commands as List<EXECommand>).ForEach(command => result.AddCommand(command));
+
+            return result;
+        }
+        // Else block in an IF command
+        public override object VisitElseBlock([NotNull] OALParser.ElseBlockContext context)
+        {
+            if (context.ChildCount != 2 || !"else".Equals(context.GetChild(0)))
+            {
+                HandleError("Malformed 'else'.", context);
+            }
+
+            object commands = Visit(context.GetChild(1));
+
+            if (commands is not List<EXECommand> || commands == null)
+            {
+                HandleError(string.Format("Commands in 'else' is '{0}' instead of a list commands.", commands?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXEScope result = new EXEScope();
+            (commands as List<EXECommand>).ForEach(command => result.AddCommand(command));
+
+            return result;
+        }
+        // Add to list
+        public override object VisitExeCommandAddingToList([NotNull] OALParser.ExeCommandAddingToListContext context)
+        {
+            if (context.ChildCount != 4 || !"add".Equals(context.GetChild(0)) || !"to".Equals(context.GetChild(2)))
+            {
+                HandleError("Malformed adding to list command.", context);
+            }
+
+            object item = Visit(context.GetChild(1));
+
+            if (item is not EXEASTNodeBase || item == null)
+            {
+                HandleError(string.Format("Added item in adding to list command is '{0}' instead of an expression.", item?.GetType().Name ?? "NULL"), context);
+            }
+
+            object list = Visit(context.GetChild(3));
+
+            if (list is not EXEASTNodeBase || list == null)
+            {
+                HandleError(string.Format("Array in adding to list command is '{0}' instead of an expression.", list?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandAddingToList result = new EXECommandAddingToList(list as EXEASTNodeBase, item as EXEASTNodeBase);
+
+            return result;
+        }
         // Assignment command
         public override object VisitExeCommandAssignment([NotNull] OALParser.ExeCommandAssignmentContext context)
         {
@@ -104,34 +290,286 @@ namespace AnimationControl.OAL
                 HandleError("Malformed assignment command.", context);
             }
             
-            EXEASTNodeAccessChain assignmentTarget = VisitAccessChain(context.accessChain()) as EXEASTNodeAccessChain;
-            EXEASTNodeBase assignedExpression = VisitExpr(context.expr()) as EXEASTNodeBase;
+            object assignmentTarget = VisitAccessChain(context.accessChain());
+            
+            if (assignmentTarget is not EXEASTNodeAccessChain || assignmentTarget == null)
+            {
+                HandleError(string.Format("Malformed assignment command - assignment target is not supposed to be '{0}'.", assignmentTarget?.GetType().Name ?? "NULL"), context);
+            }
 
-            return new EXECommandAssignment(assignmentTarget, assignedExpression);
+            object assignedExpression = VisitExpr(context.expr());
+
+            if (assignedExpression is not EXEASTNodeBase || assignedExpression == null)
+            {
+                HandleError(string.Format("Malformed assignment command - assigned expression is not supposed to be '{0}'.", assignedExpression?.GetType().Name ?? "NULL"), context);
+            }
+
+            return new EXECommandAssignment(assignmentTarget as EXEASTNodeAccessChain, assignedExpression as EXEASTNodeBase);
         }
+        // Method invocation command
+        public override object VisitExeCommandCall([NotNull] OALParser.ExeCommandCallContext context)
+        {
+            EXEASTNodeAccessChain accessChain = null;
 
-        // Expression
+            if (context.accessChain() != null)
+            {
+                if (!".".Equals(context.GetChild(1).GetText()))
+                {
+                    HandleError("Malformed access chain in method invocation command.", context);
+                }
+
+                object accessChainResult = Visit(context.accessChain());
+
+                if (accessChainResult is not EXEASTNodeAccessChain || accessChainResult == null)
+                {
+                    HandleError("Malformed access chain in method invocation command.", context);
+                }
+
+                accessChain = accessChainResult as EXEASTNodeAccessChain;
+            }
+
+            object methodCall = Visit(context.methodCall());
+
+            if (methodCall is not EXEASTNodeMethodCall || methodCall == null)
+            {
+                HandleError("Malformed method call in method invocation command.", context);
+            }
+
+            EXECommandCall result = new EXECommandCall(accessChain, methodCall as EXEASTNodeMethodCall);
+
+            return result;
+        }
+        // Array initialization command
+        public override object VisitExeCommandCreateList([NotNull] OALParser.ExeCommandCreateListContext context)
+        {
+            if (!(context.ChildCount == 5 || context.ChildCount == 6) || !"create list ".Equals(context.GetChild(0)) || !" of ".Equals(context.GetChild(2)))
+            {
+                HandleError("Malformed list creation command.", context);
+            }
+
+            object assignmentTarget = Visit(context.accessChain());
+
+            if (assignmentTarget is not EXEASTNodeAccessChain || assignmentTarget == null)
+            {
+                HandleError(string.Format("Malformed list creation command - assignment target is not supposed to be '{0}'.", assignmentTarget?.GetType().Name ?? "NULL"), context);
+            }
+
+            object className = Visit(context.className());
+
+            if (className is not string || className == null)
+            {
+                HandleError(string.Format("Malformed list creation command - class name is not supposed to be '{0}'.", className?.GetType().Name ?? "NULL"), context);
+            }
+
+            List<EXEASTNodeBase> listElements = new List<EXEASTNodeBase>();
+            if (context.listLiteral() != null)
+            {
+                object listElementsResult = Visit(context.listLiteral());
+
+                if (listElementsResult is not List<EXEASTNodeBase> || listElementsResult == null)
+                {
+                    HandleError("Malformed list literal in method invocation command.", context);
+                }
+
+                listElements = listElementsResult as List<EXEASTNodeBase>;
+            }
+
+            EXECommandCreateList result
+                = new EXECommandCreateList(className as string, assignmentTarget as EXEASTNodeAccessChain, listElements);
+
+            return result;
+        }
+        // Object instantiation command
+        public override object VisitExeCommandQueryCreate([NotNull] OALParser.ExeCommandQueryCreateContext context)
+        {
+            if
+            (
+                !(context.ChildCount == 3 || context.ChildCount == 5)
+            )
+            {
+                HandleError("Malformed object instantiation command.", context);
+            }
+
+            if
+            (
+                context.ChildCount == 3 && !("create object instance of ".Equals(context.GetChild(0).GetText()) && context.accessChain() == null)
+            )
+            {
+                HandleError("Malformed object instantiation command.", context);
+            }
+
+            if
+            (
+                context.ChildCount == 5 && !("create object instance ".Equals(context.GetChild(0).GetText()) && " of ".Equals(context.GetChild(2).GetText()) && context.accessChain() != null)
+            )
+            {
+                HandleError("Malformed object instantiation command.", context);
+            }
+
+            EXEASTNodeAccessChain assignmentTarget = null;
+            if (context.accessChain() != null)
+            {
+                object assignmentTargetResult = Visit(context.accessChain());
+
+                if (assignmentTargetResult is not EXEASTNodeAccessChain || assignmentTargetResult == null)
+                {
+                    HandleError(string.Format("Malformed object instantiation command - assignment target is not supposed to be '{0}'.", assignmentTargetResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                assignmentTarget = assignmentTargetResult as EXEASTNodeAccessChain;
+            }
+
+            object className = Visit(context.className());
+
+            if (className is not string || className == null)
+            {
+                HandleError(string.Format("Malformed object instantiation command - class name is not supposed to be '{0}'.", className?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandQueryCreate result = new EXECommandQueryCreate(className as string, assignmentTarget);
+
+            return result;
+        }
+        // Object deletion command
+        public override object VisitExeCommandQueryDelete([NotNull] OALParser.ExeCommandQueryDeleteContext context)
+        {
+            if (context.ChildCount != 3 || !"delete object instance ".Equals(context.GetChild(0)))
+            {
+                HandleError("Malformed list creation command.", context);
+            }
+
+            object expression = Visit(context.expr());
+
+            if (expression is not EXEASTNodeBase || expression == null)
+            {
+                HandleError(string.Format("Malformed object deletion command - expression is not supposed to be '{0}'.", expression?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandQueryDelete result = new EXECommandQueryDelete(expression as EXEASTNodeBase);
+
+            return result;
+        }
+        // Read from console command
+        public override object VisitExeCommandRead([NotNull] OALParser.ExeCommandReadContext context)
+        {
+            if (!(context.ChildCount == 6 || context.ChildCount == 7 || (context.ChildCount == 8 && "assign".Equals(context.GetChild(0).GetText()))))
+            {
+                HandleError("Malformed console read command.", context);
+            }
+
+            int offsetAssignKeyword = context.ChildCount == 7 ? 0 : 1;
+            int offsetExpression = context.expr() == null ? 0 : 1;
+
+            if
+            (
+                !"=".Equals(context.GetChild(1 + offsetAssignKeyword).GetText())
+                || !"(read(".Equals(context.GetChild(3 + offsetAssignKeyword).GetText())
+                || !"))".Equals(context.GetChild(5 + offsetAssignKeyword + offsetExpression).GetText())
+            )
+            {
+                HandleError("Malformed console read command.", context);
+            }
+
+            object accessChain = Visit(context.accessChain());
+
+            if (accessChain is not EXEASTNodeAccessChain || accessChain == null)
+            {
+                HandleError(string.Format("Malformed console read command - accessChain is not supposed to be '{0}'.", accessChain?.GetType().Name ?? "NULL"), context);
+            }
+
+            object className = Visit(context.className());
+
+            if (className is not string || className == null)
+            {
+                HandleError(string.Format("Malformed console read command - type is not supposed to be '{0}'.", className?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXEASTNodeBase promptExpression = null;
+            if (context.expr() != null)
+            {
+                object promptResult = Visit(context.expr());
+
+                if (promptResult is not EXEASTNodeBase || promptResult == null)
+                {
+                    HandleError(string.Format("Malformed console read command - prompt is not supposed to be '{0}'.", promptResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                promptExpression = promptResult as EXEASTNodeBase;
+            }
+
+            EXECommandRead result = new EXECommandRead(className as string, accessChain as EXEASTNodeAccessChain, promptExpression);
+
+            return result;
+        }
+        // Remove from list command
+        public override object VisitExeCommandRemovingFromList([NotNull] OALParser.ExeCommandRemovingFromListContext context)
+        {
+            if (context.ChildCount != 4 || !"remove".Equals(context.GetChild(0)) || !"from".Equals(context.GetChild(2)))
+            {
+                HandleError("Malformed removing from list.", context);
+            }
+
+            object item = Visit(context.GetChild(1));
+
+            if (item is not EXEASTNodeBase || item == null)
+            {
+                HandleError(string.Format("Added item in removing from list command is '{0}' instead of an expression.", item?.GetType().Name ?? "NULL"), context);
+            }
+
+            object list = Visit(context.GetChild(3));
+
+            if (list is not EXEASTNodeBase || list == null)
+            {
+                HandleError(string.Format("Array in removing from list command is '{0}' instead of an expression.", list?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandRemovingFromList result = new EXECommandRemovingFromList(list as EXEASTNodeBase, item as EXEASTNodeBase);
+
+            return result;
+        }
+        // Write to console command
+        public override object VisitExeCommandWrite([NotNull] OALParser.ExeCommandWriteContext context)
+        {
+            if (context.ChildCount != 4 || !"write(".Equals(context.GetChild(0)) || !")".Equals(context.GetChild(2)))
+            {
+                HandleError("Malformed console write command.", context);
+            }
+
+            object parameterList = Visit(context.parameterList());
+
+            if (parameterList is not List<EXEASTNodeBase> || parameterList == null)
+            {
+                HandleError(string.Format("Params in console write command is '{0}' instead of an expression.", parameterList?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandWrite result = new EXECommandWrite(parameterList as List<EXEASTNodeBase>);
+
+            return result;
+        }
+        // Expression - something that can be calculated and has a result
         public override object VisitExpr([NotNull] OALParser.ExprContext context)
         {
+            object result = null;
+
             if (context.NUM() != null)
             {
-                return VisitTerminal(context.NUM());
+                result = VisitTerminal(context.NUM());
             }
             else if (context.BOOL() != null)
             {
-                return VisitTerminal(context.BOOL());
+                result = VisitTerminal(context.BOOL());
             }
             else if (context.STRING() != null)
             {
-                return VisitTerminal(context.STRING());
+                result = VisitTerminal(context.STRING());
             }
             else if (context.accessChain() != null)
             {
-                return VisitAccessChain(context.accessChain());
+                result = VisitAccessChain(context.accessChain());
             }
             else if (context.bracketedExpr() != null)
             {
-                return VisitBracketedExpr(context.bracketedExpr());
+                result = VisitBracketedExpr(context.bracketedExpr());
             }
             // Unary operator
             else if (context.ChildCount == 2)
@@ -145,12 +583,12 @@ namespace AnimationControl.OAL
 
                 object operand = Visit(context.GetChild(1));
 
-                if (operand is not EXEASTNodeBase)
+                if (operand is not EXEASTNodeBase || operand == null)
                 {
                     HandleError(string.Format("Malformed expression - operand of unary operator is not EXEASTNodeBase, instead it is '{0}'.", operand?.GetType().Name ?? "NULL"), context);
                 }
 
-                return new EXEASTNodeComposite(_operator, new EXEASTNodeBase[] { operand as EXEASTNodeBase });
+                result = new EXEASTNodeComposite(_operator, new EXEASTNodeBase[] { operand as EXEASTNodeBase });
             }
             // Binary operator
             else if (context.ChildCount == 3)
@@ -164,27 +602,125 @@ namespace AnimationControl.OAL
 
                 object operand1 = Visit(context.GetChild(0));
 
-                if (operand1 is not EXEASTNodeBase)
+                if (operand1 is not EXEASTNodeBase || operand1 == null)
                 {
                     HandleError(string.Format("Malformed expression - operand of binary operator is not EXEASTNodeBase, instead it is '{0}'.", operand1?.GetType().Name ?? "NULL"), context);
                 }
 
                 object operand2 = Visit(context.GetChild(0));
 
-                if (operand2 is not EXEASTNodeBase)
+                if (operand2 is not EXEASTNodeBase || operand2 == null)
                 {
                     HandleError(string.Format("Malformed expression - operand of binary operator is not EXEASTNodeBase, instead it is '{0}'.", operand2?.GetType().Name ?? "NULL"), context);
                 }
 
-                return new EXEASTNodeComposite(_operator, new EXEASTNodeBase[] { operand1 as EXEASTNodeBase, operand2 as EXEASTNodeBase });
+                result = new EXEASTNodeComposite(_operator, new EXEASTNodeBase[] { operand1 as EXEASTNodeBase, operand2 as EXEASTNodeBase });
             }
             else
             {
                 HandleError("Malformed expression - generic error.", context);
-                return null;
+                result = null;
             }
-        }
 
+            if (result is not EXEASTNodeBase || result == null)
+            {
+                HandleError(string.Format("Malformed expression - it is not supposed to be '{0}'.", result?.GetType().Name ?? "NULL"), context);
+            }
+
+            return result;
+        }
+        // FOREACH loop
+        public override object VisitForeachCommand([NotNull] OALParser.ForeachCommandContext context)
+        {
+            if (context.ChildCount != 7 || !"for each ".Equals(context.GetChild(0)) || !" in ".Equals(context.GetChild(2)) || !"end for".Equals(context.GetChild(5)))
+            {
+                HandleError("Malformed foreach loop.", context);
+            }
+
+            object variableName = Visit(context.variableName());
+
+            if (variableName is not string || variableName == null)
+            {
+                HandleError(string.Format("Malformed foreach loop - iterator name is not supposed to be '{0}'.", variableName?.GetType().Name ?? "NULL"), context);
+            }
+
+            object array = Visit(context.expr());
+
+            if (array is not EXEASTNodeBase || array == null)
+            {
+                HandleError(string.Format("Iterable in foreach loop is '{0}' instead of an expression.", array?.GetType().Name ?? "NULL"), context);
+            }
+
+            object commands = Visit(context.commands());
+
+            if (commands is not List<EXECommand> || commands == null)
+            {
+                HandleError(string.Format("Commands in foreach loop is '{0}' instead of a list of commands.", commands?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXEScopeForEach result = new EXEScopeForEach(variableName as string, array as EXEASTNodeBase);
+            (commands as List<EXECommand>).ForEach(command => result.AddCommand(command));
+
+            return result;
+        }
+        // IF block
+        public override object VisitIfCommand([NotNull] OALParser.IfCommandContext context)
+        {
+            if (context.ChildCount < 5 || !"if".Equals(context.GetChild(0)) || !"end if".Equals(context.GetChild(context.ChildCount - 2)))
+            {
+                HandleError("Malformed if command.", context);
+            }
+
+            object condition = Visit(context.condition());
+
+            if (condition is not EXEASTNodeBase || condition == null)
+            {
+                HandleError(string.Format("Condition in if command is '{0}' instead of an expression.", condition?.GetType().Name ?? "NULL"), context);
+            }
+
+            object commands = Visit(context.commands());
+
+            if (commands is not List<EXECommand> || commands == null)
+            {
+                HandleError(string.Format("Commands in if command is '{0}' instead of a list of commands.", commands?.GetType().Name ?? "NULL"), context);
+            }
+
+            List<EXEScopeCondition> elifs = new List<EXEScopeCondition>();
+            if (context.elif() != null)
+            {
+                object elifResult = null;
+
+                foreach (OALParser.ElifContext elif in context.elif())
+                {
+                    elifResult = Visit(elif);
+
+                    if (elifResult is not EXEScopeCondition || elifResult == null)
+                    {
+                        HandleError(string.Format("Elif in if command is '{0}' instead of a conditioned scope.", elifResult?.GetType().Name ?? "NULL"), context);
+                    }
+
+                    elifs.Add(elifResult as EXEScopeCondition);
+                }
+            }
+
+            EXEScope elseScope = null;
+            if (context.elseBlock() != null)
+            {
+                object elseScopeResult = Visit(context.elseBlock());
+
+                if (elseScopeResult is not EXEScope || elseScopeResult == null)
+                {
+                    HandleError(string.Format("Else in if command is '{0}' instead of a list of a scope.", elseScopeResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                elseScope = elseScopeResult as EXEScope;
+            }
+
+            EXEScopeCondition result = new EXEScopeCondition(condition as EXEASTNodeBase, elifs, elseScope);
+            (commands as List<EXECommand>).ForEach(command => result.AddCommand(command));
+
+            return result;
+        }
         // Single command
         public override object VisitLine([NotNull] OALParser.LineContext context)
         {
@@ -195,7 +731,6 @@ namespace AnimationControl.OAL
 
             return Visit(context.GetChild(0));
         }
-
         // A series of commands
         public override object VisitLines([NotNull] OALParser.LinesContext context)
         {
@@ -234,7 +769,229 @@ namespace AnimationControl.OAL
 
             return methodScope;
         }
+        // List creation literal
+        public override object VisitListLiteral([NotNull] OALParser.ListLiteralContext context)
+        {
+            if (context.ChildCount < 2 || !"{".Equals(context.GetChild(0)) || !"}".Equals(context.GetChild(2)))
+            {
+                HandleError("Malformed list literal.", context);
+            }
 
+            List<EXEASTNodeBase> parameterList = new List<EXEASTNodeBase>();
+            if (context.parameterList() != null)
+            {
+                object parameterListResult = Visit(context.parameterList());
+
+                if (parameterListResult is not List<EXEASTNodeBase> || parameterListResult == null)
+                {
+                    HandleError(string.Format("Parameter list in list literal is '{0}' instead of an expression list.", parameterListResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                parameterList = parameterListResult as List<EXEASTNodeBase>;
+            }
+
+            return parameterList;
+        }
+        // Mthod call
+        public override object VisitMethodCall([NotNull] OALParser.MethodCallContext context)
+        {
+            if (!(context.ChildCount == 3 || context.ChildCount == 4) || !"(".Equals(context.GetChild(1).GetText()) || !")".Equals(context.GetChild(context.ChildCount - 1).GetText()))
+            {
+                HandleError("Malformed method call.", context);
+            }
+
+            object methodName = Visit(context.methodName());
+
+            if (methodName is not string || methodName == null)
+            {
+                HandleError(string.Format("Method name in method call is '{0}' instead of method name.", methodName?.GetType().Name ?? "NULL"), context);
+            }
+
+            List<EXEASTNodeBase> parameterList = new List<EXEASTNodeBase>();
+            if (context.parameterList() != null)
+            {
+                object parameterListResult = Visit(context.parameterList());
+
+                if (parameterListResult is not List<EXEASTNodeBase> || parameterListResult == null)
+                {
+                    HandleError(string.Format("Parameter list in method call is '{0}' instead of an expression list.", parameterListResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                parameterList = parameterListResult as List<EXEASTNodeBase>;
+            }
+
+            EXEASTNodeMethodCall result = new EXEASTNodeMethodCall(methodName as string, parameterList);
+
+            return result;
+        }
+        // Method name
+        public override object VisitMethodName([NotNull] OALParser.MethodNameContext context)
+        {
+            string name = context.GetChild(0).GetText();
+
+            if (context.ChildCount != 1 || !EXETypes.IsValidMethodName(name))
+            {
+                HandleError("Malformed method name.", context);
+            }
+
+            return name;
+        }
+        // Parameter list
+        public override object VisitParameterList([NotNull] OALParser.ParameterListContext context)
+        {
+            if (!(context.ChildCount != 1 || context.ChildCount != 3))
+            {
+                HandleError("Malformed parameter list.", context);
+            }
+
+            object parameter = Visit(context.expr());
+
+            if (parameter is not EXEASTNodeBase || parameter == null)
+            {
+                HandleError(string.Format("Parameter in parameter list is '{0}' instead of an expression.", parameter?.GetType().Name ?? "NULL"), context);
+            }
+
+            List<EXEASTNodeBase> parameters = new List<EXEASTNodeBase>() { parameter as EXEASTNodeBase };
+
+            if (context.parameterList() != null)
+            {
+                VisitParameterList(context, parameters);
+            }
+
+            return parameters;
+        }
+        // Parameter list - recursive
+        private void VisitParameterList([NotNull] OALParser.ParameterListContext context, List<EXEASTNodeBase> parameters)
+        {
+            if (!(context.ChildCount != 1 || context.ChildCount != 3))
+            {
+                HandleError("Malformed parameter list.", context);
+            }
+
+            object parameter = Visit(context.expr());
+
+            if (parameter is not EXEASTNodeBase || parameter == null)
+            {
+                HandleError(string.Format("Parameter in parameter list is '{0}' instead of an expression.", parameter?.GetType().Name ?? "NULL"), context);
+            }
+
+            parameters.Add(parameter as EXEASTNodeBase);
+
+            if (context.parameterList() != null)
+            {
+                VisitParameterList(context, parameters);
+            }
+        }
+        // Parallel command
+        public override object VisitParCommand([NotNull] OALParser.ParCommandContext context)
+        {
+            if (context.ChildCount < 4 || !"par".Equals(context.GetChild(0)) || !"end par".Equals(context.GetChild(2)) || !context.threadCommand().Any())
+            {
+                HandleError("Malformed parallel command.", context);
+            }
+
+            List<EXEScope> threads = new List<EXEScope>();
+            object threadResult;
+            foreach (OALParser.ThreadCommandContext thread in context.threadCommand())
+            {
+                threadResult = Visit(thread);
+
+                if (threadResult is not EXEScope || threadResult == null)
+                {
+                    HandleError(string.Format("Thread in parallel command is '{0}' instead of a scope.", threadResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                threads.Add(threadResult as EXEScope);
+            }
+
+            EXEScopeParallel result = new EXEScopeParallel(threads);
+
+            return result;
+        }
+        // Return command
+        public override object VisitReturnCommand([NotNull] OALParser.ReturnCommandContext context)
+        {
+            if (!(context.ChildCount == 2 || context.ChildCount == 3) || !"return".Equals(context.GetChild(0)))
+            {
+                HandleError("Malformed return command.", context);
+            }
+
+            EXEASTNodeBase expression = null;
+            if (context.expr() != null)
+            {
+                object expressionResult = Visit(context.expr());
+
+                if (expressionResult is not EXEASTNodeBase || expressionResult == null)
+                {
+                    HandleError(string.Format("Returned value in return command is '{0}' instead of an expression.", expressionResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                expression = expressionResult as EXEASTNodeBase;
+            }
+
+            EXECommandReturn result = new EXECommandReturn(expression);
+
+            return result;
+        }
+        // Thread command
+        public override object VisitThreadCommand([NotNull] OALParser.ThreadCommandContext context)
+        {
+            if (context.ChildCount == 4 || !"thread".Equals(context.GetChild(0)) || !"end thread".Equals(context.GetChild(2)))
+            {
+                HandleError("Malformed thread.", context);
+            }
+
+            object commands = Visit(context.GetChild(2));
+
+            if (commands is not List<EXECommand> || commands == null)
+            {
+                HandleError(string.Format("Commands in thread is '{0}' instead of a  of commands.", commands?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXEScope result = new EXEScope();
+            (commands as List<EXECommand>).ForEach(command => result.AddCommand(command));
+
+            return result;
+        }
+        // Variable name
+        public override object VisitVariableName([NotNull] OALParser.VariableNameContext context)
+        {
+            string name = context.GetChild(0).GetText();
+
+            if (context.ChildCount != 1 || !EXETypes.IsValidVariableName(name))
+            {
+                HandleError("Malformed variable name.", context);
+            }
+
+            return name;
+        }
+        // WHILE loop
+        public override object VisitWhileCommand([NotNull] OALParser.WhileCommandContext context)
+        {
+            if (context.ChildCount != 5 || !"while".Equals(context.GetChild(0)) || !"end while".Equals(context.GetChild(3)))
+            {
+                HandleError("Malformed while.", context);
+            }
+
+            object condition = Visit(context.GetChild(1));
+
+            if (condition is not EXEASTNodeBase || condition == null)
+            {
+                HandleError(string.Format("Condition in whileis '{0}' instead of an expression.", condition?.GetType().Name ?? "NULL"), context);
+            }
+
+            object commands = Visit(context.GetChild(2));
+
+            if (commands is not List<EXECommand> || commands == null)
+            {
+                HandleError(string.Format("Commands in while is '{0}' instead of a list commands.", commands?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXEScopeLoopWhile result = new EXEScopeLoopWhile(condition as EXEASTNodeBase);
+            (commands as List<EXECommand>).ForEach(command => result.AddCommand(command));
+
+            return result;
+        }
         // Visit terminal node - most likely a primitive literal or variable/attribute name
         public override object VisitTerminal(ITerminalNode node)
         {

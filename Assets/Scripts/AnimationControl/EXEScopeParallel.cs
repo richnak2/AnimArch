@@ -8,23 +8,13 @@ namespace OALProgramControl
     public class EXEScopeParallel : EXEScope
     {
         private List<EXEScope> Threads { get; }
-        private object MyThreadEndSyncer { get; }
-        private int ActiveThreadCount;
-        public EXEScopeParallel() : base()
+        public EXEScopeParallel(IEnumerable<EXEScope> threads) : base()
         {
-            this.Threads = new List<EXEScope>();
-            this.MyThreadEndSyncer = new object();
-            this.ActiveThreadCount = 0;
-        }
-        public EXEScopeParallel(EXEScope[] Threads) : base()
-        {
-            this.Threads = new List<EXEScope>();
+            this.Threads = threads.ToList();
             foreach (EXEScope Thread in Threads)
             {
                 this.AddThread(Thread);
             }
-            this.MyThreadEndSyncer = new object();
-            this.ActiveThreadCount = 0;
         }
 
         public void AddThread(EXEScope Thread)
@@ -68,7 +58,7 @@ namespace OALProgramControl
 
         protected override EXEScope CreateDuplicateScope()
         {
-            return new EXEScopeParallel(Threads.Select(x => (EXEScope)x.CreateClone()).ToArray());
+            return new EXEScopeParallel(Threads.Select(x => (EXEScope)x.CreateClone()));
         }
     }
 }

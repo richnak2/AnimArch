@@ -21,17 +21,9 @@ namespace OALProgramControl
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            EXEExecutionResult commandExecutionResult;
-
-            while (this.CurrentCommand < this.Commands.Count)
+            if (this.CurrentCommand < this.Commands.Count)
             {
-                commandExecutionResult = this.Commands[this.CurrentCommand].PerformExecution(OALProgram);
-
-                if (!HandleSingleShotASTEvaluation(commandExecutionResult))
-                {
-                    return commandExecutionResult;
-                }
-
+                this.CommandStack.Enqueue(Commands[this.CurrentCommand]);
                 this.CurrentCommand++;
             }
 

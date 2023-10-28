@@ -105,7 +105,7 @@ public partial class OALBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitElif([NotNull] OALParser.ElifContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="OALParser.else"/>.
+	/// Visit a parse tree produced by <see cref="OALParser.elseBlock"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -113,7 +113,7 @@ public partial class OALBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitElse([NotNull] OALParser.ElseContext context) { return VisitChildren(context); }
+	public virtual Result VisitElseBlock([NotNull] OALParser.ElseBlockContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.condition"/>.
 	/// <para>
@@ -315,7 +315,7 @@ public partial class OALBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitMethodCall([NotNull] OALParser.MethodCallContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="OALParser.params"/>.
+	/// Visit a parse tree produced by <see cref="OALParser.parameterList"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -323,7 +323,7 @@ public partial class OALBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitParams([NotNull] OALParser.ParamsContext context) { return VisitChildren(context); }
+	public virtual Result VisitParameterList([NotNull] OALParser.ParameterListContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.bracketedExpr"/>.
 	/// <para>

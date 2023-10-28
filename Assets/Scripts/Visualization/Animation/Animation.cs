@@ -42,7 +42,8 @@ namespace Visualization.Animation
         public string startClassName;
         public string startMethodName;
 
-        [HideInInspector] public OALProgram CurrentProgramInstance;
+        [HideInInspector] private OALProgram currentProgramInstance = new OALProgram();
+        [HideInInspector] public OALProgram CurrentProgramInstance { get { return currentProgramInstance; } }
 
 
         private void Awake()
@@ -55,8 +56,6 @@ namespace Visualization.Animation
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
         public IEnumerator Animate()
         {
-            CurrentProgramInstance = new OALProgram();
-
             Fillers = new List<GameObject>();
 
             if (AnimationIsRunning)
@@ -121,7 +120,7 @@ namespace Visualization.Animation
 
             CurrentProgramInstance.SuperScope = MethodExecutableCode; //StartMethod.ExecutableCode
             //OALProgram.Instance.SuperScope = OALParserBridge.Parse(Code); //Method.ExecutableCode dame namiesto OALParserBridge.Parse(Code) pre metodu ktora bude zacinat
-            UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(startMethod);
+            UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(MethodExecutableCode);
 
             Debug.Log("Abt to execute program");
             int i = 0;
@@ -129,10 +128,14 @@ namespace Visualization.Animation
             string currentClassName = startClassName;
             string currentMethodName = startMethodName;
 
+            CDClassInstance startingInstance = MethodExecutableCode.MethodDefinition.OwningClass.CreateClassInstance();
+            MethodExecutableCode.OwningObject = startingInstance;
+            AddObjectToDiagram(" ", startingInstance);
+
             while (executionSuccess.IsSuccess && CurrentProgramInstance.CommandStack.HasNext())
             {
+
                 EXECommand CurrentCommand = CurrentProgramInstance.CommandStack.Next();
-                CurrentCommand.ToggleActiveRecursiveBottomUp(true);
                 executionSuccess = CurrentCommand.PerformExecution(CurrentProgramInstance);
 
                 Debug.Log("Command " + i++ + executionSuccess.ToString());
@@ -142,13 +145,19 @@ namespace Visualization.Animation
                     break;
                 }
 
+                if (!executionSuccess.IsDone)
+                {
+                    continue;
+                }
+
+                CurrentCommand.ToggleActiveRecursiveBottomUp(true);
+
                 if (!(CurrentCommand is EXECommandMulti))
                 {
                     EXEScopeMethod CurrentMethodScope = CurrentCommand.GetCurrentMethodScope();
 
-                    UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(CurrentMethodScope.MethodDefinition);
+                    UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(CurrentMethodScope);
                 }
-
                 yield return AnimateCommand(CurrentCommand);
 
                 CurrentCommand.ToggleActiveRecursiveBottomUp(false);
@@ -161,9 +170,9 @@ namespace Visualization.Animation
 
         private IEnumerator AnimateCommand(EXECommand CurrentCommand)
         {
-            if (CurrentCommand.GetType() == typeof(EXECommandCallPreEvaluated))
+            if (CurrentCommand.GetType() == typeof(EXECommandCall))
             {
-                EXECommandCallPreEvaluated exeCommandCall = (EXECommandCallPreEvaluated)CurrentCommand;
+                EXECommandCall exeCommandCall = (EXECommandCall)CurrentCommand;
                 MethodInvocationInfo methodCallInfo = exeCommandCall.CallInfo;
 
                 BarrierSize = 1;
@@ -175,7 +184,7 @@ namespace Visualization.Animation
 
                 yield return StartCoroutine(BarrierFillCheck());
 
-                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(methodCallInfo.CalledMethod);
+                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandCall.InvokedMethod);
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandMulti)))
             {
@@ -185,9 +194,9 @@ namespace Visualization.Animation
 
                 foreach (EXECommand command in multicallCommand.Commands)
                 {
-                    if (command is EXECommandCallPreEvaluated)
+                    if (command is EXECommandCall)
                     {
-                        StartCoroutine(ResolveCallFunct(((EXECommandCallPreEvaluated)command).CallInfo));
+                        StartCoroutine(ResolveCallFunct(((EXECommandCall)command).CallInfo));
                     }
                     else if (command is EXECommandQueryCreate)
                     {
@@ -195,10 +204,10 @@ namespace Visualization.Animation
                     }
                 }
 
-                foreach (EXECommandCallPreEvaluated callCommand in multicallCommand.Commands.Where(command => command is EXECommandCallPreEvaluated))
+                foreach (EXECommandCall callCommand in multicallCommand.Commands.Where(command => command is EXECommandCall))
                 {
-                    CDClassInstance caller = callCommand.GetCurrentMethodScope().OwningObject;
-                    CDClassInstance called = callCommand.GetCalledObject();
+                    CDClassInstance caller = callCommand.CallInfo.CallerObject;
+                    CDClassInstance called = callCommand.CallInfo.CalledObject;
 
                     objectDiagram.AddRelation(caller, called, "ASSOCIATION");
                 }
@@ -256,7 +265,12 @@ namespace Visualization.Animation
 
             objectDiagram.AddAttributeValue(classInstance);
         }
-
+        private ObjectInDiagram AddObjectToDiagram(string name, CDClassInstance newObject)
+        {
+            ObjectInDiagram objectInDiagram = objectDiagram.AddObjectInDiagram(name, newObject);
+            DiagramPool.Instance.ObjectDiagram.AddObject(objectInDiagram);
+            return objectInDiagram;
+        }
         private IEnumerator ResolveCreateObject(EXECommand currentCommand)
         {
             EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
@@ -266,9 +280,7 @@ namespace Visualization.Animation
             string targetVariableName = createCommand.AssignmentTarget.ToCode();
 
 
-            var objectInDiagram = objectDiagram.AddObjectInDiagram(targetVariableName, createdObject);
-
-            DiagramPool.Instance.ObjectDiagram.AddObject(objectInDiagram);
+            var objectInDiagram = AddObjectToDiagram(targetVariableName, createdObject);
 
             var relation = FindInterGraphRelation(createdObject.UniqueID);
 
@@ -741,7 +753,7 @@ namespace Visualization.Animation
                             timeModifier = 0f;
                             break;
                         case 3:
-                            HighlightEdge(Call.Relation.RelationshipName, true, Call);
+                            HighlightEdge(Call.Relation?.RelationshipName, true, Call);
                             timeModifier = 0.5f;
                             break;
                         case 4:
@@ -763,7 +775,7 @@ namespace Visualization.Animation
                             HighlightObject(Call.CalledObject.UniqueID, false);
                             HighlightMethod(Call.CalledMethod, false);
                             HighlightObjectMethod(Call.CalledMethod.Name, Call.CalledObject.UniqueID, false);
-                            HighlightEdge(Call.Relation.RelationshipName, false, Call);
+                            HighlightEdge(Call.Relation?.RelationshipName, false, Call);
                             timeModifier = 1f;
                             break;
                     }

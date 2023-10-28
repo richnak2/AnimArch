@@ -7,7 +7,7 @@ namespace OALProgramControl
     public abstract class EXECommand
     {
         public bool IsActive { get; set; } = false;
-        protected EXEScope SuperScope { get; set; }
+        protected EXEScope SuperScope { get; private set; } = null;
         public EXEExecutionStack CommandStack { get; set; } = null;
         public virtual IEnumerable<EXEScope> ScopesToTop()
         {
@@ -56,7 +56,17 @@ namespace OALProgramControl
         }
         public virtual void SetSuperScope(EXEScope SuperScope)
         {
+            if (this == SuperScope)
+            {
+                return;
+            }
+
             this.SuperScope = SuperScope;
+
+            if (this.CommandStack == null)
+            {
+                this.CommandStack = SuperScope?.CommandStack;
+            }
         }
         public EXEScope GetTopLevelScope()
         {
@@ -115,6 +125,7 @@ namespace OALProgramControl
             {
                 // It's a stack-like structure, so we enqueue the current command first, then the pending command.
                 this.CommandStack.Enqueue(this);
+                executionResult.PendingCommand.SetSuperScope(this.SuperScope);
                 this.CommandStack.Enqueue(executionResult.PendingCommand);
                 return false;
             }

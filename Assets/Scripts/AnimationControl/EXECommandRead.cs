@@ -21,18 +21,23 @@ namespace OALProgramControl
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            EXEExecutionResult assignmentTargetEvaluationResult = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram);
+            EXEExecutionResult assignmentTargetEvaluationResult
+                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
 
             if (!HandleRepeatableASTEvaluation(assignmentTargetEvaluationResult))
             {
                 return assignmentTargetEvaluationResult;
             }
 
-            EXEExecutionResult promptEvaluationResult = this.Prompt.Evaluate(this.SuperScope, OALProgram);
-
-            if (!HandleRepeatableASTEvaluation(promptEvaluationResult))
+            EXEExecutionResult promptEvaluationResult = null;
+            if (this.Prompt != null)
             {
-                return promptEvaluationResult;
+                promptEvaluationResult  = this.Prompt.Evaluate(this.SuperScope, OALProgram);
+
+                if (!HandleRepeatableASTEvaluation(promptEvaluationResult))
+                {
+                    return promptEvaluationResult;
+                }
             }
 
             if (promptEvaluationResult.ReturnedOutput is not EXEValueString)
@@ -40,7 +45,9 @@ namespace OALProgramControl
                 return Error(string.Format("Tried to read from console with prompt that is not string. Instead, it is \"{0}\".", promptEvaluationResult.ReturnedOutput.TypeName), "XEC2025");
             }
 
-            ConsolePanel.Instance.YieldOutput((promptEvaluationResult.ReturnedOutput as EXEValueString).ToText());
+            string prompt = (promptEvaluationResult.ReturnedOutput as EXEValueString)?.ToText() ?? string.Empty;
+
+            ConsolePanel.Instance.YieldOutput(prompt);
 
             return Success();
         }

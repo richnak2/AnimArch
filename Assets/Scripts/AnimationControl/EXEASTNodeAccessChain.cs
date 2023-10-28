@@ -20,18 +20,32 @@ namespace OALProgramControl
 
         public override EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null)
         {
+            if (this.EvaluationState == EEvaluationState.HasBeenEvaluated)
+            {
+                return this.EvaluationResult;
+            }
+
             if (this.FirstElement == null)
             {
                 return EXEExecutionResult.Error("Access chain with no elements.", "XEC2000", null);
             }
 
-            if (this.FirstElement == this.LastElement)
-            {
-                valueContext = valueContext ?? new EXEASTNodeAccessChainContext();
-                valueContext.CreateVariableIfItDoesNotExist = true;
-            }
+            valueContext = valueContext ?? new EXEASTNodeAccessChainContext();
+            valueContext.CreateVariableIfItDoesNotExist
+                = valueContext.CreateVariableIfItDoesNotExist && this.FirstElement == this.LastElement;
+
+            this.EvaluationState = EEvaluationState.IsBeingEvaluated;
             
-            return FirstElement.Evaluate(currentScope, currentProgramInstance, valueContext);
+            EXEExecutionResult evaluationResult = FirstElement.Evaluate(currentScope, currentProgramInstance, valueContext);
+
+            this.EvaluationResult = evaluationResult;
+
+            if (this.EvaluationResult.IsDone)
+            {
+                this.EvaluationState = EEvaluationState.HasBeenEvaluated;
+            }
+
+            return evaluationResult;
         }
 
         public IEnumerable<EXEASTNodeAccessChainElement> GetElements()
@@ -64,14 +78,9 @@ namespace OALProgramControl
             this.LastElement.NextNode = element;
         }
 
-        public override void PrintPretty(string indent, bool last)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override string ToCode()
         {
-            throw new System.NotImplementedException();
+            return string.Join(".", GetElements().Select(element => element.NodeValue.ToCode()));
         }
 
         public override EXEASTNodeBase Clone()

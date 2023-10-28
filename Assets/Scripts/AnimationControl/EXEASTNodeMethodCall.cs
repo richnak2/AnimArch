@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 namespace OALProgramControl
 {
@@ -13,7 +13,7 @@ namespace OALProgramControl
         private EXEExecutionResult evaluationResult { get; set; }
         public override EXEExecutionResult EvaluationResult
         {
-            get => this.EvaluationResult;
+            get => this.evaluationResult;
             set
             {
                 this.evaluationResult = value;
@@ -25,10 +25,11 @@ namespace OALProgramControl
             }
         }
 
-        public EXEASTNodeMethodCall(string methodName) : base()
+        public EXEASTNodeMethodCall(string methodName) : this(methodName, new List<EXEASTNodeBase>()) {}
+        public EXEASTNodeMethodCall(string methodName, List<EXEASTNodeBase> arguments)
         {
             this.MethodName = methodName;
-            this.Arguments = new List<EXEASTNodeBase>();
+            this.Arguments = arguments;
             this.Method = null;
         }
 
@@ -46,6 +47,7 @@ namespace OALProgramControl
                 // We want to access a method of the current method owning object
                 EXEVariable selfVariable = currentScope.FindVariable(EXETypes.SelfReferenceName);
                 OwningObject = selfVariable.Value;
+                valueContext = new EXEASTNodeAccessChainContext() { CurrentAccessChain = string.Empty };
             }
             else
             {
@@ -118,18 +120,13 @@ namespace OALProgramControl
 
             // All arguments have been evaluated and without an error
             this.EvaluationResult = EXEExecutionResult.Success();
-            this.EvaluationResult.PendingCommand = new EXECommandCallPreEvaluated(OwningObject, this);
+            this.EvaluationResult.PendingCommand = new EXECommandCall(OwningObject.GetCurrentValue(), valueContext.CurrentAccessChain, this);
             return this.EvaluationResult;
-        }
-
-        public override void PrintPretty(string indent, bool last)
-        {
-            throw new System.NotImplementedException();
         }
 
         public override string ToCode()
         {
-            throw new System.NotImplementedException();
+            return this.MethodName + "(" + string.Join(", ", this.Arguments.Select(arg => arg.ToCode())) + ")";
         }
 
         public override EXEASTNodeBase Clone()

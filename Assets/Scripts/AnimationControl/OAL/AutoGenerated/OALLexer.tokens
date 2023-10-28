@@ -55,14 +55,12 @@ T__53=54
 T__54=55
 T__55=56
 T__56=57
-T__57=58
-T__58=59
-BOOL=60
-NAME=61
-STRING=62
-NUM=63
-COMMENT=64
-WHITE_SPACE=65
+BOOL=58
+NAME=59
+STRING=60
+NUM=61
+COMMENT=62
+WHITE_SPACE=63
 'par'=1
 'end par'=2
 ';'=3
@@ -71,7 +69,7 @@ WHITE_SPACE=65
 'if'=6
 'end if'=7
 'elif'=8
-'else'=9
+'elseBlock'=9
 '('=10
 ')'=11
 'while'=12
@@ -95,30 +93,28 @@ WHITE_SPACE=65
 ' to '=30
 'remove '=31
 ' from '=32
-'write'=33
-','=34
-'read('=35
-'int(read('=36
-'real(read('=37
-'bool(read('=38
-'return'=39
-'cardinality '=40
-'empty '=41
-'not_empty '=42
-'*'=43
-'/'=44
-'%'=45
-'+'=46
-'-'=47
-'<'=48
-'>'=49
-'<='=50
-'>='=51
-'=='=52
-'!='=53
-'not '=54
-'NOT '=55
-' and '=56
-' AND '=57
-' or '=58
-' OR '=59
+'write('=33
+'(read('=34
+'))'=35
+'return'=36
+'cardinality '=37
+'empty '=38
+'not_empty '=39
+'*'=40
+'/'=41
+'%'=42
+'+'=43
+'-'=44
+'<'=45
+'>'=46
+'<='=47
+'>='=48
+'=='=49
+'!='=50
+'not '=51
+'NOT '=52
+' and '=53
+' AND '=54
+' or '=55
+' OR '=56
+','=57

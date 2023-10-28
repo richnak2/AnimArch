@@ -18,14 +18,11 @@
 
         public EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext)
         {
-            EXEASTNodeAccessChainContext evaluationContext
-                = new EXEASTNodeAccessChainContext()
-                {
-                    CreateVariableIfItDoesNotExist = valueContext.CreateVariableIfItDoesNotExist,
-                    CurrentValue = this.PreviousNode == null ? null : PreviousNode.EvaluationResult
-                };
+            valueContext.CreateVariableIfItDoesNotExist = valueContext.CreateVariableIfItDoesNotExist && this.PreviousNode == null;
+            valueContext.CurrentValue = this.PreviousNode == null ? null : PreviousNode.EvaluationResult;
+            valueContext.CurrentAccessChain = (valueContext.CurrentAccessChain ?? string.Empty) + this.NodeValue.ToCode();
 
-            EXEExecutionResult executionResult = this.NodeValue.Evaluate(currentScope, currentProgramInstance, evaluationContext);
+            EXEExecutionResult executionResult = this.NodeValue.Evaluate(currentScope, currentProgramInstance, valueContext);
 
             if (!executionResult.IsSuccess || !executionResult.IsDone)
             {
@@ -39,7 +36,7 @@
                 return executionResult;
             }
 
-            return this.NextNode.Evaluate(currentScope, currentProgramInstance, evaluationContext);
+            return this.NextNode.Evaluate(currentScope, currentProgramInstance, valueContext);
         }
 
         public EXEASTNodeAccessChainElement Clone()

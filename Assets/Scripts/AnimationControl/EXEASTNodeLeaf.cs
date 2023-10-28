@@ -107,14 +107,9 @@ namespace OALProgramControl
             }
         }
 
-        public override void PrintPretty(string indent, bool last)
-        {
-            throw new NotImplementedException();
-        }
-
         public override string ToCode()
         {
-            throw new NotImplementedException();
+            return this.Value;
         }
 
         public override EXEASTNodeBase Clone()

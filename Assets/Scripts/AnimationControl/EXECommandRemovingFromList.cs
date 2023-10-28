@@ -6,10 +6,10 @@ namespace OALProgramControl
 {
     public class EXECommandRemovingFromList : EXECommand
     {
-        private EXEASTNodeAccessChain Array { get; }
+        private EXEASTNodeBase Array { get; }
         private EXEASTNodeBase Item { get; }
 
-        public EXECommandRemovingFromList(EXEASTNodeAccessChain array, EXEASTNodeBase item)
+        public EXECommandRemovingFromList(EXEASTNodeBase array, EXEASTNodeBase item)
         {
             this.Array = array;
             this.Item = item;

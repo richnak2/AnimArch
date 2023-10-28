@@ -88,5 +88,9 @@ namespace OALProgramControl
         {
             return string.Format("Cannot assign value of type \"{1}\" to a variable of type \"{0}\".", sourceType, targetType);
         }
+        public virtual EXEValueBase GetCurrentValue()
+        {
+            return this;
+        }
     }
 }
