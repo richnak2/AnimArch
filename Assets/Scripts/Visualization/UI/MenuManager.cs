@@ -51,12 +51,35 @@ namespace Visualization.UI
         [SerializeField] private Toggle hideRelToggle;
         [SerializeField] public GameObject PanelChooseAnimationStartMethod;
         [SerializeField] public GameObject PanelSourceCodeAnimation;
+        [SerializeField] public GameObject ShowErrorBtn;
+        [SerializeField] public GameObject ErrorPanel;
         public Anim createdAnim;
         public bool isPlaying = false;
         public Button[] playBtns;
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
+        // executed on pressing show error button
+        public void ShowErrorPanel()
+        {
+            ShowErrorPanel(null);
+        }
+        public void ShowErrorPanel(EXEExecutionResult executionResult = null) {
+            ShowErrorBtn.GetComponent<Button>().interactable = false;
+            ErrorPanel.SetActive(true);
+            ErrorPanel.GetComponent<ExecutionErrorPanel>().FillPanel(executionResult);
+        }
+        // executed on pressing X button
+        public void HideErrorPanel() {
+            ShowErrorBtn.GetComponent<Button>().interactable = true;
+            ErrorPanel.SetActive(false);
+        }
+        // executed after stopping or rerunning animation
+        public void HideErrorPanelOnStopButton() {
+            Debug.Log("Error panel Removed!");
+            ErrorPanel.SetActive(false);
+            ShowErrorBtn.GetComponent<Button>().interactable = false;
+        }
 
 
         struct InteractiveData

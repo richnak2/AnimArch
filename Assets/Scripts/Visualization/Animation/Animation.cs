@@ -4,6 +4,7 @@ using System.Linq;
 using AnimArch.Visualization.Diagrams;
 using Assets.Scripts.AnimationControl.OAL;
 using OALProgramControl;
+using TMPro;
 using UMSAGL.Scripts;
 using Unity.Netcode;
 using UnityEngine;
@@ -42,12 +43,16 @@ namespace Visualization.Animation
         public string startClassName;
         public string startMethodName;
 
-
         private void Awake()
         {
             classDiagram = GameObject.Find("ClassDiagram").GetComponent<ClassDiagram.Diagrams.ClassDiagram>();
             objectDiagram = GameObject.Find("ObjectDiagram").GetComponent<ObjectDiagram>();
             standardPlayMode = true;
+        }
+
+        private void ShowError() {
+            Debug.Log("Error panel shown!");
+            UI.MenuManager.Instance.ShowErrorPanel(executionSuccess);
         }
 
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
@@ -60,6 +65,8 @@ namespace Visualization.Animation
                 yield break;
             }
             AnimationIsRunning = true;
+
+            UI.MenuManager.Instance.HideErrorPanelOnStopButton();
 
             List<Anim> animations = AnimationData.Instance.getAnimList();
             Anim selectedAnimation = AnimationData.Instance.selectedAnim;
@@ -136,6 +143,7 @@ namespace Visualization.Animation
 
                 if (!executionSuccess.IsSuccess)
                 {
+                    ShowError();
                     break;
                 }
 
