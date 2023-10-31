@@ -738,7 +738,7 @@ namespace AnimationControl.OAL
 
             object parsedChild = null;
 
-            for (int i = 0; i < context.children.Count - 1; i++)
+            for (int i = 0; i < context.ChildCount - 1; i++)
             {
                 parsedChild = Visit(context.children[i]);
 
@@ -762,7 +762,7 @@ namespace AnimationControl.OAL
                 HandleError(string.Format("Lines contain something that is not a command - '{0}'.", context.children[i].GetText()), context);
             }
 
-            if (!"<EOF>".Equals(context.children.Last().GetText()))
+            if (!(string.Empty.Equals(context.GetText()) || "<EOF>".Equals(context.children.Last().GetText())))
             {
                 HandleError(string.Format("Last element in lines is something other than EOF - '{0}'.", context.children.Last().GetText()), context);
             }

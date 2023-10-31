@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using System.Linq;
 
 namespace OALProgramControl
 {
@@ -78,30 +77,23 @@ namespace OALProgramControl
 
             this.InvokedMethod = MethodCode;
 
-            EXEExecutionResult variableCreationResult
-                = MethodCode.AddVariable(new EXEVariable(EXETypes.SelfReferenceName, this.MethodCall.OwningObject));
-
-            if (!HandleSingleShotASTEvaluation(variableCreationResult))
-            {
-                return variableCreationResult;
-            }
-
-            for (int i = 0; i < this.MethodCall.Arguments.Count; i++)
-            {
-                variableCreationResult =
-                    MethodCode.AddVariable
+            EXEExecutionResult variableInitializationResult
+                = MethodCode
+                    .InitializeVariables
                     (
-                        new EXEVariable
-                        (
-                            this.MethodCall.Method.Parameters[i].Name,
-                            this.MethodCall.Arguments[i].EvaluationResult.ReturnedOutput
-                        )
+                        this.MethodCall
+                            .Arguments
+                            .Zip
+                            (
+                                this.MethodCall.Method.Parameters,
+                                (EXEASTNodeBase argument, CDParameter parameter)
+                                    => new EXEVariable(parameter.Name, argument.EvaluationResult.ReturnedOutput)
+                            )
                     );
 
-                if (!HandleSingleShotASTEvaluation(variableCreationResult))
-                {
-                    return variableCreationResult;
-                }
+            if (!HandleSingleShotASTEvaluation(variableInitializationResult))
+            {
+                return variableInitializationResult;
             }
 
             this.CallInfo

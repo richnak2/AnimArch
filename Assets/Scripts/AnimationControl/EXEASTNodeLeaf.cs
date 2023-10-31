@@ -55,14 +55,14 @@ namespace OALProgramControl
                         if (!variableCreationResult.IsSuccess)
                         {
                             this.EvaluationResult = variableCreationResult;
-                            return this.EvaluationResult;
                         }
                         else
                         {
                             this.EvaluationResult = EXEExecutionResult.Success();
                             this.EvaluationResult.ReturnedOutput = variable.Value;
-                            return this.EvaluationResult;
                         }
+
+                        return this.EvaluationResult;
                     }
                     else
                     {
@@ -73,7 +73,6 @@ namespace OALProgramControl
                             this.EvaluationResult = selfVariable.Value.RetrieveAttributeValue(this.Value);
                             return this.EvaluationResult;
                         }
-
 
                         // We want to access an existing variable, but it was not found - so let us report the error
                         this.EvaluationResult = EXEExecutionResult.Error(ErrorMessage.VariableNotFound(this.Value, currentScope), "XEC2001");

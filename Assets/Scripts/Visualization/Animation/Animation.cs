@@ -73,9 +73,6 @@ namespace Visualization.Animation
             }
 
             List<AnimClass> MethodsCodes = selectedAnimation.GetMethodsCodesList(); //Filip
-            string Code = selectedAnimation.Code; //toto potom mozno pojde prec
-            Debug.Log("Code: ");
-            Debug.Log(Code);
 
             foreach (AnimClass classItem in MethodsCodes) //Filip
             {
@@ -85,15 +82,12 @@ namespace Visualization.Animation
                 {
                     CDMethod Method = Class.GetMethodByName(methodItem.Name);
 
-                    //ak je methodItem.Code nie je prazdny retazec tak parsuj
-                    //if (!string.IsNullOrWhiteSpace(methodItem.Code))        //toto asi uz nebude potrebne
-                    //{
+
+                    Debug.Log(Class.Name + "." + Method.Name);
+                    Debug.Log(methodItem.Code);
+
                     EXEScopeMethod MethodBody = OALParserBridge.Parse(methodItem.Code);
                     Method.ExecutableCode = MethodBody;
-                    //}
-                    /*else {////
-                        Method.ExecutableCode = null;
-                    }///*/
                 }
             }
 
@@ -131,6 +125,8 @@ namespace Visualization.Animation
             CDClassInstance startingInstance = MethodExecutableCode.MethodDefinition.OwningClass.CreateClassInstance();
             MethodExecutableCode.OwningObject = startingInstance;
             AddObjectToDiagram(" ", startingInstance);
+
+            MethodExecutableCode.InitializeVariables(currentProgramInstance);
 
             while (executionSuccess.IsSuccess && CurrentProgramInstance.CommandStack.HasNext())
             {

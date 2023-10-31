@@ -69,5 +69,36 @@ namespace OALProgramControl
 
             return base.AddVariable(variable);
         }
+        public EXEExecutionResult InitializeVariables(OALProgram programInstance)
+        {
+            return InitializeVariables
+            (
+                this.MethodDefinition
+                    .Parameters
+                    .Select(parameter => new EXEVariable(parameter.Name, EXETypes.DefaultValue(parameter.Type, programInstance.ExecutionSpace)))
+            );
+        }
+        public EXEExecutionResult InitializeVariables(IEnumerable<EXEVariable> argumentVariables)
+        {
+            EXEExecutionResult variableCreationSuccess
+                = AddVariable(new EXEVariable(EXETypes.SelfReferenceName, new EXEValueReference(this.OwningObject)));
+
+            if (!HandleSingleShotASTEvaluation(variableCreationSuccess))
+            {
+                return variableCreationSuccess;
+            }
+
+            foreach (EXEVariable variable in argumentVariables)
+            {
+                variableCreationSuccess = AddVariable(variable);
+
+                if (!HandleSingleShotASTEvaluation(variableCreationSuccess))
+                {
+                    return variableCreationSuccess;
+                }
+            }
+
+            return Success();
+        }
     }
 }
