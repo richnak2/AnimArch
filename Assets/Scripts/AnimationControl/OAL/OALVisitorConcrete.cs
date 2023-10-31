@@ -114,7 +114,7 @@ namespace AnimationControl.OAL
         // Break command
         public override object VisitBreakCommand([NotNull] OALParser.BreakCommandContext context)
         {
-            if (context.ChildCount != 2 && "break".Equals(context.GetChild(0)))
+            if (context.ChildCount != 2 && "break".Equals(context.GetChild(0).GetText()))
             {
                 HandleError("Malformed break command.", context);
             }
@@ -149,13 +149,13 @@ namespace AnimationControl.OAL
                     continue;
                 }
 
-                if (child is not EXECommand || child == null)
+                if (parsedChild is not EXECommand || parsedChild == null)
                 {
-                    HandleError(string.Format("{0}th child of 'Commands' is not a command, instead it is '{1}'.", i, child?.GetType().Name ?? "NULL"), context);
+                    HandleError(string.Format("{0}th child of 'Commands' is not a command, instead it is '{1}'.", i, parsedChild?.GetType().Name ?? "NULL"), context);
                     return null;
                 }
 
-                result.Add(child as EXECommand);
+                result.Add(parsedChild as EXECommand);
 
                 i++;
             }
@@ -165,7 +165,7 @@ namespace AnimationControl.OAL
         // A comment in code
         public override object VisitCommentCommand([NotNull] OALParser.CommentCommandContext context)
         {
-            if (!"//".Equals(context.GetChild(0)))
+            if (!"//".Equals(context.GetChild(0).GetText()))
             {
                 HandleError("Malformed comment.", context);
             }
@@ -202,7 +202,7 @@ namespace AnimationControl.OAL
         // Continue command
         public override object VisitContinueCommand([NotNull] OALParser.ContinueCommandContext context)
         {
-            if (context.ChildCount != 2 && "continue".Equals(context.GetChild(0)))
+            if (context.ChildCount != 2 && "continue".Equals(context.GetChild(0).GetText()))
             {
                 HandleError("Malformed continue command.", context);
             }
@@ -212,7 +212,7 @@ namespace AnimationControl.OAL
         // Elif block in an IF command
         public override object VisitElif([NotNull] OALParser.ElifContext context)
         {
-            if (context.ChildCount != 3 || !"elif".Equals(context.GetChild(0)))
+            if (context.ChildCount != 3 || !"elif".Equals(context.GetChild(0).GetText()))
             {
                 HandleError("Malformed 'elif'.", context);
             }
@@ -239,7 +239,7 @@ namespace AnimationControl.OAL
         // Else block in an IF command
         public override object VisitElseBlock([NotNull] OALParser.ElseBlockContext context)
         {
-            if (context.ChildCount != 2 || !"else".Equals(context.GetChild(0)))
+            if (context.ChildCount != 2 || !"else".Equals(context.GetChild(0).GetText()))
             {
                 HandleError("Malformed 'else'.", context);
             }
@@ -259,7 +259,7 @@ namespace AnimationControl.OAL
         // Add to list
         public override object VisitExeCommandAddingToList([NotNull] OALParser.ExeCommandAddingToListContext context)
         {
-            if (context.ChildCount != 4 || !"add".Equals(context.GetChild(0)) || !"to".Equals(context.GetChild(2)))
+            if (context.ChildCount != 4 || !"add".Equals(context.GetChild(0).GetText()) || !"to".Equals(context.GetChild(2).GetText()))
             {
                 HandleError("Malformed adding to list command.", context);
             }
@@ -342,7 +342,7 @@ namespace AnimationControl.OAL
         // Array initialization command
         public override object VisitExeCommandCreateList([NotNull] OALParser.ExeCommandCreateListContext context)
         {
-            if (!(context.ChildCount == 5 || context.ChildCount == 6) || !"create list ".Equals(context.GetChild(0)) || !" of ".Equals(context.GetChild(2)))
+            if (!(context.ChildCount == 5 || context.ChildCount == 6) || !"create list ".Equals(context.GetChild(0).GetText()) || !" of ".Equals(context.GetChild(2).GetText()))
             {
                 HandleError("Malformed list creation command.", context);
             }
@@ -433,7 +433,7 @@ namespace AnimationControl.OAL
         // Object deletion command
         public override object VisitExeCommandQueryDelete([NotNull] OALParser.ExeCommandQueryDeleteContext context)
         {
-            if (context.ChildCount != 3 || !"delete object instance ".Equals(context.GetChild(0)))
+            if (context.ChildCount != 3 || !"delete object instance ".Equals(context.GetChild(0).GetText()))
             {
                 HandleError("Malformed list creation command.", context);
             }
@@ -504,7 +504,7 @@ namespace AnimationControl.OAL
         // Remove from list command
         public override object VisitExeCommandRemovingFromList([NotNull] OALParser.ExeCommandRemovingFromListContext context)
         {
-            if (context.ChildCount != 4 || !"remove".Equals(context.GetChild(0)) || !"from".Equals(context.GetChild(2)))
+            if (context.ChildCount != 4 || !"remove".Equals(context.GetChild(0).GetText()) || !"from".Equals(context.GetChild(2).GetText()))
             {
                 HandleError("Malformed removing from list.", context);
             }
@@ -530,7 +530,7 @@ namespace AnimationControl.OAL
         // Write to console command
         public override object VisitExeCommandWrite([NotNull] OALParser.ExeCommandWriteContext context)
         {
-            if (context.ChildCount != 4 || !"write(".Equals(context.GetChild(0)) || !")".Equals(context.GetChild(2)))
+            if (context.ChildCount != 4 || !"write(".Equals(context.GetChild(0).GetText()) || !")".Equals(context.GetChild(2).GetText()))
             {
                 HandleError("Malformed console write command.", context);
             }
@@ -632,7 +632,7 @@ namespace AnimationControl.OAL
         // FOREACH loop
         public override object VisitForeachCommand([NotNull] OALParser.ForeachCommandContext context)
         {
-            if (context.ChildCount != 7 || !"for each ".Equals(context.GetChild(0)) || !" in ".Equals(context.GetChild(2)) || !"end for".Equals(context.GetChild(5)))
+            if (context.ChildCount != 7 || !"for each ".Equals(context.GetChild(0).GetText()) || !" in ".Equals(context.GetChild(2).GetText()) || !"end for".Equals(context.GetChild(5).GetText()))
             {
                 HandleError("Malformed foreach loop.", context);
             }
@@ -666,7 +666,7 @@ namespace AnimationControl.OAL
         // IF block
         public override object VisitIfCommand([NotNull] OALParser.IfCommandContext context)
         {
-            if (context.ChildCount < 5 || !"if".Equals(context.GetChild(0)) || !"end if".Equals(context.GetChild(context.ChildCount - 2)))
+            if (context.ChildCount < 5 || !"if".Equals(context.GetChild(0).GetText()) || !"end if".Equals(context.GetChild(context.ChildCount - 2).GetText()))
             {
                 HandleError("Malformed if command.", context);
             }
@@ -772,7 +772,7 @@ namespace AnimationControl.OAL
         // List creation literal
         public override object VisitListLiteral([NotNull] OALParser.ListLiteralContext context)
         {
-            if (context.ChildCount < 2 || !"{".Equals(context.GetChild(0)) || !"}".Equals(context.GetChild(2)))
+            if (context.ChildCount < 2 || !"{".Equals(context.GetChild(0).GetText()) || !"}".Equals(context.GetChild(2).GetText()))
             {
                 HandleError("Malformed list literal.", context);
             }
@@ -885,7 +885,13 @@ namespace AnimationControl.OAL
         // Parallel command
         public override object VisitParCommand([NotNull] OALParser.ParCommandContext context)
         {
-            if (context.ChildCount < 4 || !"par".Equals(context.GetChild(0)) || !"end par".Equals(context.GetChild(2)) || !context.threadCommand().Any())
+            if
+            (
+                context.ChildCount < 4
+                || !"par".Equals(context.GetChild(0).GetText())
+                || !"end par".Equals(context.GetChild(context.ChildCount - 2).GetText())
+                || !context.threadCommand().Any()
+            )
             {
                 HandleError("Malformed parallel command.", context);
             }
@@ -911,7 +917,7 @@ namespace AnimationControl.OAL
         // Return command
         public override object VisitReturnCommand([NotNull] OALParser.ReturnCommandContext context)
         {
-            if (!(context.ChildCount == 2 || context.ChildCount == 3) || !"return".Equals(context.GetChild(0)))
+            if (!(context.ChildCount == 2 || context.ChildCount == 3) || !"return".Equals(context.GetChild(0).GetText()))
             {
                 HandleError("Malformed return command.", context);
             }
@@ -936,12 +942,12 @@ namespace AnimationControl.OAL
         // Thread command
         public override object VisitThreadCommand([NotNull] OALParser.ThreadCommandContext context)
         {
-            if (context.ChildCount == 4 || !"thread".Equals(context.GetChild(0)) || !"end thread".Equals(context.GetChild(2)))
+            if (context.ChildCount != 4 || !"thread".Equals(context.GetChild(0).GetText()) || !"end thread".Equals(context.GetChild(2).GetText()))
             {
                 HandleError("Malformed thread.", context);
             }
 
-            object commands = Visit(context.GetChild(2));
+            object commands = Visit(context.commands());
 
             if (commands is not List<EXECommand> || commands == null)
             {
@@ -968,7 +974,7 @@ namespace AnimationControl.OAL
         // WHILE loop
         public override object VisitWhileCommand([NotNull] OALParser.WhileCommandContext context)
         {
-            if (context.ChildCount != 5 || !"while".Equals(context.GetChild(0)) || !"end while".Equals(context.GetChild(3)))
+            if (context.ChildCount != 5 || !"while".Equals(context.GetChild(0).GetText()) || !"end while".Equals(context.GetChild(3).GetText()))
             {
                 HandleError("Malformed while.", context);
             }

@@ -192,6 +192,8 @@ namespace Visualization.Animation
                 BarrierSize = multicallCommand.Commands.Count;
                 CurrentBarrierFill = 0;
 
+                // For now let us show source code of method owning the first command
+
                 foreach (EXECommand command in multicallCommand.Commands)
                 {
                     if (command is EXECommandCall)

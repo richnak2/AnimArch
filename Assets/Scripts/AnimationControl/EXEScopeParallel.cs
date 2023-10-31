@@ -10,10 +10,11 @@ namespace OALProgramControl
         private List<EXEScope> Threads { get; }
         public EXEScopeParallel(IEnumerable<EXEScope> threads) : base()
         {
-            this.Threads = threads.ToList();
-            foreach (EXEScope Thread in Threads)
+            this.Threads = new List<EXEScope>();
+
+            foreach (EXEScope thread in threads)
             {
-                this.AddThread(Thread);
+                this.AddThread(thread);
             }
         }
 
