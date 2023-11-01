@@ -7,6 +7,7 @@ namespace OALProgramControl
     public class EXECommandCreateList : EXECommand
     {
         private string ArrayType { get; }
+        private string VariableType { get { return this.ArrayType + "[]"; } }
         private EXEASTNodeAccessChain AssignmentTarget { get; }
         private List<EXEASTNodeBase> Items { get; }
 
@@ -23,7 +24,7 @@ namespace OALProgramControl
 
             // Acquire the variable to assign the array to
             EXEExecutionResult evaluationResultOfAssignmentTarget
-                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
+                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true, VariableCreationType = this.VariableType });
 
             if (!HandleRepeatableASTEvaluation(evaluationResultOfAssignmentTarget))
             {
@@ -42,7 +43,7 @@ namespace OALProgramControl
             }
 
             // Create the array
-            EXEExecutionResult arrayCreationResult = EXEValueArray.CreateArray(this.ArrayType);
+            EXEExecutionResult arrayCreationResult = EXEValueArray.CreateArray(this.VariableType);
 
             if (!HandleSingleShotASTEvaluation(arrayCreationResult))
             {

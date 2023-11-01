@@ -25,64 +25,90 @@ namespace AnimationControl.OAL
         // AccessChain
         public override object VisitAccessChain([NotNull] OALParser.AccessChainContext context)
         {
-            if (context.methodCall() == null && context.NAME() == null)
+            if (context.accessChainElement() == null)
             {
-                HandleError("Visiting AccessChain - both 'methodCall' and 'NAME' are null.", context);
+                HandleError("Visiting AccessChain - 'accessChainElement' cannot be null.", context);
             }
 
+            EXEASTNodeAccessChain accessChain = null;
 
-            if (context.methodCall() != null && context.NAME() != null)
+            if (context.accessChainPrefix() != null)
             {
-                HandleError("Visiting AccessChain - both 'methodCall' and 'NAME' are not null.", context);
+                object prefixResult = Visit(context.accessChainPrefix());
+
+                if (prefixResult == null || prefixResult is not EXEASTNodeAccessChain)
+                {
+                    HandleError(string.Format("Access chain prefix exists, but the result of visiting is '{0}'.", prefixResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                accessChain = prefixResult as EXEASTNodeAccessChain;
+            }
+
+            accessChain ??= new EXEASTNodeAccessChain();
+
+            object currentAccessChainElementResult = Visit(context.accessChainElement());
+
+            if (currentAccessChainElementResult == null || currentAccessChainElementResult is not EXEASTNodeBase)
+            {
+                HandleError(string.Format("Access chain element exists, but the result of visiting is '{0}'.", currentAccessChainElementResult?.GetType().Name ?? "NULL"), context);
+            }
+
+            accessChain.AddElement(currentAccessChainElementResult as EXEASTNodeBase);
+
+            return accessChain;
+        }
+        // AccessChainElement
+        public override object VisitAccessChainElement([NotNull] OALParser.AccessChainElementContext context)
+        {
+            if (context.NAME() == null && context.methodCall() == null) { HandleError("MalformedAccessChainElement", context); }
+            if (context.NAME() != null && context.methodCall() != null) { HandleError("MalformedAccessChainElement", context); }
+
+            if (context.NAME() != null)
+            {
+                return VisitTerminal(context.NAME());
+            }
+            else if (context.methodCall() != null)
+            {
+                return Visit(context.methodCall());
+            }
+
+            HandleError("Unknown parsing error", context);
+            return null;
+        }
+        // AccessChainPrefix
+        public override object VisitAccessChainPrefix([NotNull] OALParser.AccessChainPrefixContext context)
+        {
+            if (context.ChildCount < 1) { HandleError("Malformed AccessChainPrefix.", context); }
+
+            if (context.ChildCount % 2 != 0) { HandleError("Malformed AccessChainPrefix.", context); }
+
+            if (context.children.Where((item, index) => index % 2 == 1).Any(item => !".".Equals(item.GetText()))) { HandleError("Malformed AccessChainPrefix.", context); }
+
+            if (context.accessChainElement() == null) { HandleError("Malformed AccessChainPrefix.", context); }
+
+            if (context.accessChainElement().Length != context.ChildCount / 2) { HandleError("Malformed AccessChainPrefix.", context); }
+
+            IEnumerable<object> accessChainElementResults = context.accessChainElement().Select(expression => Visit(expression));
+
+            if (accessChainElementResults.Any(accessChainElementResult => accessChainElementResult == null || accessChainElementResult is not EXEASTNodeBase))
+            {
+                HandleError("One of the access chain elements is not EXEASTNodeBase.", context);
             }
 
             EXEASTNodeAccessChain accessChain = new EXEASTNodeAccessChain();
 
-            VisitAccessChain(context, accessChain);
-
-            if (!accessChain.GetElements().Any())
+            foreach (object accessChainElement in accessChainElementResults)
             {
-                HandleError("Visiting AccessChain - the created access chain is empty.", context);
+                accessChain.AddElement(accessChainElement as EXEASTNodeBase);
             }
 
             return accessChain;
         }
-        private void VisitAccessChain([NotNull] OALParser.AccessChainContext context, EXEASTNodeAccessChain existingChain)
-        {
-            if (context.methodCall() != null)
-            {
-                object methodCall = VisitMethodCall(context.methodCall());
-
-                if (methodCall is not EXEASTNodeMethodCall || methodCall == null)
-                {
-                    HandleError(string.Format("Method call in AccessChain is not supposed to be '{0}'.", methodCall?.GetType().Name ?? "NULL"), context);
-                }
-
-                existingChain.AddElement(methodCall as EXEASTNodeMethodCall);
-            }
-            else if (context.NAME() != null)
-            {
-                object name = VisitTerminal(context.NAME());
-
-                if (name is not EXEASTNodeLeaf || name == null)
-                {
-                    HandleError(string.Format("Name in AccessChain is not supposed to be '{0}'.", name?.GetType().Name ?? "NULL"), context);
-                }
-                existingChain.AddElement(name as EXEASTNodeLeaf);
-            }
-
-            if (context.accessChain() != null)
-            {
-                VisitAccessChain(context, existingChain);
-            }
-        }
-
         // Attribute - attribute name
         public override object VisitAttribute([NotNull] OALParser.AttributeContext context)
         {
             return VisitTerminal(context.NAME());
         }
-
         // Bracketed expression
         public override object VisitBracketedExpr([NotNull] OALParser.BracketedExprContext context)
         {
@@ -110,7 +136,6 @@ namespace AnimationControl.OAL
 
             return expression;
         }
-
         // Break command
         public override object VisitBreakCommand([NotNull] OALParser.BreakCommandContext context)
         {
@@ -259,10 +284,9 @@ namespace AnimationControl.OAL
         // Add to list
         public override object VisitExeCommandAddingToList([NotNull] OALParser.ExeCommandAddingToListContext context)
         {
-            if (context.ChildCount != 4 || !"add".Equals(context.GetChild(0).GetText()) || !"to".Equals(context.GetChild(2).GetText()))
-            {
-                HandleError("Malformed adding to list command.", context);
-            }
+            if (context.ChildCount != 5) { HandleError("Malformed adding to list command.", context); }
+            if (!"add ".Equals(context.GetChild(0).GetText())) { HandleError("Malformed adding to list command.", context); }
+            if (!" to ".Equals(context.GetChild(2).GetText())) { HandleError("Malformed adding to list command.", context); }
 
             object item = Visit(context.GetChild(1));
 
@@ -504,7 +528,7 @@ namespace AnimationControl.OAL
         // Remove from list command
         public override object VisitExeCommandRemovingFromList([NotNull] OALParser.ExeCommandRemovingFromListContext context)
         {
-            if (context.ChildCount != 4 || !"remove".Equals(context.GetChild(0).GetText()) || !"from".Equals(context.GetChild(2).GetText()))
+            if (context.ChildCount != 5 || !"remove ".Equals(context.GetChild(0).GetText()) || !" from ".Equals(context.GetChild(2).GetText()))
             {
                 HandleError("Malformed removing from list.", context);
             }
@@ -839,9 +863,14 @@ namespace AnimationControl.OAL
         // Parameter list
         public override object VisitParameterList([NotNull] OALParser.ParameterListContext context)
         {
-            if (!(context.ChildCount != 1 || context.ChildCount != 3))
+            if (!(context.ChildCount == 1 || context.ChildCount == 2))
             {
                 HandleError("Malformed parameter list.", context);
+            }
+
+            if (context.expr() == null)
+            {
+                HandleError("Malformed parameter list - no expression.", context);
             }
 
             object parameter = Visit(context.expr());
@@ -851,36 +880,41 @@ namespace AnimationControl.OAL
                 HandleError(string.Format("Parameter in parameter list is '{0}' instead of an expression.", parameter?.GetType().Name ?? "NULL"), context);
             }
 
-            List<EXEASTNodeBase> parameters = new List<EXEASTNodeBase>() { parameter as EXEASTNodeBase };
+            List<EXEASTNodeBase> parameterList = new List<EXEASTNodeBase>() { parameter as EXEASTNodeBase };
 
-            if (context.parameterList() != null)
+            if (context.parameterListSuffix() != null)
             {
-                VisitParameterList(context, parameters);
+                object suffixResult = Visit(context.parameterListSuffix());
+
+                if (suffixResult is not List<EXEASTNodeBase> || suffixResult == null)
+                {
+                    HandleError(string.Format("ParameterListSuffix in parameter list is '{0}' instead of List<EXEASTNodeBase>.", suffixResult?.GetType().Name ?? "NULL"), context);
+                }
+
+                parameterList.AddRange(suffixResult as List<EXEASTNodeBase>);
             }
 
-            return parameters;
+            return parameterList;
         }
-        // Parameter list - recursive
-        private void VisitParameterList([NotNull] OALParser.ParameterListContext context, List<EXEASTNodeBase> parameters)
+        // Parameter list suffix
+        public override object VisitParameterListSuffix([NotNull] OALParser.ParameterListSuffixContext context)
         {
-            if (!(context.ChildCount != 1 || context.ChildCount != 3))
+            if (context.ChildCount % 2 != 0) { HandleError("Malformed ParameterListSuffix.", context); }
+
+            if (context.children.Where((item, index) => index % 2 == 0).Any(item => !",".Equals(item.GetText()))) { HandleError("Malformed ParameterListSuffix.", context); }
+
+            if (context.expr() == null) { HandleError("Malformed ParameterListSuffix.", context); }
+
+            if (context.expr().Length != context.ChildCount/2) { HandleError("Malformed ParameterListSuffix.", context); }
+
+            IEnumerable<object> paramResults = context.expr().Select(expression => Visit(expression));
+
+            if (paramResults.Any(paramResult => paramResult == null || paramResult is not EXEASTNodeBase))
             {
-                HandleError("Malformed parameter list.", context);
+                HandleError("One of the parameters is not EXEASTNodeBase.", context);
             }
 
-            object parameter = Visit(context.expr());
-
-            if (parameter is not EXEASTNodeBase || parameter == null)
-            {
-                HandleError(string.Format("Parameter in parameter list is '{0}' instead of an expression.", parameter?.GetType().Name ?? "NULL"), context);
-            }
-
-            parameters.Add(parameter as EXEASTNodeBase);
-
-            if (context.parameterList() != null)
-            {
-                VisitParameterList(context, parameters);
-            }
+            return paramResults.Select(parameter => parameter as EXEASTNodeBase).ToList();
         }
         // Parallel command
         public override object VisitParCommand([NotNull] OALParser.ParCommandContext context)

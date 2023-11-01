@@ -22,7 +22,7 @@ namespace OALProgramControl
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
             EXEExecutionResult assignmentTargetEvaluationResult
-                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
+                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true, VariableCreationType = this.AssignmentType });
 
             if (!HandleRepeatableASTEvaluation(assignmentTargetEvaluationResult))
             {

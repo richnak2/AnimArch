@@ -158,7 +158,7 @@ namespace OALProgramControl
             {
                 result = new EXEValueReference(classPool.getClassByName(typeName));
             }
-            else if (typeName.Length > 2 && "[]".Equals(typeName.Substring(0, typeName.Length - 2)))
+            else if (typeName.Length > 2 && "[]".Equals(typeName.Substring(typeName.Length - 2, 2)))
             {
                 result = new EXEValueArray(typeName);
                 ((EXEValueArray)result).InitializeEmptyArray();
@@ -169,7 +169,7 @@ namespace OALProgramControl
                 return result;
             }
 
-            throw new Exception(string.Format("Cannot create default value of unknown type \"{0}\".", typeName));
+            throw new Exception(string.Format("Cannot create default value of unknown type \"{0}\".", typeName ?? "NULL"));
         }
         public static bool CanBeAssignedTo(EXEValueBase sourceValue, string targetType, CDClassPool classPool)
         {

@@ -301,6 +301,26 @@ public interface IOALListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitAccessChain([NotNull] OALParser.AccessChainContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.accessChainPrefix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAccessChainPrefix([NotNull] OALParser.AccessChainPrefixContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.accessChainPrefix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAccessChainPrefix([NotNull] OALParser.AccessChainPrefixContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.accessChainElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAccessChainElement([NotNull] OALParser.AccessChainElementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.accessChainElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAccessChainElement([NotNull] OALParser.AccessChainElementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.methodCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -320,6 +340,16 @@ public interface IOALListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitParameterList([NotNull] OALParser.ParameterListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.parameterListSuffix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameterListSuffix([NotNull] OALParser.ParameterListSuffixContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.parameterListSuffix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameterListSuffix([NotNull] OALParser.ParameterListSuffixContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.bracketedExpr"/>.
 	/// </summary>

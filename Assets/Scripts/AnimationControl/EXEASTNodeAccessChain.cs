@@ -33,6 +33,7 @@ namespace OALProgramControl
             valueContext = valueContext ?? new EXEASTNodeAccessChainContext();
             valueContext.CreateVariableIfItDoesNotExist
                 = valueContext.CreateVariableIfItDoesNotExist && this.FirstElement == this.LastElement;
+            valueContext.VariableCreationType = valueContext.CreateVariableIfItDoesNotExist ? valueContext.VariableCreationType : null;
 
             this.EvaluationState = EEvaluationState.IsBeingEvaluated;
             

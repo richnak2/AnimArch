@@ -7,7 +7,6 @@ namespace OALProgramControl
     {
         public String ClassName { get; }
         public EXEASTNodeAccessChain AssignmentTarget { get; }
-        //private CDClassInstance CreatedInstance { get; set; }
 
         public EXECommandQueryCreate(String ClassName) : this(ClassName, null)
         {
@@ -16,7 +15,6 @@ namespace OALProgramControl
         {
             this.ClassName = ClassName;
             this.AssignmentTarget = assignmentTarget;
-            //this.CreatedInstance = null;
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
@@ -26,7 +24,7 @@ namespace OALProgramControl
             if (this.AssignmentTarget != null)
             {
                 assignmentTargetEvaluationResult
-                    = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
+                    = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true, VariableCreationType = this.ClassName });
 
                 if (!HandleRepeatableASTEvaluation(assignmentTargetEvaluationResult))
                 {
@@ -40,8 +38,6 @@ namespace OALProgramControl
             {
                 return classInstanceCreationResult;
             }
-
-            //this.CreatedInstance = (classInstanceCreationResult.ReturnedOutput as EXEValueReference).ClassInstance;
 
             if (this.AssignmentTarget != null)
             {
@@ -68,7 +64,7 @@ namespace OALProgramControl
         }
         public CDClassInstance GetCreatedInstance()
         {
-            return (this.AssignmentTarget.LastElement.EvaluationResult.GetCurrentValue() as EXEValueReference)?.ClassInstance;
+            return (this.AssignmentTarget.LastElement.EvaluationResult as EXEValueReference)?.ClassInstance;
         }
     }
 }

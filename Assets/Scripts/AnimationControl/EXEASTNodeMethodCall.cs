@@ -120,7 +120,7 @@ namespace OALProgramControl
 
             // All arguments have been evaluated and without an error
             this.EvaluationResult = EXEExecutionResult.Success();
-            this.EvaluationResult.PendingCommand = new EXECommandCall(OwningObject.GetCurrentValue(), valueContext.CurrentAccessChain, this);
+            this.EvaluationResult.PendingCommand = new EXECommandCall(OwningObject, valueContext.CurrentAccessChain, this);
             return this.EvaluationResult;
         }
 

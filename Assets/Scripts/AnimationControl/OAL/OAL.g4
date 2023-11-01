@@ -40,15 +40,15 @@ threadCommand
     ;
 
 ifCommand
-    :   'if' condition commands (elif)* (else)? 'end if' ';'
+    :   'if' condition commands (elif)* (elseBlock)? 'end if' ';'
     ;
 
 elif
     :   'elif' condition commands
     ;
 
-else
-    :   'else' commands
+elseBlock
+    :   'elseBlock' commands
     ;
 
 condition
@@ -81,7 +81,7 @@ exeCommandQueryCreate
     ;
 
 exeCommandQueryDelete
-    :   'delete object instance ' accessChain ';'
+    :   'delete object instance ' expr ';'
     ;
 
 exeCommandAssignment
@@ -93,11 +93,11 @@ exeCommandCall
     ;
 
 exeCommandCreateList
-    :   'create list ' accessChain ' of ' className (listLiteral)? ';'
+    :   'create list ' accessChain ' of ' className listLiteral? ';'
     ;
 
 listLiteral
-    :   '{' params '}'
+    :   '{' parameterList? '}'
     ;
 
 exeCommandAddingToList
@@ -109,16 +109,11 @@ exeCommandRemovingFromList
     ;
 
 exeCommandWrite
-    :   'write' '(' (expr (',' expr)*)? ')' ';'
+    :   'write(' parameterList ')' ';'
     ;
 
 exeCommandRead
-    :   ('assign ')? accessChain '=' (
-                                        'read(' expr? ')'
-                                        | 'int(read(' expr? ')' ')'
-                                        | 'real(read(' expr? ')' ')'
-                                        | 'bool(read(' expr? ')' ')'
-                                        ) ';'
+    :   ('assign ')? accessChain '=' className '(read(' expr? '))' ';'
     ;
 
 returnCommand
@@ -131,7 +126,6 @@ expr
     |   'cardinality ' expr
     |   ('empty ' | 'not_empty ') expr
     |   bracketedExpr
-    |   '-' expr 
     |   expr ('*' | '/' | '%') expr
     |   expr ('+' | '-')  expr
     |   expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
@@ -141,18 +135,28 @@ expr
     ;
 
 accessChain
-    :   methodCall '.' accessChain
-    |   NAME '.' accessChain
-    |   methodCall
+    :   accessChainPrefix? accessChainElement
+    ;
+
+accessChainPrefix
+    :   (accessChainElement '.')+
+    ;
+
+accessChainElement
+    :   methodCall
     |   NAME
     ;
 
 methodCall
-    :   methodName '(' params ')'
+    :   methodName '(' parameterList? ')'
     ;
 
-params
-    :   expr (',' params)?
+parameterList
+    :   expr parameterListSuffix?
+    ;
+
+parameterListSuffix
+    :   (',' expr)+
     ;
 
 bracketedExpr
@@ -194,12 +198,12 @@ NUM
     ;
 
 fragment INT
-    :   '0'
-    | [1-9][0-9]*
+    :   ('-')? '0'
+    | ('-')? [1-9][0-9]*
     ;
 fragment DECIMAL
-    :   '0' '.' [0-9]+
-        | [1-9][0-9]*'.'[0-9]+
+    :   ('-')? '0' '.' [0-9]+
+        ('-')? | [1-9][0-9]*'.'[0-9]+
     ;
 
 COMMENT

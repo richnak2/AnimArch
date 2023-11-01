@@ -36,7 +36,7 @@ namespace OALProgramControl
         {
             return "\"" + this.Value + "\"";
         }
-        public override EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
+        protected override EXEExecutionResult AssignValueFromConcrete(EXEValueBase assignmentSource)
         {
             return assignmentSource.AssignValueTo(this);
         }

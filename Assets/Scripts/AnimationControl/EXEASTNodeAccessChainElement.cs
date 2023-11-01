@@ -19,6 +19,7 @@
         public EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext)
         {
             valueContext.CreateVariableIfItDoesNotExist = valueContext.CreateVariableIfItDoesNotExist && this.PreviousNode == null;
+            valueContext.VariableCreationType = valueContext.CreateVariableIfItDoesNotExist ? valueContext.VariableCreationType : null;
             valueContext.CurrentValue = this.PreviousNode == null ? null : PreviousNode.EvaluationResult;
             valueContext.CurrentAccessChain = (valueContext.CurrentAccessChain ?? string.Empty) + this.NodeValue.ToCode();
 

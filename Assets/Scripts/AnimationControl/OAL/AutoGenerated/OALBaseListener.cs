@@ -360,6 +360,30 @@ public partial class OALBaseListener : IOALListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAccessChain([NotNull] OALParser.AccessChainContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.accessChainPrefix"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAccessChainPrefix([NotNull] OALParser.AccessChainPrefixContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.accessChainPrefix"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAccessChainPrefix([NotNull] OALParser.AccessChainPrefixContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.accessChainElement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAccessChainElement([NotNull] OALParser.AccessChainElementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.accessChainElement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAccessChainElement([NotNull] OALParser.AccessChainElementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.methodCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -383,6 +407,18 @@ public partial class OALBaseListener : IOALListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParameterList([NotNull] OALParser.ParameterListContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.parameterListSuffix"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterParameterListSuffix([NotNull] OALParser.ParameterListSuffixContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.parameterListSuffix"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitParameterListSuffix([NotNull] OALParser.ParameterListSuffixContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.bracketedExpr"/>.
 	/// <para>The default implementation does nothing.</para>

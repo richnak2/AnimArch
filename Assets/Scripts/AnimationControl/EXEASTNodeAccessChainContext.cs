@@ -6,6 +6,7 @@ namespace OALProgramControl
     public class EXEASTNodeAccessChainContext
     {
         public bool CreateVariableIfItDoesNotExist { get; set; }
+        public string VariableCreationType { get; set; }
         public EXEValueBase CurrentValue { get; set; }
         public string CurrentAccessChain { get; set; }
     }

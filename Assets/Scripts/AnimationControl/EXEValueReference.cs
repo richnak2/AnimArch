@@ -6,7 +6,7 @@ namespace OALProgramControl
 {
     public class EXEValueReference : EXEValueBase
     {
-        public override string TypeName => ClassInstance.OwningClass.Name;
+        public override string TypeName => TypeClass.Name;
         public override bool CanHaveAttributes => true;
         public override bool CanHaveMethods => true;
         public CDClass TypeClass { get; protected set; }
@@ -84,7 +84,7 @@ namespace OALProgramControl
 
             return this.ClassInstance.OwningClass.GetMethodByName(methodName);
         }
-        public override EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
+        protected override EXEExecutionResult AssignValueFromConcrete(EXEValueBase assignmentSource)
         {
             return assignmentSource.AssignValueTo(this);
         }
@@ -109,7 +109,7 @@ namespace OALProgramControl
                     return base.AssignValueTo(assignmentTarget);
                 }
             }
-            else if (!this.ClassInstance.OwningClass.CanBeAssignedTo(assignmentTarget.ClassInstance.OwningClass))
+            else if (!this.TypeClass.CanBeAssignedTo(assignmentTarget.TypeClass))
             {
                 return base.AssignValueTo(assignmentTarget);
             }

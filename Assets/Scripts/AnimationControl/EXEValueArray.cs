@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace OALProgramControl
 {
@@ -8,10 +9,12 @@ namespace OALProgramControl
     {
         public string ElementTypeName { get; private set; }
         public override string TypeName => ElementTypeName + "[]";
-        private List<EXEValueBase> Elements;
+        public List<EXEValueBase> Elements;
 
         public EXEValueArray(string type)
         {
+            Debug.LogError("Creating array o1");
+
             if (!EXETypes.IsValidArrayType(type))
             {
                 throw new Exception(string.Format("\"{0}\" is not a valid array type."));
@@ -22,6 +25,8 @@ namespace OALProgramControl
         }
         public EXEValueArray(string type, List<EXEValueBase> elements) : this(type)
         {
+            Debug.LogError("Creating array o2");
+
             foreach (EXEValueBase element in elements)
             {
                 if (!string.Equals(type, element.TypeName))
@@ -36,7 +41,7 @@ namespace OALProgramControl
         {
             if (!EXETypes.IsValidArrayType(type))
             {
-                return EXEExecutionResult.Error(string.Format("Cannot create an array. \"{0}\" is not a valid array type.", type), "XEC2023");
+                return EXEExecutionResult.Error(string.Format("Cannot create an array. \"{0}\" is not a valid array type.", type), "XEC2033");
             }
 
             EXEExecutionResult result = EXEExecutionResult.Success();
@@ -68,7 +73,7 @@ namespace OALProgramControl
                 :
                 ("[" + string.Join(", ", this.Elements.Select(element => element.ToText())) + "]");
         }
-        public override EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
+        protected override EXEExecutionResult AssignValueFromConcrete(EXEValueBase assignmentSource)
         {
             return assignmentSource.AssignValueTo(this);
         }
@@ -131,6 +136,11 @@ namespace OALProgramControl
         }
         public EXEValueBase GetElementAt(int index)
         {
+            if (index >= this.Elements.Count)
+            {
+                throw new IndexOutOfRangeException(string.Format("Tried to access index {0} in collection of size {1}.", index, this.Elements.Count));
+            }
+
             return this.Elements[index];
         }
         private void CopyValues(EXEValueArray source, EXEValueArray target)

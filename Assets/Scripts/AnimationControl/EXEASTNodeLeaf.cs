@@ -48,7 +48,7 @@ namespace OALProgramControl
                     {
                         // We want to create a new variable - so let us do it
 
-                        variable = new EXEVariable(this.Value);
+                        variable = new EXEVariable(this.Value, EXETypes.DefaultValue(valueContext.VariableCreationType, currentProgramInstance.ExecutionSpace));
 
                         EXEExecutionResult variableCreationResult = currentScope.AddVariable(variable);
 
@@ -68,6 +68,7 @@ namespace OALProgramControl
                     {
                         // Either we want to access an existing variable or an attribute of the method owning object
                         EXEVariable selfVariable = currentScope.FindVariable(EXETypes.SelfReferenceName);
+
                         if (selfVariable.Value.AttributeExists(this.Value))
                         {
                             this.EvaluationResult = selfVariable.Value.RetrieveAttributeValue(this.Value);
@@ -82,20 +83,10 @@ namespace OALProgramControl
                 else
                 {
                     // Variable found
-
-                    if (valueContext != null && valueContext.CreateVariableIfItDoesNotExist)
-                    {
-                        // We want to create a new variable, but it already exists - so let us report the error
-                        this.EvaluationResult = EXEExecutionResult.Error(ErrorMessage.CreatingExistingVariable(this.Value), "XEC2002");
-                        return this.EvaluationResult;
-                    }
-                    else
-                    {
-                        // We want to access an existing variable and it already exists - so let us just retrieve its value
-                        this.EvaluationResult = EXEExecutionResult.Success();
-                        this.EvaluationResult.ReturnedOutput = variable.Value;
-                        return this.EvaluationResult;
-                    }
+                    // We want to access an existing variable and it already exists - so let us just retrieve its value
+                    this.EvaluationResult = EXEExecutionResult.Success();
+                    this.EvaluationResult.ReturnedOutput = variable.Value;
+                    return this.EvaluationResult;
                 }
             }
             else

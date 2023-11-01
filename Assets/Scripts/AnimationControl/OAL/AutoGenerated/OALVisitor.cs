@@ -194,6 +194,18 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAccessChain([NotNull] OALParser.AccessChainContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.accessChainPrefix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAccessChainPrefix([NotNull] OALParser.AccessChainPrefixContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.accessChainElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAccessChainElement([NotNull] OALParser.AccessChainElementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.methodCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -205,6 +217,12 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitParameterList([NotNull] OALParser.ParameterListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.parameterListSuffix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParameterListSuffix([NotNull] OALParser.ParameterListSuffixContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.bracketedExpr"/>.
 	/// </summary>

@@ -47,7 +47,7 @@ namespace OALProgramControl
                     return methodOwningObjectEvaluationResult;
                 }
 
-                this.CalledObject = methodOwningObjectEvaluationResult.ReturnedOutput.GetCurrentValue();
+                this.CalledObject = methodOwningObjectEvaluationResult.ReturnedOutput;
             }
 
             EXEExecutionResult methodCallResolvingResult
@@ -69,7 +69,7 @@ namespace OALProgramControl
             // We are here, which means that all parameter values have been resolved successfully
 
             EXEScopeMethod MethodCode = this.MethodCall.Method.ExecutableCode;
-            MethodCode.OwningObject = (this.CalledObject.GetCurrentValue() as EXEValueReference).ClassInstance;
+            MethodCode.OwningObject = (this.CalledObject as EXEValueReference).ClassInstance;
             MethodCode.SetSuperScope(null);
             MethodCode.CommandStack = this.CommandStack;
             MethodCode.MethodCallOrigin = this.MethodCall;
@@ -109,7 +109,7 @@ namespace OALProgramControl
                             MethodCode.MethodDefinition.OwningClass.Name
                         ),
                     GetCurrentMethodScope().OwningObject,
-                    (this.CalledObject.GetCurrentValue() as EXEValueReference).ClassInstance
+                    (this.CalledObject as EXEValueReference).ClassInstance
                 );
 
             return Success();

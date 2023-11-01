@@ -22,16 +22,26 @@ namespace OALProgramControl
         }
         public virtual EXEExecutionResult RetrieveAttributeValue(string attributeName)
         {
-            return EXEExecutionResult.Error(string.Format("Tried to find attribute \"{0}\" on something that does not have any attribute.", attributeName), "XEC2004");
+            return EXEExecutionResult.Error(string.Format("Tried to find attribute \"{0}\" on something that does not have any attribute. {1}", attributeName, this.ToString()), "XEC2004");
         }
         public virtual CDMethod FindMethod(string methodName)
         {
             return null;
         }
-        public virtual EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
+        public EXEExecutionResult AssignValueFrom(EXEValueBase assignmentSource)
         {
-            return EXEExecutionResult.Error(AssignmentErrorMessage(assignmentSource.TypeName, this.TypeName), "XEC2006");
+            EXEExecutionResult assignmentResult = AssignValueFromConcrete(assignmentSource);
+
+            if (!assignmentResult.IsDone || !assignmentResult.IsSuccess)
+            {
+                return assignmentResult;
+            }
+
+            this.WasInitialized = true;
+
+            return EXEExecutionResult.Success();
         }
+        protected abstract EXEExecutionResult AssignValueFromConcrete(EXEValueBase assignmentSource);
         public virtual EXEExecutionResult AssignValueTo(EXEValueBool assignmentTarget)
         {
             return EXEExecutionResult.Error(AssignmentErrorMessage(this.TypeName, assignmentTarget.TypeName), "XEC2007");
@@ -51,10 +61,6 @@ namespace OALProgramControl
         public virtual EXEExecutionResult AssignValueTo(EXEValueReference assignmentTarget)
         {
             return EXEExecutionResult.Error(AssignmentErrorMessage(this.TypeName, assignmentTarget.TypeName), "XEC2011");
-        }
-        public virtual EXEExecutionResult AssignValueTo(EXEValueUnitialized assignmentTarget)
-        {
-            return EXEExecutionResult.Error(AssignmentErrorMessage(this.TypeName, assignmentTarget.TypeName), "XEC2012");
         }
         public virtual EXEExecutionResult AssignValueTo(EXEValueArray assignmentTarget)
         {
@@ -88,9 +94,9 @@ namespace OALProgramControl
         {
             return string.Format("Cannot assign value of type \"{1}\" to a variable of type \"{0}\".", sourceType, targetType);
         }
-        public virtual EXEValueBase GetCurrentValue()
+        public override string ToString()
         {
-            return this;
+            return string.Format("EXEValueType: '{0}', TypeName: '{1}'", this.GetType().Name, this.TypeName ?? string.Empty);
         }
     }
 }

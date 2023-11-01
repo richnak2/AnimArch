@@ -69,6 +69,20 @@ namespace OALProgramControl
 
             return base.AddVariable(variable);
         }
+        public EXEExecutionResult AddParameterVariable(EXEVariable variable)
+        {
+            if (this.MethodDefinition.OwningClass.Attributes.Select(attribute => attribute.Name).Contains(variable.Name))
+            {
+                return Error(string.Format("Cannot create variable \"{0}\" as it is already name of an attribute of the current class.", variable.Name), "XEC2031");
+            }
+
+            if (this.MethodDefinition.OwningClass.Methods.Select(method => method.Name).Contains(variable.Name))
+            {
+                return Error(string.Format("Cannot create variable \"{0}\" as it is already name of a method of the current class.", variable.Name), "XEC2032");
+            }
+
+            return base.AddVariable(variable);
+        }
         public EXEExecutionResult InitializeVariables(OALProgram programInstance)
         {
             return InitializeVariables
@@ -90,7 +104,7 @@ namespace OALProgramControl
 
             foreach (EXEVariable variable in argumentVariables)
             {
-                variableCreationSuccess = AddVariable(variable);
+                variableCreationSuccess = AddParameterVariable(variable);
 
                 if (!HandleSingleShotASTEvaluation(variableCreationSuccess))
                 {

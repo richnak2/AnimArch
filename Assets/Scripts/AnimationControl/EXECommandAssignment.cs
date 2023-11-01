@@ -24,7 +24,7 @@ namespace OALProgramControl
             }
 
             EXEExecutionResult evaluationResultOfAssignmentTarget
-                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true });
+                = this.AssignmentTarget.Evaluate(this.SuperScope, OALProgram, new EXEASTNodeAccessChainContext() { CreateVariableIfItDoesNotExist = true, VariableCreationType = evaluationResultOfAssignedExpression.ReturnedOutput.TypeName });
 
             if (!HandleRepeatableASTEvaluation(evaluationResultOfAssignmentTarget))
             {
