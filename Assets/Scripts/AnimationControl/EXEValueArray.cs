@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 namespace OALProgramControl
 {
@@ -13,8 +12,6 @@ namespace OALProgramControl
 
         public EXEValueArray(string type)
         {
-            Debug.LogError("Creating array o1");
-
             if (!EXETypes.IsValidArrayType(type))
             {
                 throw new Exception(string.Format("\"{0}\" is not a valid array type."));
@@ -23,18 +20,8 @@ namespace OALProgramControl
             this.ElementTypeName = type.Substring(0, type.Length - 2);
             this.Elements = null;
         }
-        public EXEValueArray(string type, List<EXEValueBase> elements) : this(type)
+        private EXEValueArray(string type, List<EXEValueBase> elements) : this(type)
         {
-            Debug.LogError("Creating array o2");
-
-            foreach (EXEValueBase element in elements)
-            {
-                if (!string.Equals(type, element.TypeName))
-                {
-                    throw new Exception(string.Format("Element \"{0}\" of type \"{1}\" cannot be stored in an array of type \"{2}\".", element.ToText(), element.TypeName, type));
-                }
-            }
-
             this.Elements = elements;
         }
         public static EXEExecutionResult CreateArray(string type)
@@ -110,7 +97,7 @@ namespace OALProgramControl
                 return base.AppendElement(appendedElement, classPool);
             }
 
-            this.Elements.Append(appendedElement);
+            this.Elements.Add(appendedElement);
             return EXEExecutionResult.Success();
         }
         public override EXEExecutionResult RemoveElement(EXEValueBase removedElement, CDClassPool classPool)
@@ -182,7 +169,7 @@ namespace OALProgramControl
         {
             if (!this.WasInitialized || !operand.WasInitialized)
             {
-                return UninitializedError();
+                return base.ApplyOperator(operation, operand);
             }
 
             EXEExecutionResult result = null;

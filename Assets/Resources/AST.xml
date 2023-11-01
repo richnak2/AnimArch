@@ -12,7 +12,6 @@
 				</ownedAttribute>
 				<ownedOperation xmi:id="EAID_51F56B2B_0E89_4667_939E_21ADB2B008D6" name="execute" visibility="public" concurrency="sequential">
 					<ownedParameter xmi:id="EAID_61318FBB_0DF0_4eb4_87CB_DDDA1B90DF03" name="operationEvaluator" direction="in" isStream="false" isException="false" isOrdered="false" isUnique="true" type="EAJava_OperationEvaluator"/>
-					<ownedParameter xmi:id="EAID_ED5DD087_7C49_4278_8CA1_BFA32B8CF461" name="scope" direction="in" isStream="false" isException="false" isOrdered="false" isUnique="true" type="EAJava_EXEScope"/>
 					<ownedParameter xmi:id="EAID_RT000000_0E89_4667_939E_21ADB2B008D6" name="return" direction="return" type="EAJava_string"/>
 				</ownedOperation>
 				<ownedOperation xmi:id="EAID_316104FD_2C49_475f_9191_0D89775BDCC5" name="printPretty" visibility="public" concurrency="sequential">
@@ -155,14 +154,6 @@
 							</parameter>
 							<parameter xmi:idref="EAID_61318FBB_0DF0_4eb4_87CB_DDDA1B90DF03" visibility="public">
 								<properties pos="0" type="OperationEvaluator" const="false" ea_guid="{61318FBB-0DF0-4eb4-87CB-DDDA1B90DF03}"/>
-								<style/>
-								<styleex/>
-								<documentation/>
-								<tags/>
-								<xrefs/>
-							</parameter>
-							<parameter xmi:idref="EAID_ED5DD087_7C49_4278_8CA1_BFA32B8CF461" visibility="public">
-								<properties pos="1" type="EXEScope" const="false" ea_guid="{ED5DD087-7C49-4278-8CA1-BFA32B8CF461}"/>
 								<style/>
 								<styleex/>
 								<documentation/>

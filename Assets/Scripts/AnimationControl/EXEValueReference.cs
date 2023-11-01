@@ -121,7 +121,6 @@ namespace OALProgramControl
         private void CopyValues(EXEValueReference source, EXEValueReference target)
         {
             target.ClassInstance = source.ClassInstance;
-            target.TypeClass = source.TypeClass;
         }
         public override EXEExecutionResult ApplyOperator(string operation)
         {
@@ -157,7 +156,7 @@ namespace OALProgramControl
         {
             if (!this.WasInitialized || !operand.WasInitialized)
             {
-                return UninitializedError();
+                return base.ApplyOperator(operation, operand);
             }
 
             EXEExecutionResult result = null;

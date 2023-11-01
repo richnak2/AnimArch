@@ -78,7 +78,7 @@ namespace OALProgramControl
         {
             if (!this.WasInitialized || !operand.WasInitialized)
             {
-                return UninitializedError();
+                return base.ApplyOperator(operation, operand);
             }
 
             EXEExecutionResult result = null;

@@ -89,10 +89,6 @@ namespace Visualization.Animation
                 {
                     CDMethod Method = Class.GetMethodByName(methodItem.Name);
 
-
-                    Debug.Log(Class.Name + "." + Method.Name);
-                    Debug.Log(methodItem.Code);
-
                     EXEScopeMethod MethodBody = OALParserBridge.Parse(methodItem.Code);
                     Method.ExecutableCode = MethodBody;
                 }
@@ -137,7 +133,6 @@ namespace Visualization.Animation
 
             while (executionSuccess.IsSuccess && CurrentProgramInstance.CommandStack.HasNext())
             {
-
                 EXECommand CurrentCommand = CurrentProgramInstance.CommandStack.Next();
                 executionSuccess = CurrentCommand.PerformExecution(CurrentProgramInstance);
 

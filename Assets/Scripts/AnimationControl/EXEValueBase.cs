@@ -84,6 +84,35 @@ namespace OALProgramControl
         }
         public virtual EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
         {
+            EXEExecutionResult result = null;
+
+            if ("==".Equals(operation))
+            {
+                if (operand is not EXEValueString)
+                {
+                    return BinaryOperatorError(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.WasInitialized == operand.WasInitialized);
+                return result;
+            }
+            else if ("!=".Equals(operation))
+            {
+                if (operand is not EXEValueString)
+                {
+                    return BinaryOperatorError(operation, operand);
+                }
+
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueBool(this.WasInitialized != operand.WasInitialized);
+                return result;
+            }
+
+            return BinaryOperatorError(operation, operand);
+        }
+        private EXEExecutionResult BinaryOperatorError(string operation, EXEValueBase operand)
+        {
             return EXEExecutionResult.Error(string.Format("Cannot apply binary operation \"{0}\" on operands \"{1}\" and \"{2}\".", operation, this.ToText(), operand.ToText()), "XEC2018");
         }
         protected virtual EXEExecutionResult UninitializedError()

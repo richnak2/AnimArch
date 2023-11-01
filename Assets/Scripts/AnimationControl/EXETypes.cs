@@ -171,6 +171,10 @@ namespace OALProgramControl
 
             throw new Exception(string.Format("Cannot create default value of unknown type \"{0}\".", typeName ?? "NULL"));
         }
+        public static bool CanBeAssignedTo(string sourceType, string targetType, CDClassPool classPool)
+        {
+            return DefaultValue(targetType, classPool).AssignValueFrom(DefaultValue(sourceType, classPool)).IsSuccess;
+        }
         public static bool CanBeAssignedTo(EXEValueBase sourceValue, string targetType, CDClassPool classPool)
         {
             return DefaultValue(targetType, classPool).AssignValueFrom(sourceValue).IsSuccess;

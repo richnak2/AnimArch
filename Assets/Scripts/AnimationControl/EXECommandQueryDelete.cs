@@ -22,7 +22,7 @@ namespace OALProgramControl
 
             EXEValueReference referencedValue = deletedVariableExecutionResult.ReturnedOutput as EXEValueReference;
 
-            if (!OALProgram.ExecutionSpace.DestroyInstance(referencedValue.TypeClass.Name, referencedValue.ClassInstance.UniqueID))
+            if (!OALProgram.ExecutionSpace.DestroyInstance(referencedValue.ClassInstance.OwningClass.Name, referencedValue.ClassInstance.UniqueID))
             {
                 return Error
                 (

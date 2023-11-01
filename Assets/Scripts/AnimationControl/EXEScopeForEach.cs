@@ -78,16 +78,22 @@ namespace OALProgramControl
 
             if (iteratorVariable != null)
             {
-                if (!EXETypes.CanBeAssignedTo(iterableValue.ElementTypeName, iterableValue, OALProgram.ExecutionSpace))
+                if (!EXETypes.CanBeAssignedTo(iterableValue.ElementTypeName, iteratorVariable.Value.TypeName, OALProgram.ExecutionSpace))
                 {
                     return Error
                     (
-                        ErrorMessage.IterableAndIteratorTypeMismatch
+                        string.Format
                         (
-                            this.Iterable.ToCode(),
-                            iterableValue.ElementTypeName,
-                            this.IteratorName,
-                            iteratorVariable.Value.TypeName
+                            "At iterable index {0}: Iterable elements are of types: {1}. {2}",
+                            this.CurrentIterableIndex,
+                            string.Join(", ", iterableValue.Elements.Select(element => element.TypeName)),
+                            ErrorMessage.IterableAndIteratorTypeMismatch
+                            (
+                                this.Iterable.ToCode(),
+                                iterableValue.ElementTypeName,
+                                this.IteratorName,
+                                iteratorVariable.Value.TypeName
+                            )
                         ),
                         "XEC2029"
                     );
@@ -111,19 +117,28 @@ namespace OALProgramControl
             }
             else
             {
-                return Error("Unexpected modification of iterator variable during foreach loop execution.", "XEC2029");
+                return Error("Unexpected modification of iterator variable during foreach loop execution.", "XEC2034");
             };
 
-            EXEExecutionResult iteratorAssignmentResult
-                = iteratorVariable.Value.AssignValueFrom(iterableValue.GetElementAt(this.CurrentIterableIndex));
 
-            if (!HandleSingleShotASTEvaluation(iteratorAssignmentResult))
+            if (this.CurrentIterableIndex < iterableValue.Elements.Count)
             {
-                return iteratorAssignmentResult;
+                EXEExecutionResult iteratorAssignmentResult
+                    = iteratorVariable.Value.AssignValueFrom(iterableValue.GetElementAt(this.CurrentIterableIndex));
+
+                if (!HandleSingleShotASTEvaluation(iteratorAssignmentResult))
+                {
+                    return iteratorAssignmentResult;
+                }
+
+                this.CurrentIterableIndex++;
+                startNewIteration = true;
+            }
+            else
+            {
+                startNewIteration = false;
             }
 
-            this.CurrentIterableIndex++;
-            startNewIteration = true;
             return Success();
         }
     }
