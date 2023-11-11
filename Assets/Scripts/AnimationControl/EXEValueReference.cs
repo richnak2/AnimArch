@@ -37,7 +37,7 @@ namespace OALProgramControl
         }
         public override string ToText()
         {
-            return this.TypeName + "<" + this.ClassInstance.UniqueID + ">";
+            return this.ClassInstance == null ? EXETypes.UnitializedName : (this.TypeName + "<" + this.ClassInstance.UniqueID + ">");
         }
         public override bool AttributeExists(string attributeName)
         {
@@ -193,7 +193,7 @@ namespace OALProgramControl
 
         public override string ToObjectDiagramText()
         {
-            return this.ClassInstance.UniqueID.ToString();
+            return this.ClassInstance == null ? EXETypes.UnitializedName : this.ClassInstance.UniqueID.ToString();
         }
     }
 }

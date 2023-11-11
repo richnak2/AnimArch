@@ -139,7 +139,7 @@ namespace AnimArch.Visualization.Diagrams
             foreach (string AttributeName in Object.Instance.State.Keys)
             {
                 attributes.GetComponent<TextMeshProUGUI>().text +=
-                    AttributeName + " = " + Object.Instance.State[AttributeName] + "\n";
+                    AttributeName + " = " + Object.Instance.State[AttributeName].ToObjectDiagramText() + "\n";
             }
 
             foreach (Method method in Object.Class.ParsedClass.Methods)
