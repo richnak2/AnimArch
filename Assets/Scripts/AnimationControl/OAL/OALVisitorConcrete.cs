@@ -378,11 +378,11 @@ namespace AnimationControl.OAL
                 HandleError(string.Format("Malformed list creation command - assignment target is not supposed to be '{0}'.", assignmentTarget?.GetType().Name ?? "NULL"), context);
             }
 
-            object className = Visit(context.className());
+            object elementType = Visit(context.typeName());
 
-            if (className is not string || className == null)
+            if (elementType is not string || elementType == null)
             {
-                HandleError(string.Format("Malformed list creation command - class name is not supposed to be '{0}'.", className?.GetType().Name ?? "NULL"), context);
+                HandleError(string.Format("Malformed list creation command - element type name is not supposed to be '{0}'.", elementType?.GetType().Name ?? "NULL"), context);
             }
 
             List<EXEASTNodeBase> listElements = new List<EXEASTNodeBase>();
@@ -399,7 +399,7 @@ namespace AnimationControl.OAL
             }
 
             EXECommandCreateList result
-                = new EXECommandCreateList(className as string, assignmentTarget as EXEASTNodeAccessChain, listElements);
+                = new EXECommandCreateList(elementType as string, assignmentTarget as EXEASTNodeAccessChain, listElements);
 
             return result;
         }
@@ -990,6 +990,24 @@ namespace AnimationControl.OAL
 
             EXEScope result = new EXEScope();
             (commands as List<EXECommand>).ForEach(command => result.AddCommand(command));
+
+            return result;
+        }
+        public override object VisitTypeName([NotNull] OALParser.TypeNameContext context)
+        {
+            if (context.ChildCount < 1) { HandleError("Malformed type name.", context); }
+            if (context.className() == null) { HandleError("Malformed type name.", context); }
+
+            object className = Visit(context.className());
+
+            if (className is not string || string.IsNullOrEmpty(className as string))
+            {
+                HandleError("Malformed type name - className should be non-empty string.", context);
+            }
+
+            int arrayDepthCount = context.arrayType() == null ? 0 : context.arrayType().Length;
+
+            string result = className + (arrayDepthCount > 0 ? string.Concat(Enumerable.Repeat("[]", arrayDepthCount)) : string.Empty);
 
             return result;
         }
