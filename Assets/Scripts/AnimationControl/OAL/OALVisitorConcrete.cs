@@ -19,7 +19,7 @@ namespace AnimationControl.OAL
 
         private void HandleError(string errorMessage, ParserRuleContext context)
         {
-            throw new Exception(string.Format("Error while processing '{0}'.\n-------------------\n{1}\nChildren-wise: '{2}'", errorMessage, context.GetText(), string.Join(", ", context.children.Select(child => child.GetText()))));
+            throw new Exception(string.Format("Error while processing '{0}'.\n-------------------\n{1}\nChildren-wise: '{2}'", errorMessage, context?.GetText(), string.Join(", ", context?.children?.Select(child => child?.GetText()) ?? new string[] { } )));
         }
 
         // AccessChain
@@ -190,7 +190,7 @@ namespace AnimationControl.OAL
         // A comment in code
         public override object VisitCommentCommand([NotNull] OALParser.CommentCommandContext context)
         {
-            if (!"//".Equals(context.GetChild(0).GetText()))
+            if (!"//".Equals(context.GetChild(0).GetText().Substring(0, 2)))
             {
                 HandleError("Malformed comment.", context);
             }
