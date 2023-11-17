@@ -32,6 +32,7 @@ namespace Visualization
 
         private void OnClassSelected()
         {
+            Debug.Log("Clickable::OnClassSelected");
             _selectedElement = true;
             var position = gameObject.transform.position;
             if (Camera.main == null) return;
@@ -103,6 +104,7 @@ namespace Visualization
 
         protected static bool IsMouseOverUI()
         {
+            Debug.Log("Clickable::IsMouseOverUI");
             return EventSystem.current.IsPointerOverGameObject();
         }
     }
