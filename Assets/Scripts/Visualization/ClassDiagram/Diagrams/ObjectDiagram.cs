@@ -3,6 +3,7 @@ using OALProgramControl;
 using TMPro;
 using UMSAGL.Scripts;
 using UnityEngine;
+using Visualization;
 using Visualization.ClassDiagram;
 using Visualization.ClassDiagram.ClassComponents;
 using Visualization.ClassDiagram.ComponentsInDiagram;
@@ -125,6 +126,7 @@ namespace AnimArch.Visualization.Diagrams
         {
             //Setting up
             var node = graph.AddNode();
+            node.GetComponent<Clickable>().IsObject = true;
             node.SetActive(false);
             node.name = Object.VariableName + " : " + Object.Class.ParsedClass.Name;
             var background = node.transform.Find("Background");

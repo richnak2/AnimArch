@@ -17,6 +17,8 @@ namespace Visualization
     {
         public GameObjectEvent triggerHighlighAction;
         public GameObjectEvent triggerUnhighlighAction;
+        public bool IsObject = false;
+
         protected Vector3 _screenPoint;
         protected Vector3 _offset;
 
@@ -75,7 +77,7 @@ namespace Visualization
 
         private void OnMouseOver()
         {
-            if (!Animation.Animation.Instance.AnimationIsRunning && !IsMouseOverUI())
+            if (!IsObject && !Animation.Animation.Instance.AnimationIsRunning && !IsMouseOverUI())
             {
                 if( Input.GetMouseButtonDown(0) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter)
                 {
