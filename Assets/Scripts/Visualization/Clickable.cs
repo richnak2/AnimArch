@@ -23,7 +23,6 @@ namespace Visualization
         protected bool _selectedElement;
         protected bool _changedPos;
 
-
         private void OnMouseDown()
         {
             if (ToolManager.Instance.SelectedTool == ToolManager.Tool.DiagramMovement)
@@ -76,16 +75,14 @@ namespace Visualization
 
         private void OnMouseOver()
         {
-            if (!Animation.Animation.Instance.AnimationIsRunning)
+            if (!Animation.Animation.Instance.AnimationIsRunning && !IsMouseOverUI())
             {
-                if (Input.GetMouseButtonDown(0) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter &&
-                    !IsMouseOverUI())
+                if( Input.GetMouseButtonDown(0) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter)
                 {
                     triggerHighlighAction.Invoke(gameObject);
                 }
 
-                if (Input.GetMouseButtonDown(1) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter &&
-                    !IsMouseOverUI())
+                if (Input.GetMouseButtonDown(1) && ToolManager.Instance.SelectedTool == ToolManager.Tool.Highlighter)
                 {
                     triggerUnhighlighAction.Invoke(gameObject);
                 }
@@ -104,7 +101,6 @@ namespace Visualization
 
         protected static bool IsMouseOverUI()
         {
-            Debug.Log("Clickable::IsMouseOverUI");
             return EventSystem.current.IsPointerOverGameObject();
         }
     }

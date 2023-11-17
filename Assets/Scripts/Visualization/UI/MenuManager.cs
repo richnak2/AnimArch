@@ -177,8 +177,7 @@ namespace Visualization.UI
 
         public void SelectClass(String name)
         {
-            Debug.Log(string.Format("[InteractiveData START] CCID:'{0}', CMOC:'{1}', CM:'{2}'", interactiveData.ClassClickedInClassDiagram.GetValue(), interactiveData.CurrentMethodOwningClass.GetValue(), interactiveData.CurrentMethod.GetValue()));
-
+            // Save animation code
             if
             (
                 !string.IsNullOrEmpty(interactiveData.CurrentMethodOwningClass.GetValue())
@@ -193,9 +192,11 @@ namespace Visualization.UI
                 );
             }
 
+            // Unhighlight
             UnselectMethod();
             UnselectClass();
 
+            // Set and highlight currently selected classs
             interactiveData.ClassClickedInClassDiagram.SetValue(name);
             Animation.Animation.Instance.HighlightClass(interactiveData.ClassClickedInClassDiagram.GetValue(), true);
 
@@ -204,6 +205,7 @@ namespace Visualization.UI
                 button.SetActive(false);
             }
 
+            // Setup method buttons
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             PanelInteractiveIntro.SetActive(false);
             
@@ -225,8 +227,6 @@ namespace Visualization.UI
 
             PanelInteractiveIntro.SetActive(false);
             PanelMethod.SetActive(true);
-
-            Debug.Log(string.Format("[InteractiveData END] CCID:'{0}', CMOC:'{1}', CM:'{2}'", interactiveData.ClassClickedInClassDiagram.GetValue(), interactiveData.CurrentMethodOwningClass.GetValue(), interactiveData.CurrentMethod.GetValue()));
         }
 
         private void UnselectClass()
