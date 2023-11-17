@@ -178,19 +178,7 @@ namespace Visualization.UI
         public void SelectClass(String name)
         {
             // Save animation code
-            if
-            (
-                !string.IsNullOrEmpty(interactiveData.CurrentMethodOwningClass.GetValue())
-                && !string.IsNullOrEmpty(interactiveData.CurrentMethod.GetValue())
-            )
-            {
-                createdAnim.SetMethodCode
-                (
-                    interactiveData.CurrentMethodOwningClass.GetValue(),
-                    interactiveData.CurrentMethod.GetValue(),
-                    sepInput.text
-                );
-            }
+            SaveCurrentAnimation();
 
             // Unhighlight
             UnselectMethod();
@@ -278,18 +266,29 @@ namespace Visualization.UI
         }
 
         //Save animation to file and memory
+        private void SaveCurrentAnimation()
+        {
+            if
+            (
+                !string.IsNullOrEmpty(interactiveData.CurrentMethodOwningClass.GetValue())
+                && !string.IsNullOrEmpty(interactiveData.CurrentMethod.GetValue())
+            )
+            {
+                createdAnim.SetMethodCode
+                (
+                    interactiveData.CurrentMethodOwningClass.GetValue(),
+                    interactiveData.CurrentMethod.GetValue(),
+                    sepInput.text
+                );
+            }
+        }
         public void SaveAnimation()
         {
-            if (sepInput.text.Length > 2 && !classTxt.text.Equals("class unselected") &&
-                !methodTxt.text.Equals("method unselected"))
-            {
-                createdAnim.SetMethodCode(classTxt.text, methodTxt.text, sepInput.text);
-            }
+            SaveCurrentAnimation();
 
             scriptCode.gameObject.SetActive(true);
 
             scriptCode.GetComponent<CodeHighlighter>().RemoveColors();
-            createdAnim.Code = scriptCode.text;
             scriptCode.gameObject.SetActive(false);
             fileLoader.SaveAnimation(createdAnim);
             EndAnimate();
@@ -312,8 +311,6 @@ namespace Visualization.UI
                 SelectAnimation();
                 StartAnimate();
                 createdAnim = AnimationData.Instance.selectedAnim;
-                scriptCode.text = createdAnim.Code;
-                scriptCode.text = AnimationData.Instance.selectedAnim.Code;
                 AnimationData.Instance.RemoveAnim(AnimationData.Instance.selectedAnim);
                 UpdateAnimations();
             }
