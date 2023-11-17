@@ -7,7 +7,7 @@ namespace Assets.UnitTests.AnimationControl
 {
     public abstract class StandardTest
     {
-        private const int LIMIT = 10000;
+        private const int LIMIT = 200;
 
         protected EXEExecutionResult PerformExecution(OALProgram programInstance)
         {

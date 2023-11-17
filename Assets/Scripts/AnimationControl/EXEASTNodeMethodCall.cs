@@ -11,6 +11,8 @@ namespace OALProgramControl
         public CDMethod Method { get; private set; }
         public EXEValueBase OwningObject { get; private set; }
         private EXEExecutionResult evaluationResult { get; set; }
+        public bool ExpectingReturn { get; set; }
+        public bool ReturnCollected { get; set; }
         public override EXEExecutionResult EvaluationResult
         {
             get => this.evaluationResult;
@@ -31,10 +33,27 @@ namespace OALProgramControl
             this.MethodName = methodName;
             this.Arguments = arguments;
             this.Method = null;
+            this.ExpectingReturn = false;
+            this.ReturnCollected = false;
         }
 
         public override EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null)
         {
+            // Prevent infinite loop if there is no return in method that is supposed to return something
+            if (this.ExpectingReturn && !this.ReturnCollected)
+            {
+                return EXEExecutionResult.Error
+                    (
+                        string.Format
+                        (
+                            "Tried to retrieve value from a method that did not return anything. The method is '{0}.{1}'.",
+                            this.Method.OwningClass.Name,
+                            this.MethodName
+                        ),
+                        "XEC2042"
+                    );
+            }
+
             if (this.EvaluationState == EEvaluationState.HasBeenEvaluated)
             {
                 return this.EvaluationResult;
@@ -119,6 +138,7 @@ namespace OALProgramControl
             }
 
             // All arguments have been evaluated and without an error
+            this.ExpectingReturn = true;
             this.EvaluationResult = EXEExecutionResult.Success();
             this.EvaluationResult.PendingCommand = new EXECommandCall(OwningObject, valueContext.CurrentAccessChain, this);
             return this.EvaluationResult;

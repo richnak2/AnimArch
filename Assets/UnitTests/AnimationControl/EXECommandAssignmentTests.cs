@@ -635,5 +635,44 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.PerformAssertion();
         }
+
+        [Test]
+        public void SadDay_01_CallEmptyMethod()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode1 = "create object instance inst2 of Class2;\nx = inst2.Method2();";
+            string _methodSourceCode2 = "";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass1 = programInstance.ExecutionSpace.SpawnClass("Class1");
+            CDClass owningClass2 = programInstance.ExecutionSpace.SpawnClass("Class2");
+
+            CDMethod owningMethod1 = new CDMethod(owningClass1, "Method1", "");
+            owningClass1.AddMethod(owningMethod1);
+
+            CDMethod owningMethod2 = new CDMethod(owningClass2, "Method2", "");
+            owningClass2.AddMethod(owningMethod2);
+
+            // Act
+            EXEScopeMethod methodScope1 = OALParserBridge.Parse(_methodSourceCode1);
+            owningMethod1.ExecutableCode = methodScope1;
+
+            EXEScopeMethod methodScope2 = OALParserBridge.Parse(_methodSourceCode2);
+            owningMethod2.ExecutableCode = methodScope2;
+
+            programInstance.SuperScope = methodScope1;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope1, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("inst2", new EXEValueReference());
+
+            Test.PerformAssertion();
+        }
     }
 }
