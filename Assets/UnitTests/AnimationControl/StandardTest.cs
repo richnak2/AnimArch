@@ -14,7 +14,9 @@ namespace Assets.UnitTests.AnimationControl
             EXEScopeMethod executedMethod = programInstance.SuperScope as EXEScopeMethod;
 
             // Object owning the executed method
-            executedMethod.OwningObject = executedMethod.MethodDefinition.OwningClass.CreateClassInstance();
+            CDClassInstance owningObject = executedMethod.MethodDefinition.OwningClass.CreateClassInstance();
+            executedMethod.OwningObject = owningObject;
+            executedMethod.AddVariable(new EXEVariable(EXETypes.SelfReferenceName, new EXEValueReference(owningObject)));
 
             EXEExecutionResult _executionResult = EXEExecutionResult.Success();
 
@@ -22,7 +24,7 @@ namespace Assets.UnitTests.AnimationControl
             while (_executionResult.IsSuccess && programInstance.CommandStack.HasNext())
             {
                 EXECommand currentCommand = programInstance.CommandStack.Next();
-                Debug.Log(i.ToString() + currentCommand.ToCode());
+                Debug.Log(i.ToString() + ": " + currentCommand.ToCode());
                 _executionResult = currentCommand.PerformExecution(programInstance);
 
                 if (!_executionResult.IsSuccess)
@@ -30,7 +32,7 @@ namespace Assets.UnitTests.AnimationControl
                     break;
                 }
 
-                Debug.Log(i.ToString() + _executionResult.ToString());
+                Debug.Log(_executionResult.ToString());
                 i++;
 
                 if (i > LIMIT)
