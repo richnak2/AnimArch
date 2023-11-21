@@ -637,6 +637,41 @@ namespace Assets.UnitTests.AnimationControl
         }
 
         [Test]
+        public void HappyDay_02_AssignToAttribute_03_MultiChain_01_Int()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "create object instance inst2 of Class2;\ncreate object instance inst2.att2 of Class3;\ninst2.att2.att3 = 5;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            CDClass class2 = programInstance.ExecutionSpace.SpawnClass("Class2");
+            CDAttribute attribute2 = new CDAttribute("att2", "Class3");
+            class2.AddAttribute(attribute2);
+
+            CDClass class3 = programInstance.ExecutionSpace.SpawnClass("Class3");
+            CDAttribute attribute3 = new CDAttribute("att3", "integer");
+            class3.AddAttribute(attribute3);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
         public void SadDay_01_CallEmptyMethod()
         {
             CommandTest Test = new CommandTest();
