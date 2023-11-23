@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.Util;
 using OALProgramControl;
 using TMPro;
@@ -10,6 +11,8 @@ using Visualization.Animation;
 using Visualization.ClassDiagram;
 using Visualization.ClassDiagram.ClassComponents;
 using Visualization.ClassDiagram.ComponentsInDiagram;
+using AnimArch.Extensions;
+using UnityEditor;
 
 namespace Visualization.UI
 {
@@ -61,6 +64,10 @@ namespace Visualization.UI
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
         // executed on pressing show error button
+
+        private MethodPagination SourceCodeMethodPagination;
+        private MethodPagination StartingMethodPagination;
+
         public void ShowErrorPanel()
         {
             ShowErrorPanel(null);
@@ -81,7 +88,6 @@ namespace Visualization.UI
             ErrorPanel.SetActive(false);
             ShowErrorBtn.GetComponent<Button>().interactable = false;
         }
-
 
         class InteractiveData
         {
@@ -115,6 +121,10 @@ namespace Visualization.UI
             this.interactiveData.ClassClickedInClassDiagram.Register((string value) => { ClassNameTxt.text = value; });
             this.interactiveData.CurrentMethodOwningClass.Register((string value) => { classTxt.text = value; });
             this.interactiveData.CurrentMethod.Register((string value) => { methodTxt.text = value; });
+
+            // Method button pagination
+            SourceCodeMethodPagination = new MethodPagination(methodButtons);
+            StartingMethodPagination = new MethodPagination(playBtns.Select(btn => btn.gameObject).ToList());
         }
 
         private void Start()
@@ -177,6 +187,7 @@ namespace Visualization.UI
 
         public void SelectClass(String name)
         {
+
             // Save animation code
             SaveCurrentAnimation();
 
@@ -188,30 +199,12 @@ namespace Visualization.UI
             interactiveData.ClassClickedInClassDiagram.SetValue(name);
             Animation.Animation.Instance.HighlightClass(interactiveData.ClassClickedInClassDiagram.GetValue(), true);
 
-            foreach (GameObject button in methodButtons)
-            {
-                button.SetActive(false);
-            }
-
             // Setup method buttons
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             PanelInteractiveIntro.SetActive(false);
             
             PanelMethod.SetActive(true);
-            int i = 0;
-            if (selectedClass.Methods != null)
-            {
-                foreach (Method m in selectedClass.Methods)
-                {
-                    if (i < methodButtons.Count)
-                    {
-                        methodButtons[i].SetActive(true);
-                        methodButtons[i].GetComponentInChildren<TMP_Text>().text = m.Name + "()";
-                    }
-
-                    i++;
-                }
-            }
+            SourceCodeMethodPagination.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
 
             PanelInteractiveIntro.SetActive(false);
             PanelMethod.SetActive(true);
@@ -232,8 +225,7 @@ namespace Visualization.UI
 
         public void SelectMethod(int buttonID)
         {
-
-            string methodName = methodButtons[buttonID].GetComponentInChildren<TMP_Text>().text;
+            string methodName = SourceCodeMethodPagination.GetSelectedItem(buttonID);
 
             interactiveData.CurrentMethodOwningClass.SetValue(interactiveData.ClassClickedInClassDiagram.GetValue());
             interactiveData.ClassClickedInClassDiagram.SetValue(string.Empty);
@@ -409,40 +401,26 @@ namespace Visualization.UI
 
             playIntroTexts.SetActive(false);
             Animation.Animation.Instance.startClassName = name;
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
-            int i = 0;
-            if (animMethods != null)
-            {
-                foreach (AnimMethod m in animMethods)
-                {
-                    if (i < 4)
-                    {
-                        playBtns[i].GetComponentInChildren<TMP_Text>().text = m.Name + "()";
-                        playBtns[i].gameObject.SetActive(true);
-                        i++;
-                    }
-                }
-            }
+            StartingMethodPagination.FillItems(animMethods.Select(method => method.Name).ToList());
         }
 
         public void SelectPlayMethod(int id)
         {
-            Animation.Animation.Instance.startMethodName = animMethods[id].Name;
+            string startMethodName = StartingMethodPagination.GetSelectedItem(id);
+            string startClassName = Animation.Animation.Instance.startClassName;
+
+            Animation.Animation.Instance.startMethodName = startMethodName;
             foreach (Button button in playBtns)
             {
                 button.gameObject.SetActive(false);
             }
 
             playIntroTexts.SetActive(true);
-            Debug.Log("Selected class: " + Animation.Animation.Instance.startClassName + "Selected Method: " +
-                      Animation.Animation.Instance.startMethodName);
-            Animation.Animation.Instance.HighlightClass(Animation.Animation.Instance.startClassName, false);
+            Debug.Log("Selected class: " + startClassName + "Selected Method: " + startMethodName);
+            Animation.Animation.Instance.HighlightClass(startClassName, false);
         }
 
         public void UnshowAnimation()

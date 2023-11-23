@@ -66,7 +66,10 @@ namespace Visualisation.Animation
         public void SetMethodCode(string className, string methodName, string code)
         {
             int index = methodName.IndexOf("(");
-            methodName = methodName.Substring(0, index); // remove "(...)" from method name
+            if (index >= 0)
+            {
+                methodName = methodName.Substring(0, index); // remove "(...)" from method name
+            }
 
             AnimClass classItem = MethodsCodes.FirstOrDefault(c => c.Name.Equals(className));   //alebo SingleOrDefault
             if (classItem != null)
@@ -92,7 +95,10 @@ namespace Visualisation.Animation
         public string GetMethodBody(string className, string methodName)
         {
             int index = methodName.IndexOf("(");
-            methodName = methodName.Substring(0, index); // remove "(...)" from method name
+            if (index >= 0)
+            {
+                methodName = methodName.Substring(0, index); // remove "(...)" from method name
+            }
 
             AnimClass classItem = MethodsCodes.FirstOrDefault(c => c.Name.Equals(className));   //alebo SingleOrDefault
             if (classItem != null)
