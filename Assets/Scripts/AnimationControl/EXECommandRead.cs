@@ -63,6 +63,8 @@ namespace OALProgramControl
 
             EXEValuePrimitive readValue = EXETypes.DeterminePrimitiveValue(Value);
 
+            AssignmentTarget.EvaluationResult.ReturnedOutput.AssignValueFrom(readValue);
+
             return Success();
         }
 

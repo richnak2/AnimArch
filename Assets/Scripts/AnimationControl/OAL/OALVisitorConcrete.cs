@@ -481,18 +481,12 @@ namespace AnimationControl.OAL
                 HandleError("Malformed console read command.", context);
             }
 
-            int offsetAssignKeyword = context.ChildCount == 7 ? 0 : 1;
+            int offsetAssignKeyword = context.ChildCount == 8 ? 1 : 0;
             int offsetExpression = context.expr() == null ? 0 : 1;
 
-            if
-            (
-                !"=".Equals(context.GetChild(1 + offsetAssignKeyword).GetText())
-                || !"(read(".Equals(context.GetChild(3 + offsetAssignKeyword).GetText())
-                || !"))".Equals(context.GetChild(5 + offsetAssignKeyword + offsetExpression).GetText())
-            )
-            {
-                HandleError("Malformed console read command.", context);
-            }
+            if (!"=".Equals(context.GetChild(1 + offsetAssignKeyword).GetText())) { HandleError("Malformed console read command.", context); }
+            if (!"(read(".Equals(context.GetChild(3 + offsetAssignKeyword).GetText())) { HandleError("Malformed console read command.", context); }
+            if (!"))".Equals(context.GetChild(4 + offsetAssignKeyword + offsetExpression).GetText())) { HandleError("Malformed console read command.", context); }
 
             object accessChain = Visit(context.accessChain());
 
@@ -753,6 +747,7 @@ namespace AnimationControl.OAL
                 HandleError("Line contains invalid count of children.", context);
             }
 
+            Debug.Log(string.Format("Visiting '{0}', children-wise |{1}|.", context.GetText(), string.Join(", ", context.children.Select(child => "'" + child.GetText() + "'"))));
             return Visit(context.GetChild(0));
         }
         // A series of commands
