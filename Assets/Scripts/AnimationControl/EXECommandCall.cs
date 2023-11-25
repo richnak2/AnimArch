@@ -33,7 +33,7 @@ namespace OALProgramControl
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandCall(this.MethodAccessChain, this.MethodCall);
+            return new EXECommandCall(this.MethodAccessChain.Clone() as EXEASTNodeAccessChain, this.MethodCall.Clone() as EXEASTNodeMethodCall);
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)

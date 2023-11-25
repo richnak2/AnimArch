@@ -151,7 +151,7 @@ namespace OALProgramControl
 
         public override EXEASTNodeBase Clone()
         {
-            return new EXEASTNodeMethodCall(this.MethodName);
+            return new EXEASTNodeMethodCall(this.MethodName, this.Arguments.Select(arg => arg.Clone()).ToList());
         }
     }
 }
