@@ -3,7 +3,7 @@ namespace OALProgramControl
 {
     public class EXECommandReturn : EXECommand
     {
-        private EXEASTNodeBase Expression { get; }
+        public EXEASTNodeBase Expression { get; }
 
         public EXECommandReturn(EXEASTNodeBase Expression)
         {
@@ -33,9 +33,9 @@ namespace OALProgramControl
             return Success();
         }
 
-        public override string ToCodeSimple()
+        public override void Accept(Visitor v)
         {
-            return this.Expression == null ? "return" : ("return " + this.Expression.ToCode());
+            v.VisitExeCommandReturn(this);
         }
 
         public override EXECommand CreateClone()

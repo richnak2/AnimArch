@@ -53,9 +53,9 @@ namespace OALProgramControl
             return Success();
         }
 
-        public override string ToCodeSimple()
+        public override void Accept(Visitor v)
         {
-            return "create object instance " + (this.AssignmentTarget?.ToCode() ?? string.Empty) + " of " + this.ClassName;
+            v.VisitExeCommandQueryCreate(this);
         }
 
         public override EXECommand CreateClone()

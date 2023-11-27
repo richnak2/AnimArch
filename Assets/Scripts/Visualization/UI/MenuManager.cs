@@ -11,6 +11,7 @@ using Visualization.Animation;
 using Visualization.ClassDiagram;
 using Visualization.ClassDiagram.ClassComponents;
 using Visualization.ClassDiagram.ComponentsInDiagram;
+using UnityEngine.Localization.Settings;
 using AnimArch.Extensions;
 using UnityEditor;
 
@@ -57,12 +58,26 @@ namespace Visualization.UI
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
         [SerializeField] public GameObject ErrorPanel;
+        // [SerializeField] public TMP_Text MaskingFileLabel;
+        // [SerializeField] public Button RemoveMaskingBtn;
         public Anim createdAnim;
         public bool isPlaying = false;
         public Button[] playBtns;
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
+
+        public void SetLanguage(int language)
+        {
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[language];
+            // pokus o zmenu jazyka na slovencinu pri animacii select class...
+            // var tableReference = LocalizationSettings.StringDatabase.GetTable("StringTable");
+            // var tableEntryReference = tableReference.GetEntry("playIntro1Key");
+            // InteractiveText.GetComponent<DotsAnimation>().currentText = tableEntryReference.GetLocalizedString();
+            // Debug.LogError("AAAAAAAAAAAAAA");
+            // Debug.LogError(tableEntryReference.GetLocalizedString());
+        }
+
         // executed on pressing show error button
 
         private MethodPagination SourceCodeMethodPagination;
@@ -72,18 +87,24 @@ namespace Visualization.UI
         {
             ShowErrorPanel(null);
         }
-        public void ShowErrorPanel(EXEExecutionResult executionResult = null) {
+
+        public void ShowErrorPanel(EXEExecutionResult executionResult = null) 
+        {
             ShowErrorBtn.GetComponent<Button>().interactable = false;
             ErrorPanel.SetActive(true);
             ErrorPanel.GetComponent<ExecutionErrorPanel>().FillPanel(executionResult);
         }
+
         // executed on pressing X button
-        public void HideErrorPanel() {
+        public void HideErrorPanel() 
+        {
             ShowErrorBtn.GetComponent<Button>().interactable = true;
             ErrorPanel.SetActive(false);
         }
+
         // executed after stopping or rerunning animation
-        public void HideErrorPanelOnStopButton() {
+        public void HideErrorPanelOnStopButton() 
+        {
             Debug.Log("Error panel Removed!");
             ErrorPanel.SetActive(false);
             ShowErrorBtn.GetComponent<Button>().interactable = false;
@@ -473,7 +494,10 @@ namespace Visualization.UI
                 .GetComponent<PanelSourceCodeAnimation>()
                 .SetMethodLabelText(currentMethodScope.MethodDefinition.OwningClass.Name, currentMethodScope.MethodDefinition.Name);
 
-            string sourceCode = currentMethodScope.ToFormattedCode();
+            VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+            visitor.ActivateHighlighting();
+            currentMethodScope.Accept(visitor);
+            string sourceCode = visitor.GetCommandStringAndResetStateNow();
             PanelSourceCodeAnimation.GetComponent<PanelSourceCodeAnimation>().SetSourceCodeText(sourceCode);
         }
     }

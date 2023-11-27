@@ -19,31 +19,9 @@ namespace OALProgramControl
             this.CurrentIterableIndex = 0;
         }
 
-        public override String ToCode(String Indent = "")
+        public override void Accept(Visitor v)
         {
-            return FormatCode(Indent, false);
-        }
-        public override string ToFormattedCode(string Indent = "")
-        {
-            return FormatCode(Indent, IsActive);
-        }
-        private string FormatCode(String Indent, bool Highlight)
-        {
-            String Result
-                =
-                HighlightCodeIf
-                (
-                    Highlight,
-                    Indent + "for each " + this.IteratorName + " in "
-                    + this.Iterable.ToCode()
-                    + "\n"
-                );
-            foreach (EXECommand Command in this.Commands)
-            {
-                Result += Command.ToFormattedCode(Indent + "\t");
-            }
-            Result += HighlightCodeIf(Highlight, Indent + "end for;\n");
-            return Result;
+            v.VisitExeScopeForEach(this);
         }
 
         protected override EXEScope CreateDuplicateScope()
@@ -62,14 +40,18 @@ namespace OALProgramControl
                 return iterableEvaluationResult;
             }
 
+            VisitorCommandToString visitor2 = VisitorCommandToString.BorrowAVisitor();
+            iterableEvaluationResult.ReturnedOutput.Accept(visitor2);
             if (iterableEvaluationResult.ReturnedOutput is not EXEValueArray)
             {
-                return Error(ErrorMessage.IsNotIterable(iterableEvaluationResult.ReturnedOutput.ToText()), "XEC2028");
+                return Error(ErrorMessage.IsNotIterable(visitor2.GetCommandStringAndResetStateNow()), "XEC2028");
             }
 
             EXEValueArray iterableValue = iterableEvaluationResult.ReturnedOutput as EXEValueArray;
 
-            if (EXETypes.UnitializedName.Equals(iterableValue.ToText()))
+            VisitorCommandToString visitor3 = VisitorCommandToString.BorrowAVisitor();
+            iterableValue.Accept(visitor3);
+            if (EXETypes.UnitializedName.Equals(visitor3.GetCommandStringAndResetStateNow()))
             {
                 return Error("Cannot iterate over uninitialized collection.", "XEC2027");
             }
@@ -80,6 +62,8 @@ namespace OALProgramControl
             {
                 if (!EXETypes.CanBeAssignedTo(iterableValue.ElementTypeName, iteratorVariable.Value.TypeName, OALProgram.ExecutionSpace))
                 {
+                    VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                    this.Iterable.Accept(visitor);
                     return Error
                     (
                         string.Format
@@ -89,7 +73,7 @@ namespace OALProgramControl
                             string.Join(", ", iterableValue.Elements.Select(element => element.TypeName)),
                             ErrorMessage.IterableAndIteratorTypeMismatch
                             (
-                                this.Iterable.ToCode(),
+                                visitor.GetCommandStringAndResetStateNow(),
                                 iterableValue.ElementTypeName,
                                 this.IteratorName,
                                 iteratorVariable.Value.TypeName

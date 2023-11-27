@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace OALProgramControl
 {
-    public abstract class EXECommand
+    public abstract class EXECommand : IVisitable
     {
         public bool IsActive { get; set; } = false;
         protected EXEScope SuperScope { get; private set; } = null;
@@ -89,26 +89,10 @@ namespace OALProgramControl
             return false;
         }
         public abstract EXECommand CreateClone();
-        public virtual String ToCode(String Indent = "")
-        {
-            return Indent + ToCodeSimple() + ";\n";
+        public virtual void Accept(Visitor v) {
+            v.VisitExeCommand(this);
         }
-        public virtual String ToCodeSimple()
-        {
-            return "Command";
-        }
-        public virtual string ToFormattedCode(String Indent = "")
-        {
-            return HighlightCodeIf(IsActive, ToCode(Indent));
-        }
-        protected string HighlightCodeIf(bool condition, string code)
-        {
-            return condition ? HighlightCode(code) : code;
-        }
-        private string HighlightCode(string code)
-        {
-            return "<b><color=green>" + code + "</color></b>";
-        }
+
         public void ToggleActiveRecursiveBottomUp(bool active)
         {
             this.IsActive = active;

@@ -6,10 +6,10 @@ namespace OALProgramControl
 {
     public class EXECommandCreateList : EXECommand
     {
-        private string ArrayType { get; }
+        public string ArrayType { get; }
         private string VariableType { get { return this.ArrayType + "[]"; } }
-        private EXEASTNodeAccessChain AssignmentTarget { get; }
-        private List<EXEASTNodeBase> Items { get; }
+        public EXEASTNodeAccessChain AssignmentTarget { get; }
+        public List<EXEASTNodeBase> Items { get; }
 
         public EXECommandCreateList(string arrayType, EXEASTNodeAccessChain assignmentTarget, List<EXEASTNodeBase> items)
         {
@@ -75,10 +75,9 @@ namespace OALProgramControl
             return Success();
         }
 
-        public override string ToCodeSimple()
+        public override void Accept(Visitor v)
         {
-            return "create list " + this.AssignmentTarget.ToCode()
-                + " of " + this.ArrayType + " { " + string.Join(", ", this.Items.Select(item => item.ToCode())) + " }";
+            v.VisitExeCommandCreateList(this);
         }
 
         public override EXECommand CreateClone()

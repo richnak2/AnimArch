@@ -15,23 +15,9 @@ namespace OALProgramControl
             this.Condition = Condition;
         }
 
-        public override String ToCode(String Indent = "")
+        public override void Accept(Visitor v)
         {
-            return FormatCode(Indent, false);
-        }
-        public override string ToFormattedCode(string Indent = "")
-        {
-            return FormatCode(Indent, IsActive);
-        }
-        private string FormatCode(String Indent, bool Highlight)
-        {
-            String Result = HighlightCodeIf(Highlight, Indent + "while (" + this.Condition.ToCode() + ")\n");
-            foreach (EXECommand Command in this.Commands)
-            {
-                Result += Command.ToFormattedCode(Indent + "\t");
-            }
-            Result += HighlightCodeIf(Highlight, Indent + "end while;\n");
-            return Result;
+            v.VisitExeScopeLoopWhile(this);
         }
 
         protected override EXEScope CreateDuplicateScope()
@@ -52,7 +38,9 @@ namespace OALProgramControl
             if (conditionEvaluationResult.ReturnedOutput is not EXEValueBool)
             {
                 startNewIteration = false;
-                return Error(ErrorMessage.InvalidValueForType(conditionEvaluationResult.ReturnedOutput.ToText(), EXETypes.BooleanTypeName), "XEC2028");
+                VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                conditionEvaluationResult.ReturnedOutput.Accept(visitor);
+                return Error(ErrorMessage.InvalidValueForType(visitor.GetCommandStringAndResetStateNow(), EXETypes.BooleanTypeName), "XEC2028");
             }
 
             startNewIteration = (conditionEvaluationResult.ReturnedOutput as EXEValueBool).Value;

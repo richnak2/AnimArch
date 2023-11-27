@@ -137,25 +137,9 @@ namespace OALProgramControl
             }
         }
 
-        public override String ToCode(String Indent = "")
+        public override void Accept(Visitor v)
         {
-            String Result = "";
-            foreach (EXECommand Command in this.Commands)
-            {
-                Result += Command.ToCode(Indent);
-            }
-
-            return Result;
-        }
-
-        public override string ToFormattedCode(string Indent = "")
-        {
-            String Result = "";
-            foreach (EXECommand Command in this.Commands)
-            {
-                Result += Command.ToFormattedCode(Indent);
-            }
-            return Result;
+            v.VisitExeScope(this);
         }
 
         public override EXECommand CreateClone()

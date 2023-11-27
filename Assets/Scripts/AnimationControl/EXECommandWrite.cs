@@ -9,7 +9,7 @@ namespace OALProgramControl
 {
     public class EXECommandWrite : EXECommand
     {
-        private List<EXEASTNodeBase> Arguments { get; }
+        public List<EXEASTNodeBase> Arguments { get; }
         public EXECommandWrite() : this(new List<EXEASTNodeBase>()) {}
         public EXECommandWrite(List<EXEASTNodeBase> Arguments)
         {
@@ -29,18 +29,20 @@ namespace OALProgramControl
                 }
             }
 
-            string result = string.Join(", ", this.Arguments.Select(argument => argument.EvaluationResult.ReturnedOutput.ToText()));
+            string result = string.Join(", ", this.Arguments.Select(argument => {
+                        VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                        argument.EvaluationResult.ReturnedOutput.Accept(visitor);
+                        return visitor.GetCommandStringAndResetStateNow();
+            }));
 
             ConsolePanel.Instance.YieldOutput(result);
 
             return Success();
         }
 
-        public override string ToCodeSimple()
+        public override void Accept(Visitor v)
         {
-            String Result = "write(" + string.Join(", ", this.Arguments.Select(argument => argument.ToCode())) + ")";
-
-            return Result;
+            v.VisitExeCommandWrite(this);
         }
 
         public override EXECommand CreateClone()

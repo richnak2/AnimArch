@@ -61,12 +61,14 @@ namespace Visualization.Animation
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
         public IEnumerator Animate()
         {
+
             Fillers = new List<GameObject>();
 
             if (AnimationIsRunning)
             {
                 yield break;
             }
+
             AnimationIsRunning = true;
 
             UI.MenuManager.Instance.HideErrorPanelOnStopButton();
@@ -278,7 +280,9 @@ namespace Visualization.Animation
 
             CDClassInstance callerObject = currentCommand.GetCurrentMethodScope().OwningObject;
             CDClassInstance createdObject = createCommand.GetCreatedInstance();
-            string targetVariableName = createCommand.AssignmentTarget.ToCode();
+            VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+            createCommand.Accept(visitor);
+            string targetVariableName = visitor.GetCommandStringAndResetStateNow();
 
 
             var objectInDiagram = AddObjectToDiagram(targetVariableName, createdObject);

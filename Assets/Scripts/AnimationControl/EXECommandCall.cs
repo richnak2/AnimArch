@@ -9,17 +9,20 @@ namespace OALProgramControl
         public EXEValueBase ReturnedValue;
         public MethodInvocationInfo CallInfo { get; private set; }
         private EXEValueBase CalledObject { get; set; }
-        private string MethodAccessChainS { get; }
-        public EXEScopeMethod InvokedMethod { get; private set; }
+        public string MethodAccessChainS { get; }
+        public EXEScopeMethod InvokedMethod { get; private set; } 
 
         public EXECommandCall(EXEASTNodeAccessChain methodAccessChain, EXEASTNodeMethodCall methodCall)
         {
+            VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+            methodAccessChain.Accept(visitor);
+
             this.MethodAccessChain = methodAccessChain;
             this.MethodCall = methodCall;
             this.ReturnedValue = null;
             this.CallInfo = null;
             this.CalledObject = null;
-            this.MethodAccessChainS = methodAccessChain.ToCode();
+            this.MethodAccessChainS = visitor.GetCommandStringAndResetStateNow();
         }
         public EXECommandCall(EXEValueBase methodOwningObject, string accessChain, EXEASTNodeMethodCall methodCall)
         {
@@ -114,9 +117,8 @@ namespace OALProgramControl
 
             return Success();
         }
-        public override string ToCodeSimple()
-        {
-            return this.MethodAccessChainS + "." + this.MethodCall.ToCode();
+        public override void Accept(Visitor v) {
+            v.VisitExeCommandCall(this);
         }
     }
 }

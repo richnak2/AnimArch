@@ -38,15 +38,12 @@ namespace OALProgramControl
             AddCommandsToStack(this.Commands);
             return Success();
         }
-        public override string ToFormattedCode(string Indent = "")
+
+        public override void Accept(Visitor v)
         {
-            String Result = "";
-            foreach (EXECommand Command in this.Commands)
-            {
-                Result += Command.ToFormattedCode(Indent);
-            }
-            return Result;
+            v.VisitExeScopeMethod(this);
         }
+
         protected override EXEScope CreateDuplicateScope()
         {
             return new EXEScopeMethod(this.MethodDefinition);

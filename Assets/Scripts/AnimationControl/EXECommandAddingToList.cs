@@ -44,9 +44,9 @@ namespace OALProgramControl
             return Success();
         }
 
-        public override string ToCodeSimple()
+        public override void Accept(Visitor v)
         {
-            return "add " + this.AddedElement.ToCode() + " to " + this.Array.ToCode();
+            v.VisitExeCommandAddingToList(this);
         }
 
         public override EXECommand CreateClone()

@@ -123,6 +123,8 @@ namespace OALProgramControl
                 // Check if the returned value matches the expected parameter type
                 if (!EXETypes.CanBeAssignedTo(argumentExecutionResult.ReturnedOutput, this.Method.Parameters[i].Type, currentProgramInstance.ExecutionSpace))
                 {
+                    VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                    argumentExecutionResult.ReturnedOutput.Accept(visitor);
                     return EXEExecutionResult.Error
                     (
                         ErrorMessage.InvalidParameterValue
@@ -130,7 +132,7 @@ namespace OALProgramControl
                             this.Method.OwningClass.Name,
                             this.MethodName,
                             this.Method.Parameters[i].Name,
-                            this.Method.Parameters[i].Type, argumentExecutionResult.ReturnedOutput.ToText()
+                            this.Method.Parameters[i].Type, visitor.GetCommandStringAndResetStateNow()
                         ),
                         "XEC2017"
                     );
@@ -144,14 +146,14 @@ namespace OALProgramControl
             return this.EvaluationResult;
         }
 
-        public override string ToCode()
-        {
-            return this.MethodName + "(" + string.Join(", ", this.Arguments.Select(arg => arg.ToCode())) + ")";
-        }
-
         public override EXEASTNodeBase Clone()
         {
             return new EXEASTNodeMethodCall(this.MethodName, this.Arguments.Select(arg => arg.Clone()).ToList());
+        }
+
+        public override void Accept(Visitor v)
+        {
+            v.VisitExeASTNodeMethodCall(this);
         }
     }
 }

@@ -72,9 +72,11 @@ namespace OALProgramControl
                     return conditionEvaluationResult;
                 }
 
+                VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                conditionEvaluationResult.ReturnedOutput.Accept(visitor);
                 if (conditionEvaluationResult.ReturnedOutput is not EXEValueBool)
                 {
-                    return Error(ErrorMessage.InvalidValueForType(conditionEvaluationResult.ReturnedOutput.ToText(), EXETypes.BooleanTypeName), "XEC2027");
+                    return Error(ErrorMessage.InvalidValueForType(visitor.GetCommandStringAndResetStateNow(), EXETypes.BooleanTypeName), "XEC2027");
                 }
 
                 if ((conditionEvaluationResult.ReturnedOutput as EXEValueBool).Value)
@@ -91,44 +93,10 @@ namespace OALProgramControl
 
             return Success();
         }
-        public override String ToCode(String Indent = "")
-        {
-            return FormatCode(Indent, false);
-        }
 
-        public override string ToFormattedCode(string Indent = "")
+        public override void Accept(Visitor v)
         {
-            return FormatCode(Indent, IsActive);
-        }
-
-        private string FormatCode(String Indent, bool Highlight)
-        {
-            String Result = HighlightCodeIf(Highlight, Indent + "if (" + this.Condition.ToCode() + ")\n");
-            foreach (EXECommand Command in this.Commands)
-            {
-                Result += Command.ToFormattedCode(Indent + "\t");
-            }
-            if (this.ElifScopes != null)
-            {
-                foreach (EXEScopeCondition Elif in this.ElifScopes)
-                {
-                    Result += HighlightCodeIf(Highlight, Indent + "elif (" + Elif.Condition.ToCode() + ")\n");
-                    foreach (EXECommand Command in Elif.Commands)
-                    {
-                        Result += Command.ToFormattedCode(Indent + "\t");
-                    }
-                }
-            }
-            if (this.ElseScope != null)
-            {
-                Result += HighlightCodeIf(Highlight, Indent + "else\n");
-                foreach (EXECommand Command in this.ElseScope.Commands)
-                {
-                    Result += Command.ToFormattedCode(Indent + "\t");
-                }
-            }
-            Result += HighlightCodeIf(Highlight, Indent + "end if;\n");
-            return Result;
+            v.VisitExeScopeCondition(this);
         }
 
         protected override EXEScope CreateDuplicateScope()

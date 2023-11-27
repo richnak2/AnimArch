@@ -80,11 +80,6 @@ namespace OALProgramControl
             this.LastElement = element;
         }
 
-        public override string ToCode()
-        {
-            return string.Join(".", GetElements().Select(element => element.NodeValue.ToCode()));
-        }
-
         public override EXEASTNodeBase Clone()
         {
             EXEASTNodeAccessChain result = new EXEASTNodeAccessChain();
@@ -106,6 +101,11 @@ namespace OALProgramControl
             }
 
             return (reversedElements.First().EvaluationResult as EXEValueReference)?.ClassInstance;
+        }
+
+        public override void Accept(Visitor v)
+        {
+            v.VisitExeASTNodeAccesChain(this);
         }
     }
 }

@@ -29,13 +29,14 @@ public class FileLoader : MonoBehaviour
         FileBrowser.SetFilters(true, filters);
         FileBrowser.SetDefaultFilter(".json");
         FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
-        FileBrowser.AddQuickLink("Resources", @"Assets\Resources\", null);
+        FileBrowser.AddQuickLink("Resources", @"Assets" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar, null);
     }
 
     public void SaveAnimation(Anim newAnim)
     {
         StartCoroutine(SaveAnimationCoroutine(newAnim));
     }
+    
     public void SaveAnimationToPython()
     {
         if (AnimationData.Instance.getAnimList().Count > 0)
@@ -43,10 +44,11 @@ public class FileLoader : MonoBehaviour
             StartCoroutine(SaveAnimationToPythonCoroutine());
         }
     }
+    
     IEnumerator SaveAnimationToPythonCoroutine()
     {
         FileBrowser.SetDefaultFilter(".py");
-        yield return FileBrowser.WaitForSaveDialog(false, @"Assets\Resources\Python\", "Save Animation to Python", "Save");
+        yield return FileBrowser.WaitForSaveDialog(false, @"Assets" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar + "Python" + Path.DirectorySeparatorChar, "Save Animation to Python", "Save");
         if (FileBrowser.Success)
         {
             string path = FileBrowser.Result;
@@ -70,7 +72,7 @@ public class FileLoader : MonoBehaviour
         // Load file/folder: file, Initial path: default (Documents), Title: "Load File", submit button text: "Load"
 
         FileBrowser.SetDefaultFilter(".json");
-        yield return FileBrowser.WaitForLoadDialog(false, @"Assets\Resources\Animations\", "Load Animation", "Load");
+        yield return FileBrowser.WaitForLoadDialog(false, @"Assets" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar + "Animations" + Path.DirectorySeparatorChar, "Load Animation", "Load");
 
         // Dialog is closed
         // Print whether a file is chosen (FileBrowser.Success)
@@ -91,21 +93,30 @@ public class FileLoader : MonoBehaviour
         MenuManager.Instance.SetSelectedAnimation(loadedAnim.AnimationName);
     }
 
-
     private IEnumerator LoadDiagramCoroutine()
     {
         FileBrowser.SetDefaultFilter(".xml");
-        yield return FileBrowser.WaitForLoadDialog(false, @"Assets\Resources\", "Load Diagram", "Load");
+        yield return FileBrowser.WaitForLoadDialog(false, @"Assets" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar, "Load Diagram", "Load");
 
         if (!FileBrowser.Success) yield break;
         AnimationData.Instance.SetDiagramPath(FileBrowser.Result);
         _classDiagramBuilder.LoadDiagram();
     }
 
+    private IEnumerator LoadMaskingFileCoroutine()
+    {
+        FileBrowser.SetDefaultFilter(".json");
+        yield return FileBrowser.WaitForLoadDialog(false, @"Assets" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar + "MaskingFiles", "Load Masking File", "Load");
+
+        if (!FileBrowser.Success) yield break;
+        Debug.Log("File found!");
+        MaskingHandler.Instance.HandleMaskingFile(FileBrowser.Result);
+    }
+
     private static IEnumerator SaveAnimationCoroutine(Anim newAnim)
     {
         FileBrowser.SetDefaultFilter(".json");
-        yield return FileBrowser.WaitForSaveDialog(false, @"Assets\Resources\Animations\", "Save Animation");
+        yield return FileBrowser.WaitForSaveDialog(false, @"Assets" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar + "Animations" + Path.DirectorySeparatorChar, "Save Animation");
         if (!FileBrowser.Success) yield break;
         var path = FileBrowser.Result;
         var fileName = FileBrowserHelpers.GetFilename(FileBrowser.Result);
@@ -122,7 +133,7 @@ public class FileLoader : MonoBehaviour
     private static IEnumerator SaveDiagramCoroutine()
     {
         FileBrowser.SetDefaultFilter(".json");
-        yield return FileBrowser.WaitForSaveDialog(false, @"Assets\Resources\", "Save Diagram");
+        yield return FileBrowser.WaitForSaveDialog(false, @"Assets" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar, "Save Diagram");
         if (!FileBrowser.Success) yield break;
         
         var parser = Parser.GetParser(Path.GetExtension(FileBrowser.Result));
@@ -140,5 +151,10 @@ public class FileLoader : MonoBehaviour
     {
         MenuManager.Instance.generatePythonBtn.interactable = true;
         StartCoroutine(LoadAnimationCoroutine());
+    }
+
+    public void OpenMaskingFile()
+    {
+        StartCoroutine(LoadMaskingFileCoroutine());
     }
 }
