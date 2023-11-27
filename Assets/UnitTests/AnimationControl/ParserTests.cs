@@ -5,7 +5,7 @@ using OALProgramControl;
 
 namespace Assets.UnitTests.AnimationControl
 {
-    public class ParserTests
+    public class ParserTests : StandardTest
     {
         [Test]
         public void EXECommandAssignment_01_ThreeAttributesInRow()
@@ -15,7 +15,7 @@ namespace Assets.UnitTests.AnimationControl
 
             // Act
             EXEScopeMethod _parsedCommands = OALParserBridge.Parse(_input);
-            var _actualOutput = _parsedCommands.ToCode();
+            var _actualOutput = ToCode(_parsedCommands);
 
             // Assert
             string _expectedOutput = "x.y.z = 5;\n";

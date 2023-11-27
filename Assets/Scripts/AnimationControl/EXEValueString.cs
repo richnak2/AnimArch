@@ -34,7 +34,7 @@ namespace OALProgramControl
         }
         public override void Accept(Visitor v)
         {
-            throw new NotImplementedException();
+            v.VisitExeValueString(this);
         }
         protected override EXEExecutionResult AssignValueFromConcrete(EXEValueBase assignmentSource)
         {

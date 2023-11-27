@@ -48,5 +48,12 @@ namespace Assets.UnitTests.AnimationControl
 
             return _executionResult;
         }
+
+        protected string ToCode(EXECommand command)
+        {
+            VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+            command.Accept(visitor);
+            return visitor.GetCommandStringAndResetStateNow();
+        }
     }
 }
