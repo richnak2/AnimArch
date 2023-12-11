@@ -3,6 +3,7 @@ using NUnit.Framework;
 using OALProgramControl;
 using Assets.Scripts.AnimationControl.OAL;
 using System;
+using System.Collections.Generic;
 
 namespace Assets.UnitTests.AnimationControl
 {
@@ -668,6 +669,10 @@ namespace Assets.UnitTests.AnimationControl
             // Assert
             Test.Declare(methodScope, _executionResult);
 
+            Test.Variables
+                    .ExpectVariable("inst2", new EXEValueReference(class2.Instances.First()))
+                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+
             Test.PerformAssertion();
         }
 
@@ -709,5 +714,123 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.PerformAssertion();
         }
+
+        [Test]
+        public void ThursdayDay_01_indexationEvaluate()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = 
+            @"
+            create object instance inst0 of SubClass1;
+            create object instance inst1 of SubClass1;
+            create list Objects of SubClass1;
+            add inst0 to Objects;
+            add inst1 to Objects;
+            x = Objects[1];
+            ";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            CDClass subClass = programInstance.ExecutionSpace.SpawnClass("SubClass1");
+            subClass.SuperClass = owningClass;
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            CDClassInstance instance0 = subClass.Instances[0];
+            CDClassInstance instance1 = subClass.Instances[1];
+
+            EXEValueReference instance0Reference = new EXEValueReference(instance0);
+            EXEValueReference instance1Reference = new EXEValueReference(instance1);
+
+            EXEValueArray array = new EXEValueArray("Class1[]");
+            array.InitializeEmptyArray();
+            array.AppendElement(instance0Reference, subClass.OwningClassPool);
+            array.AppendElement(instance1Reference, subClass.OwningClassPool);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("inst0", instance0Reference)
+                    .ExpectVariable("inst1", instance1Reference)
+                    .ExpectVariable("x", instance1Reference)
+                    .ExpectVariable("Objects", array)
+                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void WednesdayDay_02_indexationAsAccessChainEvaluate()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = 
+            @"
+            create object instance inst0 of SubClass1;
+            create object instance inst1 of SubClass1;
+            inst0.att1 = 2;
+            inst1.att1 = 3;
+            create list Objects of SubClass1;
+            add inst0 to Objects;
+            add inst1 to Objects;
+            x = Objects[1].att1;
+            ";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            CDClass subClass = programInstance.ExecutionSpace.SpawnClass("SubClass1");
+            subClass.SuperClass = owningClass;
+
+            CDAttribute attribute = new CDAttribute("att1", "integer");
+            subClass.AddAttribute(attribute);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            CDClassInstance instance0 = subClass.Instances[0];
+            CDClassInstance instance1 = subClass.Instances[1];
+
+            EXEValueReference instance0Reference = new EXEValueReference(instance0);
+            EXEValueReference instance1Reference = new EXEValueReference(instance1);
+
+            EXEValueArray array = new EXEValueArray("Class1[]");
+            array.InitializeEmptyArray();
+            array.AppendElement(instance0Reference, subClass.OwningClassPool);
+            array.AppendElement(instance1Reference, subClass.OwningClassPool);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("inst0", instance0Reference)
+                    .ExpectVariable("inst1", instance1Reference)
+                    .ExpectVariable("x", new EXEValueInt(3))
+                    .ExpectVariable("Objects", array)
+                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+
+            Test.PerformAssertion();
+        }
+        
     }
 }

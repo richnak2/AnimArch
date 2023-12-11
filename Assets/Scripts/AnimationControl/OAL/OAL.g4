@@ -145,6 +145,7 @@ accessChainPrefix
 accessChainElement
     :   methodCall
     |   NAME
+    |   (NAME | methodCall) '[' expr ']'
     ;
 
 methodCall

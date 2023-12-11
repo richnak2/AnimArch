@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace OALProgramControl
@@ -15,7 +16,7 @@ namespace OALProgramControl
         {
             return false;
         }
-        public virtual bool MethodExists(string methodName)
+        public virtual bool MethodExists(string methodName, bool includeInherited = false)
         {
             return false;
         }
@@ -23,7 +24,7 @@ namespace OALProgramControl
         {
             return EXEExecutionResult.Error(string.Format("Tried to find attribute \"{0}\" on something that does not have any attribute. {1}", attributeName, this.ToString()), "XEC2004");
         }
-        public virtual CDMethod FindMethod(string methodName)
+        public virtual CDMethod FindMethod(string methodName, bool includeInherited = false)
         {
             return null;
         }
@@ -138,5 +139,10 @@ namespace OALProgramControl
         }
 
         public abstract void Accept(Visitor v);
+
+        public virtual EXEExecutionResult GetValueAt(UInt32 index)
+        {
+            return EXEExecutionResult.Error("EXEValueBase cannot return value at index!", "XEC3007");
+        }
     }
 }

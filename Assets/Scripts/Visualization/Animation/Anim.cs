@@ -51,10 +51,10 @@ namespace Visualisation.Animation
                     {
                         SuperClass = Relation.ToClass;
                     }
-                    Attributes = ClassItem.Attributes.Select(a => a.Name).ToList();
+                    Attributes = ClassItem.GetAttributes().Select(a => a.Name).ToList();
 
                     Methods = new List<AnimMethod>();
-                    foreach (CDMethod MethodItem in ClassItem.Methods)
+                    foreach (CDMethod MethodItem in ClassItem.GetMethods())
                     {
                         Parameters = MethodItem.Parameters.Select(p => p.Name).ToList();
                         Methods.Add(new AnimMethod(MethodItem.Name, Parameters, ""));
@@ -241,10 +241,11 @@ namespace Visualisation.Animation
             OALProgram currentProgram = Visualization.Animation.Animation.Instance.CurrentProgramInstance;
             List<CDClass> classes = currentProgram.ExecutionSpace.Classes.Where(_class => _class.SuperClass == null).ToList();
 
-            while (classes.Count() > 0)
+            while (classes.Any())
             {
                 List<CDClass> nextClasses = new List<CDClass>();
-                foreach (CDClass classCD in classes) {
+                foreach (CDClass classCD in classes) 
+                {
                     AnimClass classAnim = MethodsCodes.Where(_class => _class.Name.Equals(classCD.Name)).ToList().First();
                     ClassToPython(Code, classAnim);
                     nextClasses.AddRange(currentProgram.ExecutionSpace.Classes.Where(_class => _class.SuperClass == classCD).ToList());

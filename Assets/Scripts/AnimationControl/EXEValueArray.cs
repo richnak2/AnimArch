@@ -14,7 +14,7 @@ namespace OALProgramControl
         {
             if (!EXETypes.IsValidArrayType(type))
             {
-                throw new Exception(string.Format("\"{0}\" is not a valid array type."));
+                throw new Exception(string.Format("\"{0}\" is not a valid array type.", type));
             }
 
             this.ElementTypeName = type.Substring(0, type.Length - 2);
@@ -55,6 +55,28 @@ namespace OALProgramControl
         public override void Accept(Visitor v) {
             v.VisitExeValueArray(this);
         }
+
+        public override EXEExecutionResult GetValueAt(UInt32 index)
+        {
+            UInt32 indexValue = index;
+            if (indexValue < 0)
+            {
+                return EXEExecutionResult.Error("Index value cannot be lower than 0!", "XEC3004");
+            }
+            if (Elements == null)
+            {
+                return EXEExecutionResult.Error("Cannot get the value of an array that is null!", "XEC3005");
+            }
+            if (indexValue > Elements.Count)
+            {
+                return EXEExecutionResult.Error("Index " + indexValue + " is out of range (" + Elements.Count + ")!", "XEC3006");
+            }
+            
+            EXEExecutionResult result = EXEExecutionResult.Success();
+            result.ReturnedOutput = Elements[(int)indexValue];
+            return result;
+        }
+
         protected override EXEExecutionResult AssignValueFromConcrete(EXEValueBase assignmentSource)
         {
             return assignmentSource.AssignValueTo(this);
