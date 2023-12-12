@@ -124,7 +124,7 @@ expr
     :   NUM | BOOL | STRING
     |   accessChain
     |   'cardinality ' expr
-    |   ('empty ' | 'not_empty ') expr
+    |   ('empty ' | 'not_empty ' | 'type_name ') expr 
     |   bracketedExpr
     |   expr ('*' | '/' | '%') expr
     |   expr ('+' | '-')  expr

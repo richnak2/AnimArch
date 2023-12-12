@@ -84,6 +84,8 @@ namespace OALProgramControl
 
             EXEExecutionResult result = null;
 
+            //TODO add apply operator function for type_name
+
             if ("<=".Equals(operation))
             {
                 if (operand is not EXEValueInt)

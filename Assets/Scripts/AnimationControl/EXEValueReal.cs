@@ -245,6 +245,8 @@ namespace OALProgramControl
                 return result;
             }
 
+            //TODO add apply operator function for type_name
+
             return base.ApplyOperator(operation, operand);
         }
 

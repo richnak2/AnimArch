@@ -150,6 +150,8 @@ namespace OALProgramControl
                 return result;
             }
 
+            //TODO add apply operator function for type_name
+
             return base.ApplyOperator(operation);
         }
         public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
