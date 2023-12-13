@@ -246,6 +246,13 @@ namespace OALProgramControl
             }
 
             //TODO add apply operator function for type_name
+            else if ("type_name".Equals(operation)) 
+            {
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueString(this.TypeName);
+                return result;
+
+            }
 
             return base.ApplyOperator(operation, operand);
         }

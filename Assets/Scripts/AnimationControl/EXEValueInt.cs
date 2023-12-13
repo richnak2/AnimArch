@@ -85,6 +85,13 @@ namespace OALProgramControl
             EXEExecutionResult result = null;
 
             //TODO add apply operator function for type_name
+            if ("type_name".Equals(operation))
+            {
+                   result = EXEExecutionResult.Success();
+                   result.ReturnedOutput = new EXEValueString(this.TypeName);
+                   return result;
+
+            }
 
             if ("<=".Equals(operation))
             {
