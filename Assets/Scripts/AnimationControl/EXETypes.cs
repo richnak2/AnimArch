@@ -26,7 +26,7 @@ namespace OALProgramControl
         public const String UnitializedName = "UNDEFINED";
         public const String UniqueIDAttributeName = "ID";
 
-        private static readonly List<string> UnaryOperators = new List<string>() { "cardinality", "empty", "not_empty", "not", "NOT", "type_name"}; //TODO add type_name
+        private static readonly List<string> UnaryOperators = new List<string>() { "cardinality", "empty", "not_empty", "not", "NOT", "type_name"};
         private static readonly List<string> BinaryOperators = new List<string>() { "*", "/", "%", "+", "-", "<", ">", "<=", ">=", "==", "!=", "and", "AND", "or", "OR" };
 
         private static readonly List<String> IntNames = new List<string>(new String[] { "int", "integer", "long", "long int", "long integer" });
