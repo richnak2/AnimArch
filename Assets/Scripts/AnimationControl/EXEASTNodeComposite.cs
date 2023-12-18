@@ -69,7 +69,6 @@ namespace OALProgramControl
                 {
                     this.EvaluationResult = EXEExecutionResult.Success();
                     this.EvaluationResult.ReturnedOutput = operandExecutionResult.ReturnedOutput;
-                    continue;
                 }
 
                 operatorExecutionResult = this.EvaluationResult.ReturnedOutput.ApplyOperator(this.Operation, operandExecutionResult.ReturnedOutput);

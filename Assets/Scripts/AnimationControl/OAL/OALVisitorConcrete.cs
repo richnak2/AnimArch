@@ -608,11 +608,11 @@ namespace AnimationControl.OAL
             // Unary operator
             else if (context.ChildCount == 2)
             {
-                string _operator = context.GetChild(0).GetText();
+                string _operator = context.GetChild(0).GetText().ReplaceWhitespace();
 
                 if (!EXETypes.IsUnaryOperator(_operator))
                 {
-                    HandleError("Malformed expression - unknown unary operator.", context);
+                    HandleError(string.Format("Malformed expression - unknown unary operator '{0}'.", _operator), context);
                 }
 
                 object operand = Visit(context.GetChild(1));
