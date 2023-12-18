@@ -44,7 +44,7 @@ public partial class OALParser : Parser {
 		T__38=39, T__39=40, T__40=41, T__41=42, T__42=43, T__43=44, T__44=45, 
 		T__45=46, T__46=47, T__47=48, T__48=49, T__49=50, T__50=51, T__51=52, 
 		T__52=53, T__53=54, T__54=55, T__55=56, T__56=57, T__57=58, T__58=59, 
-		T__59=60, BOOL=61, NAME=62, STRING=63, NUM=64, COMMENT=65, WHITE_SPACE=66;
+		T__59=60, T__60=61, BOOL=62, NAME=63, STRING=64, NUM=65, COMMENT=66, WHITE_SPACE=67;
 	public const int
 		RULE_lines = 0, RULE_line = 1, RULE_commands = 2, RULE_parCommand = 3, 
 		RULE_threadCommand = 4, RULE_ifCommand = 5, RULE_elif = 6, RULE_elseBlock = 7, 
@@ -77,9 +77,9 @@ public partial class OALParser : Parser {
 		"' of '", "'create object instance of '", "'delete object instance '", 
 		"'assign '", "'='", "'.'", "'create list '", "'{'", "'}'", "'add '", "' to '", 
 		"'remove '", "' from '", "'write('", "'(read('", "'))'", "'return'", "'cardinality '", 
-		"'empty '", "'not_empty '", "'*'", "'/'", "'%'", "'+'", "'-'", "'<'", 
-		"'>'", "'<='", "'>='", "'=='", "'!='", "'not '", "'NOT '", "' and '", 
-		"' AND '", "' or '", "' OR '", "'['", "']'", "','", "'[]'"
+		"'empty '", "'not_empty '", "'type_name '", "'*'", "'/'", "'%'", "'+'", 
+		"'-'", "'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'not '", "'NOT '", 
+		"' and '", "' AND '", "' or '", "' OR '", "'['", "']'", "','", "'[]'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
@@ -87,7 +87,7 @@ public partial class OALParser : Parser {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, "BOOL", "NAME", "STRING", "NUM", "COMMENT", "WHITE_SPACE"
+		null, null, "BOOL", "NAME", "STRING", "NUM", "COMMENT", "WHITE_SPACE"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -1500,7 +1500,7 @@ public partial class OALParser : Parser {
 			State = 215;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__50 - 10)) | (1L << (T__51 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
+			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__39 - 10)) | (1L << (T__51 - 10)) | (1L << (T__52 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
 				{
 				State = 214;
 				parameterList();
@@ -1759,7 +1759,7 @@ public partial class OALParser : Parser {
 			State = 244;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__50 - 10)) | (1L << (T__51 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
+			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__39 - 10)) | (1L << (T__51 - 10)) | (1L << (T__52 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
 				{
 				State = 243;
 				expr(0);
@@ -1823,7 +1823,7 @@ public partial class OALParser : Parser {
 			State = 251;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__50 - 10)) | (1L << (T__51 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
+			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__39 - 10)) | (1L << (T__51 - 10)) | (1L << (T__52 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
 				{
 				State = 250;
 				expr(0);
@@ -1938,10 +1938,11 @@ public partial class OALParser : Parser {
 				break;
 			case T__37:
 			case T__38:
+			case T__39:
 				{
 				State = 262;
 				_la = TokenStream.LA(1);
-				if ( !(_la==T__37 || _la==T__38) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__37) | (1L << T__38) | (1L << T__39))) != 0)) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -1958,12 +1959,12 @@ public partial class OALParser : Parser {
 				bracketedExpr();
 				}
 				break;
-			case T__50:
 			case T__51:
+			case T__52:
 				{
 				State = 265;
 				_la = TokenStream.LA(1);
-				if ( !(_la==T__50 || _la==T__51) ) {
+				if ( !(_la==T__51 || _la==T__52) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -1998,7 +1999,7 @@ public partial class OALParser : Parser {
 						if (!(Precpred(Context, 6))) throw new FailedPredicateException(this, "Precpred(Context, 6)");
 						State = 270;
 						_la = TokenStream.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__39) | (1L << T__40) | (1L << T__41))) != 0)) ) {
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__40) | (1L << T__41) | (1L << T__42))) != 0)) ) {
 						ErrorHandler.RecoverInline(this);
 						}
 						else {
@@ -2017,7 +2018,7 @@ public partial class OALParser : Parser {
 						if (!(Precpred(Context, 5))) throw new FailedPredicateException(this, "Precpred(Context, 5)");
 						State = 273;
 						_la = TokenStream.LA(1);
-						if ( !(_la==T__42 || _la==T__43) ) {
+						if ( !(_la==T__43 || _la==T__44) ) {
 						ErrorHandler.RecoverInline(this);
 						}
 						else {
@@ -2036,7 +2037,7 @@ public partial class OALParser : Parser {
 						if (!(Precpred(Context, 4))) throw new FailedPredicateException(this, "Precpred(Context, 4)");
 						State = 276;
 						_la = TokenStream.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__44) | (1L << T__45) | (1L << T__46) | (1L << T__47) | (1L << T__48) | (1L << T__49))) != 0)) ) {
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__45) | (1L << T__46) | (1L << T__47) | (1L << T__48) | (1L << T__49) | (1L << T__50))) != 0)) ) {
 						ErrorHandler.RecoverInline(this);
 						}
 						else {
@@ -2055,7 +2056,7 @@ public partial class OALParser : Parser {
 						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
 						State = 279;
 						_la = TokenStream.LA(1);
-						if ( !(_la==T__52 || _la==T__53) ) {
+						if ( !(_la==T__53 || _la==T__54) ) {
 						ErrorHandler.RecoverInline(this);
 						}
 						else {
@@ -2074,7 +2075,7 @@ public partial class OALParser : Parser {
 						if (!(Precpred(Context, 1))) throw new FailedPredicateException(this, "Precpred(Context, 1)");
 						State = 282;
 						_la = TokenStream.LA(1);
-						if ( !(_la==T__54 || _la==T__55) ) {
+						if ( !(_la==T__55 || _la==T__56) ) {
 						ErrorHandler.RecoverInline(this);
 						}
 						else {
@@ -2313,11 +2314,11 @@ public partial class OALParser : Parser {
 					break;
 				}
 				State = 307;
-				Match(T__56);
+				Match(T__57);
 				State = 308;
 				expr(0);
 				State = 309;
-				Match(T__57);
+				Match(T__58);
 				}
 				break;
 			}
@@ -2378,7 +2379,7 @@ public partial class OALParser : Parser {
 			State = 316;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__50 - 10)) | (1L << (T__51 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
+			if (((((_la - 10)) & ~0x3f) == 0 && ((1L << (_la - 10)) & ((1L << (T__9 - 10)) | (1L << (T__36 - 10)) | (1L << (T__37 - 10)) | (1L << (T__38 - 10)) | (1L << (T__39 - 10)) | (1L << (T__51 - 10)) | (1L << (T__52 - 10)) | (1L << (BOOL - 10)) | (1L << (NAME - 10)) | (1L << (STRING - 10)) | (1L << (NUM - 10)))) != 0)) {
 				{
 				State = 315;
 				parameterList();
@@ -2443,7 +2444,7 @@ public partial class OALParser : Parser {
 			State = 322;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==T__58) {
+			if (_la==T__59) {
 				{
 				State = 321;
 				parameterListSuffix();
@@ -2508,7 +2509,7 @@ public partial class OALParser : Parser {
 				{
 				{
 				State = 324;
-				Match(T__58);
+				Match(T__59);
 				State = 325;
 				expr(0);
 				}
@@ -2516,7 +2517,7 @@ public partial class OALParser : Parser {
 				State = 328;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( _la==T__58 );
+			} while ( _la==T__59 );
 			}
 		}
 		catch (RecognitionException re) {
@@ -2629,7 +2630,7 @@ public partial class OALParser : Parser {
 			State = 338;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==T__59) {
+			while (_la==T__60) {
 				{
 				{
 				State = 335;
@@ -2732,7 +2733,7 @@ public partial class OALParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 343;
-			Match(T__59);
+			Match(T__60);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2906,7 +2907,7 @@ public partial class OALParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x44', '\x162', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x45', '\x162', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
@@ -2980,10 +2981,10 @@ public partial class OALParser : Parser {
 		'\x6', '\b', '\n', '\f', '\xE', '\x10', '\x12', '\x14', '\x16', '\x18', 
 		'\x1A', '\x1C', '\x1E', ' ', '\"', '$', '&', '(', '*', ',', '.', '\x30', 
 		'\x32', '\x34', '\x36', '\x38', ':', '<', '>', '@', '\x42', '\x44', '\x46', 
-		'H', 'J', 'L', 'N', '\x2', '\t', '\x3', '\x2', '(', ')', '\x3', '\x2', 
-		'\x35', '\x36', '\x3', '\x2', '*', ',', '\x3', '\x2', '-', '.', '\x3', 
-		'\x2', '/', '\x34', '\x3', '\x2', '\x37', '\x38', '\x3', '\x2', '\x39', 
-		':', '\x2', '\x16C', '\x2', 'Q', '\x3', '\x2', '\x2', '\x2', '\x4', 'h', 
+		'H', 'J', 'L', 'N', '\x2', '\t', '\x3', '\x2', '(', '*', '\x3', '\x2', 
+		'\x36', '\x37', '\x3', '\x2', '+', '-', '\x3', '\x2', '.', '/', '\x3', 
+		'\x2', '\x30', '\x35', '\x3', '\x2', '\x38', '\x39', '\x3', '\x2', ':', 
+		';', '\x2', '\x16C', '\x2', 'Q', '\x3', '\x2', '\x2', '\x2', '\x4', 'h', 
 		'\x3', '\x2', '\x2', '\x2', '\x6', 'm', '\x3', '\x2', '\x2', '\x2', '\b', 
 		'p', '\x3', '\x2', '\x2', '\x2', '\n', 'y', '\x3', '\x2', '\x2', '\x2', 
 		'\f', '~', '\x3', '\x2', '\x2', '\x2', '\xE', '\x8D', '\x3', '\x2', '\x2', 
@@ -3068,7 +3069,7 @@ public partial class OALParser : Parser {
 		'\a', '\x13', '\x2', '\x2', '\xA7', '\xA8', '\a', '\x5', '\x2', '\x2', 
 		'\xA8', '\x19', '\x3', '\x2', '\x2', '\x2', '\xA9', '\xAA', '\a', '\x14', 
 		'\x2', '\x2', '\xAA', '\xAB', '\a', '\x5', '\x2', '\x2', '\xAB', '\x1B', 
-		'\x3', '\x2', '\x2', '\x2', '\xAC', '\xAD', '\a', '\x43', '\x2', '\x2', 
+		'\x3', '\x2', '\x2', '\x2', '\xAC', '\xAD', '\a', '\x44', '\x2', '\x2', 
 		'\xAD', '\x1D', '\x3', '\x2', '\x2', '\x2', '\xAE', '\xAF', '\a', '\x15', 
 		'\x2', '\x2', '\xAF', '\xB0', '\x5', '\x36', '\x1C', '\x2', '\xB0', '\xB1', 
 		'\a', '\x16', '\x2', '\x2', '\xB1', '\xB2', '\x5', '\x46', '$', '\x2', 
@@ -3125,8 +3126,8 @@ public partial class OALParser : Parser {
 		'\x2', '\x2', '\xFE', '\xFF', '\x3', '\x2', '\x2', '\x2', '\xFF', '\x100', 
 		'\a', '\x5', '\x2', '\x2', '\x100', '\x33', '\x3', '\x2', '\x2', '\x2', 
 		'\x101', '\x102', '\b', '\x1B', '\x1', '\x2', '\x102', '\x10E', '\a', 
-		'\x42', '\x2', '\x2', '\x103', '\x10E', '\a', '?', '\x2', '\x2', '\x104', 
-		'\x10E', '\a', '\x41', '\x2', '\x2', '\x105', '\x10E', '\x5', '\x36', 
+		'\x43', '\x2', '\x2', '\x103', '\x10E', '\a', '@', '\x2', '\x2', '\x104', 
+		'\x10E', '\a', '\x42', '\x2', '\x2', '\x105', '\x10E', '\x5', '\x36', 
 		'\x1C', '\x2', '\x106', '\x107', '\a', '\'', '\x2', '\x2', '\x107', '\x10E', 
 		'\x5', '\x34', '\x1B', '\v', '\x108', '\x109', '\t', '\x2', '\x2', '\x2', 
 		'\x109', '\x10E', '\x5', '\x34', '\x1B', '\n', '\x10A', '\x10E', '\x5', 
@@ -3162,12 +3163,12 @@ public partial class OALParser : Parser {
 		'\x3', '\x2', '\x2', '\x2', '\x12D', '\x12B', '\x3', '\x2', '\x2', '\x2', 
 		'\x12D', '\x12E', '\x3', '\x2', '\x2', '\x2', '\x12E', '\x39', '\x3', 
 		'\x2', '\x2', '\x2', '\x12F', '\x13A', '\x5', '<', '\x1F', '\x2', '\x130', 
-		'\x13A', '\a', '@', '\x2', '\x2', '\x131', '\x134', '\a', '@', '\x2', 
+		'\x13A', '\a', '\x41', '\x2', '\x2', '\x131', '\x134', '\a', '\x41', '\x2', 
 		'\x2', '\x132', '\x134', '\x5', '<', '\x1F', '\x2', '\x133', '\x131', 
 		'\x3', '\x2', '\x2', '\x2', '\x133', '\x132', '\x3', '\x2', '\x2', '\x2', 
 		'\x134', '\x135', '\x3', '\x2', '\x2', '\x2', '\x135', '\x136', '\a', 
-		';', '\x2', '\x2', '\x136', '\x137', '\x5', '\x34', '\x1B', '\x2', '\x137', 
-		'\x138', '\a', '<', '\x2', '\x2', '\x138', '\x13A', '\x3', '\x2', '\x2', 
+		'<', '\x2', '\x2', '\x136', '\x137', '\x5', '\x34', '\x1B', '\x2', '\x137', 
+		'\x138', '\a', '=', '\x2', '\x2', '\x138', '\x13A', '\x3', '\x2', '\x2', 
 		'\x2', '\x139', '\x12F', '\x3', '\x2', '\x2', '\x2', '\x139', '\x130', 
 		'\x3', '\x2', '\x2', '\x2', '\x139', '\x133', '\x3', '\x2', '\x2', '\x2', 
 		'\x13A', ';', '\x3', '\x2', '\x2', '\x2', '\x13B', '\x13C', '\x5', 'L', 
@@ -3178,7 +3179,7 @@ public partial class OALParser : Parser {
 		'=', '\x3', '\x2', '\x2', '\x2', '\x142', '\x144', '\x5', '\x34', '\x1B', 
 		'\x2', '\x143', '\x145', '\x5', '@', '!', '\x2', '\x144', '\x143', '\x3', 
 		'\x2', '\x2', '\x2', '\x144', '\x145', '\x3', '\x2', '\x2', '\x2', '\x145', 
-		'?', '\x3', '\x2', '\x2', '\x2', '\x146', '\x147', '\a', '=', '\x2', '\x2', 
+		'?', '\x3', '\x2', '\x2', '\x2', '\x146', '\x147', '\a', '>', '\x2', '\x2', 
 		'\x147', '\x149', '\x5', '\x34', '\x1B', '\x2', '\x148', '\x146', '\x3', 
 		'\x2', '\x2', '\x2', '\x149', '\x14A', '\x3', '\x2', '\x2', '\x2', '\x14A', 
 		'\x148', '\x3', '\x2', '\x2', '\x2', '\x14A', '\x14B', '\x3', '\x2', '\x2', 
@@ -3190,15 +3191,15 @@ public partial class OALParser : Parser {
 		'\x153', '\x156', '\x3', '\x2', '\x2', '\x2', '\x154', '\x152', '\x3', 
 		'\x2', '\x2', '\x2', '\x154', '\x155', '\x3', '\x2', '\x2', '\x2', '\x155', 
 		'\x45', '\x3', '\x2', '\x2', '\x2', '\x156', '\x154', '\x3', '\x2', '\x2', 
-		'\x2', '\x157', '\x158', '\a', '@', '\x2', '\x2', '\x158', 'G', '\x3', 
-		'\x2', '\x2', '\x2', '\x159', '\x15A', '\a', '>', '\x2', '\x2', '\x15A', 
-		'I', '\x3', '\x2', '\x2', '\x2', '\x15B', '\x15C', '\a', '@', '\x2', '\x2', 
-		'\x15C', 'K', '\x3', '\x2', '\x2', '\x2', '\x15D', '\x15E', '\a', '@', 
-		'\x2', '\x2', '\x15E', 'M', '\x3', '\x2', '\x2', '\x2', '\x15F', '\x160', 
-		'\a', '@', '\x2', '\x2', '\x160', 'O', '\x3', '\x2', '\x2', '\x2', '\x1B', 
-		'S', 'h', 'm', 't', '\x84', '\x88', '\xB8', '\xBF', '\xC9', '\xD3', '\xD9', 
-		'\xEF', '\xF6', '\xFD', '\x10D', '\x11E', '\x120', '\x124', '\x12D', '\x133', 
-		'\x139', '\x13E', '\x144', '\x14A', '\x154',
+		'\x2', '\x157', '\x158', '\a', '\x41', '\x2', '\x2', '\x158', 'G', '\x3', 
+		'\x2', '\x2', '\x2', '\x159', '\x15A', '\a', '?', '\x2', '\x2', '\x15A', 
+		'I', '\x3', '\x2', '\x2', '\x2', '\x15B', '\x15C', '\a', '\x41', '\x2', 
+		'\x2', '\x15C', 'K', '\x3', '\x2', '\x2', '\x2', '\x15D', '\x15E', '\a', 
+		'\x41', '\x2', '\x2', '\x15E', 'M', '\x3', '\x2', '\x2', '\x2', '\x15F', 
+		'\x160', '\a', '\x41', '\x2', '\x2', '\x160', 'O', '\x3', '\x2', '\x2', 
+		'\x2', '\x1B', 'S', 'h', 'm', 't', '\x84', '\x88', '\xB8', '\xBF', '\xC9', 
+		'\xD3', '\xD9', '\xEF', '\xF6', '\xFD', '\x10D', '\x11E', '\x120', '\x124', 
+		'\x12D', '\x133', '\x139', '\x13E', '\x144', '\x14A', '\x154',
 	};
 
 	public static readonly ATN _ATN =
