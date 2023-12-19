@@ -75,22 +75,33 @@ namespace OALProgramControl
         {
             target.Value = source.Value;
         }
+        public override EXEExecutionResult ApplyOperator(string operation) 
+        {
+            if (!this.WasInitialized)
+            {
+                return UninitializedError();
+            }
+
+            EXEExecutionResult result = null;
+            if ("type_name".Equals(operation))
+            {
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueString(string.Format(@"""{0}""", this.TypeName));
+                return result;  
+                    
+            }
+            
+            return base.ApplyOperator(operation);
+        }
+        
         public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
         {
             if (!this.WasInitialized || !operand.WasInitialized)
             {
                 return base.ApplyOperator(operation, operand);
             }
-
             EXEExecutionResult result = null;
 
-            if ("type_name".Equals(operation))
-            {
-                   result = EXEExecutionResult.Success();
-                   result.ReturnedOutput = new EXEValueString(string.Format(@"""{0}""", this.TypeName));
-                   return result;
-
-            }
 
             if ("<=".Equals(operation))
             {

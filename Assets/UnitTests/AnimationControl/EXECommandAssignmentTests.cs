@@ -919,12 +919,11 @@ namespace Assets.UnitTests.AnimationControl
             Test.Declare(methodScope, _executionResult);
 
             Test.Variables
-                    .ExpectVariable("x", new EXEValueBool(string.Format(@"""{0}""", type)))
+                    .ExpectVariable("x", new EXEValueString(string.Format(@"""{0}""", type)))
                     .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
 
             Test.PerformAssertion();
         }
-
         
     }
 }

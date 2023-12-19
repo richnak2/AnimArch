@@ -65,14 +65,11 @@ namespace OALProgramControl
                 result.ReturnedOutput = this;
                 return result;
             }
-
-            
             else if("type_name".Equals(operation))
             {
                 result = EXEExecutionResult.Success();
                 result.ReturnedOutput = new EXEValueString(string.Format(@"""{0}""", this.TypeName));
                 return result;
-
             }
 
             return base.ApplyOperator(operation);
@@ -134,7 +131,7 @@ namespace OALProgramControl
                 result.ReturnedOutput = this;
                 return result;
             }
-
+          
             return base.ApplyOperator(operation, operand);
         }
 
