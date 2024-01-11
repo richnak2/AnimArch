@@ -139,19 +139,19 @@ namespace OALProgramControl
 
             EXEValueBase result = null;
 
-            if (IntegerTypeName.Equals(typeName))
+            if (IntNames.Contains(typeName))
             {
                 result = new EXEValueInt("0");
             }
-            else if (RealTypeName.Equals(typeName))
+            else if (RealNames.Contains(typeName))
             {
                 result = new EXEValueReal("0.0");
             }
-            else if (StringTypeName.Equals(typeName))
+            else if (StringNames.Contains(typeName))
             {
                 result = new EXEValueString("\"\"");
             }
-            else if (BooleanTypeName.Equals(typeName))
+            else if (BoolNames.Contains(typeName))
             {
                 result = new EXEValueBool(BooleanFalse);
             }
