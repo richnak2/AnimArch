@@ -86,7 +86,9 @@ namespace Visualization.UI
 
         private MethodPagination SourceCodeMethodPagination;
         private MethodPagination StartingMethodPagination;
-        private ScrollableMethodList scrollableMethodListStart;
+
+        [SerializeField]
+        private ScrollableMethodList scrollableMethodListSourceCodeEdit;
 
         public void ShowErrorPanel()
         {
@@ -151,8 +153,7 @@ namespace Visualization.UI
             // Method button pagination
             // SourceCodeMethodPagination = new MethodPagination(methodButtons);
             // StartingMethodPagination = new MethodPagination(playBtns.Select(btn => btn.gameObject).ToList());
-            scrollableMethodListStart = new ScrollableMethodList();
-            scrollableMethodListStart.LoadButtons(playBtns.Select(btn => btn.gameObject).ToList());
+            
         }
 
         private void Start()
@@ -225,7 +226,7 @@ namespace Visualization.UI
             PanelInteractiveIntro.SetActive(false);
             
             PanelMethod.SetActive(true);
-            scrollableMethodListStart.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
+            scrollableMethodListSourceCodeEdit.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
            // SourceCodeMethodPagination.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
 
             PanelInteractiveIntro.SetActive(false);
@@ -245,11 +246,8 @@ namespace Visualization.UI
             }
         }
 
-        public void SelectMethod(int buttonID)
+        public void SelectMethod(string methodName)
         {
-            // string methodName = SourceCodeMethodPagination.GetSelectedItem(buttonID);
-            string methodName = scrollableMethodListStart.GetSelectedItem(buttonID);
-
             interactiveData.CurrentMethodOwningClass.SetValue(interactiveData.ClassClickedInClassDiagram.GetValue());
             interactiveData.ClassClickedInClassDiagram.SetValue(string.Empty);
             interactiveData.CurrentMethod.SetValue(methodName);
@@ -411,7 +409,7 @@ namespace Visualization.UI
 
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
-            scrollableMethodListStart.FillItems(animMethods.Select(method => method.Name).ToList());
+            scrollableMethodListSourceCodeEdit.FillItems(animMethods.Select(method => method.Name).ToList());
             //StartingMethodPagination.FillItems(animMethods.Select(method => method.Name).ToList());
         }
 

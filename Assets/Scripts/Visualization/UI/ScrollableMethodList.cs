@@ -14,23 +14,12 @@ namespace Visualization.UI
         
         private void Start()
         {   
-            this.Items = new() { "Test1" };
-            ConstructButtons();
-        }
-
-        public void LoadButtons(List<GameObject> buttons)
-        {
-            this.Buttons = buttons;
-            Refresh();
+            this.Items = new();
         }
 
         public void FillItems(List<string> items)
         {
             this.Items = new List<string>(items);
-            foreach (string item in this.Items)
-            {
-                Debug.Log("Item: " + item);
-            }
             Refresh();
         }
 
@@ -38,22 +27,11 @@ namespace Visualization.UI
         {
             foreach (GameObject button in this.Buttons)
             {
-                button.SetActive(false);
+                Destroy(button); 
             }
+            this.Buttons.Clear();
 
             ConstructButtons();
-            
-            for (int i = 0; i < this.Items.Count; i++)
-            {
-                this.Buttons[i].GetComponentInChildren<TextMeshProUGUI>().text = this.Items[i];
-                this.Buttons[i].SetActive(true);
-            }
-            
-        }
-
-        public string GetSelectedItem(int btnIndex)
-        {
-            return Items[btnIndex];
         }
 
         private void ConstructButtons()
@@ -67,11 +45,10 @@ namespace Visualization.UI
             {
                 GameObject button = Instantiate(MethodPrefabButton, ButtonParent);
                 button.GetComponentInChildren<TextMeshProUGUI>().text = item;
-                button.GetComponent<Button>().onClick.AddListener(()=>Debug.Log("clicked>> "+ button.GetComponentInChildren<TextMeshProUGUI>().text));
+                button.GetComponent<Button>().onClick.AddListener(() => MenuManager.Instance.SelectMethod(item));
                 this.Buttons.Add(button);
                 button.SetActive(true);
             }
-            Debug.Log("pocet buttons>>> "+ this.Buttons.Count);
         }
     }
 }
