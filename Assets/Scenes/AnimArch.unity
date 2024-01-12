@@ -33617,7 +33617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c93718f2a821fd439b32aa893f6652b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MethodPrefab: {fileID: 4751581219479200531, guid: 604dbbe780c26044ea1ad44d08e0fdf3,
+  MethodPrefabButton: {fileID: 4751581219479200531, guid: 604dbbe780c26044ea1ad44d08e0fdf3,
     type: 3}
   ButtonParent: {fileID: 883768331}
 --- !u!1 &883841772
