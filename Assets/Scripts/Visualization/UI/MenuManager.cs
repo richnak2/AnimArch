@@ -471,7 +471,7 @@ namespace Visualization.UI
             GameObject.Find("GenerateToPythonButton").GetComponentInChildren<Button>().interactable = active;
             // generatePythonBtn.interactable = true; // TODO co je lepsie? takto by sme museli zmenit funciu zo static
         }
-        public void AnimateSourceCodeAtMethodStart(EXEScopeMethod currentMethodScope)
+        public void RefreshSourceCodePanel(EXEScopeMethod currentMethodScope)
         {
             PanelChooseAnimationStartMethod.SetActive(false);
             PanelSourceCodeAnimation.SetActive(true);
