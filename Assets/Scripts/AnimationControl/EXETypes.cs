@@ -10,7 +10,6 @@ namespace OALProgramControl
 {
     public class EXETypes
     {
-        //TODO add type_name change type comparison to finding the type name in the list of correct types
         public static String IntegerTypeName = "integer";
         public const String RealTypeName = "real";
         public const String BooleanTypeName = "boolean";

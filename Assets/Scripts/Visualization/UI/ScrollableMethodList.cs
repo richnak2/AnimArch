@@ -12,13 +12,15 @@ namespace Visualization.UI
         private List<GameObject> Buttons = new List<GameObject>();
         private List<string> Items = new List<string>();
         
+        private bool EditMode = true;
         private void Start()
         {   
             this.Items = new();
         }
 
-        public void FillItems(List<string> items)
+        public void FillItems(List<string> items, bool editMode = true)
         {
+            this.EditMode = editMode;
             this.Items = new List<string>(items);
             Refresh();
         }
@@ -45,9 +47,13 @@ namespace Visualization.UI
             {
                 GameObject button = Instantiate(MethodPrefabButton, ButtonParent);
                 button.GetComponentInChildren<TextMeshProUGUI>().text = item;
-                button.GetComponent<Button>().onClick.AddListener(() => MenuManager.Instance.SelectMethod(item));
-                this.Buttons.Add(button);
+                if(this.EditMode){
+                    button.GetComponent<Button>().onClick.AddListener(() => MenuManager.Instance.SelectMethod(item));
+                }else{
+                    button.GetComponent<Button>().onClick.AddListener(() => MenuManager.Instance.SelectPlayMethod(item));
+                }
                 button.SetActive(true);
+                this.Buttons.Add(button);
             }
         }
     }

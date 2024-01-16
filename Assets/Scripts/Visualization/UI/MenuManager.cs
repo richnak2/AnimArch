@@ -90,6 +90,8 @@ namespace Visualization.UI
         [SerializeField]
         private ScrollableMethodList scrollableMethodListSourceCodeEdit;
 
+        [SerializeField]
+        private ScrollableMethodList scrollableMethodListAnimationPlay;
         public void ShowErrorPanel()
         {
             ShowErrorPanel(null);
@@ -409,13 +411,12 @@ namespace Visualization.UI
 
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
-            scrollableMethodListSourceCodeEdit.FillItems(animMethods.Select(method => method.Name).ToList());
+            scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
             //StartingMethodPagination.FillItems(animMethods.Select(method => method.Name).ToList());
         }
 
-        public void SelectPlayMethod(int id)
+        public void SelectPlayMethod(string startMethodName)
         {
-            string startMethodName = StartingMethodPagination.GetSelectedItem(id);
             string startClassName = Animation.Animation.Instance.startClassName;
 
             Animation.Animation.Instance.startMethodName = startMethodName;
