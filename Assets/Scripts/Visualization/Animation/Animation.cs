@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AnimArch.Visualization.Diagrams;
@@ -16,6 +17,7 @@ using Visualization.ClassDiagram.ComponentsInDiagram;
 using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;
 using Visualization.UI;
+using AnimArch.Extensions;
 
 namespace Visualization.Animation
 {
@@ -73,13 +75,7 @@ namespace Visualization.Animation
 
             UI.MenuManager.Instance.HideErrorPanelOnStopButton();
 
-            List<Anim> animations = AnimationData.Instance.getAnimList();
             Anim selectedAnimation = AnimationData.Instance.selectedAnim;
-            if (animations != null)
-            {
-                if (animations.Count > 0 && selectedAnimation.AnimationName.Equals(""))
-                    selectedAnimation = animations[0];
-            }
 
             List<AnimClass> MethodsCodes = selectedAnimation.GetMethodsCodesList(); //Filip
 
@@ -603,10 +599,16 @@ namespace Visualization.Animation
                 {
                     if (isToBeHighlighted)
                     {
+                        if (DateTime.Now.IsJune()) {
+                            classTextHighligter.HighlightClassNameLine();
+                        }
                         classTextHighligter.HighlightClassLine(methodName);
                     }
                     else
                     {
+                        if (DateTime.Now.IsJune()) {
+                            classTextHighligter.UnhighlightClassNameLine();
+                        }
                         classTextHighligter.UnhighlightClassLine(methodName);
                     }
                 }

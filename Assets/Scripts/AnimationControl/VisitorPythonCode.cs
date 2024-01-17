@@ -17,14 +17,23 @@ public class VisitorPythonCode : Visitor
     private bool available;
     private static readonly LinkedList<VisitorPythonCode> visitors = new LinkedList<VisitorPythonCode>();
 
-    public static VisitorPythonCode BorrowAVisitor() {
-        foreach (VisitorPythonCode v in visitors) {
-            if (v.isVisitorAvailable()) {
+    private static bool aCoroutineIsTryingToBorrow = false;
+
+    public static VisitorPythonCode BorrowAVisitor() 
+    {
+        while (aCoroutineIsTryingToBorrow) {Debug.Log("Another coroutine is trying to borrow visitor, waiting for it to finish!");}
+        aCoroutineIsTryingToBorrow = true;
+        foreach (VisitorPythonCode v in visitors) 
+        {
+            if (v.isVisitorAvailable()) 
+            {
+                aCoroutineIsTryingToBorrow = false;
                 return v.BorrowVisitor();
             }
         }
         VisitorPythonCode newVisitor = new VisitorPythonCode();
         visitors.AddLast(newVisitor);
+        aCoroutineIsTryingToBorrow = false;
         return newVisitor.BorrowVisitor();
     }
 
@@ -35,7 +44,8 @@ public class VisitorPythonCode : Visitor
         ResetState();
     }
 
-    private bool isVisitorAvailable() {
+    private bool isVisitorAvailable() 
+    {
         return available;
     }
 
@@ -333,39 +343,6 @@ public class VisitorPythonCode : Visitor
     public override void VisitExeScopeParallel(EXEScopeParallel scope)
     {
         throw new Exception("Tried to visit EXEScopeParallel.");
-        /*
-        WriteIndentation();
-        commandString.Append("par\n");
-
-
-        if (scope.Threads != null)
-        {
-            foreach (EXEScope Thread in scope.Threads)
-            {
-                
-                WriteIndentation();
-                commandString.Append("\tthread\n");
-
-
-                IncreaseIndentation();
-                IncreaseIndentation();
-                foreach (EXECommand Command in Thread.Commands)
-                {
-                    Command.Accept(this);
-                }
-                DecreaseIndentation();
-                DecreaseIndentation();
-
-                WriteIndentation();
-                commandString.Append("\tend thread");
-                AddEOL();
-            }
-        }
-
-        WriteIndentation();
-        commandString.Append("end par");
-        AddEOL();
-        */
     }
 
     public override void VisitExeScopeCondition(EXEScopeCondition scope)
@@ -576,6 +553,14 @@ public class VisitorPythonCode : Visitor
         
         commandString.Append("\"" + value.Value + "\"");
         
+    }
+
+    public override void VisitExeASTNodeIndexation(EXEASTNodeIndexation node)
+    {
+        node.List.Accept(this);
+        commandString.Append("[");
+        node.Index.Accept(this);
+        commandString.Append("]");
     }
 }
 

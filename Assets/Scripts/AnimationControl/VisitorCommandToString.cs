@@ -19,14 +19,20 @@ public class VisitorCommandToString : Visitor
     private bool available;
     private static readonly LinkedList<VisitorCommandToString> visitors = new LinkedList<VisitorCommandToString>();
 
+    private static bool aCoroutineIsTryingToBorrow = false;
+
     public static VisitorCommandToString BorrowAVisitor() {
+        while (aCoroutineIsTryingToBorrow) {Debug.Log("Another coroutine is trying to borrow visitor, waiting for it to finish!");}
+        aCoroutineIsTryingToBorrow = true;
         foreach (VisitorCommandToString v in visitors) {
             if (v.isVisitorAvailable()) {
+                aCoroutineIsTryingToBorrow = false;
                 return v.BorrowVisitor();
             }
         }
         VisitorCommandToString newVisitor = new VisitorCommandToString();
         visitors.AddLast(newVisitor);
+        aCoroutineIsTryingToBorrow = false;
         return newVisitor.BorrowVisitor();
     }
 
@@ -511,7 +517,7 @@ public class VisitorCommandToString : Visitor
                 }
                 else
                 {
-                    commandString.Append(" " + node.Operation + " ");
+                    commandString.AppendFormat(" {0} ", node.Operation);
                 }
                 operand.Accept(this);
             }
@@ -589,5 +595,13 @@ public class VisitorCommandToString : Visitor
     public override void VisitExeValueString(EXEValueString value)
     {
         commandString.Append("\"" + value.Value + "\"");
+    }
+
+    public override void VisitExeASTNodeIndexation(EXEASTNodeIndexation node)
+    {
+        node.List.Accept(this);
+        commandString.Append("[");
+        node.Index.Accept(this);
+        commandString.Append("]");
     }
 }
