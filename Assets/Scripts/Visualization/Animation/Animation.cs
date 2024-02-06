@@ -231,10 +231,17 @@ namespace Visualization.Animation
                 CDClassInstance listOwnerInstance = addingToList.GetAssignmentTargetOwner();
                 CDClassInstance appendedInstance = addingToList.GetAppendedElementInstance();
 
-                if (listOwnerInstance != null && appendedInstance != null)
+                if (listOwnerInstance != null)
                 {
-                    objectDiagram.AddRelation(listOwnerInstance, appendedInstance, "ASSOCIATION");
-                    objectDiagram.AddListAttributeValue(listOwnerInstance);
+                    if (appendedInstance != null)
+                    {
+                        objectDiagram.AddRelation(listOwnerInstance, appendedInstance, "ASSOCIATION");
+                        objectDiagram.AddListAttributeValue(listOwnerInstance);
+                    }
+                    else
+                    {
+                        ResolveAssignment(listOwnerInstance);
+                    }
                 }
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandRead)))
@@ -259,6 +266,10 @@ namespace Visualization.Animation
         {
             EXECommandAssignment assignment = (EXECommandAssignment)currentCommand;
             CDClassInstance classInstance = assignment.GetAssignmentTargetOwner();
+            ResolveAssignment(classInstance);
+        }
+        private void ResolveAssignment(CDClassInstance classInstance)
+        {
             if (classInstance == null) return;
 
             objectDiagram.AddAttributeValue(classInstance);
