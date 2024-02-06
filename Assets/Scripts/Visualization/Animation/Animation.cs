@@ -231,12 +231,11 @@ namespace Visualization.Animation
                 CDClassInstance listOwnerInstance = addingToList.GetAssignmentTargetOwner();
                 CDClassInstance appendedInstance = addingToList.GetAppendedElementInstance();
 
-                if (listOwnerInstance == null || appendedInstance == null) yield return null;
-
-                objectDiagram.AddRelation(listOwnerInstance, appendedInstance, "ASSOCIATION");
-
-                objectDiagram.AddListAttributeValue(listOwnerInstance);
-
+                if (listOwnerInstance != null && appendedInstance != null)
+                {
+                    objectDiagram.AddRelation(listOwnerInstance, appendedInstance, "ASSOCIATION");
+                    objectDiagram.AddListAttributeValue(listOwnerInstance);
+                }
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandRead)))
             {
