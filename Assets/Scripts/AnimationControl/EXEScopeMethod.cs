@@ -27,10 +27,15 @@ namespace OALProgramControl
                 return false;
             }
 
-            // This actually performs the assignment
-            this.MethodCallOrigin.EvaluationResult = Success();
-            this.MethodCallOrigin.EvaluationResult.ReturnedOutput = returnedValue;
-            this.MethodCallOrigin.ReturnCollected = true;
+            // TODO - once replace with null object for the animation starting method
+            if (MethodCallOrigin != null)
+            {
+                // This actually performs the assignment
+                this.MethodCallOrigin.EvaluationResult = Success();
+                this.MethodCallOrigin.EvaluationResult.ReturnedOutput = returnedValue;
+                this.MethodCallOrigin.ReturnCollected = true;
+            }
+
             return true;
         }
         protected override EXEExecutionResult Execute(OALProgram OALProgram)

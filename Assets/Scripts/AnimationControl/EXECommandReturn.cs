@@ -30,6 +30,8 @@ namespace OALProgramControl
                 return Error("Failed to deliver return value to owning scope.", "XEC2014");
             }
 
+            this.CommandStack.RemoveOwnedCommands(this.GetCurrentMethodScope());
+
             return Success();
         }
 

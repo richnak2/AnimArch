@@ -88,6 +88,14 @@ namespace OALProgramControl
             return Result;
         }
 
+        public void RemoveOwnedCommands(EXEScopeMethod owningMethod)
+        {
+            while (HasNext() && CommandsToBeCalled.First.Value.GetCurrentMethodScope() == owningMethod)
+            {
+                Next();
+            }
+        }
+
         public void Fork(List<EXEScope> threads)
         {
             this.ParallelChild = new EXEExecutionStackParallel(threads);
