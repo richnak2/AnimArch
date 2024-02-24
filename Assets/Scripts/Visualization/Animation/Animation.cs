@@ -124,7 +124,7 @@ namespace Visualization.Animation
             string currentMethodName = startMethodName;
 
             CDClassInstance startingInstance = MethodExecutableCode.MethodDefinition.OwningClass.CreateClassInstance();
-            MethodExecutableCode.OwningObject = startingInstance;
+            MethodExecutableCode.OwningObject = new EXEValueReference(startingInstance);
             objectDiagram.ShowObject(AddObjectToDiagram(" ", startingInstance));
 
             MethodExecutableCode.InitializeVariables(currentProgramInstance);
@@ -284,7 +284,7 @@ namespace Visualization.Animation
         {
             EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
 
-            CDClassInstance callerObject = currentCommand.GetCurrentMethodScope().OwningObject;
+            CDClassInstance callerObject = (currentCommand.GetCurrentMethodScope().OwningObject as EXEValueReference).ClassInstance;
             CDClassInstance createdObject = createCommand.GetCreatedInstance();
             VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
             createCommand.Accept(visitor);

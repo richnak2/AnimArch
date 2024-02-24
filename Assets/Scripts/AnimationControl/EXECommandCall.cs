@@ -72,7 +72,7 @@ namespace OALProgramControl
             // We are here, which means that all parameter values have been resolved successfully
 
             EXEScopeMethod MethodCode = this.MethodCall.Method.ExecutableCode;
-            MethodCode.OwningObject = (this.CalledObject as EXEValueReference).ClassInstance;
+            MethodCode.OwningObject = this.CalledObject;
             MethodCode.SetSuperScope(null);
             MethodCode.CommandStack = this.CommandStack;
             MethodCode.MethodCallOrigin = this.MethodCall;
@@ -99,21 +99,28 @@ namespace OALProgramControl
                 return variableInitializationResult;
             }
 
-            this.CallInfo
-                = new MethodInvocationInfo
-                (
-                    GetCurrentMethodScope().MethodDefinition,
-                    MethodCode.MethodDefinition,
-                    OALProgram
+            // If invoking method of primitive type, no need to create the call info
+            if (this.CalledObject is EXEValueReference)
+            {
+                CDClassInstance calledObject = (this.CalledObject as EXEValueReference).ClassInstance;
+                CDMethod callerMethod = GetCurrentMethodScope().MethodDefinition;
+                CDMethod calledMethod = MethodCode.MethodDefinition;
+                CDRelationship relationship
+                    = OALProgram
                         .RelationshipSpace
                         .GetRelationshipByClasses
                         (
                             GetCurrentMethodScope().MethodDefinition.OwningClass.Name,
                             MethodCode.MethodDefinition.OwningClass.Name
-                        ),
-                    GetCurrentMethodScope().OwningObject,
-                    (this.CalledObject as EXEValueReference).ClassInstance
-                );
+                        );
+                CDClassInstance callerObject = (GetCurrentMethodScope().OwningObject as EXEValueReference).ClassInstance;
+
+                this.CallInfo
+                    = new MethodInvocationInfo
+                    (
+                        callerMethod, calledMethod, relationship, callerObject, calledObject
+                    );
+            }
 
             return Success();
         }

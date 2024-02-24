@@ -15,7 +15,7 @@ namespace Assets.UnitTests.AnimationControl
 
             // Object owning the executed method
             CDClassInstance owningObject = executedMethod.MethodDefinition.OwningClass.CreateClassInstance();
-            executedMethod.OwningObject = owningObject;
+            executedMethod.OwningObject = new EXEValueReference(owningObject);
             executedMethod.AddVariable(new EXEVariable(EXETypes.SelfReferenceName, new EXEValueReference(owningObject)));
 
             EXEExecutionResult _executionResult = EXEExecutionResult.Success();

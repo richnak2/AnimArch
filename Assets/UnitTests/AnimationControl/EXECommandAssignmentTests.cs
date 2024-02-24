@@ -35,7 +35,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -66,7 +66,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueReal("5.05"))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -97,7 +97,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueString("\"Hello world\""))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -128,7 +128,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueBool(true))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -159,7 +159,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueBool(false))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -191,7 +191,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
                     .ExpectVariable("y", new EXEValueInt(5))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -223,7 +223,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueReal(5.05m))
                     .ExpectVariable("y", new EXEValueReal(5.05m))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -255,7 +255,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueString("\"Hello world\""))
                     .ExpectVariable("y", new EXEValueString("\"Hello world\""))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -287,7 +287,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueBool(true))
                     .ExpectVariable("y", new EXEValueBool(true))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -319,7 +319,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueBool(false))
                     .ExpectVariable("y", new EXEValueBool(false))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -352,7 +352,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Declare(methodScope, _executionResult);
 
             Test.Variables
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject))
+                    .ExpectVariable("self", methodScope.OwningObject)
                     .ExpectVariable("x", new EXEValueReference(subClass.Instances.First()))
                     .ExpectVariable("y", new EXEValueReference(subClass.Instances.First()));
 
@@ -395,7 +395,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
                     .ExpectVariable("inst2", new EXEValueReference())
-                    .ExpectVariable("self", new EXEValueReference(methodScope1.OwningObject));
+                    .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -444,7 +444,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
                     .ExpectVariable("inst2", new EXEValueReference())
-                    .ExpectVariable("self", new EXEValueReference(methodScope1.OwningObject));
+                    .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -509,7 +509,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
                     .ExpectVariable("inst2", new EXEValueReference())
-                    .ExpectVariable("self", new EXEValueReference(methodScope1.OwningObject));
+                    .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -550,7 +550,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(30))
                     .ExpectVariable("inst2", new EXEValueReference())
-                    .ExpectVariable("self", new EXEValueReference(methodScope1.OwningObject));
+                    .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -590,7 +590,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Declare(methodScope, _executionResult);
 
             Test.Variables
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject))
+                    .ExpectVariable("self", methodScope.OwningObject)
                     .ExpectVariable("y", new EXEValueReference(subClass.Instances.First()));
 
             Test.PerformAssertion();
@@ -631,7 +631,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Declare(methodScope, _executionResult);
 
             Test.Variables
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject))
+                    .ExpectVariable("self", methodScope.OwningObject)
                     .ExpectVariable("y", new EXEValueReference(subClass.Instances.First()));
 
             Test.PerformAssertion();
@@ -671,7 +671,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("inst2", new EXEValueReference(class2.Instances.First()))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -766,7 +766,7 @@ namespace Assets.UnitTests.AnimationControl
                     .ExpectVariable("inst1", instance1Reference)
                     .ExpectVariable("x", instance1Reference)
                     .ExpectVariable("Objects", array)
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -827,7 +827,7 @@ namespace Assets.UnitTests.AnimationControl
                     .ExpectVariable("inst1", instance1Reference)
                     .ExpectVariable("x", new EXEValueInt(3))
                     .ExpectVariable("Objects", array)
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }

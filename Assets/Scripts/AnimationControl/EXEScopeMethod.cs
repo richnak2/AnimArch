@@ -8,7 +8,7 @@ namespace OALProgramControl
     {
         public CDMethod MethodDefinition;
         public EXEASTNodeMethodCall MethodCallOrigin;
-        public CDClassInstance OwningObject;
+        public EXEValueBase OwningObject;
 
         public EXEScopeMethod() : this(null)
         {
@@ -98,7 +98,7 @@ namespace OALProgramControl
         public EXEExecutionResult InitializeVariables(IEnumerable<EXEVariable> argumentVariables)
         {
             EXEExecutionResult variableCreationSuccess
-                = AddVariable(new EXEVariable(EXETypes.SelfReferenceName, new EXEValueReference(this.OwningObject)));
+                = AddVariable(new EXEVariable(EXETypes.SelfReferenceName, this.OwningObject));
 
             if (!HandleSingleShotASTEvaluation(variableCreationSuccess))
             {
