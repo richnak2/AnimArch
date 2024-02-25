@@ -35,7 +35,6 @@ namespace Visualization.Animation
         [HideInInspector] public bool AnimationIsRunning = false;
         [HideInInspector] public bool isPaused = false;
         [HideInInspector] public bool standardPlayMode = true;
-        [HideInInspector] private EXEExecutionResult executionSuccess = EXEExecutionResult.Success();
         public bool nextStep = false;
         private bool prevStep = false;
         private List<GameObject> Fillers;
@@ -53,11 +52,6 @@ namespace Visualization.Animation
             classDiagram = GameObject.Find("ClassDiagram").GetComponent<ClassDiagram.Diagrams.ClassDiagram>();
             objectDiagram = GameObject.Find("ObjectDiagram").GetComponent<ObjectDiagram>();
             standardPlayMode = true;
-        }
-
-        private void ShowError() {
-            Debug.Log("Error panel shown!");
-            UI.MenuManager.Instance.ShowErrorPanel(executionSuccess);
         }
 
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
@@ -129,43 +123,14 @@ namespace Visualization.Animation
 
             MethodExecutableCode.InitializeVariables(currentProgramInstance);
 
-            while (executionSuccess.IsSuccess && CurrentProgramInstance.CommandStack.HasNext())
-            {
-                EXECommand CurrentCommand = CurrentProgramInstance.CommandStack.Next();
-                executionSuccess = CurrentCommand.PerformExecution(CurrentProgramInstance);
-
-                Debug.Log("Command " + i++ + executionSuccess.ToString());
-
-                if (!executionSuccess.IsSuccess)
-                {
-                    ShowError();
-                    break;
-                }
-
-                if (!executionSuccess.IsDone)
-                {
-                    continue;
-                }
-
-                CurrentCommand.ToggleActiveRecursiveBottomUp(true);
-
-                if (!(CurrentCommand is EXECommandMulti))
-                {
-                    EXEScopeMethod CurrentMethodScope = CurrentCommand.GetCurrentMethodScope();
-
-                    UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(CurrentMethodScope);
-                }
-                yield return AnimateCommand(CurrentCommand);
-
-                CurrentCommand.ToggleActiveRecursiveBottomUp(false);
-            }
+            AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
+            yield return StartCoroutine(SuperThread.Start());
 
             Debug.Log("Over");
             AnimationIsRunning = false;
-            executionSuccess = EXEExecutionResult.Success();
         }
 
-        private IEnumerator AnimateCommand(EXECommand CurrentCommand)
+        public IEnumerator AnimateCommand(EXECommand CurrentCommand, AnimationThread AnimationThread)
         {
             if (CurrentCommand.GetType() == typeof(EXECommandCall))
             {
@@ -253,7 +218,7 @@ namespace Visualization.Animation
 
                 yield return StartCoroutine(BarrierFillCheck());
 
-                executionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, CurrentProgramInstance);
+                AnimationThread.ExecutionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, CurrentProgramInstance);
                 this.ReadValue = null;
             }
             else
