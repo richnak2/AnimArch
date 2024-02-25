@@ -1,6 +1,7 @@
 using OALProgramControl;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Visualization.Animation
@@ -62,15 +63,33 @@ namespace Visualization.Animation
 
                 if (CurrentCommand is EXEScopeParallel)
                 {
-                    //foreach (EXEScope threadScope in (CurrentCommand as EXEScopeParallel).Threads)
-                    //{
-                    //    EXEExecutionStack ChildThreadExecutionStack
-                    //    AnimationThread ChildThread = new AnimationThread();
-                    //}
+                    Fork(CurrentCommand as EXEScopeParallel);
+                    yield return Join();
                 }
             }
 
             IsOver = true;
+        }
+
+        private void Fork(EXEScopeParallel forkingCommand)
+        {
+            foreach (EXEScope threadScope in forkingCommand.Threads)
+            {
+                EXEExecutionStack ChildThreadExecutionStack = new EXEExecutionStack();
+                ChildThreadExecutionStack.Enqueue(threadScope);
+                threadScope.CommandStack = ChildThreadExecutionStack;
+
+                AnimationThread ChildThread = new AnimationThread(ChildThreadExecutionStack, CurrentProgramInstance, Animation);
+                this.ChildThreads.Add(ChildThread);
+                ChildThread.ParentThread = this;
+
+                Animation.StartCoroutine(ChildThread.Start());
+            }
+        }
+
+        private IEnumerator Join()
+        {
+            yield return new WaitUntil(() => !ChildThreads.Any(thread => !thread.IsOver));
         }
 
         private void ShowError(EXEExecutionResult executionSuccess)
