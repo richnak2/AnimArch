@@ -324,6 +324,18 @@ public partial class OALBaseListener : IOALListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExeCommandRead([NotNull] OALParser.ExeCommandReadContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.exeCommandWait"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.exeCommandWait"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.returnCommand"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

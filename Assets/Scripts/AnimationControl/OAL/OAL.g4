@@ -17,6 +17,7 @@ line
     |	exeCommandRemovingFromList
 	|	exeCommandWrite
 	|	exeCommandRead
+	|	exeCommandWait
     |	returnCommand
 	|	continueCommand
 	|	breakCommand
@@ -114,6 +115,10 @@ exeCommandWrite
 
 exeCommandRead
     :   ('assign ')? accessChain '=' className '(read(' expr? '))' ';'
+    ;
+
+exeCommandWait
+    :   'wait for' expr 'seconds' ';'
     ;
 
 returnCommand

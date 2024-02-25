@@ -21,6 +21,7 @@ public abstract class Visitor
     public abstract void VisitExeCommandRead(EXECommandRead command);
     public abstract void VisitExeCommandRemovingFromList(EXECommandRemovingFromList command);
     public abstract void VisitExeCommandReturn(EXECommandReturn command);
+    public abstract void VisitExeCommandWait(EXECommandWait command);
     public abstract void VisitExeCommandWrite(EXECommandWrite command);
     public abstract void VisitExeCommand(EXECommand command);
 

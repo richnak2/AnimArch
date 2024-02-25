@@ -277,6 +277,18 @@ public class VisitorCommandToString : Visitor
         });
     }
 
+
+    public override void VisitExeCommandWait(EXECommandWait command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("wait for ");
+            command.WaitTime.Accept(visitor);
+            visitor.commandString.Append(" seconds");
+
+            return false;
+        });
+    }
+
     public override void VisitExeCommandWrite(EXECommandWrite command)
     {
         HandleBasicEXECommand(command, (visitor) => {

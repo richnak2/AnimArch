@@ -271,6 +271,16 @@ public interface IOALListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitExeCommandRead([NotNull] OALParser.ExeCommandReadContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="OALParser.exeCommandWait"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="OALParser.exeCommandWait"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="OALParser.returnCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

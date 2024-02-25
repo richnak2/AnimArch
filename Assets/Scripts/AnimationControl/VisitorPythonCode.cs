@@ -276,6 +276,16 @@ public class VisitorPythonCode : Visitor
         
     }
 
+    public override void VisitExeCommandWait(EXECommandWait command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("sleep(");
+            command.WaitTime.Accept(visitor);
+            visitor.commandString.Append(")");
+            return false;
+        });
+    }
+
     public override void VisitExeCommandWrite(EXECommandWrite command)
     {
         

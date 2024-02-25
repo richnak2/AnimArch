@@ -221,6 +221,14 @@ namespace Visualization.Animation
                 AnimationThread.ExecutionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, CurrentProgramInstance);
                 this.ReadValue = null;
             }
+            else if (CurrentCommand.GetType().Equals(typeof(EXECommandWait)))
+            {
+                EXECommandWait waitCommand = CurrentCommand as EXECommandWait;
+                EXEValueReal secondsToWaitValue = waitCommand.WaitTime.EvaluationResult.ReturnedOutput as EXEValueReal;
+                float secondsToWait = (float)secondsToWaitValue.Value;
+
+                yield return new WaitForSeconds(secondsToWait);
+            }
             else
             {
                 yield return new WaitForSeconds(0.3f);

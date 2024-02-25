@@ -176,6 +176,12 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExeCommandRead([NotNull] OALParser.ExeCommandReadContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.exeCommandWait"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.returnCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
