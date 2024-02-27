@@ -19,6 +19,7 @@ namespace AnimArch.Extensions
         {
             return sWhitespace.Replace(input, replacement);
         }
+
         // https://stackoverflow.com/a/2641383
         public static List<int> AllIndexesOf(this string str, string value)
         {

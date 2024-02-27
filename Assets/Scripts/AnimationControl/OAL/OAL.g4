@@ -18,6 +18,10 @@ line
 	|	exeCommandWrite
 	|	exeCommandRead
 	|	exeCommandWait
+	|	exeCommandFileCheck
+	|	exeCommandFileRead
+	|	exeCommandFileWrite
+	|	exeCommandFileAppend
     |	returnCommand
 	|	continueCommand
 	|	breakCommand
@@ -26,6 +30,7 @@ line
 	|	foreachCommand
 	|	parCommand
 	|	commentCommand
+    |   pragmaCommand
 	;
 
 commands
@@ -118,7 +123,23 @@ exeCommandRead
     ;
 
 exeCommandWait
-    :   'wait for' expr 'seconds' ';'
+    :   'wait for ' expr ' seconds' ';'
+    ;
+
+exeCommandFileCheck
+    :   'check ' accessChain ' if file ' expr ' exists' ';'
+    ;
+
+exeCommandFileRead
+    :   'read ' accessChain ' from file ' expr ';'
+    ;
+
+exeCommandFileAppend
+    :   'append ' expr ' to file ' expr ';'
+    ;
+
+exeCommandFileWrite
+    :   'write ' expr ' to file ' expr ';'
     ;
 
 returnCommand
@@ -193,6 +214,10 @@ attribute
     :	NAME
     ;
 
+pragmaCommand
+    :   '#' NAME
+    ;
+
 // Lexer Rules
 
 BOOL
@@ -200,7 +225,7 @@ BOOL
     ;
 
 NAME
-    :   [a-zA-Z_#][a-zA-Z0-9_#]*
+    :   [a-zA-Z_][a-zA-Z0-9_]*
     ;
 
 STRING

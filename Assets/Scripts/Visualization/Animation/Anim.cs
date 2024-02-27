@@ -239,6 +239,7 @@ namespace Visualisation.Animation
         {
             StringBuilder Code = new StringBuilder();
             Code.AppendLine("import time");
+            Code.AppendLine("from pathlib import Path");
             Code.AppendLine();
 
             OALProgram currentProgram = Visualization.Animation.Animation.Instance.CurrentProgramInstance;
