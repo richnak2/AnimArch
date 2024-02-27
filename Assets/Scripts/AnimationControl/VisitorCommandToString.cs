@@ -256,11 +256,6 @@ public class VisitorCommandToString : Visitor
         });
     }
 
-    public override void VisitExeCommandMulti(EXECommandMulti command)
-    {
-        VisitExeCommand(command);
-    }
-
     public override void VisitExeCommandQueryCreate(EXECommandQueryCreate command)
     {
         HandleBasicEXECommand(command, (visitor) => {

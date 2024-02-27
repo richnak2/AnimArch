@@ -19,7 +19,6 @@ public abstract class Visitor
     public abstract void VisitExeCommandFileExists(EXECommandFileExists command);
     public abstract void VisitExeCommandFileRead(EXECommandFileRead command);
     public abstract void VisitExeCommandFileWrite(EXECommandFileWrite command);
-    public abstract void VisitExeCommandMulti(EXECommandMulti command);
     public abstract void VisitExeCommandQueryCreate(EXECommandQueryCreate command);
     public abstract void VisitExeCommandQueryDelete(EXECommandQueryDelete command);
     public abstract void VisitExeCommandRead(EXECommandRead command);

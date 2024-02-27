@@ -17,6 +17,18 @@ namespace Visualization.Animation
 
         protected bool IsOver;
 
+        private bool _animate;
+        protected bool Animate
+        {
+            get
+            {
+                if (!_animate) { return false; }
+                if (ParentThread == null) { return true; }
+
+                return ParentThread.Animate;
+            }
+        }
+
         public AnimationThread(EXEExecutionStack executionStack, OALProgram currentProgramInstance, Animation animation)
         {
             this.CommandStack = executionStack;
@@ -26,6 +38,7 @@ namespace Visualization.Animation
             this.IsOver = false;
             this.ParentThread = null;
             this.ChildThreads = new List<AnimationThread>();
+            this._animate = true;
         }
 
         public IEnumerator Start()
@@ -34,6 +47,12 @@ namespace Visualization.Animation
             while (ExecutionSuccess.IsSuccess && CommandStack.HasNext())
             {
                 EXECommand CurrentCommand = CommandStack.Next();
+
+                if (CurrentCommand is EXECommandPragma)
+                {
+                    (CurrentCommand as EXECommandPragma).CurrentThread = this;
+                }
+
                 ExecutionSuccess = CurrentCommand.PerformExecution(CurrentProgramInstance);
 
                 Debug.Log("Command " + i++ + ExecutionSuccess.ToString());
@@ -49,17 +68,16 @@ namespace Visualization.Animation
                     continue;
                 }
 
-                CurrentCommand.ToggleActiveRecursiveBottomUp(true);
-
-                if (!(CurrentCommand is EXECommandMulti))
+                if (Animate)
                 {
+                    CurrentCommand.ToggleActiveRecursiveBottomUp(true);
                     EXEScopeMethod CurrentMethodScope = CurrentCommand.GetCurrentMethodScope();
-
                     UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(CurrentMethodScope);
+                    CurrentCommand.ToggleActiveRecursiveBottomUp(false);
                 }
-                yield return Animation.AnimateCommand(CurrentCommand, this);
 
-                CurrentCommand.ToggleActiveRecursiveBottomUp(false);
+                yield return Animation.AnimateCommand(CurrentCommand, this, Animate);
+
 
                 if (CurrentCommand is EXEScopeParallel)
                 {
@@ -95,6 +113,11 @@ namespace Visualization.Animation
         private void ShowError(EXEExecutionResult executionSuccess)
         {
             UI.MenuManager.Instance.ShowErrorPanel(executionSuccess);
+        }
+
+        public void ToggleAnimate(bool animate)
+        {
+            this._animate = animate;
         }
     }
 }

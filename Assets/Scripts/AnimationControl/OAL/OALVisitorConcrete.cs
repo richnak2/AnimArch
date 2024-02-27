@@ -678,8 +678,8 @@ namespace AnimationControl.OAL
         public override object VisitExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context)
         {
             if (context.ChildCount != 4) { HandleError("Malformed wait command.", context); }
-            if (!"wait for".Equals(context.GetChild(0).GetText())) { HandleError("Malformed wait command.", context); }
-            if (!"seconds".Equals(context.GetChild(2).GetText())) { HandleError("Malformed wait command.", context); }
+            if (!"wait for ".Equals(context.GetChild(0).GetText())) { HandleError("Malformed wait command.", context); }
+            if (!" seconds".Equals(context.GetChild(2).GetText())) { HandleError("Malformed wait command.", context); }
             if (context.expr() == null) { HandleError("Malformed wait command.", context); }
 
             object waitSecondsExpression = Visit(context.expr());

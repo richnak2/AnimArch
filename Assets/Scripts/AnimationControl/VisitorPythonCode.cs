@@ -231,11 +231,6 @@ public class VisitorPythonCode : Visitor
         });
     }
 
-    public override void VisitExeCommandMulti(EXECommandMulti command)
-    {
-        throw new Exception("Tried to convert EXECommandMulti to Python.");
-    }
-
     public override void VisitExeCommandQueryCreate(EXECommandQueryCreate command)
     {
         
