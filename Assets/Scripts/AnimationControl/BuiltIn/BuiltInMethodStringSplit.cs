@@ -7,7 +7,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
 {
     public class BuiltInMethodStringSplit : BuiltInMethodString
     {
-        public override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
+        protected override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
         {
             EXEValueString delimiterValue = parameters[0] as EXEValueString;
 

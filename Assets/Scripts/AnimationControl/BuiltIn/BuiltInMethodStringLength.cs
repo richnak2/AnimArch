@@ -7,7 +7,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
 {
     public class BuiltInMethodStringLength : BuiltInMethodString
     {
-        public override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
+        protected override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
         {
             string stringValue = owningObject.Value;
 

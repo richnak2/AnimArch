@@ -7,7 +7,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
 {
     public class BuiltInMethodStringSubstringFrom : BuiltInMethodString
     {
-        public override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
+        protected override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
         {
             EXEValueInt startingIndexValue = parameters[0] as EXEValueInt;
 

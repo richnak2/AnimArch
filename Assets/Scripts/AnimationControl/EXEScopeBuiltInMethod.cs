@@ -7,9 +7,9 @@ namespace OALProgramControl
 {
     public class EXEScopeBuiltInMethod : EXEScopeMethod
     {
-        private readonly BuiltInMethodString MethodExecution;
+        private readonly BuiltInMethodBase MethodExecution;
 
-        public EXEScopeBuiltInMethod(CDMethod methodDefinition, BuiltInMethodString methodExecution) : base()
+        public EXEScopeBuiltInMethod(CDMethod methodDefinition, BuiltInMethodBase methodExecution) : base()
         {
             this.MethodDefinition = methodDefinition;
             this.MethodCallOrigin = null;
@@ -23,7 +23,7 @@ namespace OALProgramControl
                     .Select(parameter => this.FindVariable(parameter.Name).Value)
                     .ToList();
 
-            EXEExecutionResult result = MethodExecution.Evaluate(OwningObject as EXEValueString, parameters);
+            EXEExecutionResult result = MethodExecution.Evaluate(OwningObject, parameters);
             if (!HandleSingleShotASTEvaluation(result))
             {
                 return result;

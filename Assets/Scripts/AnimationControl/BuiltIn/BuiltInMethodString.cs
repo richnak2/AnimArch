@@ -5,8 +5,13 @@ using UnityEngine;
 
 namespace Assets.Scripts.AnimationControl.BuiltIn
 {
-    public abstract class BuiltInMethodString
+    public abstract class BuiltInMethodString : BuiltInMethodBase
     {
-        public abstract EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters);
+        public override EXEExecutionResult Evaluate(EXEValueBase owningObject, List<EXEValueBase> parameters)
+        {
+            return Evaluate(owningObject as EXEValueString, parameters);
+        }
+
+        protected abstract EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters);
     }
 }

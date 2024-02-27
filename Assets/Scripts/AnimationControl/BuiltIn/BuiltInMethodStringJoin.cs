@@ -6,7 +6,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
 {
     public class BuiltInMethodStringJoin : BuiltInMethodString
     {
-        public override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
+        protected override EXEExecutionResult Evaluate(EXEValueString owningObject, List<EXEValueBase> parameters)
         {
             EXEValueArray list = parameters[0] as EXEValueArray;
 

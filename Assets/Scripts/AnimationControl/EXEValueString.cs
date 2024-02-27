@@ -94,6 +94,7 @@ namespace OALProgramControl
                 }
 
                 result = EXEExecutionResult.Success();
+                Debug.Log(string.Format("[CMP STR] '{0}' vs '{1}'", this.Value, (operand as EXEValueString).Value));
                 result.ReturnedOutput = new EXEValueBool(this.Value == (operand as EXEValueString).Value);
                 return result;
             }
@@ -143,7 +144,6 @@ namespace OALProgramControl
         #region Methods
         private static CDClass DefiningClass = null;
         
-
         public override bool MethodExists(string methodName, bool includeInherited = false)
         {
             if (DefiningClass == null)

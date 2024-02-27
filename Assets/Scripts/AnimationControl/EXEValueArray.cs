@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.AnimationControl.BuiltIn;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -51,11 +52,9 @@ namespace OALProgramControl
         {
             return new EXEValueArray(this.TypeName, this.Elements.Select(element => element.DeepClone()).ToList());
         }
-
         public override void Accept(Visitor v) {
             v.VisitExeValueArray(this);
         }
-
         public override EXEExecutionResult GetValueAt(UInt32 index)
         {
             UInt32 indexValue = index;
@@ -76,7 +75,6 @@ namespace OALProgramControl
             result.ReturnedOutput = Elements[(int)indexValue];
             return result;
         }
-
         protected override EXEExecutionResult AssignValueFromConcrete(EXEValueBase assignmentSource)
         {
             return assignmentSource.AssignValueTo(this);
@@ -269,6 +267,58 @@ namespace OALProgramControl
 
             return base.ApplyOperator(operation, operand);
         }
+        #region Methods
+        private static CDClass DefiningClass = null;
+
+        public override bool MethodExists(string methodName, bool includeInherited = false)
+        {
+            if (DefiningClass == null)
+            {
+                InitializeMethods();
+            }
+
+            return DefiningClass.MethodExists(methodName, includeInherited);
+        }
+
+        public override CDMethod FindMethod(string methodName, bool includeInherited = false)
+        {
+            if (DefiningClass == null)
+            {
+                InitializeMethods();
+            }
+
+            return DefiningClass.GetMethodByName(methodName, includeInherited);
+        }
+
+        private void InitializeMethods()
+        {
+            DefiningClass = new CDClass("Array", null);
+
+            InitializeContainsMethod();
+            InitializeCountMethod();
+        }
+
+        private void InitializeContainsMethod()
+        {
+            CDMethod MethodContains = new CDMethod(DefiningClass, "Contains", EXETypes.BooleanTypeName);
+            MethodContains.Parameters.Add
+            (
+                new CDParameter()
+                {
+                    Name = "element",
+                    Type = EXETypes.WildCardTypeName
+                }
+            );
+            MethodContains.ExecutableCode = new EXEScopeBuiltInMethod(MethodContains, new BuiltInMethodArrayContains());
+            DefiningClass.AddMethod(MethodContains);
+        }
+        private void InitializeCountMethod()
+        {
+            CDMethod MethodContains = new CDMethod(DefiningClass, "Count", EXETypes.IntegerTypeName);
+            MethodContains.ExecutableCode = new EXEScopeBuiltInMethod(MethodContains, new BuiltInMethodArrayCount());
+            DefiningClass.AddMethod(MethodContains);
+        }
+        #endregion
         public override string ToObjectDiagramText()
         {
             return string.Format("[{0} ]", string.Join(", ", this.Elements.Select(element => element.ToObjectDiagramText())));
