@@ -8,7 +8,7 @@ namespace OALProgramControl
     {
         public CDMethod MethodDefinition;
         public EXEASTNodeMethodCall MethodCallOrigin;
-        public CDClassInstance OwningObject;
+        public EXEValueBase OwningObject;
 
         public EXEScopeMethod() : this(null)
         {
@@ -27,10 +27,15 @@ namespace OALProgramControl
                 return false;
             }
 
-            // This actually performs the assignment
-            this.MethodCallOrigin.EvaluationResult = Success();
-            this.MethodCallOrigin.EvaluationResult.ReturnedOutput = returnedValue;
-            this.MethodCallOrigin.ReturnCollected = true;
+            // TODO - once replace with null object for the animation starting method
+            if (MethodCallOrigin != null)
+            {
+                // This actually performs the assignment
+                this.MethodCallOrigin.EvaluationResult = Success();
+                this.MethodCallOrigin.EvaluationResult.ReturnedOutput = returnedValue;
+                this.MethodCallOrigin.ReturnCollected = true;
+            }
+
             return true;
         }
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
@@ -93,7 +98,7 @@ namespace OALProgramControl
         public EXEExecutionResult InitializeVariables(IEnumerable<EXEVariable> argumentVariables)
         {
             EXEExecutionResult variableCreationSuccess
-                = AddVariable(new EXEVariable(EXETypes.SelfReferenceName, new EXEValueReference(this.OwningObject)));
+                = AddVariable(new EXEVariable(EXETypes.SelfReferenceName, this.OwningObject));
 
             if (!HandleSingleShotASTEvaluation(variableCreationSuccess))
             {

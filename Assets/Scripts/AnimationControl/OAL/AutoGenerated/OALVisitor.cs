@@ -176,6 +176,36 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExeCommandRead([NotNull] OALParser.ExeCommandReadContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.exeCommandWait"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.exeCommandFileCheck"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExeCommandFileCheck([NotNull] OALParser.ExeCommandFileCheckContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.exeCommandFileRead"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExeCommandFileRead([NotNull] OALParser.ExeCommandFileReadContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.exeCommandFileAppend"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExeCommandFileAppend([NotNull] OALParser.ExeCommandFileAppendContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.exeCommandFileWrite"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExeCommandFileWrite([NotNull] OALParser.ExeCommandFileWriteContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="OALParser.returnCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -265,4 +295,10 @@ public interface IOALVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAttribute([NotNull] OALParser.AttributeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="OALParser.pragmaCommand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPragmaCommand([NotNull] OALParser.PragmaCommandContext context);
 }

@@ -211,9 +211,49 @@ public class VisitorCommandToString : Visitor
         });
     }
 
-    public override void VisitExeCommandMulti(EXECommandMulti command)
+    public override void VisitExeCommandFileAppend(EXECommandFileAppend command)
     {
-        VisitExeCommand(command);
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("append ");
+            command.StringToWrite.Accept(visitor);
+            visitor.commandString.Append(" to file ");
+            command.FileToWriteTo.Accept(visitor);
+            return false;
+        });
+    }
+
+    public override void VisitExeCommandFileExists(EXECommandFileExists command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("check ");
+            command.AssignmentTarget.Accept(visitor);
+            visitor.commandString.Append(" if file ");
+            command.FileToCheck.Accept(visitor);
+            visitor.commandString.Append(" exists");
+            return false;
+        });
+    }
+
+    public override void VisitExeCommandFileRead(EXECommandFileRead command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("read ");
+            command.AssignmentTarget.Accept(visitor);
+            visitor.commandString.Append(" from file ");
+            command.FileToReadFrom.Accept(visitor);
+            return false;
+        });
+    }
+
+    public override void VisitExeCommandFileWrite(EXECommandFileWrite command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("write ");
+            command.StringToWrite.Accept(visitor);
+            visitor.commandString.Append(" to file ");
+            command.FileToWriteTo.Accept(visitor);
+            return false;
+        });
     }
 
     public override void VisitExeCommandQueryCreate(EXECommandQueryCreate command)
@@ -273,6 +313,18 @@ public class VisitorCommandToString : Visitor
                 visitor.commandString.Append(" ");
                 command.Expression.Accept(visitor);
             }
+            return false;
+        });
+    }
+
+
+    public override void VisitExeCommandWait(EXECommandWait command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("wait for ");
+            command.WaitTime.Accept(visitor);
+            visitor.commandString.Append(" seconds");
+
             return false;
         });
     }

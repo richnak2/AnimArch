@@ -419,6 +419,119 @@ namespace AnimationControl.OAL
 
             return result;
         }
+        // Append to file command
+        public override object VisitExeCommandFileAppend([NotNull] OALParser.ExeCommandFileAppendContext context)
+        {
+            if(context.ChildCount != 5) { HandleError("Malformed append to file command.", context); }
+            if (!"append ".Equals(context.GetChild(0).GetText())) { HandleError("Malformed append to file command.", context); }
+            if (!" to file ".Equals(context.GetChild(2).GetText())) { HandleError("Malformed append to file command.", context); }
+            if(context.expr() == null) { HandleError("Malformed append to file command.", context); }
+            if (context.expr().Length != 2) { HandleError("Malformed append to file command.", context); }
+
+            object textToAppend = Visit(context.expr()[0]);
+
+            if (textToAppend == null || textToAppend is not EXEASTNodeBase)
+            {
+                HandleError(string.Format("Malformed append to file command - text to append is not supposed to be '{0}'.", textToAppend?.GetType().Name ?? "NULL"), context);
+            }
+
+            object fileToAppendTo = Visit(context.expr()[1]);
+
+            if (fileToAppendTo == null || fileToAppendTo is not EXEASTNodeBase)
+            {
+                HandleError(string.Format("Malformed append to file command - file to append to is not supposed to be '{0}'.", fileToAppendTo?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandFileAppend result
+                = new EXECommandFileAppend(textToAppend as EXEASTNodeBase, fileToAppendTo as EXEASTNodeBase);
+
+            return result;
+        }
+        // Check from file command
+        public override object VisitExeCommandFileCheck([NotNull] OALParser.ExeCommandFileCheckContext context)
+        {
+            if (context.ChildCount != 6) { HandleError("Malformed check file command.", context); }
+            if (!"check ".Equals(context.GetChild(0).GetText())) { HandleError("Malformed check file command.", context); }
+            if (!" if file ".Equals(context.GetChild(2).GetText())) { HandleError("Malformed check file command.", context); }
+            if (!" exists".Equals(context.GetChild(4).GetText())) { HandleError("Malformed check file command.", context); }
+            if (context.expr() == null) { HandleError("Malformed check file command.", context); }
+            if (context.accessChain() == null) { HandleError("Malformed check file command.", context); }
+
+            object assignmentTarget = Visit(context.accessChain());
+
+            if (assignmentTarget == null || assignmentTarget is not EXEASTNodeAccessChain)
+            {
+                HandleError(string.Format("Malformed check file command - assignment target is not supposed to be '{0}'.", assignmentTarget?.GetType().Name ?? "NULL"), context);
+            }
+
+            object fileToCheck = Visit(context.expr());
+
+            if (fileToCheck == null || fileToCheck is not EXEASTNodeBase)
+            {
+                HandleError(string.Format("Malformed check file command - file to check is not supposed to be '{0}'.", fileToCheck?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandFileExists result
+                = new EXECommandFileExists(assignmentTarget as EXEASTNodeAccessChain, fileToCheck as EXEASTNodeBase);
+
+            return result;
+        }
+        // Read from file command
+        public override object VisitExeCommandFileRead([NotNull] OALParser.ExeCommandFileReadContext context)
+        {
+            if (context.ChildCount != 5) { HandleError("Malformed read from file command.", context); }
+            if (!"read ".Equals(context.GetChild(0).GetText())) { HandleError("Malformed read from file command.", context); }
+            if (!" from file ".Equals(context.GetChild(2).GetText())) { HandleError("Malformed read from file command.", context); }
+            if (context.expr() == null) { HandleError("Malformed read from file command.", context); }
+            if (context.accessChain() == null) { HandleError("Malformed read from file command.", context); }
+
+            object assignmentTarget = Visit(context.accessChain());
+
+            if (assignmentTarget == null || assignmentTarget is not EXEASTNodeAccessChain)
+            {
+                HandleError(string.Format("Malformed read from file command - assignment target is not supposed to be '{0}'.", assignmentTarget?.GetType().Name ?? "NULL"), context);
+            }
+
+            object fileToReadFrom = Visit(context.expr());
+
+            if (fileToReadFrom == null || fileToReadFrom is not EXEASTNodeBase)
+            {
+                HandleError(string.Format("Malformed read from file command - file to read from is not supposed to be '{0}'.", fileToReadFrom?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandFileRead result
+                = new EXECommandFileRead(assignmentTarget as EXEASTNodeAccessChain, fileToReadFrom as EXEASTNodeBase);
+
+            return result;
+        }
+        // Write to file command
+        public override object VisitExeCommandFileWrite([NotNull] OALParser.ExeCommandFileWriteContext context)
+        {
+            if (context.ChildCount != 5) { HandleError("Malformed write to file command.", context); }
+            if (!"write ".Equals(context.GetChild(0).GetText())) { HandleError("Malformed write to file command.", context); }
+            if (!" to file ".Equals(context.GetChild(2).GetText())) { HandleError("Malformed write to file command.", context); }
+            if (context.expr() == null) { HandleError("Malformed write to file command.", context); }
+            if (context.expr().Length != 2) { HandleError("Malformed write to file command.", context); }
+
+            object textToWrite = Visit(context.expr()[0]);
+
+            if (textToWrite == null || textToWrite is not EXEASTNodeBase)
+            {
+                HandleError(string.Format("Malformed write to file command - text to write is not supposed to be '{0}'.", textToWrite?.GetType().Name ?? "NULL"), context);
+            }
+
+            object fileToWriteTo = Visit(context.expr()[1]);
+
+            if (fileToWriteTo == null || fileToWriteTo is not EXEASTNodeBase)
+            {
+                HandleError(string.Format("Malformed write to file command - file to write to is not supposed to be '{0}'.", fileToWriteTo?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandFileWrite result
+                = new EXECommandFileWrite(textToWrite as EXEASTNodeBase, fileToWriteTo as EXEASTNodeBase);
+
+            return result;
+        }
         // Object instantiation command
         public override object VisitExeCommandQueryCreate([NotNull] OALParser.ExeCommandQueryCreateContext context)
         {
@@ -558,6 +671,25 @@ namespace AnimationControl.OAL
             }
 
             EXECommandRemovingFromList result = new EXECommandRemovingFromList(list as EXEASTNodeBase, item as EXEASTNodeBase);
+
+            return result;
+        }
+        // Wait for seconds command
+        public override object VisitExeCommandWait([NotNull] OALParser.ExeCommandWaitContext context)
+        {
+            if (context.ChildCount != 4) { HandleError("Malformed wait command.", context); }
+            if (!"wait for ".Equals(context.GetChild(0).GetText())) { HandleError("Malformed wait command.", context); }
+            if (!" seconds".Equals(context.GetChild(2).GetText())) { HandleError("Malformed wait command.", context); }
+            if (context.expr() == null) { HandleError("Malformed wait command.", context); }
+
+            object waitSecondsExpression = Visit(context.expr());
+
+            if (waitSecondsExpression is not EXEASTNodeBase || waitSecondsExpression == null)
+            {
+                HandleError(string.Format("Wait time in wait command is '{0}' instead of an expression.", waitSecondsExpression?.GetType().Name ?? "NULL"), context);
+            }
+
+            EXECommandWait result = new EXECommandWait(waitSecondsExpression as EXEASTNodeBase);
 
             return result;
         }
@@ -956,6 +1088,18 @@ namespace AnimationControl.OAL
             }
 
             EXEScopeParallel result = new EXEScopeParallel(threads);
+
+            return result;
+        }
+        // Pragma command
+        public override object VisitPragmaCommand([NotNull] OALParser.PragmaCommandContext context)
+        {
+            if (context.ChildCount != 2) { HandleError("Malformed pragma command.", context); }
+            if (!"#".Equals(context.GetChild(0).GetText())) { HandleError("Malformed pragma command.", context); }
+
+            string pragmaOption = context.GetChild(1).GetText();
+
+            EXECommandPragma result = new EXECommandPragma(pragmaOption);
 
             return result;
         }

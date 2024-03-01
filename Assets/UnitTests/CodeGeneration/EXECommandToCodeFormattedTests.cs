@@ -127,24 +127,6 @@ public class EXECommandToCodeFormattedTests
     }
 
     [Test]
-    public void EXECommandMulti_ToCodeFormattedConversionTest() {
-        // Arrange
-        List<EXECommand> _commandList = new List<EXECommand>();
-
-        EXECommand _command = new EXECommandMulti(_commandList);
-        VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
-
-        // Act
-        _command.Accept(visitor);
-        string _actualOutput = visitor.GetCommandStringAndResetStateNow();
-
-        // Assert
-        string _expectedOutput = "Command;\n"; // default EXECommand output
-
-        Assert.AreEqual(_expectedOutput, _actualOutput);
-    }
-
-    [Test]
     public void EXECommandQueryCreate_ToCodeFormattedConversionTest() {
         // Arrange
         EXEASTNodeAccessChain _callSource = new EXEASTNodeAccessChain();

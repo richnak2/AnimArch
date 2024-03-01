@@ -10,13 +10,11 @@ namespace OALProgramControl
     {
         private LinkedList<EXECommand> CommandsToBeCalled;
         private Stack<EXECommand> CommandsThatHaveBeenCalled;
-        private EXEExecutionStackParallel ParallelChild;
 
         public EXEExecutionStack()
         {
             this.CommandsToBeCalled = new LinkedList<EXECommand>();
             this.CommandsThatHaveBeenCalled = new Stack<EXECommand>();
-            this.ParallelChild = null;
         }
 
         public void Enqueue(EXECommand Command)
@@ -44,43 +42,19 @@ namespace OALProgramControl
 
         public bool HasNext()
         {
-            if (ParallelChild != null)
-            {
-                if (ParallelChild.HasNext())
-                {
-                    return true;
-                }
-                else
-                {
-                    ParallelChild = null;
-                }
-            }
-
             return CommandsToBeCalled.Any();
         }
 
         public EXECommand Next()
         {
-            EXECommand Result;
-
-            if (ParallelChild != null)
-            {
-                if (ParallelChild.HasNext())
-                {
-                    return ParallelChild.Next();
-                }
-                else
-                {
-                    ParallelChild = null;
-                }
-            }
+            
 
             if (!HasNext())
             {
                 return null;
             }
 
-            Result = CommandsToBeCalled.First.Value;
+            EXECommand Result = CommandsToBeCalled.First.Value;
             CommandsToBeCalled.RemoveFirst();
 
             CommandsThatHaveBeenCalled.Push(Result);
@@ -88,9 +62,12 @@ namespace OALProgramControl
             return Result;
         }
 
-        public void Fork(List<EXEScope> threads)
+        public void RemoveOwnedCommands(EXEScopeMethod owningMethod)
         {
-            this.ParallelChild = new EXEExecutionStackParallel(threads);
+            while (HasNext() && CommandsToBeCalled.First.Value.GetCurrentMethodScope() == owningMethod)
+            {
+                Next();
+            }
         }
     }
 }

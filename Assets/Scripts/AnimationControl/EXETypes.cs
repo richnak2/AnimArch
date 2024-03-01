@@ -15,6 +15,7 @@ namespace OALProgramControl
         public const String BooleanTypeName = "boolean";
         public const String StringTypeName = "string";
         public const String DateTypeName = "date";
+        public const String WildCardTypeName = "___any___";
         public const String UniqueIDTypeName = "unique_ID";
         public const String SelfReferenceName = "self";
         //public const String ReferenceTypeName = "reference";
@@ -173,10 +174,20 @@ namespace OALProgramControl
         }
         public static bool CanBeAssignedTo(string sourceType, string targetType, CDClassPool classPool)
         {
+            if (WildCardTypeName.Equals(targetType))
+            {
+                return true;
+            }
+
             return DefaultValue(targetType, classPool).AssignValueFrom(DefaultValue(sourceType, classPool)).IsSuccess;
         }
         public static bool CanBeAssignedTo(EXEValueBase sourceValue, string targetType, CDClassPool classPool)
         {
+            if (WildCardTypeName.Equals(targetType))
+            {
+                return true;
+            }
+
             return DefaultValue(targetType, classPool).AssignValueFrom(sourceValue).IsSuccess;
         }
         public static bool CanBeAssignedTo(string sourceType, EXEValueBase targetValue, CDClassPool classPool)

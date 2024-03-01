@@ -139,26 +139,6 @@ public class EXECommandToCodeHighlightedAndFormattedTests
     }
 
     [Test]
-    public void EXECommandMulti_ToCodeHighlightedAndFormattedConversionTest() {
-        // Arrange
-        List<EXECommand> _commandList = new List<EXECommand>();
-
-        EXECommand _command = new EXECommandMulti(_commandList);
-        _command.IsActive = true;
-        VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
-
-        // Act
-        visitor.ActivateHighlighting();
-        _command.Accept(visitor);
-        string _actualOutput = visitor.GetCommandStringAndResetStateNow();
-
-        // Assert
-        string _expectedOutput = "<b><color=green>Command;\n</color></b>"; // default EXECommand output
-
-        Assert.AreEqual(_expectedOutput, _actualOutput);
-    }
-
-    [Test]
     public void EXECommandQueryCreate_ToCodeHighlightedAndFormattedConversionTest() {
         // Arrange
         EXEASTNodeAccessChain _callSource = new EXEASTNodeAccessChain();

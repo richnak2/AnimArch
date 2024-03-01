@@ -15,12 +15,16 @@ public abstract class Visitor
     public abstract void VisitExeCommandAddingToList(EXECommandAddingToList command);
     public abstract void VisitExeCommandAssignment(EXECommandAssignment command);
     public abstract void VisitExeCommandCreateList(EXECommandCreateList command);
-    public abstract void VisitExeCommandMulti(EXECommandMulti command);
+    public abstract void VisitExeCommandFileAppend(EXECommandFileAppend command);
+    public abstract void VisitExeCommandFileExists(EXECommandFileExists command);
+    public abstract void VisitExeCommandFileRead(EXECommandFileRead command);
+    public abstract void VisitExeCommandFileWrite(EXECommandFileWrite command);
     public abstract void VisitExeCommandQueryCreate(EXECommandQueryCreate command);
     public abstract void VisitExeCommandQueryDelete(EXECommandQueryDelete command);
     public abstract void VisitExeCommandRead(EXECommandRead command);
     public abstract void VisitExeCommandRemovingFromList(EXECommandRemovingFromList command);
     public abstract void VisitExeCommandReturn(EXECommandReturn command);
+    public abstract void VisitExeCommandWait(EXECommandWait command);
     public abstract void VisitExeCommandWrite(EXECommandWrite command);
     public abstract void VisitExeCommand(EXECommand command);
 

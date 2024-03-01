@@ -181,12 +181,54 @@ public class VisitorPythonCode : Visitor
             visitor.commandString.Append("]");
             return false;
         });
-        
+
     }
 
-    public override void VisitExeCommandMulti(EXECommandMulti command)
+    public override void VisitExeCommandFileAppend(EXECommandFileAppend command)
     {
-        throw new Exception("Tried to convert EXECommandMulti to Python.");
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("with open(");
+            command.FileToWriteTo.Accept(visitor);
+            visitor.commandString.Append(", \"a\") as file_to_append_to:\n\tfile_to_append_to.write(");
+            command.StringToWrite.Accept(visitor);
+            visitor.commandString.Append(")");
+            return false;
+        });
+    }
+
+    public override void VisitExeCommandFileExists(EXECommandFileExists command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            command.AssignmentTarget.Accept(visitor);
+            visitor.commandString.Append(" = Path(");
+            command.FileToCheck.Accept(visitor);
+            visitor.commandString.Append(").exists()");
+            return false;
+        });
+    }
+
+    public override void VisitExeCommandFileRead(EXECommandFileRead command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("with open(");
+            command.FileToReadFrom.Accept(visitor);
+            visitor.commandString.Append(", \"r\") as file_to_read_from:\n\t");
+            command.AssignmentTarget.Accept(visitor);
+            visitor.commandString.Append(" = file_to_read_from.read()");
+            return false;
+        });
+    }
+
+    public override void VisitExeCommandFileWrite(EXECommandFileWrite command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("with open(");
+            command.FileToWriteTo.Accept(visitor);
+            visitor.commandString.Append(", \"w\") as file_to_write_to:\n\tfile_to_write_to.write(");
+            command.StringToWrite.Accept(visitor);
+            visitor.commandString.Append(")");
+            return false;
+        });
     }
 
     public override void VisitExeCommandQueryCreate(EXECommandQueryCreate command)
@@ -274,6 +316,16 @@ public class VisitorPythonCode : Visitor
             return false;
         });
         
+    }
+
+    public override void VisitExeCommandWait(EXECommandWait command)
+    {
+        HandleBasicEXECommand(command, (visitor) => {
+            visitor.commandString.Append("sleep(");
+            command.WaitTime.Accept(visitor);
+            visitor.commandString.Append(")");
+            return false;
+        });
     }
 
     public override void VisitExeCommandWrite(EXECommandWrite command)

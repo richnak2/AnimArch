@@ -35,7 +35,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(10))
                     .ExpectVariable("i", new EXEValueInt(5))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject));
+                    .ExpectVariable("self", methodScope.OwningObject);
 
             Test.PerformAssertion();
         }
@@ -67,12 +67,12 @@ namespace Assets.UnitTests.AnimationControl
             EXEValueArray expectedChildrenValue = new EXEValueArray("Class1[]");
             expectedChildrenValue.Elements = new List<EXEValueBase>();
             expectedChildrenValue.WasInitialized = true;
-            expectedChildrenValue.AppendElement(new EXEValueReference(methodScope.OwningObject), programInstance.ExecutionSpace);
+            expectedChildrenValue.AppendElement(methodScope.OwningObject, programInstance.ExecutionSpace);
             expectedChildrenValue.AppendElement(new EXEValueReference(owningClass.Instances.Last()), programInstance.ExecutionSpace);
 
             Test.Variables
                     .ExpectVariable("i", new EXEValueInt(2))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject))
+                    .ExpectVariable("self", methodScope.OwningObject)
                     .ExpectVariable("brother", new EXEValueReference(owningClass.Instances.Last()))
                     .ExpectVariable("child", new EXEValueReference(owningClass.Instances.Last()))
                     .ExpectVariable("children", expectedChildrenValue);
@@ -110,12 +110,12 @@ namespace Assets.UnitTests.AnimationControl
             EXEValueArray expectedChildrenValue = new EXEValueArray("Class1[]");
             expectedChildrenValue.Elements = new List<EXEValueBase>();
             expectedChildrenValue.WasInitialized = true;
-            expectedChildrenValue.AppendElement(new EXEValueReference(methodScope.OwningObject), programInstance.ExecutionSpace);
+            expectedChildrenValue.AppendElement(methodScope.OwningObject, programInstance.ExecutionSpace);
             expectedChildrenValue.AppendElement(new EXEValueReference(owningClass.Instances.Last()), programInstance.ExecutionSpace);
 
             Test.Variables
                     .ExpectVariable("i", new EXEValueInt(12))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject))
+                    .ExpectVariable("self", methodScope.OwningObject)
                     .ExpectVariable("brother", new EXEValueReference(owningClass.Instances.Last()))
                     .ExpectVariable("child", new EXEValueReference(owningClass.Instances.Last()))
                     .ExpectVariable("children", expectedChildrenValue);
@@ -153,13 +153,13 @@ namespace Assets.UnitTests.AnimationControl
             EXEValueArray expectedChildrenValue = new EXEValueArray("Class1[]");
             expectedChildrenValue.Elements = new List<EXEValueBase>();
             expectedChildrenValue.WasInitialized = true;
-            expectedChildrenValue.AppendElement(new EXEValueReference(methodScope.OwningObject), programInstance.ExecutionSpace);
+            expectedChildrenValue.AppendElement(methodScope.OwningObject, programInstance.ExecutionSpace);
             expectedChildrenValue.AppendElement(new EXEValueReference(owningClass.Instances.Last()), programInstance.ExecutionSpace);
 
             Test.Variables
                     .ExpectVariable("i", new EXEValueInt(12))
                     .ExpectVariable("j", new EXEValueInt(35))
-                    .ExpectVariable("self", new EXEValueReference(methodScope.OwningObject))
+                    .ExpectVariable("self", methodScope.OwningObject)
                     .ExpectVariable("brother", new EXEValueReference(owningClass.Instances.Last()))
                     .ExpectVariable("child", new EXEValueReference(owningClass.Instances.Last()))
                     .ExpectVariable("children", expectedChildrenValue);

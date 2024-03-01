@@ -25,8 +25,6 @@ namespace OALProgramControl
         }
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            this.CommandStack.Fork(this.Threads);
-
             return Success();
         }
 
