@@ -6,12 +6,12 @@ using AnimArch.Extensions;
 
 namespace Assets.Scripts.AnimationControl.BuiltIn
 {
-    public class BuiltInMethodArrayContains : BuiltInMethodArray, IReturnCollector
+    public class BuiltInMethodArrayIndexOf : BuiltInMethodArray, IReturnCollector
     {
         private EXEValueBase ReturnedValue; // Only used if .Equals method is applied
         private int CurrentlyEvaluatedIndex;
 
-        public BuiltInMethodArrayContains()
+        public BuiltInMethodArrayIndexOf()
         {
             this.ReturnedValue = null;
             this.CurrentlyEvaluatedIndex = -1;
@@ -35,7 +35,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
                 if ((this.ReturnedValue as EXEValueBool).Value)
                 {
                     EXEExecutionResult resultB = EXEExecutionResult.Success();
-                    resultB.ReturnedOutput = this.ReturnedValue;
+                    resultB.ReturnedOutput = new EXEValueInt(this.CurrentlyEvaluatedIndex);
                     return resultB;
                 }
             }
@@ -45,7 +45,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
             if (CurrentlyEvaluatedIndex >= owningObject.Elements.Count)
             {
                 EXEExecutionResult resultB = EXEExecutionResult.Success();
-                resultB.ReturnedOutput = new EXEValueBool(false);
+                resultB.ReturnedOutput = new EXEValueInt(-1);
                 return resultB;
             }
 
@@ -81,11 +81,17 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
             // Apply '==' operator.
             else
             {
-                bool contains
-                    = owningObject.Elements
-                        .Any(element => (searchedElement.IsEqualTo(element).ReturnedOutput as EXEValueBool).Value);
+                int index = -1;
+                for (int i = 0; i < owningObject.Elements.Count; i++)
+                {
+                    if ((searchedElement.IsEqualTo(owningObject.Elements[i]).ReturnedOutput as EXEValueBool).Value)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
 
-                result.ReturnedOutput = new EXEValueBool(contains);
+                result.ReturnedOutput = new EXEValueInt(index);
             }
 
             return result;

@@ -29,7 +29,7 @@ namespace OALProgramControl
             EXEValueArray evaluatedList;
             EXEValueInt evaluatedIndex;
 
-            executionResult = Index.Evaluate(currentScope, currentProgramInstance, valueContext.Clone());
+            executionResult = Index.Evaluate(currentScope, currentProgramInstance);
             if (!executionResult.IsSuccess)
             {
                 this.EvaluationState = EEvaluationState.HasBeenEvaluated;
@@ -40,7 +40,7 @@ namespace OALProgramControl
                 // Either current operand evaluation did not finish or produced an error
                 return executionResult;
             }
-
+            
             evaluatedIndex = executionResult.ReturnedOutput as EXEValueInt;
             if (evaluatedIndex == null)
             {

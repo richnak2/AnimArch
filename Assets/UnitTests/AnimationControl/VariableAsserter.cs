@@ -98,7 +98,12 @@ namespace Assets.UnitTests.AnimationControl
                         }
                         else
                         {
-
+                            Assert.AreEqual
+                            (
+                                (expectedVariable.Value as EXEValueReference).ClassInstance.UniqueID,
+                                (actualVariable.Value as EXEValueReference).ClassInstance.UniqueID,
+                                string.Format("The expected variable '{0}' references instance with ID '{1}'. It should reference '{2}'.", expectedVariable.Name, (actualVariable.Value as EXEValueReference).ClassInstance.UniqueID, (expectedVariable.Value as EXEValueReference).ClassInstance.UniqueID)
+                            );
                         }
                     }
                 );

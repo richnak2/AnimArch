@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace OALProgramControl
 {
-    public class EXEASTNodeMethodCall : EXEASTNodeBase
+    public class EXEASTNodeMethodCall : EXEASTNodeBase, IReturnCollector
     {
         public readonly string MethodName;
         public readonly List<EXEASTNodeBase> Arguments;
@@ -154,6 +154,14 @@ namespace OALProgramControl
         public override void Accept(Visitor v)
         {
             v.VisitExeASTNodeMethodCall(this);
+        }
+
+        public void CollectReturn(EXEValueBase returnedValue)
+        {
+            // This actually performs the assignment
+            this.EvaluationResult = EXEExecutionResult.Success();
+            this.EvaluationResult.ReturnedOutput = returnedValue;
+            this.ReturnCollected = true;
         }
     }
 }

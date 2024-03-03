@@ -24,12 +24,12 @@ namespace OALProgramControl
                     .ToList();
 
             EXEExecutionResult result = MethodExecution.Evaluate(OwningObject, parameters);
-            if (!HandleSingleShotASTEvaluation(result))
+            if (!HandleRepeatableASTEvaluation(result))
             {
                 return result;
             }
 
-            if (!this.CollectReturn(result.ReturnedOutput, OALProgram))
+            if (!this.SubmitReturn(result.ReturnedOutput, OALProgram))
             {
                 return Error("Failed to deliver return value to owning scope.", "XEC2044");
             }
@@ -44,7 +44,7 @@ namespace OALProgramControl
 
         protected override EXEScope CreateDuplicateScope()
         {
-            return new EXEScopeBuiltInMethod(this.MethodDefinition, this.MethodExecution);
+            return new EXEScopeBuiltInMethod(this.MethodDefinition, this.MethodExecution.Clone()); ;
         }
     }
 }

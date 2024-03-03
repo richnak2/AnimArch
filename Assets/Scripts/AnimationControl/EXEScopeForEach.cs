@@ -66,6 +66,8 @@ namespace OALProgramControl
                     this.Iterable.Accept(visitor);
                     return Error
                     (
+
+                        "XEC2029",
                         string.Format
                         (
                             "At iterable index {0}: Iterable elements are of types: {1}. {2}",
@@ -78,8 +80,7 @@ namespace OALProgramControl
                                 this.IteratorName,
                                 iteratorVariable.Value.TypeName
                             )
-                        ),
-                        "XEC2029"
+                        )
                     );
                 }
             }
