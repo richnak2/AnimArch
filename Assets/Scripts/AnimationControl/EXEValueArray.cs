@@ -295,6 +295,7 @@ namespace OALProgramControl
             DefiningClass = new CDClass("Array", null);
 
             InitializeContainsMethod();
+            InitializeIndexOfMethod();
             InitializeCountMethod();
         }
 
@@ -310,6 +311,20 @@ namespace OALProgramControl
                 }
             );
             MethodContains.ExecutableCode = new EXEScopeBuiltInMethod(MethodContains, new BuiltInMethodArrayContains());
+            DefiningClass.AddMethod(MethodContains);
+        }
+        private void InitializeIndexOfMethod()
+        {
+            CDMethod MethodContains = new CDMethod(DefiningClass, "IndexOf", EXETypes.IntegerTypeName);
+            MethodContains.Parameters.Add
+            (
+                new CDParameter()
+                {
+                    Name = "element",
+                    Type = EXETypes.WildCardTypeName
+                }
+            );
+            MethodContains.ExecutableCode = new EXEScopeBuiltInMethod(MethodContains, new BuiltInMethodArrayIndexOf());
             DefiningClass.AddMethod(MethodContains);
         }
         private void InitializeCountMethod()

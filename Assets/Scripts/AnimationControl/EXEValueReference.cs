@@ -23,9 +23,8 @@ namespace OALProgramControl
         }
         public EXEValueReference(CDClassInstance classInstance)
         {
-            this.ClassInstance = null;
-            this.TypeClass = classInstance.OwningClass;
             this.ClassInstance = classInstance;
+            this.TypeClass = classInstance.OwningClass;
         }
         public EXEValueReference(EXEValueReference original)
         {
@@ -121,6 +120,7 @@ namespace OALProgramControl
         private void CopyValues(EXEValueReference source, EXEValueReference target)
         {
             target.ClassInstance = source.ClassInstance;
+            target.TypeClass = source.TypeClass;
         }
         public override EXEExecutionResult ApplyOperator(string operation)
         {

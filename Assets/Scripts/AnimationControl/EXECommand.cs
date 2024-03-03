@@ -38,7 +38,7 @@ namespace OALProgramControl
             return Result;
         }
         protected abstract EXEExecutionResult Execute(OALProgram OALProgram);
-        public virtual bool CollectReturn(EXEValueBase returnedValue, OALProgram programInstance)
+        public virtual bool SubmitReturn(EXEValueBase returnedValue, OALProgram programInstance)
         {
             return false;
         }
@@ -110,6 +110,7 @@ namespace OALProgramControl
                 // It's a stack-like structure, so we enqueue the current command first, then the pending command.
                 this.CommandStack.Enqueue(this);
                 executionResult.PendingCommand.SetSuperScope(this.SuperScope);
+                executionResult.PendingCommand.CommandStack = this.CommandStack;
                 this.CommandStack.Enqueue(executionResult.PendingCommand);
                 return false;
             }

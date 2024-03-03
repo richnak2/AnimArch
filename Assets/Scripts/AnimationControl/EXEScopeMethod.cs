@@ -7,7 +7,7 @@ namespace OALProgramControl
     public class EXEScopeMethod : EXEScope
     {
         public CDMethod MethodDefinition;
-        public EXEASTNodeMethodCall MethodCallOrigin;
+        public IReturnCollector MethodCallOrigin;
         public EXEValueBase OwningObject;
 
         public EXEScopeMethod() : this(null)
@@ -19,7 +19,7 @@ namespace OALProgramControl
             this.MethodCallOrigin = null;
             this.OwningObject = null;
         }
-        public override bool CollectReturn(EXEValueBase returnedValue, OALProgram programInstance)
+        public override bool SubmitReturn(EXEValueBase returnedValue, OALProgram programInstance)
         {
             // Check compatibility of types
             if (!EXETypes.CanBeAssignedTo(returnedValue, this.MethodDefinition.ReturnType, programInstance.ExecutionSpace))
@@ -31,9 +31,7 @@ namespace OALProgramControl
             if (MethodCallOrigin != null)
             {
                 // This actually performs the assignment
-                this.MethodCallOrigin.EvaluationResult = Success();
-                this.MethodCallOrigin.EvaluationResult.ReturnedOutput = returnedValue;
-                this.MethodCallOrigin.ReturnCollected = true;
+                this.MethodCallOrigin.CollectReturn(returnedValue);
             }
 
             return true;
