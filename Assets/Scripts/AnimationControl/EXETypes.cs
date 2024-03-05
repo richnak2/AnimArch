@@ -10,6 +10,7 @@ namespace OALProgramControl
 {
     public class EXETypes
     {
+        //TODO add type_name change type comparison to finding the type name in the list of correct types
         public static String IntegerTypeName = "integer";
         public const String RealTypeName = "real";
         public const String BooleanTypeName = "boolean";
@@ -26,7 +27,7 @@ namespace OALProgramControl
         public const String UnitializedName = "UNDEFINED";
         public const String UniqueIDAttributeName = "ID";
 
-        private static readonly List<string> UnaryOperators = new List<string>() { "cardinality", "empty", "not_empty", "not", "NOT" };
+        private static readonly List<string> UnaryOperators = new List<string>() { "cardinality", "empty", "not_empty", "not", "NOT", "type_name"};
         private static readonly List<string> BinaryOperators = new List<string>() { "*", "/", "%", "+", "-", "<", ">", "<=", ">=", "==", "!=", "and", "AND", "or", "OR" };
 
         private static readonly List<String> IntNames = new List<string>(new String[] { "int", "integer", "long", "long int", "long integer" });
@@ -139,19 +140,19 @@ namespace OALProgramControl
 
             EXEValueBase result = null;
 
-            if (IntegerTypeName.Equals(typeName))
+            if (IntNames.Contains(typeName))
             {
                 result = new EXEValueInt("0");
             }
-            else if (RealTypeName.Equals(typeName))
+            else if (RealNames.Contains(typeName))
             {
                 result = new EXEValueReal("0.0");
             }
-            else if (StringTypeName.Equals(typeName))
+            else if (StringNames.Contains(typeName))
             {
                 result = new EXEValueString("\"\"");
             }
-            else if (BooleanTypeName.Equals(typeName))
+            else if (BoolNames.Contains(typeName))
             {
                 result = new EXEValueBool(BooleanFalse);
             }

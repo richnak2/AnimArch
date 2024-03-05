@@ -177,7 +177,14 @@ namespace OALProgramControl
                 result.ReturnedOutput = new EXEValueBool(this.Elements == null || this.Elements.Any());
                 return result;
             }
-
+            
+            else if("type_name".Equals(operation)) 
+            {
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueString(string.Format(@"""{0}""", this.TypeName));
+                return result;
+            }
+            
             return base.ApplyOperator(operation);
         }
         public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)

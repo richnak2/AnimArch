@@ -831,6 +831,99 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.PerformAssertion();
         }
+
+        [Test]
+        public void HappyDay_01_Test_Type_Name_Operator_Integer()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = type_name 10;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+            string type = new EXEValueInt(10).TypeName;
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueString(string.Format(@"""{0}""", type)))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_Test_Type_Name_Operator_String()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = type_name \"Ahoj\";";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+            string type = new EXEValueString("\"Ahoj\"").TypeName;
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueString(string.Format(@"""{0}""", type)))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_Test_Type_Name_Operator_Boolean()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = type_name TRUE;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+            string type = new EXEValueBool("TRUE").TypeName;
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueString(string.Format(@"""{0}""", type)))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
         
     }
 }
