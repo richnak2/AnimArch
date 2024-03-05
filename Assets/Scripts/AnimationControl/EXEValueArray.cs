@@ -66,7 +66,7 @@ namespace OALProgramControl
             {
                 return EXEExecutionResult.Error("Cannot get the value of an array that is null!", "XEC3005");
             }
-            if (indexValue > Elements.Count)
+            if (indexValue >= Elements.Count)
             {
                 return EXEExecutionResult.Error("Index " + indexValue + " is out of range (" + Elements.Count + ")!", "XEC3006");
             }

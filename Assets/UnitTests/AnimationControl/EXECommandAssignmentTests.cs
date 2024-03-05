@@ -394,7 +394,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
-                    .ExpectVariable("inst2", new EXEValueReference())
+                    .ExpectVariable("inst2", new EXEValueReference(owningClass2.Instances.Last()))
                     .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
@@ -443,7 +443,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
-                    .ExpectVariable("inst2", new EXEValueReference())
+                    .ExpectVariable("inst2", new EXEValueReference(owningClass2.Instances.Last()))
                     .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
@@ -508,7 +508,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(5))
-                    .ExpectVariable("inst2", new EXEValueReference())
+                    .ExpectVariable("inst2", new EXEValueReference(owningClass2.Instances.Last()))
                     .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
@@ -549,7 +549,7 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.Variables
                     .ExpectVariable("x", new EXEValueInt(30))
-                    .ExpectVariable("inst2", new EXEValueReference())
+                    .ExpectVariable("inst2", new EXEValueReference(owningClass2.Instances.Last()))
                     .ExpectVariable("self", methodScope1.OwningObject);
 
             Test.PerformAssertion();
@@ -710,7 +710,7 @@ namespace Assets.UnitTests.AnimationControl
             Test.Declare(methodScope1, _executionResult);
 
             Test.Variables
-                    .ExpectVariable("inst2", new EXEValueReference());
+                    .ExpectVariable("inst2", new EXEValueReference(owningClass2.Instances.Last()));
 
             Test.PerformAssertion();
         }

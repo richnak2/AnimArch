@@ -11,13 +11,13 @@ namespace OALProgramControl
         public override bool CanHaveMethods => true;
         public CDClass TypeClass { get; protected set; }
         public CDClassInstance ClassInstance { get; protected set; }
-        public EXEValueReference()
-        {
-            this.ClassInstance = null;
-            this.TypeClass = null;
-        }
         public EXEValueReference(CDClass typeClass)
         {
+            if (typeClass == null)
+            {
+                throw new ArgumentNullException("typeClass");
+            }
+
             this.ClassInstance = null;
             this.TypeClass = typeClass;
         }
@@ -29,6 +29,7 @@ namespace OALProgramControl
         public EXEValueReference(EXEValueReference original)
         {
             CopyValues(original, this);
+            this.TypeClass = original.TypeClass;
         }
         public override EXEValueBase DeepClone()
         {
@@ -120,7 +121,6 @@ namespace OALProgramControl
         private void CopyValues(EXEValueReference source, EXEValueReference target)
         {
             target.ClassInstance = source.ClassInstance;
-            target.TypeClass = source.TypeClass;
         }
         public override EXEExecutionResult ApplyOperator(string operation)
         {
