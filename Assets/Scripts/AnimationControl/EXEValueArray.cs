@@ -66,7 +66,7 @@ namespace OALProgramControl
             {
                 return EXEExecutionResult.Error("Cannot get the value of an array that is null!", "XEC3005");
             }
-            if (indexValue > Elements.Count)
+            if (indexValue >= Elements.Count)
             {
                 return EXEExecutionResult.Error("Index " + indexValue + " is out of range (" + Elements.Count + ")!", "XEC3006");
             }
@@ -177,7 +177,14 @@ namespace OALProgramControl
                 result.ReturnedOutput = new EXEValueBool(this.Elements == null || this.Elements.Any());
                 return result;
             }
-
+            
+            else if("type_name".Equals(operation)) 
+            {
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueString(string.Format(@"""{0}""", this.TypeName));
+                return result;
+            }
+            
             return base.ApplyOperator(operation);
         }
         public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)

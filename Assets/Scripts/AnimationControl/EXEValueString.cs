@@ -75,6 +75,13 @@ namespace OALProgramControl
                 return result;
             }
 
+            else if("type_name".Equals(operation)) 
+            {
+                result = EXEExecutionResult.Success();
+                result.ReturnedOutput = new EXEValueString(string.Format(@"""{0}""", this.TypeName));
+                return result;
+            }
+            
             return base.ApplyOperator(operation);
         }
         public override EXEExecutionResult ApplyOperator(string operation, EXEValueBase operand)
@@ -137,7 +144,7 @@ namespace OALProgramControl
                     );
                 return result;
             }
-
+           
             return base.ApplyOperator(operation, operand);
         }
 

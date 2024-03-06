@@ -70,7 +70,9 @@ namespace OALProgramControl
                         "XEC2029",
                         string.Format
                         (
-                            "At iterable index {0}: Iterable elements are of types: {1}. {2}",
+                            "Iterator of type {0} trying to iterate collection of {1}. At iterable index {2}: Iterable elements are of types: {3}. {4}",
+                            iteratorVariable.Value.TypeName,
+                            iterableValue.ElementTypeName,
                             this.CurrentIterableIndex,
                             string.Join(", ", iterableValue.Elements.Select(element => element.TypeName)),
                             ErrorMessage.IterableAndIteratorTypeMismatch

@@ -64,15 +64,24 @@ namespace OALProgramControl
                     return operandExecutionResult;
                 }
 
-                // Current operand evaluation finished and did not produce an error
-                if (this.EvaluationResult == null)
+                if (this.Operands.Count == 1)
                 {
-                    this.EvaluationResult = EXEExecutionResult.Success();
-                    this.EvaluationResult.ReturnedOutput = operandExecutionResult.ReturnedOutput;
-                    continue;
+                    operatorExecutionResult = operandExecutionResult.ReturnedOutput.ApplyOperator(this.Operation);
                 }
-
-                operatorExecutionResult = this.EvaluationResult.ReturnedOutput.ApplyOperator(this.Operation, operandExecutionResult.ReturnedOutput);
+                else
+                {
+                    // Current operand evaluation finished and did not produce an error
+                    if (this.EvaluationResult == null)
+                    {
+                        this.EvaluationResult = EXEExecutionResult.Success();
+                        this.EvaluationResult.ReturnedOutput = operandExecutionResult.ReturnedOutput;
+                        continue;
+                    }
+                    else
+                    {
+                        operatorExecutionResult = this.EvaluationResult.ReturnedOutput.ApplyOperator(this.Operation, operandExecutionResult.ReturnedOutput);
+                    }
+                }
 
                 if (!operatorExecutionResult.IsSuccess)
                 {
