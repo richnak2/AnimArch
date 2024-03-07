@@ -140,14 +140,17 @@ namespace Visualization.Animation
                 {
                     MethodInvocationInfo methodCallInfo = exeCommandCall.CallInfo;
 
-                    BarrierSize = 1;
-                    CurrentBarrierFill = 0;
+                    if (methodCallInfo != null)
+                    {
+                        BarrierSize = 1;
+                        CurrentBarrierFill = 0;
 
-                    objectDiagram.AddRelation(methodCallInfo.CallerObject, methodCallInfo.CalledObject, "ASSOCIATION");
+                        objectDiagram.AddRelation(methodCallInfo.CallerObject, methodCallInfo.CalledObject, "ASSOCIATION");
 
-                    StartCoroutine(ResolveCallFunct(methodCallInfo));
+                        StartCoroutine(ResolveCallFunct(methodCallInfo));
 
-                    yield return StartCoroutine(BarrierFillCheck());
+                        yield return StartCoroutine(BarrierFillCheck());
+                    }
                 }
 
                 UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandCall.InvokedMethod);
