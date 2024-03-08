@@ -130,7 +130,7 @@ namespace Visualization.Animation
             AnimationIsRunning = false;
         }
 
-        public IEnumerator AnimateCommand(EXECommand CurrentCommand, AnimationThread AnimationThread, bool Animate = true)
+        public IEnumerator AnimateCommand(EXECommand CurrentCommand, AnimationThread AnimationThread, bool Animate = true, bool AnimateNewObjects = true)
         {
             if (CurrentCommand.GetType() == typeof(EXECommandCall))
             {
@@ -157,16 +157,17 @@ namespace Visualization.Animation
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
             {
+                BarrierSize = 1;
+                CurrentBarrierFill = 0;
+
                 if (Animate)
                 {
-                    BarrierSize = 1;
-                    CurrentBarrierFill = 0;
-                    StartCoroutine(ResolveCreateObject(CurrentCommand));
+                    StartCoroutine(ResolveCreateObject(CurrentCommand, true, AnimateNewObjects));
                     yield return StartCoroutine(BarrierFillCheck());
                 }
                 else
                 {
-                    yield return ResolveCreateObject(CurrentCommand, false);
+                    yield return ResolveCreateObject(CurrentCommand, false, AnimateNewObjects);
                 }
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandAssignment))
@@ -242,98 +243,101 @@ namespace Visualization.Animation
             DiagramPool.Instance.ObjectDiagram.AddObject(objectInDiagram);
             return objectInDiagram;
         }
-        private IEnumerator ResolveCreateObject(EXECommand currentCommand, bool Animate = true)
+        private IEnumerator ResolveCreateObject(EXECommand currentCommand, bool Animate = true, bool AnimateNewObjects = true)
         {
-            EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
-
-            CDClassInstance callerObject = (currentCommand.GetCurrentMethodScope().OwningObject as EXEValueReference).ClassInstance;
-            CDClassInstance createdObject = createCommand.GetCreatedInstance();
-            VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
-            createCommand.Accept(visitor);
-            string targetVariableName = visitor.GetCommandStringAndResetStateNow();
-
-            var objectInDiagram = AddObjectToDiagram(targetVariableName, createdObject);
-            var relation = FindInterGraphRelation(createdObject.UniqueID);
-
-            if (!Animate)
+            if (AnimateNewObjects)
             {
-                objectDiagram.ShowObject(objectInDiagram);
-                objectDiagram.AddRelation(callerObject, createdObject, "ASSOCIATION");
-            }
-            else
-            {
-                #region Object creation animation
+                EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
 
-                int step = 0;
-                float speedPerAnim = AnimationData.Instance.AnimSpeed;
-                float timeModifier = 1f;
-                while (step < 7)
+                CDClassInstance callerObject = (currentCommand.GetCurrentMethodScope().OwningObject as EXEValueReference).ClassInstance;
+                CDClassInstance createdObject = createCommand.GetCreatedInstance();
+                VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                createCommand.Accept(visitor);
+                string targetVariableName = visitor.GetCommandStringAndResetStateNow();
+
+                var objectInDiagram = AddObjectToDiagram(targetVariableName, createdObject);
+                var relation = FindInterGraphRelation(createdObject.UniqueID);
+
+                if (!Animate)
                 {
-                    if (isPaused)
-                    {
-                        yield return new WaitForFixedUpdate();
-                    }
-                    else
-                    {
-                        switch (step)
-                        {
-                            case 0:
-                                HighlightClass(createdObject.OwningClass.Name, true);
-                                break;
-                            case 1:
-                                // yield return StartCoroutine(AnimateFillInterGraph(relation));
-                                timeModifier = 0f;
-                                break;
-                            case 3:
-                                // relation.Show();
-                                // relation.Highlight();
-                                timeModifier = 1f;
-                                break;
-                            case 2:
-                                objectDiagram.ShowObject(objectInDiagram);
-                                timeModifier = 0.5f;
-                                break;
-                            case 6:
-                                HighlightClass(createdObject.OwningClass.Name, false);
-                                relation.UnHighlight();
-                                timeModifier = 1f;
-                                break;
-                        }
+                    objectDiagram.ShowObject(objectInDiagram);
+                    objectDiagram.AddRelation(callerObject, createdObject, "ASSOCIATION");
+                }
+                else
+                {
+                    #region Object creation animation
 
-                        step++;
-                        if (standardPlayMode)
+                    int step = 0;
+                    float speedPerAnim = AnimationData.Instance.AnimSpeed;
+                    float timeModifier = 1f;
+                    while (step < 7)
+                    {
+                        if (isPaused)
                         {
-                            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
+                            yield return new WaitForFixedUpdate();
                         }
-                        //Else means we are working with step animation
                         else
                         {
-                            if (step == 1) step = 2;
-                            nextStep = false;
-                            prevStep = false;
-                            yield return new WaitUntil(() => nextStep);
-                            if (prevStep)
+                            switch (step)
                             {
-                                if (step > 0) step--;
-                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
-
-                                if (step > -1) step--;
-                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+                                case 0:
+                                    HighlightClass(createdObject.OwningClass.Name, true);
+                                    break;
+                                case 1:
+                                    // yield return StartCoroutine(AnimateFillInterGraph(relation));
+                                    timeModifier = 0f;
+                                    break;
+                                case 3:
+                                    // relation.Show();
+                                    // relation.Highlight();
+                                    timeModifier = 1f;
+                                    break;
+                                case 2:
+                                    objectDiagram.ShowObject(objectInDiagram);
+                                    timeModifier = 0.5f;
+                                    break;
+                                case 6:
+                                    HighlightClass(createdObject.OwningClass.Name, false);
+                                    relation.UnHighlight();
+                                    timeModifier = 1f;
+                                    break;
                             }
 
-                            yield return new WaitForFixedUpdate();
-                            nextStep = false;
-                            prevStep = false;
+                            step++;
+                            if (standardPlayMode)
+                            {
+                                yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
+                            }
+                            //Else means we are working with step animation
+                            else
+                            {
+                                if (step == 1) step = 2;
+                                nextStep = false;
+                                prevStep = false;
+                                yield return new WaitUntil(() => nextStep);
+                                if (prevStep)
+                                {
+                                    if (step > 0) step--;
+                                    step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+
+                                    if (step > -1) step--;
+                                    step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+                                }
+
+                                yield return new WaitForFixedUpdate();
+                                nextStep = false;
+                                prevStep = false;
+                            }
                         }
                     }
+
+                    #endregion
+
+                    objectDiagram.AddRelation(callerObject, createdObject, "ASSOCIATION");
                 }
-
-                IncrementBarrier();
-
-                #endregion
-
-                objectDiagram.AddRelation(callerObject, createdObject, "ASSOCIATION");
             }
+                
+            IncrementBarrier();
         }
 
         private IEnumerator AnimateFillInterGraph(InterGraphRelation relation)
@@ -542,6 +546,11 @@ namespace Visualization.Animation
         //Method used to Highlight/Unhighlight single class by name, depending on bool value of argument 
         public void HighlightObject(long objectUniqueId, bool isToBeHighlighted)
         {
+            if (!DiagramPool.Instance.ObjectDiagram.ObjectExists(objectUniqueId))
+            {
+                return;
+            }
+
             GameObject node = objectDiagram.FindByID(objectUniqueId).VisualObject;
             BackgroundHighlighter backgroundHighlighter = null;
             if (node != null)
@@ -610,6 +619,11 @@ namespace Visualization.Animation
 
         private void HighlightObjectMethod(string methodName, long cdClassInstanceId, bool isToBeHighlighted)
         {
+            if (!DiagramPool.Instance.ObjectDiagram.ObjectExists(cdClassInstanceId))
+            {
+                return;
+            }
+
             var textHighlighter = objectDiagram.FindByID(cdClassInstanceId).VisualObject
                 .GetComponent<ObjectTextHighlighter>();
             if (textHighlighter != null)

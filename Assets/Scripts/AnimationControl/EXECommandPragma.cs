@@ -23,6 +23,8 @@ namespace OALProgramControl
             {
                 case "noanim": CurrentThread.ToggleAnimate(false); break;
                 case "doanim": CurrentThread.ToggleAnimate(true); break;
+                case "nonewobjs": CurrentThread.ToggleNewObjectAnimate(false); break;
+                case "donewobjs": CurrentThread.ToggleNewObjectAnimate(true); break;
                 default: return EXEExecutionResult.Error(string.Format("Unknown pragma option: '{0}'.", Pragma), "XEC2049");
             }
 

@@ -29,6 +29,19 @@ namespace Visualization.Animation
             }
         }
 
+
+        private bool _animateNewObjects;
+        protected bool AnimateNewObjects
+        {
+            get
+            {
+                if (!_animateNewObjects) { return false; }
+                if (ParentThread == null) { return true; }
+
+                return ParentThread.AnimateNewObjects;
+            }
+        }
+
         public AnimationThread(EXEExecutionStack executionStack, OALProgram currentProgramInstance, Animation animation)
         {
             this.CommandStack = executionStack;
@@ -39,6 +52,7 @@ namespace Visualization.Animation
             this.ParentThread = null;
             this.ChildThreads = new List<AnimationThread>();
             this._animate = true;
+            this._animateNewObjects = true;
         }
 
         public IEnumerator Start()
@@ -76,7 +90,7 @@ namespace Visualization.Animation
                     CurrentCommand.ToggleActiveRecursiveBottomUp(false);
                 }
 
-                yield return Animation.AnimateCommand(CurrentCommand, this, Animate);
+                yield return Animation.AnimateCommand(CurrentCommand, this, Animate, AnimateNewObjects);
 
 
                 if (CurrentCommand is EXEScopeParallel)
@@ -118,6 +132,10 @@ namespace Visualization.Animation
         public void ToggleAnimate(bool animate)
         {
             this._animate = animate;
+        }
+        public void ToggleNewObjectAnimate(bool animate)
+        {
+            this._animateNewObjects = animate;
         }
     }
 }

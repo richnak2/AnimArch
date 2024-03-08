@@ -212,6 +212,11 @@ namespace AnimArch.Visualization.Diagrams
                 return;
             }
 
+            if (!ObjectExists(classInstanceStart.UniqueID) || !ObjectExists(classInstanceEnd.UniqueID))
+            {
+                return;
+            }
+
             ObjectRelation relation = new ObjectRelation(graph, classInstanceStart.UniqueID,
                 classInstanceEnd.UniqueID, relationType, "R" + Relations.Count);
             if (!ContainsObjectRelation(relation))
@@ -232,6 +237,10 @@ namespace AnimArch.Visualization.Diagrams
             }
 
             return null;
+        }
+        public bool ObjectExists(long instanceID)
+        {
+            return FindByID(instanceID) != null;
         }
 
         public bool AddAttributeValue(CDClassInstance classInstance)
