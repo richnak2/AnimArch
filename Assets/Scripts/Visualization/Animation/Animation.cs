@@ -741,8 +741,9 @@ namespace Visualization.Animation
         // Same coroutine is called for play or step mode
         public IEnumerator ResolveCallFunct(MethodInvocationInfo Call)
         {
-            
             Debug.Log(Call.ToString());
+            Call.CallerMethod.AddChildCalled(Call.CalledMethod);
+
             int step = 0;
             float speedPerAnim = AnimationData.Instance.AnimSpeed;
             float timeModifier = 1f;

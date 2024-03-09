@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Msagl.Core.DataStructures;
 using Visualization.ClassDiagram.ClassComponents;
 
 namespace OALProgramControl
@@ -21,6 +22,27 @@ namespace OALProgramControl
         }
         public void DecrementHighlightLevel() {
             HighlightLevel--;
+        }
+
+        private CDMethod ParentCaller { get; set; }
+        private Set<CDMethod> ChildrenCalled { get; }
+
+        // public void EndHighlighting() {
+        //     if (ChildrenCalled.Count > 0) {
+        //         return;
+        //     }
+
+
+        // }
+
+        public void AddChildCalled(CDMethod child) {
+            ChildrenCalled.Append(child);
+            child.ParentCaller = this;
+        }
+        public void RemoveChildCalled(CDMethod child) {
+            
+            ChildrenCalled.Remove(child);
+            child.ParentCaller = null;
         }
 
         private EXEScopeMethod _ExecutableCode;
@@ -55,6 +77,8 @@ namespace OALProgramControl
             this.Parameters = new List<CDParameter>();
             this.ExecutableCode = null;
             this.HighlightLevel = 0;
+            this.ParentCaller = null;
+            this.ChildrenCalled = new Set<CDMethod>();
         }
         public void IncementCallCount()
         {
