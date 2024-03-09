@@ -573,6 +573,16 @@ namespace Visualization.Animation
         }
         public void HighlightMethod(CDMethod method, bool isToBeHighlighted)
         {
+            if (isToBeHighlighted) {
+                method.IncrementHighlightLevel();
+            }
+            else {
+                method.DecrementHighlightLevel();
+            }
+
+            if (method.HighlightLevel > 1 || (method.HighlightLevel > 0 && !isToBeHighlighted)) {
+                return;
+            }
             HighlightMethod(method.OwningClass.Name, method.Name, isToBeHighlighted);
         }
         public void HighlightMethod(string className, string methodName, bool isToBeHighlighted)
@@ -638,6 +648,13 @@ namespace Visualization.Animation
         //Method used to Highlight/Unhighlight single edge by name, depending on bool value of argument 
         public void HighlightEdge(string relationshipName, bool isToBeHighlighted, MethodInvocationInfo Call)
         {
+            
+            if (Call != null) {
+                if (Call.CalledMethod.HighlightLevel > 1 || (Call.CalledMethod.HighlightLevel > 0 && !isToBeHighlighted)) {
+                    return;
+                }
+            }
+            
             RelationInDiagram relationInDiagram = classDiagram.FindEdgeInfo(relationshipName);
 
             GameObject edge = relationInDiagram?.VisualObject;
@@ -724,6 +741,7 @@ namespace Visualization.Animation
         // Same coroutine is called for play or step mode
         public IEnumerator ResolveCallFunct(MethodInvocationInfo Call)
         {
+            
             Debug.Log(Call.ToString());
             int step = 0;
             float speedPerAnim = AnimationData.Instance.AnimSpeed;
@@ -767,13 +785,13 @@ namespace Visualization.Animation
                         case 6:
                             HighlightClass(Call.CallerMethod.OwningClass.Name, false);
                             HighlightObjects(Call, false);
-                            HighlightMethod(Call.CallerMethod, false);
+                            //HighlightMethod(Call.CallerMethod, false);
                             HighlightInstancesMethod(Call, false);
                             HighlightClass(Call.CalledMethod.OwningClass.Name, false, Call.CalledObject.UniqueID);
                             HighlightObject(Call.CalledObject.UniqueID, false);
-                            HighlightMethod(Call.CalledMethod, false);
+                            //HighlightMethod(Call.CalledMethod, false);
                             HighlightObjectMethod(Call.CalledMethod.Name, Call.CalledObject.UniqueID, false);
-                            HighlightEdge(Call.Relation?.RelationshipName, false, Call);
+                            //HighlightEdge(Call.Relation?.RelationshipName, false, Call);
                             timeModifier = 1f;
                             break;
                     }

@@ -15,6 +15,13 @@ namespace OALProgramControl
         public List<CDParameter> Parameters { get; set; }
         public string OALCode { get; set; }
         public int CallCountInOALProgram { get; set; }
+        public int HighlightLevel { get; private set;}
+        public void IncrementHighlightLevel() {
+            HighlightLevel++;
+        }
+        public void DecrementHighlightLevel() {
+            HighlightLevel--;
+        }
 
         private EXEScopeMethod _ExecutableCode;
         public EXEScopeMethod ExecutableCode
@@ -47,6 +54,7 @@ namespace OALProgramControl
             this.OALCode = "";
             this.Parameters = new List<CDParameter>();
             this.ExecutableCode = null;
+            this.HighlightLevel = 0;
         }
         public void IncementCallCount()
         {
