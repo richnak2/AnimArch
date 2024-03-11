@@ -229,7 +229,6 @@ namespace Visualization.UI
             
             PanelMethod.SetActive(true);
             scrollableMethodListSourceCodeEdit.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
-           // SourceCodeMethodPagination.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
 
             PanelInteractiveIntro.SetActive(false);
             PanelMethod.SetActive(true);
@@ -411,12 +410,13 @@ namespace Visualization.UI
 
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
+
             scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
-            //StartingMethodPagination.FillItems(animMethods.Select(method => method.Name).ToList());
         }
 
         public void SelectPlayMethod(string startMethodName)
         {
+            
             string startClassName = Animation.Animation.Instance.startClassName;
 
             Animation.Animation.Instance.startMethodName = startMethodName;
@@ -426,7 +426,6 @@ namespace Visualization.UI
             }
 
             playIntroTexts.SetActive(true);
-            Debug.Log("Selected class: " + startClassName + "Selected Method: " + startMethodName);
             Animation.Animation.Instance.HighlightClass(startClassName, false);
         }
 

@@ -42,11 +42,11 @@ namespace Visualization.UI
             {
                 return;
             }
-
             foreach (string item in this.Items)
             {
                 GameObject button = Instantiate(MethodPrefabButton, ButtonParent);
                 button.GetComponentInChildren<TextMeshProUGUI>().text = item;
+                
                 if(this.EditMode){
                     button.GetComponent<Button>().onClick.AddListener(() => MenuManager.Instance.SelectMethod(item));
                 }else{
