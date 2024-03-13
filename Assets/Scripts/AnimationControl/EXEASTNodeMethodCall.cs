@@ -37,9 +37,9 @@ namespace OALProgramControl
             this.ReturnCollected = false;
         }
 
-        public MethodInvocatorInfo GetOriginatorData()
+        public CDMethod GetOriginatorData()
         {
-            return new MethodInvocatorInfo(Method, Method.OwningClass, null); // TODO -> find a way to get class instance
+            return Method;
         }
 
         public override EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null)

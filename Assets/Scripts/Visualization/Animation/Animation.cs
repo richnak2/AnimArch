@@ -166,17 +166,28 @@ namespace Visualization.Animation
                     if (exeScopeMethod != null)
                     {
                         CDMethod calledMethod = exeScopeMethod.MethodDefinition; 
-                        MethodInvocatorInfo calledInfo = exeScopeMethod.MethodCallOrigin.GetOriginatorData();
+                        CDMethod callerMethod = exeScopeMethod.MethodCallOrigin.GetOriginatorData();
+                        
+                        
+                        CDClass caller = calledMethod.OwningClass;
+                        CDClass called = calledMethod.OwningClass;
+                        CDRelationship relation = CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(caller.Name, called.Name);
+
+                        EXEScopeMethod  exeScopeCaller = callerMethod.ExecutableCode;
+                        CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
+                        CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
+
+
                         BarrierSize = 1;
                         CurrentBarrierFill = 0;
 
-                        StartCoroutine(ResolveReturn(calledMethod, calledInfo));
+                        StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
 
                         yield return StartCoroutine(BarrierFillCheck());
                     }
                 }
 
-                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandReturn.InvokedMethod);
+                //UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandReturn.InvokedMethod);
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
             {
@@ -851,9 +862,44 @@ namespace Visualization.Animation
             IncrementBarrier();
         }
 
-        public IEnumerator ResolveReturn(CDMethod calledMethod, MethodInvocatorInfo callerInfo)
+        public IEnumerator ResolveReturn(MethodInvocationInfo callInfo)
         {
-            
+            Debug.LogError("return metody");
+            int step = 0;
+            float speedPerAnim = AnimationData.Instance.AnimSpeed;
+            float timeModifier = 1f;
+
+
+            HighlightMethod(callInfo.CallerMethod, false);
+            HighlightMethod(callInfo.CalledMethod, false);
+            HighlightEdge(callInfo.Relation?.RelationshipName, false, callInfo);
+
+
+             if (standardPlayMode)
+                    {
+                        yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
+                    }
+                    //Else means we are working with step animation
+                    // else
+                    // {
+                    //     if (step == 2) step = 3;
+                    //     nextStep = false;
+                    //     prevStep = false;
+                    //     yield return new WaitUntil(() => nextStep);
+                    //     // if (prevStep)
+                    //     // {
+                    //     //     if (step > 0) step--;
+                    //     //     step = UnhighlightAllStepAnimation(Call, step);
+
+                    //     //     if (step > -1) step--;
+                    //     //     step = UnhighlightAllStepAnimation(Call, step);
+                    //     // }
+
+                    //     yield return new WaitForFixedUpdate();
+                    //     nextStep = false;
+                    //     prevStep = false;
+ 
+            //yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
         }
 
         private int UnhighlightAllStepAnimation(MethodInvocationInfo Call, int step)

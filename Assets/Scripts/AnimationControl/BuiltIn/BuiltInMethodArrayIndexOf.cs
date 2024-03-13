@@ -22,7 +22,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
             this.ReturnedValue = returnedValue;
         }
 
-        public MethodInvocatorInfo GetOriginatorData()
+        public CDMethod GetOriginatorData()
         {
             return null;
         }
