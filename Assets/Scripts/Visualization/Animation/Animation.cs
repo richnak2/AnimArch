@@ -167,23 +167,27 @@ namespace Visualization.Animation
                     {
                         CDMethod calledMethod = exeScopeMethod.MethodDefinition; 
                         CDMethod callerMethod = exeScopeMethod.MethodCallOrigin.GetOriginatorData();
-                        
-                        
+
                         CDClass caller = calledMethod.OwningClass;
                         CDClass called = calledMethod.OwningClass;
                         CDRelationship relation = CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(caller.Name, called.Name);
 
-                        EXEScopeMethod  exeScopeCaller = callerMethod.ExecutableCode;
-                        CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
-                        CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
+                        EXEScopeMethod exeScopeCaller = AnimationThread.CurrentMethod;
 
+                        if (exeScopeCaller != null &&
+                            exeScopeCaller.OwningObject != null && exeScopeCaller.OwningObject is EXEValueReference &&
+                            exeScopeMethod.OwningObject != null && exeScopeMethod.OwningObject is EXEValueReference)
+                        {
+                            CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
+                            CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
 
-                        BarrierSize = 1;
-                        CurrentBarrierFill = 0;
+                            BarrierSize = 1;
+                            CurrentBarrierFill = 0;
 
-                        StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
+                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
 
-                        yield return StartCoroutine(BarrierFillCheck());
+                            yield return StartCoroutine(BarrierFillCheck());
+                        }
                     }
                 }
 
@@ -621,6 +625,7 @@ namespace Visualization.Animation
         }
         public void HighlightMethod(string className, string methodName, bool isToBeHighlighted)
         {
+            // classDiagram.FindMethodByName(method.OwningClass.Name, method.Name); TODO -> move highlight level to Method and do the observer things
             var node = classDiagram.FindNode(className);
             if (node)
             {
@@ -864,42 +869,16 @@ namespace Visualization.Animation
 
         public IEnumerator ResolveReturn(MethodInvocationInfo callInfo)
         {
-            Debug.LogError("return metody");
-            int step = 0;
-            float speedPerAnim = AnimationData.Instance.AnimSpeed;
             float timeModifier = 1f;
-
 
             HighlightMethod(callInfo.CallerMethod, false);
             HighlightMethod(callInfo.CalledMethod, false);
             HighlightEdge(callInfo.Relation?.RelationshipName, false, callInfo);
 
-
-             if (standardPlayMode)
-                    {
-                        yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
-                    }
-                    //Else means we are working with step animation
-                    // else
-                    // {
-                    //     if (step == 2) step = 3;
-                    //     nextStep = false;
-                    //     prevStep = false;
-                    //     yield return new WaitUntil(() => nextStep);
-                    //     // if (prevStep)
-                    //     // {
-                    //     //     if (step > 0) step--;
-                    //     //     step = UnhighlightAllStepAnimation(Call, step);
-
-                    //     //     if (step > -1) step--;
-                    //     //     step = UnhighlightAllStepAnimation(Call, step);
-                    //     // }
-
-                    //     yield return new WaitForFixedUpdate();
-                    //     nextStep = false;
-                    //     prevStep = false;
- 
-            //yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
+            if (standardPlayMode)
+            {
+                yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
+            }
         }
 
         private int UnhighlightAllStepAnimation(MethodInvocationInfo Call, int step)

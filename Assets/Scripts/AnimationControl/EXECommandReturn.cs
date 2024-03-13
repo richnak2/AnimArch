@@ -12,22 +12,20 @@ namespace OALProgramControl
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            EXEExecutionResult returnedExpressionEvaluationResult = null;
-
             if (Expression != null)
             {
-                returnedExpressionEvaluationResult = Expression.Evaluate(this.SuperScope, OALProgram);
+                EXEExecutionResult returnedExpressionEvaluationResult = Expression.Evaluate(this.SuperScope, OALProgram);
 
                 if (!HandleRepeatableASTEvaluation(returnedExpressionEvaluationResult))
                 {
                     return returnedExpressionEvaluationResult;
                 }
-            }
 
-            EXEScopeMethod owningMethodScope = GetCurrentMethodScope();
-            if (!owningMethodScope.SubmitReturn(returnedExpressionEvaluationResult.ReturnedOutput, OALProgram))
-            {
-                return Error("Failed to deliver return value to owning scope.", "XEC2014");
+                EXEScopeMethod owningMethodScope = GetCurrentMethodScope();
+                if (!owningMethodScope.SubmitReturn(returnedExpressionEvaluationResult.ReturnedOutput, OALProgram))
+                {
+                    return Error("Failed to deliver return value to owning scope.", "XEC2014");
+                }
             }
 
             this.CommandStack.RemoveOwnedCommands(this.GetCurrentMethodScope());

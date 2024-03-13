@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Msagl.Core.DataStructures;
+using UnityEngine;
 using Visualization.ClassDiagram.ClassComponents;
 
 namespace OALProgramControl
@@ -21,6 +22,11 @@ namespace OALProgramControl
             HighlightLevel++;
         }
         public void DecrementHighlightLevel() {
+            if (HighlightLevel == 0)
+            {
+                Debug.LogError("TODO");
+                return;
+            }
             HighlightLevel--;
         }
 

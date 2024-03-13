@@ -38,6 +38,7 @@ namespace OALProgramControl
         }
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
+            AddCommandsToStack(new List<EXECommand>() {new EXECommandReturn(null)});
             AddCommandsToStack(this.Commands);
             return Success();
         }
