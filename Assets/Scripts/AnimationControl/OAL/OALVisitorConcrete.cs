@@ -148,7 +148,7 @@ namespace AnimationControl.OAL
                 HandleError(string.Format("Bracketed expression contains '{0}' instead of EXEASTNodeBase.", expression?.GetType().Name ?? "NULL"), context);
             }
 
-            (expression as EXEASTNodeBase).IncementBracketLevel();
+            (expression as EXEASTNodeBase).IncrementBracketLevel();
 
             return expression;
         }

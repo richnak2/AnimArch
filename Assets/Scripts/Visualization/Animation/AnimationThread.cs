@@ -86,7 +86,7 @@ namespace Visualization.Animation
                 {
                     CurrentCommand.ToggleActiveRecursiveBottomUp(true);
                     EXEScopeMethod CurrentMethodScope = CurrentCommand.GetCurrentMethodScope();
-                    UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(CurrentMethodScope);
+                    UI.MenuManager.Instance.RefreshSourceCodePanel(CurrentMethodScope);
                     CurrentCommand.ToggleActiveRecursiveBottomUp(false);
                 }
 
