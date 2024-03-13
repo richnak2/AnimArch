@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807396, b: 0.35872662, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5579,16 +5579,11 @@ MonoBehaviour:
     AnimationName: 
     MethodsCodes: []
   isPlaying: 0
-  playBtns:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   playIntroTexts: {fileID: 1924171652}
   animMethods: []
   isSelectingNode: 0
   scrollableMethodListSourceCodeEdit: {fileID: 883768337}
-  scrollableMethodListAnimationPlay: {fileID: 0}
+  scrollableMethodListAnimationPlay: {fileID: 387319178}
 --- !u!4 &130593517
 Transform:
   m_ObjectHideFlags: 0
@@ -9240,8 +9235,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -27.336}
-  m_SizeDelta: {x: 0, y: -40.11}
+  m_AnchoredPosition: {x: 0, y: -32.61}
+  m_SizeDelta: {x: 0, y: -50.658}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &227906120
 MonoBehaviour:
@@ -12634,8 +12629,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -36.214993}
-  m_SizeDelta: {x: 0, y: 72.43}
+  m_AnchoredPosition: {x: 0, y: -36.694}
+  m_SizeDelta: {x: 0, y: 63.388}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &317236369
 MonoBehaviour:
@@ -14698,8 +14693,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000030517578, y: 114.59066}
-  m_SizeDelta: {x: 10, y: 238}
+  m_AnchoredPosition: {x: -0.000030517578, y: 113.22}
+  m_SizeDelta: {x: 10, y: 226.44}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &387319178
 MonoBehaviour:

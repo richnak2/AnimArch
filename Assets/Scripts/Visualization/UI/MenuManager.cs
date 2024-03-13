@@ -66,7 +66,6 @@ namespace Visualization.UI
         // [SerializeField] public Button RemoveMaskingBtn;
         public Anim createdAnim;
         public bool isPlaying = false;
-        public Button[] playBtns;
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
@@ -151,11 +150,6 @@ namespace Visualization.UI
             this.interactiveData.ClassClickedInClassDiagram.Register((string value) => { ClassNameTxt.text = value; });
             this.interactiveData.CurrentMethodOwningClass.Register((string value) => { classTxt.text = value; });
             this.interactiveData.CurrentMethod.Register((string value) => { methodTxt.text = value; });
-
-            // Method button pagination
-            // SourceCodeMethodPagination = new MethodPagination(methodButtons);
-            // StartingMethodPagination = new MethodPagination(playBtns.Select(btn => btn.gameObject).ToList());
-            
         }
 
         private void Start()
@@ -339,10 +333,6 @@ namespace Visualization.UI
             isPlaying = true;
             panelAnimationPlay.SetActive(true);
             mainScreen.SetActive(false);
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             playIntroTexts.SetActive(true);
             if (Animation.Animation.Instance.standardPlayMode)
@@ -410,7 +400,7 @@ namespace Visualization.UI
 
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
-
+            
             scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
         }
 
@@ -420,10 +410,6 @@ namespace Visualization.UI
             string startClassName = Animation.Animation.Instance.startClassName;
 
             Animation.Animation.Instance.startMethodName = startMethodName;
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             playIntroTexts.SetActive(true);
             Animation.Animation.Instance.HighlightClass(startClassName, false);
@@ -432,15 +418,12 @@ namespace Visualization.UI
         public void UnshowAnimation()
         {
             Animation.Animation.Instance.UnhighlightAll();
+            scrollableMethodListAnimationPlay.ClearItems();
         }
 
         public void EndPlay()
         {
             isPlaying = false;
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             Animation.Animation.Instance.startClassName = "";
             Animation.Animation.Instance.startMethodName = "";

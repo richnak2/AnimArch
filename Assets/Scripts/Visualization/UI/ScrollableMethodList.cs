@@ -36,6 +36,16 @@ namespace Visualization.UI
             ConstructButtons();
         }
 
+        public void ClearItems()
+        {
+            foreach (GameObject button in this.Buttons)
+            {
+                Destroy(button); 
+            }
+            this.Buttons.Clear();
+            this.Items.Clear();
+        }
+
         private void ConstructButtons()
         {
             if (this.Items == null)
