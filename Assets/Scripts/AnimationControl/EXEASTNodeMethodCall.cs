@@ -37,6 +37,11 @@ namespace OALProgramControl
             this.ReturnCollected = false;
         }
 
+        public MethodInvocatorInfo GetOriginatorData()
+        {
+            return new MethodInvocatorInfo(Method, Method.OwningClass, null); // TODO -> find a way to get class instance
+        }
+
         public override EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null)
         {
             // Prevent infinite loop if there is no return in method that is supposed to return something

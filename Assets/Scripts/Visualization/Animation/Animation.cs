@@ -155,6 +155,29 @@ namespace Visualization.Animation
 
                 UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandCall.InvokedMethod);
             }
+            else if (CurrentCommand.GetType() == typeof(EXECommandReturn))
+            {
+                EXECommandReturn exeCommandReturn = (EXECommandReturn)CurrentCommand;
+
+                if (Animate)
+                {
+                    EXEScopeMethod exeScopeMethod = exeCommandReturn.GetCurrentMethodScope();
+
+                    if (exeScopeMethod != null)
+                    {
+                        CDMethod calledMethod = exeScopeMethod.MethodDefinition; 
+                        MethodInvocatorInfo calledInfo = exeScopeMethod.MethodCallOrigin.GetOriginatorData();
+                        BarrierSize = 1;
+                        CurrentBarrierFill = 0;
+
+                        StartCoroutine(ResolveReturn(calledMethod, calledInfo));
+
+                        yield return StartCoroutine(BarrierFillCheck());
+                    }
+                }
+
+                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandReturn.InvokedMethod);
+            }
             else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
             {
                 BarrierSize = 1;
@@ -826,6 +849,11 @@ namespace Visualization.Animation
             }
 
             IncrementBarrier();
+        }
+
+        public IEnumerator ResolveReturn(CDMethod calledMethod, MethodInvocatorInfo callerInfo)
+        {
+            
         }
 
         private int UnhighlightAllStepAnimation(MethodInvocationInfo Call, int step)

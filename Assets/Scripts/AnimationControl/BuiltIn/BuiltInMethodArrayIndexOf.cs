@@ -22,6 +22,11 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
             this.ReturnedValue = returnedValue;
         }
 
+        public MethodInvocatorInfo GetOriginatorData()
+        {
+            return null;
+        }
+
         protected override EXEExecutionResult Evaluate(EXEValueArray owningObject, List<EXEValueBase> parameters)
         {
             // '.Equals' has been invoked, let us collect the output
