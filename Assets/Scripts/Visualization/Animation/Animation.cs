@@ -187,7 +187,7 @@ namespace Visualization.Animation
 
                             StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
 
-                            yield return StartCoroutine(BarrierFillCheck());
+                            // yield return StartCoroutine(BarrierFillCheck());
                         }
                         else if (exeScopeCaller != null)
                         {
@@ -905,7 +905,6 @@ namespace Visualization.Animation
 
             if (standardPlayMode)
             {
-                Debug.Log(AnimationData.Instance.AnimSpeed * timeModifier);
                 yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
             }
         }
