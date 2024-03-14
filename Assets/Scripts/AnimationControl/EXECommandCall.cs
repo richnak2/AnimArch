@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using UnityEngine;
 
 namespace OALProgramControl
 {
@@ -76,6 +77,7 @@ namespace OALProgramControl
             MethodCode.SetSuperScope(null);
             MethodCode.CommandStack = this.CommandStack;
             MethodCode.MethodCallOrigin = this.MethodCall;
+            Debug.LogErrorFormat("CommandCall: {0}, {1}", MethodCode.MethodDefinition.Name, this.MethodCall.Method.Name);
             this.CommandStack.Enqueue(MethodCode);
 
             this.InvokedMethod = MethodCode;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Visualization.ClassDiagram.ClassComponents
 {
@@ -9,6 +10,18 @@ namespace Visualization.ClassDiagram.ClassComponents
         public string Id;
         public string Name;
         public string ReturnValue;
+        public int HighlightLevel { get; private set;} = 0;
+        public void IncrementHighlightLevel() {
+            HighlightLevel++;
+        }
+        public void DecrementHighlightLevel() {
+            if (HighlightLevel == 0)
+            {
+                Debug.LogError("Highlight level may not be lower than 0");
+                return;
+            }
+            HighlightLevel--;
+        }
         public List<string> arguments;
         public Method(string name, string id, string returnValue, List<string> arguments)
         {

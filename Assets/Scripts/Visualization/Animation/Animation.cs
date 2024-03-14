@@ -18,6 +18,7 @@ using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;
 using Visualization.UI;
 using AnimArch.Extensions;
+using UnityEngine.AI;
 
 namespace Visualization.Animation
 {
@@ -168,13 +169,13 @@ namespace Visualization.Animation
                         CDMethod calledMethod = exeScopeMethod.MethodDefinition; 
                         CDMethod callerMethod = exeScopeMethod.MethodCallOrigin.GetOriginatorData();
 
-                        CDClass caller = calledMethod.OwningClass;
+                        CDClass caller = callerMethod.OwningClass;
                         CDClass called = calledMethod.OwningClass;
                         CDRelationship relation = CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(caller.Name, called.Name);
-
+                        Debug.LogErrorFormat("caller: {1}, method: {3}, called: {2}, method: {4} Relation: {0}", relation == null ? "Tru" : "Fals", caller.Name, called.Name, callerMethod.Name, calledMethod.Name);
                         EXEScopeMethod exeScopeCaller = AnimationThread.CurrentMethod;
 
-                        if (exeScopeCaller != null &&
+                        if (exeScopeCaller != null && // caller != called -> TODO
                             exeScopeCaller.OwningObject != null && exeScopeCaller.OwningObject is EXEValueReference &&
                             exeScopeMethod.OwningObject != null && exeScopeMethod.OwningObject is EXEValueReference)
                         {
@@ -187,6 +188,10 @@ namespace Visualization.Animation
                             StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
 
                             yield return StartCoroutine(BarrierFillCheck());
+                        }
+                        else if (exeScopeCaller != null)
+                        {
+                            HighlightMethod(callerMethod, false);
                         }
                     }
                 }
@@ -611,21 +616,24 @@ namespace Visualization.Animation
         }
         public void HighlightMethod(CDMethod method, bool isToBeHighlighted)
         {
-            if (isToBeHighlighted) {
-                method.IncrementHighlightLevel();
-            }
-            else {
-                method.DecrementHighlightLevel();
-            }
-
-            if (method.HighlightLevel > 1 || (method.HighlightLevel > 0 && !isToBeHighlighted)) {
-                return;
-            }
             HighlightMethod(method.OwningClass.Name, method.Name, isToBeHighlighted);
         }
         public void HighlightMethod(string className, string methodName, bool isToBeHighlighted)
         {
-            // classDiagram.FindMethodByName(method.OwningClass.Name, method.Name); TODO -> move highlight level to Method and do the observer things
+            Method m = classDiagram.FindMethodByName(className, methodName);
+            Debug.LogErrorFormat("Highlight method {0}", m.HighlightLevel);
+            if (isToBeHighlighted)
+            {
+                m.IncrementHighlightLevel();
+            }
+            else
+            {
+                m.DecrementHighlightLevel();
+            }
+
+            if (m.HighlightLevel > 1 || (m.HighlightLevel > 0 && !isToBeHighlighted)) {
+                return;
+            }
             var node = classDiagram.FindNode(className);
             if (node)
             {
@@ -689,7 +697,9 @@ namespace Visualization.Animation
         {
             
             if (Call != null) {
-                if (Call.CalledMethod.HighlightLevel > 1 || (Call.CalledMethod.HighlightLevel > 0 && !isToBeHighlighted)) {
+                Method m = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
+                Debug.LogErrorFormat("Highlight edge name: {1} level: {0}", m.HighlightLevel, relationshipName);
+                if (m.HighlightLevel > 1 || (m.HighlightLevel > 0 && !isToBeHighlighted)) {
                     return;
                 }
             }
@@ -786,6 +796,20 @@ namespace Visualization.Animation
             int step = 0;
             float speedPerAnim = AnimationData.Instance.AnimSpeed;
             float timeModifier = 1f;
+
+            // HighlightClass(Call.CallerMethod.OwningClass.Name, true);
+            // HighlightObjects(Call, true);
+            // if (classDiagram.FindMethodByName(Call.CallerMethod.OwningClass.Name, Call.CallerMethod.Name).HighlightLevel == 0)
+            // {
+            //     HighlightMethod(Call.CallerMethod, true);
+            // }
+            // // HighlightInstancesMethod(Call, true);
+            // HighlightEdge(Call.Relation?.RelationshipName, true, Call);
+            // // HighlightClass(Call.CalledMethod.OwningClass.Name, true, Call.CalledObject.UniqueID);
+            // // HighlightObject(Call.CalledObject.UniqueID, true);
+            // HighlightMethod(Call.CalledMethod, true);
+            // HighlightObjectMethod(Call.CalledMethod.Name, Call.CalledObject.UniqueID, true);
+
             while (step < 7)
             {
                 if (isPaused)
@@ -801,7 +825,11 @@ namespace Visualization.Animation
                             HighlightObjects(Call, true);
                             break;
                         case 1:
-                            HighlightMethod(Call.CallerMethod, true);
+                            // HighlightMethod(Call.CallerMethod, true);
+                            if (classDiagram.FindMethodByName(Call.CallerMethod.OwningClass.Name, Call.CallerMethod.Name).HighlightLevel == 0)
+                            {
+                                HighlightMethod(Call.CallerMethod, true);
+                            }
                             HighlightInstancesMethod(Call, true);
                             break;
                         case 2:
@@ -871,12 +899,13 @@ namespace Visualization.Animation
         {
             float timeModifier = 1f;
 
-            HighlightMethod(callInfo.CallerMethod, false);
+            // HighlightMethod(callInfo.CallerMethod, false);
             HighlightMethod(callInfo.CalledMethod, false);
             HighlightEdge(callInfo.Relation?.RelationshipName, false, callInfo);
 
             if (standardPlayMode)
             {
+                Debug.Log(AnimationData.Instance.AnimSpeed * timeModifier);
                 yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
             }
         }

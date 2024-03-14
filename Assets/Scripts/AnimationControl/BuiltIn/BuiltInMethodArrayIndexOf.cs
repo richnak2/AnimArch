@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimArch.Extensions;
+using UnityEngine;
 
 namespace Assets.Scripts.AnimationControl.BuiltIn
 {
@@ -81,6 +82,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
                 }
 
                 methodCode.MethodCallOrigin = this;
+                Debug.LogErrorFormat("BuildInIndex: {0}", methodCode.MethodDefinition.Name);
                 result.PendingCommand = methodCode;
             }
             // Apply '==' operator.

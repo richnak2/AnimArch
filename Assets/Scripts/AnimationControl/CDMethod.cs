@@ -17,29 +17,8 @@ namespace OALProgramControl
         public List<CDParameter> Parameters { get; set; }
         public string OALCode { get; set; }
         public int CallCountInOALProgram { get; set; }
-        public int HighlightLevel { get; private set;}
-        public void IncrementHighlightLevel() {
-            HighlightLevel++;
-        }
-        public void DecrementHighlightLevel() {
-            if (HighlightLevel == 0)
-            {
-                Debug.LogError("TODO");
-                return;
-            }
-            HighlightLevel--;
-        }
-
         private CDMethod ParentCaller { get; set; }
         private Set<CDMethod> ChildrenCalled { get; }
-
-        // public void EndHighlighting() {
-        //     if (ChildrenCalled.Count > 0) {
-        //         return;
-        //     }
-
-
-        // }
 
         public void AddChildCalled(CDMethod child) {
             ChildrenCalled.Append(child);
@@ -82,7 +61,6 @@ namespace OALProgramControl
             this.OALCode = "";
             this.Parameters = new List<CDParameter>();
             this.ExecutableCode = null;
-            this.HighlightLevel = 0;
             this.ParentCaller = null;
             this.ChildrenCalled = new Set<CDMethod>();
         }
