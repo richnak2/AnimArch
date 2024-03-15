@@ -167,29 +167,39 @@ namespace Visualization.Animation
                     if (exeScopeMethod != null)
                     {
                         CDMethod calledMethod = exeScopeMethod.MethodDefinition; 
-                        CDMethod callerMethod = exeScopeMethod.MethodCallOrigin.GetOriginatorData();
-
-                        CDClass caller = callerMethod.OwningClass;
-                        CDClass called = calledMethod.OwningClass;
-                        CDRelationship relation = CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(caller.Name, called.Name);
-                        Debug.LogErrorFormat("caller: {1}, method: {3}, called: {2}, method: {4} Relation: {0}", relation == null ? "Tru" : "Fals", caller.Name, called.Name, callerMethod.Name, calledMethod.Name);
+                        CDMethod callerMethod = exeScopeMethod.MethodCallOrigin?.GetOriginatorData();
                         EXEScopeMethod exeScopeCaller = AnimationThread.CurrentMethod;
 
-                        if (exeScopeCaller != null && // caller != called -> TODO
+                        if
+                        (
+                            exeScopeCaller != null && callerMethod !=  null &&
                             exeScopeCaller.OwningObject != null && exeScopeCaller.OwningObject is EXEValueReference &&
-                            exeScopeMethod.OwningObject != null && exeScopeMethod.OwningObject is EXEValueReference)
+                            exeScopeMethod.OwningObject != null && exeScopeMethod.OwningObject is EXEValueReference
+                        )
                         {
+                            CDClass caller = callerMethod.OwningClass;
+                            CDClass called = calledMethod.OwningClass;
+                            CDRelationship relation = CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(caller.Name, called.Name);
+                            Debug.LogErrorFormat("caller: {0}, method: {1}, called: {2}, method: {3} Relation: {4}", caller.Name, callerMethod.Name, called.Name, calledMethod.Name, "Relation is " + (relation == null ? "NULL" : "not NULL"));
+
                             CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
                             CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
-
-                            BarrierSize = 1;
-                            CurrentBarrierFill = 0;
 
                             StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
 
                             // yield return StartCoroutine(BarrierFillCheck());
                         }
-                        else if (exeScopeCaller != null)
+                        else if
+                        (
+                            exeScopeCaller == null &&
+                            exeScopeMethod.OwningObject != null && exeScopeMethod.OwningObject is EXEValueReference
+                        )
+                        {
+                            CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
+
+                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(calledMethod, calledInstance)));
+                        }
+                        else if (exeScopeCaller != null && callerMethod != null)
                         {
                             HighlightMethod(callerMethod, false);
                         }
