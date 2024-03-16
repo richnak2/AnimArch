@@ -61,6 +61,8 @@ namespace Visualization.UI
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
         [SerializeField] public GameObject ErrorPanel;
+        [SerializeField] public GameObject NotSelectedToAnimatePanel;
+        [SerializeField] public Button HideNotSelectedPanelBtn;
 
         // [SerializeField] public TMP_Text MaskingFileLabel;
         // [SerializeField] public Button RemoveMaskingBtn;
@@ -118,6 +120,21 @@ namespace Visualization.UI
             ShowErrorBtn.GetComponent<Button>().interactable = false;
         }
 
+        public void ShowNotSelectedPanel()
+        {
+            NotSelectedToAnimatePanel.SetActive(true);
+            HideNotSelectedPanelBtn.interactable = true;
+        }
+
+        public void HideNotSelectedPanel()
+        {
+            NotSelectedToAnimatePanel.SetActive(false);
+            HideNotSelectedPanelBtn.interactable = false;
+
+            Button exitAnimationBtn = GameObject.Find("ButtonExit").GetComponent<Button>();
+            exitAnimationBtn.onClick.Invoke();
+
+        }
         class InteractiveData
         {
             public Subject<string> ClassClickedInClassDiagram;

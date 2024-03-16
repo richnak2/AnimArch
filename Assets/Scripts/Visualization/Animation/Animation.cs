@@ -89,13 +89,15 @@ namespace Visualization.Animation
             CDClass startClass = CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName);
             if (startClass == null)
             {
-                Debug.LogError(string.Format("Error, Class \"{0}\" not found", startClassName ?? "NULL"));
+                UI.MenuManager.Instance.ShowNotSelectedPanel();
+                yield break;
             }
 
             CDMethod startMethod = startClass.GetMethodByName(startMethodName);
             if (startMethod == null)
             {
-                Debug.LogError(string.Format("Error, Method \"{0}\" not found", startMethodName ?? "NULL"));
+                UI.MenuManager.Instance.ShowNotSelectedPanel();
+                yield break;
             }
 
             //najdeme startMethod z daneho class stringu a method stringu, ak startMethod.ExecutableCode je null tak return null alebo yield break
@@ -112,7 +114,6 @@ namespace Visualization.Animation
             UI.MenuManager.Instance.RefreshSourceCodePanel(MethodExecutableCode);
 
             Debug.Log("Abt to execute program");
-            int i = 0;
 
             string currentClassName = startClassName;
             string currentMethodName = startMethodName;
