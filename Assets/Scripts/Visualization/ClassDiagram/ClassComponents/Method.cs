@@ -10,18 +10,8 @@ namespace Visualization.ClassDiagram.ClassComponents
         public string Id;
         public string Name;
         public string ReturnValue;
-        public int HighlightLevel { get; private set;} = 0;
-        public void IncrementHighlightLevel() {
-            HighlightLevel++;
-        }
-        public void DecrementHighlightLevel() {
-            if (HighlightLevel == 0)
-            {
-                Debug.LogError("Highlight level may not be lower than 0");
-                return;
-            }
-            HighlightLevel--;
-        }
+        public MethodHighlightSubject HighlightSubject { get; private set;}
+        public ObjectMethodHighlightSubject HighlightSubjectObject { get; private set;}
         public List<string> arguments;
         public Method(string name, string id, string returnValue, List<string> arguments)
         {
@@ -29,6 +19,8 @@ namespace Visualization.ClassDiagram.ClassComponents
             Id = id;
             ReturnValue = returnValue;
             this.arguments = arguments;
+            this.HighlightSubject = new MethodHighlightSubject();
+            this.HighlightSubjectObject = new ObjectMethodHighlightSubject();
         }
 
         public Method(string name, string id, string returnValue)
@@ -36,8 +28,13 @@ namespace Visualization.ClassDiagram.ClassComponents
             Name = name;
             Id = id;
             ReturnValue = returnValue;
+            this.HighlightSubject = new MethodHighlightSubject();
+            this.HighlightSubjectObject = new ObjectMethodHighlightSubject();
         }
-        public Method() { }
+        public Method() { 
+            this.HighlightSubject = new MethodHighlightSubject();
+            this.HighlightSubjectObject = new ObjectMethodHighlightSubject();
+        }
 
         protected bool Equals(Method other)
         {
