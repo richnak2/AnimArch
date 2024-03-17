@@ -12,8 +12,9 @@ public class ClassHighlightSubject : HighlightSubject
     public string ClassName {set; get;}
     public MethodInvocationInfo InvocationInfo {get; set;}
 
-    public ClassHighlightSubject() {
-        ClassObserver o = new ClassObserver(this);
+    public ClassHighlightSubject()
+    {
+        ClassHighlightObserver o = new ClassHighlightObserver(this);
         this.Attach(o);
     }
 

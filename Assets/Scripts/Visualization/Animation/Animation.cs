@@ -206,7 +206,6 @@ namespace Visualization.Animation
                             m.HighlightSubject.MethodName = callerMethod.Name;
                             m.HighlightSubject.ClassName = callerMethod.OwningClass.Name;
                             m.HighlightSubject.DecrementHighlightLevel();
-                            
                         }
                     }
                 }
@@ -696,15 +695,6 @@ namespace Visualization.Animation
         //Method used to Highlight/Unhighlight single edge by name, depending on bool value of argument 
         public void HighlightEdge(string relationshipName, bool isToBeHighlighted, MethodInvocationInfo Call)
         {
-            
-            // if (Call != null) {
-            //     Method m = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
-            //    // Debug.LogErrorFormat("Highlight edge name: {1} level: {0}", m.HighlightLevel, relationshipName);
-            //     // if (m.HighlightLevel > 1 || (m.HighlightLevel > 0 && !isToBeHighlighted)) {
-            //     //     return;
-            //     // }
-            // }
-            
             RelationInDiagram relationInDiagram = classDiagram.FindEdgeInfo(relationshipName);
 
             GameObject edge = relationInDiagram?.VisualObject;
@@ -787,12 +777,37 @@ namespace Visualization.Animation
             }
         }
 
+        private void assignCallInfoToAllHighlightSubjects(Class c, Method m, MethodInvocationInfo Call, CDMethod method) {
+            c.HighlightSubject.ClassName = method.OwningClass.Name;
+            c.HighlightSubject.InvocationInfo = Call;
+            m.HighlightSubject.MethodName = method.Name;
+            m.HighlightSubject.ClassName = method.OwningClass.Name;
+            m.CalledObjectSubject.InvocationInfo = Call;
+        }
+
         // Couroutine used to Resolve one OALCall consisting of Caller class, caller method, edge, called class, called method
         // Same coroutine is called for play or step mode
         public IEnumerator ResolveCallFunct(MethodInvocationInfo Call)
         {
             Debug.Log(Call.ToString());
-            Call.CallerMethod.AddChildCalled(Call.CalledMethod);
+
+            Class caller = classDiagram.FindClassByName(Call.CallerMethod.OwningClass.Name).ParsedClass;
+            Method callerMethod = classDiagram.FindMethodByName(Call.CallerMethod.OwningClass.Name, Call.CallerMethod.Name);
+            Class called = classDiagram.FindClassByName(Call.CalledMethod.OwningClass.Name).ParsedClass;
+            Method calledMethod = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
+
+            if (caller.HighlightSubject.HighlightInt == 0) {
+                assignCallInfoToAllHighlightSubjects(caller, callerMethod, Call, Call.CallerMethod);
+            }
+            if (callerMethod.CallerObjectSubject.HighlightInt == 0) {
+                callerMethod.CallerObjectSubject.InvocationInfo = Call;
+            }
+            assignCallInfoToAllHighlightSubjects(called, calledMethod, Call, Call.CalledMethod);
+
+            if (caller.HighlightSubject.HighlightInt != callerMethod.HighlightSubject.HighlightInt) // TODO remove
+            {
+                Debug.LogErrorFormat("caller's int ({0}) does not equal caller's method's ({1})", caller.HighlightSubject.HighlightInt, callerMethod.HighlightSubject.HighlightInt);
+            }
 
             int step = 0;
             float speedPerAnim = AnimationData.Instance.AnimSpeed;
@@ -809,66 +824,35 @@ namespace Visualization.Animation
                     switch (step)
                     {
                         case 0:
-
-                            Class c = classDiagram.FindClassByName(Call.CallerMethod.OwningClass.Name).ParsedClass;
-                            c.HighlightSubjectObjects.InvocationInfo = Call;
-                            if (c.HighlightSubject.HighlightInt == 0)
+                            if (caller.HighlightSubject.HighlightInt == 0)
                             {
-                                c.HighlightSubject.ClassName = Call.CallerMethod.OwningClass.Name;
-                                c.HighlightSubject.InvocationInfo = Call;
-                                c.HighlightSubject.IncrementHighlightLevel();
+                                caller.HighlightSubject.IncrementHighlightLevel();
+                                callerMethod.HighlightSubject.IncrementHighlightLevel();
                             }
-                            c.HighlightSubjectObjects.IncrementHighlightLevel();
-                            
+                            if (callerMethod.CallerObjectSubject.HighlightInt == 0) {
+                                callerMethod.CallerObjectSubject.IncrementHighlightLevel(); // highlight caller's objects
+                            }
                             break;
                         case 1:
-
-                            Method m = classDiagram.FindMethodByName(Call.CallerMethod.OwningClass.Name, Call.CallerMethod.Name);
-                            if (m.HighlightSubject.HighlightInt == 0) {
-                                m.HighlightSubject.MethodName = Call.CallerMethod.Name;
-                                m.HighlightSubject.ClassName = Call.CallerMethod.OwningClass.Name;
-                                m.HighlightSubject.IncrementHighlightLevel();
-                            }
-                            m.HighlightSubjectObject.InvocationInfo = Call;
-                            m.HighlightSubjectObject.IncrementHighlightLevel();
-                            //HighlightInstancesMethod(Call, true);
+                            timeModifier = 0f;
                             break;
                         case 2:
-                            //yield return StartCoroutine(AnimateFill(Call)); // Lukas - commented this out to prevent unwanted extra line artifact
                             timeModifier = 0f;
                             break;
                         case 3:
+                            calledMethod.CalledObjectSubject.IncrementHighlightLevel(); // highlight called's object?
                             timeModifier = 0.5f;
                             break;
                         case 4:
-                            c = classDiagram.FindClassByName(Call.CalledMethod.OwningClass.Name).ParsedClass;
-                            c.HighlightSubject.ClassName = Call.CalledMethod.OwningClass.Name;
-                            c.HighlightSubject.InvocationInfo = Call;
-                            c.HighlightSubject.IncrementHighlightLevel();
-
-                            //HighlightObject(Call.CalledObject.UniqueID, true);
+                            called.HighlightSubject.IncrementHighlightLevel();
                             timeModifier = 1f;
                             break;
                         case 5:
-                            m = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
-                            m.HighlightSubject.MethodName = Call.CalledMethod.Name;
-                            m.HighlightSubject.ClassName = Call.CalledMethod.OwningClass.Name;
-                            m.HighlightSubject.IncrementHighlightLevel();
-
-                            //HighlightObjectMethod(Call.CalledMethod.Name, Call.CalledObject.UniqueID, true);
+                            calledMethod.HighlightSubject.IncrementHighlightLevel();
                             timeModifier = 1.25f;
                             break;
                         case 6:
-                            //HighlightClass(Call.CallerMethod.OwningClass.Name, false);
-                            //HighlightObjects(Call, false);
-                            //HighlightMethod(Call.CallerMethod, false);
-                            //HighlightInstancesMethod(Call, false);
-                            //HighlightClass(Call.CalledMethod.OwningClass.Name, false, Call.CalledObject.UniqueID);
-                            //HighlightObject(Call.CalledObject.UniqueID, false);
-                            //HighlightMethod(Call.CalledMethod, false);
-                            //HighlightObjectMethod(Call.CalledMethod.Name, Call.CalledObject.UniqueID, false);
-                            //HighlightEdge(Call.Relation?.RelationshipName, false, Call);
-                            timeModifier = 1f;
+                            timeModifier = 0f;
                             break;
                     }
 
@@ -907,23 +891,13 @@ namespace Visualization.Animation
         {
             float timeModifier = 1f;
 
-            // HighlightMethod(callInfo.CallerMethod, false);
-            Method m = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
-            m.HighlightSubject.MethodName = callInfo.CalledMethod.Name;
-            m.HighlightSubject.ClassName = callInfo.CalledMethod.OwningClass.Name;
-            m.HighlightSubject.DecrementHighlightLevel();
-            m.HighlightSubjectObject.InvocationInfo = callInfo;
-            m.HighlightSubjectObject.DecrementHighlightLevel();
+            Class called = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
+            Method calledMethod = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
 
-            Class c = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
-            c.HighlightSubject.ClassName = callInfo.CalledMethod.OwningClass.Name;
-            c.HighlightSubject.InvocationInfo = callInfo;
-            c.HighlightSubject.DecrementHighlightLevel();
-            c.HighlightSubjectObjects.InvocationInfo = callInfo;
-            c.HighlightSubjectObjects.DecrementHighlightLevel();
+            calledMethod.HighlightSubject.DecrementHighlightLevel();
+            calledMethod.CalledObjectSubject.DecrementHighlightLevel();
 
-            //HighlightMethod(callInfo.CalledMethod, false);
-            //HighlightEdge(callInfo.Relation?.RelationshipName, false, callInfo);
+            called.HighlightSubject.DecrementHighlightLevel();
 
             if (standardPlayMode)
             {

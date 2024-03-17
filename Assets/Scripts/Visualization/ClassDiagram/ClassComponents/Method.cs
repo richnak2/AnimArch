@@ -11,7 +11,8 @@ namespace Visualization.ClassDiagram.ClassComponents
         public string Name;
         public string ReturnValue;
         public MethodHighlightSubject HighlightSubject { get; private set;}
-        public ObjectMethodHighlightSubject HighlightSubjectObject { get; private set;}
+        public CallerObjectHighlightSubject CallerObjectSubject { get; private set;}
+        public CalledObjectHighlightSubject CalledObjectSubject { get; private set;}
         public List<string> arguments;
         public Method(string name, string id, string returnValue, List<string> arguments)
         {
@@ -20,7 +21,8 @@ namespace Visualization.ClassDiagram.ClassComponents
             ReturnValue = returnValue;
             this.arguments = arguments;
             this.HighlightSubject = new MethodHighlightSubject();
-            this.HighlightSubjectObject = new ObjectMethodHighlightSubject();
+            this.CalledObjectSubject = new CalledObjectHighlightSubject();
+            this.CallerObjectSubject = new CallerObjectHighlightSubject();
         }
 
         public Method(string name, string id, string returnValue)
@@ -29,11 +31,13 @@ namespace Visualization.ClassDiagram.ClassComponents
             Id = id;
             ReturnValue = returnValue;
             this.HighlightSubject = new MethodHighlightSubject();
-            this.HighlightSubjectObject = new ObjectMethodHighlightSubject();
+            this.CalledObjectSubject = new CalledObjectHighlightSubject();
+            this.CallerObjectSubject = new CallerObjectHighlightSubject();
         }
         public Method() { 
             this.HighlightSubject = new MethodHighlightSubject();
-            this.HighlightSubjectObject = new ObjectMethodHighlightSubject();
+            this.CalledObjectSubject = new CalledObjectHighlightSubject();
+            this.CallerObjectSubject = new CallerObjectHighlightSubject();
         }
 
         protected bool Equals(Method other)

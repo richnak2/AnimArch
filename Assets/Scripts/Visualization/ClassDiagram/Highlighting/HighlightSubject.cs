@@ -7,32 +7,35 @@ namespace Visualization.ClassDiagram
 
 public class HighlightSubject
 {
-    private List<Observer> Observers = new List<Observer>();
+    private List<HighlightObserver> Observers = new List<HighlightObserver>();
     public int HighlightInt{get; private set;} = 0;
 
-    public void Attach(Observer observer)
+    public void Attach(HighlightObserver observer)
     {
         this.Observers.Add(observer);
     }
 
-    public void Unregister(Observer observer)
+    public void Unregister(HighlightObserver observer)
     {
         this.Observers.Remove(observer);
     }
 
-    public void Notify() {
-        foreach (Observer observer in Observers)
+    public void Notify()
+    {
+        foreach (HighlightObserver observer in Observers)
         {
             observer.Update();
         }
     }
     
-    public void IncrementHighlightLevel() {
+    public void IncrementHighlightLevel()
+    {
         HighlightInt++;
         Notify();
     }
 
-    public void DecrementHighlightLevel() {
+    public void DecrementHighlightLevel()
+    {
         if (HighlightInt > 0)
         {
             HighlightInt--;

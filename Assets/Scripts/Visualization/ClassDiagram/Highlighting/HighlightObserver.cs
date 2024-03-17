@@ -5,11 +5,12 @@ using UnityEngine;
 namespace Visualization.ClassDiagram
 {
 
-public abstract class Observer
+public abstract class HighlightObserver
 {
     protected HighlightSubject Subject {set; get;}
 
-    public Observer(HighlightSubject subject) {
+    public HighlightObserver(HighlightSubject subject)
+    {
         this.Subject = subject;
     }
     public abstract void Update();

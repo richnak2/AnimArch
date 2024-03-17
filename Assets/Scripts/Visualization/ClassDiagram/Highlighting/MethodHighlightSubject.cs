@@ -12,12 +12,11 @@ public class MethodHighlightSubject : HighlightSubject
     public string ClassName {set; get;}
     public string MethodName {set; get;}
 
-    public MethodHighlightSubject() {
-        MethodObserver o = new MethodObserver(this);
+    public MethodHighlightSubject()
+    {
+        MethodHighlightObserver o = new MethodHighlightObserver(this);
         this.Attach(o);
     }
-
 }
-
 
 }

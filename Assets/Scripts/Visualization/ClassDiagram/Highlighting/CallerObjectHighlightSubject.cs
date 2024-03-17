@@ -7,12 +7,13 @@ using UnityEngine;
 namespace Visualization.ClassDiagram
 {
 
-public class ObjectHighlightSubject : HighlightSubject
+public class CallerObjectHighlightSubject : HighlightSubject
 {
     public MethodInvocationInfo InvocationInfo {get; set;}
 
-    public ObjectHighlightSubject() {
-        ObjectObserver o = new ObjectObserver(this);
+    public CallerObjectHighlightSubject()
+    {
+        CallerObjectHighlightObserver o = new CallerObjectHighlightObserver(this);
         this.Attach(o);
     }
 
