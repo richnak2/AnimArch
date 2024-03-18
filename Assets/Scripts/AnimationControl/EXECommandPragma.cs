@@ -25,7 +25,7 @@ namespace OALProgramControl
                 case "doanim": CurrentThread.ToggleAnimate(true); break;
                 case "nonewobjs": CurrentThread.ToggleNewObjectAnimate(false); break;
                 case "donewobjs": CurrentThread.ToggleNewObjectAnimate(true); break;
-                default: return EXEExecutionResult.Error(string.Format("Unknown pragma option: '{0}'.", Pragma), "XEC2049");
+                default: return EXEExecutionResult.Error("XEC2049", string.Format("Unknown pragma option: '{0}'.", Pragma));
             }
 
             return Success();

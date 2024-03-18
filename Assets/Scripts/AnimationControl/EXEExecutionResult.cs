@@ -43,11 +43,11 @@ namespace OALProgramControl
             return new EXEExecutionResult(true, owningCommand);
         }
 
-        public static EXEExecutionResult Error(string errorMessage, string errorCode)
+        public static EXEExecutionResult Error(string errorCode, string errorMessage)
         {
-            return Error(errorMessage, errorCode, null);
+            return Error(errorCode, errorMessage, null);
         }
-        public static EXEExecutionResult Error(string errorMessage, string errorCode, EXECommand owningCommand)
+        public static EXEExecutionResult Error(string errorCode, string errorMessage, EXECommand owningCommand)
         {
             return new EXEExecutionResult(false, errorMessage, errorCode, owningCommand);
         }

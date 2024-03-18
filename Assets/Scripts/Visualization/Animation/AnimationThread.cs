@@ -92,6 +92,11 @@ namespace Visualization.Animation
 
                 yield return Animation.AnimateCommand(CurrentCommand, this, Animate, AnimateNewObjects);
 
+                if (!ExecutionSuccess.IsSuccess)
+                {
+                    ShowError(ExecutionSuccess);
+                    break;
+                }
 
                 if (CurrentCommand is EXEScopeParallel)
                 {

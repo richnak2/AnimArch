@@ -48,7 +48,7 @@ namespace OALProgramControl
         }
         protected EXEExecutionResult Error(string errorCode, string errorMessage)
         {
-            return EXEExecutionResult.Error(errorMessage, errorCode, this);
+            return EXEExecutionResult.Error(errorCode, errorMessage, this);
         }
         public EXEScope GetSuperScope()
         {

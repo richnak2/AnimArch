@@ -8,7 +8,7 @@
 
             if (currentLoop == null)
             {
-                return Error("Tried to break out of something that is not a loop.", "XEC2019");
+                return Error("XEC2019", "Tried to break out of something that is not a loop.");
             }
 
             bool success = false;
@@ -26,7 +26,7 @@
 
             if (!success)
             {
-                return Error("Failed to find the current loop to break out from.", "XEC2020");
+                return Error("XEC2020", "Failed to find the current loop to break out from.");
             }
 
             return Success();
