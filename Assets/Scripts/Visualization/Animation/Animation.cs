@@ -180,14 +180,11 @@ namespace Visualization.Animation
                             CDClass caller = callerMethod.OwningClass;
                             CDClass called = calledMethod.OwningClass;
                             CDRelationship relation = CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(caller.Name, called.Name);
-                            Debug.LogErrorFormat("[MCO] caller: {0}, method: {1}, called: {2}, method: {3} Relation: {4}", caller.Name, callerMethod.Name, called.Name, calledMethod.Name, "Relation is " + (relation == null ? "NULL" : "not NULL"));
 
                             CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
                             CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
 
                             StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
-
-                            // yield return StartCoroutine(BarrierFillCheck());
                         }
                         else if
                         (
@@ -199,18 +196,10 @@ namespace Visualization.Animation
 
                             StartCoroutine(ResolveReturn(new MethodInvocationInfo(calledMethod, calledInstance)));
                         }
-                        else if (exeScopeCaller != null && callerMethod != null)
-                        {
-                            HighlightMethod(callerMethod, false);
-                            Method m = classDiagram.FindMethodByName(callerMethod.OwningClass.Name, callerMethod.Name);
-                            m.HighlightSubject.MethodName = callerMethod.Name;
-                            m.HighlightSubject.ClassName = callerMethod.OwningClass.Name;
-                            m.HighlightSubject.DecrementHighlightLevel();
-                        }
                     }
                 }
 
-                //UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandReturn.InvokedMethod);
+                //UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandReturn.InvokedMethod); // TODO -> should this happen?
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
             {
@@ -799,15 +788,9 @@ namespace Visualization.Animation
             if (caller.HighlightSubject.HighlightInt == 0) {
                 assignCallInfoToAllHighlightSubjects(caller, callerMethod, Call, Call.CallerMethod);
             }
-            if (callerMethod.CallerObjectSubject.HighlightInt == 0) {
-                callerMethod.CallerObjectSubject.InvocationInfo = Call;
-            }
-            assignCallInfoToAllHighlightSubjects(called, calledMethod, Call, Call.CalledMethod);
 
-            if (caller.HighlightSubject.HighlightInt != callerMethod.HighlightSubject.HighlightInt) // TODO remove
-            {
-                Debug.LogErrorFormat("caller's int ({0}) does not equal caller's method's ({1})", caller.HighlightSubject.HighlightInt, callerMethod.HighlightSubject.HighlightInt);
-            }
+            callerMethod.CallerObjectSubject.InvocationInfo = Call;
+            assignCallInfoToAllHighlightSubjects(called, calledMethod, Call, Call.CalledMethod);
 
             int step = 0;
             float speedPerAnim = AnimationData.Instance.AnimSpeed;
@@ -829,12 +812,10 @@ namespace Visualization.Animation
                                 caller.HighlightSubject.IncrementHighlightLevel();
                                 callerMethod.HighlightSubject.IncrementHighlightLevel();
                             }
-                            if (callerMethod.CallerObjectSubject.HighlightInt == 0) {
                                 callerMethod.CallerObjectSubject.IncrementHighlightLevel(); // highlight caller's objects
-                            }
                             break;
                         case 1:
-                            timeModifier = 0f;
+                            timeModifier = 0f; // TODO -> reconsider
                             break;
                         case 2:
                             timeModifier = 0f;
@@ -893,9 +874,15 @@ namespace Visualization.Animation
 
             Class called = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
             Method calledMethod = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
+            assignCallInfoToAllHighlightSubjects(called, calledMethod, callInfo, callInfo.CalledMethod);
 
             calledMethod.HighlightSubject.DecrementHighlightLevel();
             calledMethod.CalledObjectSubject.DecrementHighlightLevel();
+            if (callInfo.CallerMethod != null)
+            {
+                Method callerMethod = classDiagram.FindMethodByName(callInfo.CallerMethod.OwningClass.Name, callInfo.CallerMethod.Name);
+                callerMethod.CallerObjectSubject.DecrementHighlightLevel();
+            }
 
             called.HighlightSubject.DecrementHighlightLevel();
 

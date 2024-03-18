@@ -17,18 +17,6 @@ namespace OALProgramControl
         public List<CDParameter> Parameters { get; set; }
         public string OALCode { get; set; }
         public int CallCountInOALProgram { get; set; }
-        private CDMethod ParentCaller { get; set; }
-        private Set<CDMethod> ChildrenCalled { get; }
-
-        public void AddChildCalled(CDMethod child) {
-            ChildrenCalled.Append(child);
-            child.ParentCaller = this;
-        }
-        public void RemoveChildCalled(CDMethod child) {
-            
-            ChildrenCalled.Remove(child);
-            child.ParentCaller = null;
-        }
 
         private EXEScopeMethod _ExecutableCode;
         public EXEScopeMethod ExecutableCode
@@ -61,8 +49,6 @@ namespace OALProgramControl
             this.OALCode = "";
             this.Parameters = new List<CDParameter>();
             this.ExecutableCode = null;
-            this.ParentCaller = null;
-            this.ChildrenCalled = new Set<CDMethod>();
         }
         public void IncementCallCount()
         {

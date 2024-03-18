@@ -82,7 +82,6 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
                 }
 
                 methodCode.MethodCallOrigin = this;
-                Debug.LogErrorFormat("BuildInIndex: {0}", methodCode.MethodDefinition.Name);
                 result.PendingCommand = methodCode;
             }
             // Apply '==' operator.
