@@ -89,14 +89,18 @@ namespace Visualization.Animation
             CDClass startClass = CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName);
             if (startClass == null)
             {
-                UI.MenuManager.Instance.ShowNotSelectedPanel();
+                AnimationIsRunning = false;
+                isPaused = true;
+                UI.MenuManager.Instance.ShowNotSelectedPanel("class");
                 yield break;
             }
 
             CDMethod startMethod = startClass.GetMethodByName(startMethodName);
             if (startMethod == null)
             {
-                UI.MenuManager.Instance.ShowNotSelectedPanel();
+                AnimationIsRunning = false;
+                isPaused = true;
+                UI.MenuManager.Instance.ShowNotSelectedPanel("method");
                 yield break;
             }
 
