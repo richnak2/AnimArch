@@ -76,7 +76,7 @@ namespace OALProgramControl
                     else
                     {
                         // We want to access an existing variable, but it was not found - so let us report the error
-                        this.EvaluationResult = EXEExecutionResult.Error(ErrorMessage.VariableNotFound(this.Value, currentScope), "XEC2001");
+                        this.EvaluationResult = EXEExecutionResult.Error("XEC2001", ErrorMessage.VariableNotFound(this.Value, currentScope));
                         return this.EvaluationResult;
                     }
                 }

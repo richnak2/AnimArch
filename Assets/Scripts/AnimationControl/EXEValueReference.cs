@@ -68,7 +68,7 @@ namespace OALProgramControl
 
             if (attributeValue == null)
             {
-                return EXEExecutionResult.Error(ErrorMessage.AttributeNotFoundOnClass(attributeName, ClassInstance.OwningClass), "XEC2005");
+                return EXEExecutionResult.Error("XEC2005", ErrorMessage.AttributeNotFoundOnClass(attributeName, ClassInstance.OwningClass));
             }
 
             EXEExecutionResult executionResult = EXEExecutionResult.Success();

@@ -64,7 +64,7 @@ namespace OALProgramControl
 
             if (!EXEExecutionGlobals.AllowLossyAssignmentOfRealToInteger)
             {
-                return EXEExecutionResult.Error("Assigning real to integer is not currently allowed.", "XEC2017");
+                return EXEExecutionResult.Error("XEC2017", "Assigning real to integer is not currently allowed.");
             }
 
             EXEValueInt.CopyValues(new EXEValueInt(this.Value), assignmentTarget);

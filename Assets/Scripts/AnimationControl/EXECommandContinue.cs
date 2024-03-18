@@ -8,7 +8,7 @@
 
             if (currentLoop == null)
             {
-                return Error("Tried to continue in something that is not a loop.", "XEC2021");
+                return Error("XEC2021", "Tried to continue in something that is not a loop.");
             }
 
             bool success = false;
@@ -27,7 +27,7 @@
 
             if (!success)
             {
-                return Error("Failed to find the current loop to continue.", "XEC2022");
+                return Error("XEC2022", "Failed to find the current loop to continue.");
             }
 
             return Success();

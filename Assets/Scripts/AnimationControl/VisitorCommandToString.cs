@@ -282,13 +282,28 @@ public class VisitorCommandToString : Visitor
     {
         HandleBasicEXECommand(command, (visitor) => {
             command.AssignmentTarget.Accept(visitor);
-            visitor.commandString.Append(" = " + command.AssignmentType);
-            visitor.commandString.Append((EXETypes.StringTypeName.Equals(command.AssignmentType) ? " " : " (") + "read( ");
+            visitor.commandString.Append(" = ");
+
+            if (!EXETypes.StringTypeName.Equals(command.AssignmentType))
+            {
+
+                visitor.commandString.Append(command.AssignmentType);
+                visitor.commandString.Append("(");
+            }
+
+            visitor.commandString.Append("read(");
+
             if (command.Prompt != null)
             {
                 command.Prompt.Accept(visitor);
             }
-            visitor.commandString.Append(EXETypes.StringTypeName.Equals(command.AssignmentType) ? " )" : " ))");
+
+            visitor.commandString.Append(")");
+
+            if (!EXETypes.StringTypeName.Equals(command.AssignmentType))
+            {
+                visitor.commandString.Append(")");
+            }
             return false;
         });
     }
