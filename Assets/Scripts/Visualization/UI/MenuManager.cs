@@ -61,6 +61,10 @@ namespace Visualization.UI
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
         [SerializeField] public GameObject ErrorPanel;
+        [SerializeField] public GameObject NotSelectedToAnimatePanel;
+        [SerializeField] public GameObject notSelectedClassText;
+        [SerializeField] public GameObject notSelectedMethodText;
+        [SerializeField] public Button HideNotSelectedPanelBtn;
 
         // [SerializeField] public TMP_Text MaskingFileLabel;
         // [SerializeField] public Button RemoveMaskingBtn;
@@ -118,6 +122,32 @@ namespace Visualization.UI
             ShowErrorBtn.GetComponent<Button>().interactable = false;
         }
 
+        public void ShowNotSelectedPanel(String unselectedType)
+        {
+            NotSelectedToAnimatePanel.SetActive(true);
+            HideNotSelectedPanelBtn.interactable = true;
+
+            if(unselectedType.Equals("class"))
+            {
+                notSelectedClassText.gameObject.SetActive(true);
+                notSelectedMethodText.gameObject.SetActive(false);
+            }else if(unselectedType.Equals("method"))
+            {
+                notSelectedClassText.gameObject.SetActive(false);
+                notSelectedMethodText.gameObject.SetActive(true);
+            }
+        }
+
+        public void HideNotSelectedPanel()
+        {
+            notSelectedClassText.gameObject.SetActive(true);
+            notSelectedMethodText.gameObject.SetActive(true);
+            NotSelectedToAnimatePanel.SetActive(false);
+            HideNotSelectedPanelBtn.interactable = false;
+
+            //Button exitAnimationBtn = GameObject.Find("ButtonExit").GetComponent<Button>();
+            //exitAnimationBtn.onClick.Invoke();
+        }
         class InteractiveData
         {
             public Subject<string> ClassClickedInClassDiagram;
