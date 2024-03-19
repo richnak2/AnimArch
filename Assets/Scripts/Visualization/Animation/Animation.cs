@@ -18,7 +18,6 @@ using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;
 using Visualization.UI;
 using AnimArch.Extensions;
-// using Slider;
 
 namespace Visualization.Animation
 {
