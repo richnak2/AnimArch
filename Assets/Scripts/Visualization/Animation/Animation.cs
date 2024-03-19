@@ -18,6 +18,7 @@ using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;
 using Visualization.UI;
 using AnimArch.Extensions;
+// using Slider;
 
 namespace Visualization.Animation
 {
@@ -225,7 +226,8 @@ namespace Visualization.Animation
             {
                 if (Animate)
                 {
-                    yield return new WaitForSeconds(0.3f);
+                    float speedPerAnim = AnimationData.Instance.AnimSpeed;
+                    yield return new WaitForSeconds(0.2f * speedPerAnim);
                 }
             }
         }
