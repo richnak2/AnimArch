@@ -431,7 +431,14 @@ namespace Visualization.UI
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
             
-            scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
+            if(animMethods != null)
+            {
+                scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
+            }
+            else
+            {
+                scrollableMethodListAnimationPlay.ClearItems();
+            }
         }
 
         public void SelectPlayMethod(string startMethodName)

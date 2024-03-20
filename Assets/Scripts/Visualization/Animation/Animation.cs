@@ -44,6 +44,8 @@ namespace Visualization.Animation
         public string startClassName;
         public string startMethodName;
 
+        private const float AnimationSpeedCoefficient = 0.2f;
+
         [HideInInspector] private OALProgram currentProgramInstance = new OALProgram();
         [HideInInspector] public OALProgram CurrentProgramInstance { get { return currentProgramInstance; } }
 
@@ -226,7 +228,7 @@ namespace Visualization.Animation
                 if (Animate)
                 {
                     float speedPerAnim = AnimationData.Instance.AnimSpeed;
-                    yield return new WaitForSeconds(0.2f * speedPerAnim);
+                    yield return new WaitForSeconds(AnimationSpeedCoefficient * speedPerAnim);
                 }
             }
         }
