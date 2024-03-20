@@ -9,11 +9,11 @@ namespace OALProgramControl
 {
     public class MethodInvocationInfo
     {
-        public CDMethod CallerMethod { get; }
-        public CDMethod CalledMethod { get; }
-        public CDRelationship Relation { get; }
-        public CDClassInstance CallerObject { get; }
-        public CDClassInstance CalledObject { get; }
+        public CDMethod CallerMethod { get; private set; }
+        public CDMethod CalledMethod { get; private set; }
+        public CDRelationship Relation { get; private set; }
+        public CDClassInstance CallerObject { get; private set; }
+        public CDClassInstance CalledObject { get; private set; }
 
         public bool HasCaller
         {
@@ -23,25 +23,6 @@ namespace OALProgramControl
             }
         }
 
-        public MethodInvocationInfo(CDMethod calledMethod, CDClassInstance calledObject)
-        {
-
-            if (calledMethod == null)
-            {
-                throw new ArgumentNullException("calledMethod");
-            }
-
-            if (calledObject == null)
-            {
-                throw new ArgumentNullException("calledObject");
-            }
-
-            this.CallerMethod = null;
-            this.CalledMethod = calledMethod;
-            this.Relation = null;
-            this.CallerObject = null;
-            this.CalledObject = calledObject;
-        }
         public MethodInvocationInfo(CDMethod callerMethod, CDMethod calledMethod, CDRelationship relation, CDClassInstance callerObject, CDClassInstance calledObject)
         {
             if (callerMethod == null)
@@ -69,6 +50,42 @@ namespace OALProgramControl
             this.Relation = relation;
             this.CallerObject = callerObject;
             this.CalledObject = calledObject;
+        }
+        private MethodInvocationInfo()
+        {}
+
+        public static MethodInvocationInfo CreateCallerOnlyInstance(CDMethod callerMethod, CDClassInstance callerObject) {
+            if (callerMethod == null)
+            {
+                throw new ArgumentNullException("calledMethod");
+            }
+            if (callerObject == null)
+            {
+                throw new ArgumentNullException("calledObject");
+            }
+
+            return new MethodInvocationInfo
+            {
+                CallerMethod = callerMethod,
+                CallerObject = callerObject
+            };
+        }
+
+        public static MethodInvocationInfo CreateCalledOnlyInstance(CDMethod calledMethod, CDClassInstance calledObject) {
+            if (calledMethod == null)
+            {
+                throw new ArgumentNullException("calledMethod");
+            }
+            if (calledObject == null)
+            {
+                throw new ArgumentNullException("calledObject");
+            }
+
+            return new MethodInvocationInfo
+            {
+                CalledMethod = calledMethod,
+                CalledObject = calledObject
+            };
         }
 
         public override string ToString()

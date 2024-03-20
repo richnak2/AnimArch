@@ -124,6 +124,17 @@ namespace Visualization.Animation
 
             MethodExecutableCode.InitializeVariables(currentProgramInstance);
 
+            Class caller = classDiagram.FindClassByName(startClassName).ParsedClass;
+            Method callerMethod = classDiagram.FindMethodByName(startClassName, startMethodName);
+
+            MethodInvocationInfo Call = MethodInvocationInfo.CreateCallerOnlyInstance(startMethod, startingInstance);
+            assignCallInfoToAllHighlightSubjects(caller, callerMethod, Call, Call.CallerMethod);
+            callerMethod.CallerObjectSubject.InvocationInfo = Call;
+
+            caller.HighlightSubject.IncrementHighlightLevel();
+            callerMethod.HighlightSubject.IncrementHighlightLevel();
+            callerMethod.CallerObjectSubject.IncrementHighlightLevel();
+
             AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
             yield return StartCoroutine(SuperThread.Start());
 
@@ -194,7 +205,7 @@ namespace Visualization.Animation
                         {
                             CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
 
-                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(calledMethod, calledInstance)));
+                            StartCoroutine(ResolveReturn(MethodInvocationInfo.CreateCalledOnlyInstance(calledMethod, calledInstance)));
                         }
                     }
                 }
@@ -780,90 +791,24 @@ namespace Visualization.Animation
         {
             Debug.Log(Call.ToString());
 
-            Class caller = classDiagram.FindClassByName(Call.CallerMethod.OwningClass.Name).ParsedClass;
-            Method callerMethod = classDiagram.FindMethodByName(Call.CallerMethod.OwningClass.Name, Call.CallerMethod.Name);
             Class called = classDiagram.FindClassByName(Call.CalledMethod.OwningClass.Name).ParsedClass;
             Method calledMethod = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
 
-            if (caller.HighlightSubject.HighlightInt == 0) {
-                assignCallInfoToAllHighlightSubjects(caller, callerMethod, Call, Call.CallerMethod);
-            }
-
-            callerMethod.CallerObjectSubject.InvocationInfo = Call;
             assignCallInfoToAllHighlightSubjects(called, calledMethod, Call, Call.CalledMethod);
 
-            int step = 0;
-            float speedPerAnim = AnimationData.Instance.AnimSpeed;
-            float timeModifier = 1f;
+            // int step = 0;
+            // float speedPerAnim = AnimationData.Instance.AnimSpeed;
+            // float timeModifier = 1f;
 
-            while (step < 7)
-            {
-                if (isPaused)
-                {
-                    yield return new WaitForFixedUpdate();
-                }
-                else
-                {
-                    switch (step)
-                    {
-                        case 0:
-                            if (caller.HighlightSubject.HighlightInt == 0)
-                            {
-                                caller.HighlightSubject.IncrementHighlightLevel();
-                                callerMethod.HighlightSubject.IncrementHighlightLevel();
-                            }
-                                callerMethod.CallerObjectSubject.IncrementHighlightLevel(); // highlight caller's objects
-                            break;
-                        case 1:
-                            timeModifier = 0f; // TODO -> reconsider
-                            break;
-                        case 2:
-                            timeModifier = 0f;
-                            break;
-                        case 3:
-                            calledMethod.CalledObjectSubject.IncrementHighlightLevel(); // highlight called's object?
-                            timeModifier = 0.5f;
-                            break;
-                        case 4:
-                            called.HighlightSubject.IncrementHighlightLevel();
-                            timeModifier = 1f;
-                            break;
-                        case 5:
-                            calledMethod.HighlightSubject.IncrementHighlightLevel();
-                            timeModifier = 1.25f;
-                            break;
-                        case 6:
-                            timeModifier = 0f;
-                            break;
-                    }
+                // if (isPaused)
+                // {
+                //     yield return new WaitForFixedUpdate();
+                // }
 
-                    step++;
-                    if (standardPlayMode)
-                    {
-                        yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
-                    }
-                    //Else means we are working with step animation
-                    else
-                    {
-                        if (step == 2) step = 3;
-                        nextStep = false;
-                        prevStep = false;
-                        yield return new WaitUntil(() => nextStep);
-                        if (prevStep)
-                        {
-                            if (step > 0) step--;
-                            step = UnhighlightAllStepAnimation(Call, step);
-
-                            if (step > -1) step--;
-                            step = UnhighlightAllStepAnimation(Call, step);
-                        }
-
-                        yield return new WaitForFixedUpdate();
-                        nextStep = false;
-                        prevStep = false;
-                    }
-                }
-            }
+            calledMethod.CalledObjectSubject.IncrementHighlightLevel();
+            called.HighlightSubject.IncrementHighlightLevel();
+            calledMethod.HighlightSubject.IncrementHighlightLevel();
+            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * 1.25f);
 
             IncrementBarrier();
         }
@@ -878,11 +823,11 @@ namespace Visualization.Animation
 
             calledMethod.HighlightSubject.DecrementHighlightLevel();
             calledMethod.CalledObjectSubject.DecrementHighlightLevel();
-            if (callInfo.CallerMethod != null)
-            {
-                Method callerMethod = classDiagram.FindMethodByName(callInfo.CallerMethod.OwningClass.Name, callInfo.CallerMethod.Name);
-                callerMethod.CallerObjectSubject.DecrementHighlightLevel();
-            }
+            // if (callInfo.CallerMethod != null)
+            // {
+            //     Method callerMethod = classDiagram.FindMethodByName(callInfo.CallerMethod.OwningClass.Name, callInfo.CallerMethod.Name);
+            //     callerMethod.CallerObjectSubject.DecrementHighlightLevel();
+            // }
 
             called.HighlightSubject.DecrementHighlightLevel();
 
