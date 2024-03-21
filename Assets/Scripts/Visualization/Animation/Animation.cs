@@ -515,7 +515,7 @@ namespace Visualization.Animation
             GameObject newFiller = Instantiate(LineFill);
             Fillers.Add(newFiller);
 
-            newFiller.transform.position = classDiagram.graph.units.GetChild(0).transform.position;
+            newFiller.transform.position = edge.transform.position;
             newFiller.transform.SetParent(classDiagram.graph.units);
             newFiller.transform.localScale = new Vector3(1, 1, 1);
 
