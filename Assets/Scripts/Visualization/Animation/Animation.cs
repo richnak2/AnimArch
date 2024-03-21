@@ -484,10 +484,16 @@ namespace Visualization.Animation
             HighlightEdge(relationshipName, false, call);
         }
 
+        public void RunAnimateFill(MethodInvocationInfo Call)
+        {
+            StartCoroutine(AnimateFill(Call));
+        }
+
         public IEnumerator AnimateFill(MethodInvocationInfo Call)
         {
-            //Debug.Log("Filip, hrana: " + Call.RelationshipName); //Filip
-            GameObject edge = classDiagram.FindEdge(Call.Relation.RelationshipName);
+            RelationInDiagram relationInDiagram = classDiagram.FindEdgeInfo(Call.Relation?.RelationshipName);
+            GameObject edge = relationInDiagram?.VisualObject;
+
             if (edge != null)
             {
                 if (edge.CompareTag("Generalization") || edge.CompareTag("Implements") ||
@@ -792,19 +798,15 @@ namespace Visualization.Animation
         {
             Debug.Log(Call.ToString());
 
+            if (isPaused)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
             Class called = classDiagram.FindClassByName(Call.CalledMethod.OwningClass.Name).ParsedClass;
             Method calledMethod = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
 
             assignCallInfoToAllHighlightSubjects(called, calledMethod, Call, Call.CalledMethod);
-
-            // int step = 0;
-            // float speedPerAnim = AnimationData.Instance.AnimSpeed;
-            // float timeModifier = 1f;
-
-                // if (isPaused)
-                // {
-                //     yield return new WaitForFixedUpdate();
-                // }
 
             calledMethod.HighlightObjectSubject.IncrementHighlightLevel();
             called.HighlightSubject.IncrementHighlightLevel();

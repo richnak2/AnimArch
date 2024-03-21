@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PlasticPipe.PlasticProtocol.Messages;
 using UnityEngine;
 using Visualisation.Animation;
 
@@ -20,7 +21,8 @@ public class ClassHighlightObserver : HighlightObserver
             if (s.HighlightInt == 1)
             {
                 a.HighlightClass(s.ClassName,true);
-                a.HighlightEdge(s.InvocationInfo.Relation?.RelationshipName, true, s.InvocationInfo);
+                a.RunAnimateFill(s.InvocationInfo);
+                // a.HighlightEdge(s.InvocationInfo.Relation?.RelationshipName, true, s.InvocationInfo);
             }
             else if (s.HighlightInt == 0)
             {
