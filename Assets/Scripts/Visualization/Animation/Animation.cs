@@ -127,13 +127,14 @@ namespace Visualization.Animation
             Class caller = classDiagram.FindClassByName(startClassName).ParsedClass;
             Method callerMethod = classDiagram.FindMethodByName(startClassName, startMethodName);
 
-            MethodInvocationInfo Call = MethodInvocationInfo.CreateCallerOnlyInstance(startMethod, startingInstance);
-            assignCallInfoToAllHighlightSubjects(caller, callerMethod, Call, Call.CallerMethod);
-            callerMethod.CallerObjectSubject.InvocationInfo = Call;
+            MethodInvocationInfo CallerCall = MethodInvocationInfo.CreateCallerOnlyInstance(startMethod, startingInstance);
+            MethodInvocationInfo CalledCall = MethodInvocationInfo.CreateCalledOnlyInstance(startMethod, startingInstance);
+            assignCallInfoToAllHighlightSubjects(caller, callerMethod, CallerCall, CallerCall.CallerMethod);
+            callerMethod.HighlightObjectSubject.InvocationInfo = CalledCall;
 
             caller.HighlightSubject.IncrementHighlightLevel();
             callerMethod.HighlightSubject.IncrementHighlightLevel();
-            callerMethod.CallerObjectSubject.IncrementHighlightLevel();
+            callerMethod.HighlightObjectSubject.IncrementHighlightLevel();
 
             AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
             yield return StartCoroutine(SuperThread.Start());
@@ -782,7 +783,7 @@ namespace Visualization.Animation
             c.HighlightSubject.InvocationInfo = Call;
             m.HighlightSubject.MethodName = method.Name;
             m.HighlightSubject.ClassName = method.OwningClass.Name;
-            m.CalledObjectSubject.InvocationInfo = Call;
+            m.HighlightObjectSubject.InvocationInfo = Call;
         }
 
         // Couroutine used to Resolve one OALCall consisting of Caller class, caller method, edge, called class, called method
@@ -805,7 +806,7 @@ namespace Visualization.Animation
                 //     yield return new WaitForFixedUpdate();
                 // }
 
-            calledMethod.CalledObjectSubject.IncrementHighlightLevel();
+            calledMethod.HighlightObjectSubject.IncrementHighlightLevel();
             called.HighlightSubject.IncrementHighlightLevel();
             calledMethod.HighlightSubject.IncrementHighlightLevel();
             yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * 1.25f);
@@ -822,7 +823,7 @@ namespace Visualization.Animation
             assignCallInfoToAllHighlightSubjects(called, calledMethod, callInfo, callInfo.CalledMethod);
 
             calledMethod.HighlightSubject.DecrementHighlightLevel();
-            calledMethod.CalledObjectSubject.DecrementHighlightLevel();
+            calledMethod.HighlightObjectSubject.DecrementHighlightLevel();
             // if (callInfo.CallerMethod != null)
             // {
             //     Method callerMethod = classDiagram.FindMethodByName(callInfo.CallerMethod.OwningClass.Name, callInfo.CallerMethod.Name);

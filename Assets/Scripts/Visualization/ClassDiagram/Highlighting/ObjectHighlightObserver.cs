@@ -6,15 +6,15 @@ using Visualisation.Animation;
 namespace Visualization.ClassDiagram
 {
 
-public class CalledObjectHighlightObserver : HighlightObserver
+public class ObjectHighlightObserver : HighlightObserver
 {
-        public CalledObjectHighlightObserver(HighlightSubject subject) : base(subject)
+        public ObjectHighlightObserver(HighlightSubject subject) : base(subject)
         {
         }
 
         public override void Update()
         {
-            CalledObjectHighlightSubject s = Subject as CalledObjectHighlightSubject;
+            ObjectHighlightSubject s = Subject as ObjectHighlightSubject;
             Animation.Animation a = Animation.Animation.Instance;
 
             if (s.HighlightInt == 1)
