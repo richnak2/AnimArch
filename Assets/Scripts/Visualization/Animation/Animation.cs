@@ -516,27 +516,26 @@ namespace Visualization.Animation
             Fillers.Add(newFiller);
 
             newFiller.transform.position = edge.transform.position;
-            newFiller.transform.SetParent(classDiagram.graph.units);
+            newFiller.transform.SetParent(edge.transform);
             newFiller.transform.localScale = new Vector3(1, 1, 1);
-
-
-            GameObject newFiller1 = Instantiate(LineFill);
-            Fillers.Add(newFiller1);
-
-            newFiller1.transform.position = objectDiagram.graph.units.GetChild(0).transform.position;
-            newFiller1.transform.SetParent(objectDiagram.graph.units);
-            newFiller1.transform.localScale = new Vector3(1, 1, 1);
 
             LineFiller lf = newFiller.GetComponent<LineFiller>();
             bool flip = ownerOfRelation.Equals(calledClassName);
 
-            LineFiller lf1 = newFiller1.GetComponent<LineFiller>();
             var classInDiagram = DiagramPool.Instance.ClassDiagram.FindClassByName(Call.CallerMethod.OwningClass.Name);
             foreach (var callerInstance in classInDiagram.ClassInfo.Instances)
             {
-                var objectRelation =
-                    DiagramPool.Instance.ObjectDiagram.FindRelation(callerInstance.UniqueID, Call.CalledObject.UniqueID)
+                var objectRelation = DiagramPool.Instance.ObjectDiagram.FindRelation(callerInstance.UniqueID, Call.CalledObject.UniqueID)
                         .GameObject;
+                GameObject newFiller1 = Instantiate(LineFill);
+                Fillers.Add(newFiller1);
+
+                newFiller1.transform.position = objectRelation.transform.position;
+                newFiller1.transform.SetParent(objectRelation.transform);
+                newFiller1.transform.localScale = new Vector3(1, 1, 1);
+
+                LineFiller lf1 = newFiller1.GetComponent<LineFiller>();
+
                 lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GetComponent<UILineRenderer>().Points, false));
             }
 
