@@ -924,6 +924,227 @@ namespace Assets.UnitTests.AnimationControl
 
             Test.PerformAssertion();
         }
-        
+
+        [Test]
+        public void HappyDay_01_Test_Equality_Operator_01_IntAttributeValue_01_IntLiteral()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "self.Attr1 = 0;\nx = self.Attr1 == 0;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDAttribute attribute1 = new CDAttribute("Attr1", EXETypes.IntegerTypeName);
+            owningClass.AddAttribute(attribute1);
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+            string type = new EXEValueInt(10).TypeName;
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueBool(true))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_AssignToLocalVariable_01_NotOperator_01_False()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = not FALSE;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueBool(true))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_AssignToLocalVariable_01_NotOperator_02_True()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = not TRUE;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueBool(false))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_AssignToLocalVariable_01_NotOperator_01_False_CamelCase()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = not False;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueBool(true))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_AssignToLocalVariable_01_NotOperator_02_True_CamelCase()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = not True;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueBool(false))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_AssignToLocalVariable_01_NotOperator_01_False_FromVariable()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = FALSE; y = not x;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueBool(false))
+                    .ExpectVariable("y", new EXEValueBool(true))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
+        public void HappyDay_01_AssignToLocalVariable_01_NotOperator_02_True_FromVariable()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = TRUE; y = not x;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueBool(true))
+                    .ExpectVariable("y", new EXEValueBool(false))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
     }
 }
