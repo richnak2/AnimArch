@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 
 namespace Visualization.Animation
@@ -13,9 +15,9 @@ namespace Visualization.Animation
         List<Vector2> addedPoints;
         float step = 0.5f;
         int index = 1;
-        public IEnumerator AnimateFlow(Vector2[] targetPoints, bool shouldFlip)
+        public IEnumerator AnimateFlow(Vector2[] targetPoints, bool shouldFlip, Func<bool> highlightEdgeCallback = null)
         {
-            float animSpeed = AnimationData.Instance.AnimSpeed / 20;
+            float animSpeed = AnimationData.Instance.AnimSpeed / (5*targetPoints.Length);
             this.targetPoints = targetPoints;
             if (targetPoints != null && targetPoints.Length >= 2)
             {
@@ -69,7 +71,7 @@ namespace Visualization.Animation
                         }
                         else
                         {
-                            StartCoroutine(DelayedDestroy(AnimationData.Instance.AnimSpeed * 2.75f));
+                            // StartCoroutine(DelayedDestroy(AnimationData.Instance.AnimSpeed * 2.75f));
                             //Flip back
                             if (shouldFlip)
                             {
@@ -91,25 +93,28 @@ namespace Visualization.Animation
                 {
                     yield return new WaitForFixedUpdate();
                 }
-                else
-                {
-                    Destroy(this.gameObject);
-                }
+                // else
+                // {
+                //     Destroy(this.gameObject);
+                // }
 
             }
 
-
-        }
-        IEnumerator DelayedDestroy(float delayedTime)
-        {
-            float time = 0;
-            while (time < delayedTime && Animation.Instance.AnimationIsRunning)
+            if (highlightEdgeCallback != null)
             {
-                time += Time.deltaTime;
-                yield return new WaitForFixedUpdate();
+                highlightEdgeCallback();
             }
-            Destroy(this.gameObject);
         }
+        // IEnumerator DelayedDestroy(float delayedTime)
+        // {
+        //     float time = 0;
+        //     while (time < delayedTime && Animation.Instance.AnimationIsRunning)
+        //     {
+        //         time += Time.deltaTime;
+        //         yield return new WaitForFixedUpdate();
+        //     }
+        //     Destroy(this.gameObject);
+        // }
 
     }
 }

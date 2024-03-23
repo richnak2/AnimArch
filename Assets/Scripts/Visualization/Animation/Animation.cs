@@ -522,24 +522,28 @@ namespace Visualization.Animation
             LineFiller lf = newFiller.GetComponent<LineFiller>();
             bool flip = ownerOfRelation.Equals(calledClassName);
 
-            var classInDiagram = DiagramPool.Instance.ClassDiagram.FindClassByName(Call.CallerMethod.OwningClass.Name);
-            foreach (var callerInstance in classInDiagram.ClassInfo.Instances)
-            {
-                var objectRelation = DiagramPool.Instance.ObjectDiagram.FindRelation(callerInstance.UniqueID, Call.CalledObject.UniqueID)
-                        .GameObject;
-                GameObject newFiller1 = Instantiate(LineFill);
-                Fillers.Add(newFiller1);
+            var callerInstance = Call.CallerObject;
+            var objectRelation = DiagramPool.Instance.ObjectDiagram.FindRelation(callerInstance.UniqueID, Call.CalledObject.UniqueID);
+            GameObject newFiller1 = Instantiate(LineFill);
+            Fillers.Add(newFiller1);
 
-                newFiller1.transform.position = objectRelation.transform.position;
-                newFiller1.transform.SetParent(objectRelation.transform);
-                newFiller1.transform.localScale = new Vector3(1, 1, 1);
+            newFiller1.transform.position = objectRelation.GameObject.transform.position;
+            newFiller1.transform.SetParent(objectRelation.GameObject.transform);
+            newFiller1.transform.localScale = new Vector3(1, 1, 1);
 
-                LineFiller lf1 = newFiller1.GetComponent<LineFiller>();
+            LineFiller lf1 = newFiller1.GetComponent<LineFiller>();
 
-                lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GetComponent<UILineRenderer>().Points, false));
-            }
+            Func<bool> highlightEdgeCallback = () => {
+                Debug.LogErrorFormat("Destoring edge, {0}, {1}", Call.CallerMethod.OwningClass.Name, Call.CalledMethod.OwningClass.Name);
+                HighlightEdge(Call.Relation.RelationshipName, true, Call);
+                Destroy(lf1.gameObject);
+                Destroy(lf.gameObject);
+                return false;
+            };
 
-            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip));
+            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false));
+
+            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip, highlightEdgeCallback));
         }
 
         private GameObject classGameObject(string className)
@@ -818,6 +822,11 @@ namespace Visualization.Animation
         public IEnumerator ResolveReturn(MethodInvocationInfo callInfo)
         {
             float timeModifier = 1f;
+
+            if (isPaused)
+            {
+                yield return new WaitForFixedUpdate();
+            }
 
             Class called = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
             Method calledMethod = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
