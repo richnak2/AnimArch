@@ -33,6 +33,7 @@ namespace Visualization.Animation
         public GameObject LineFill;
         private int BarrierSize;
         private int CurrentBarrierFill;
+        public HighlightEdgeState edgeHighlighter;
         [HideInInspector] public bool AnimationIsRunning = false;
         [HideInInspector] public bool isPaused = false;
         [HideInInspector] public bool standardPlayMode = true;
@@ -55,10 +56,12 @@ namespace Visualization.Animation
             standardPlayMode = true;
         }
 
+
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
         public IEnumerator Animate()
         {
 
+            edgeHighlighter = HighlightImmediate.GetInstance();
             Fillers = new List<GameObject>();
 
             if (AnimationIsRunning)
@@ -533,15 +536,16 @@ namespace Visualization.Animation
 
             LineFiller lf1 = newFiller1.GetComponent<LineFiller>();
 
+
             Func<bool> highlightEdgeCallback = () => {
-                Debug.LogErrorFormat("Destoring edge, {0}, {1}", Call.CallerMethod.OwningClass.Name, Call.CalledMethod.OwningClass.Name);
                 HighlightEdge(Call.Relation.RelationshipName, true, Call);
                 Destroy(lf1.gameObject);
                 Destroy(lf.gameObject);
                 return false;
             };
 
-            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false));
+
+            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false, null, true));
 
             return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip, highlightEdgeCallback));
         }

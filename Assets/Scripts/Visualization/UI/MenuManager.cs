@@ -57,6 +57,7 @@ namespace Visualization.UI
         [SerializeField] private TMP_Text classTxt;
         [SerializeField] private TMP_Text methodTxt;
         [SerializeField] private Toggle hideRelToggle;
+        [SerializeField] private Toggle fillEdgeToggle;
         [SerializeField] public GameObject PanelChooseAnimationStartMethod;
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
@@ -457,6 +458,18 @@ namespace Visualization.UI
                 {
                     interGraphRelation.Hide();
                 }
+            }
+        }
+        public void ChangeEdgeHighlighting()
+        {
+            Animation.Animation a = Animation.Animation.Instance;
+            if (fillEdgeToggle.isOn)
+            {
+               a.edgeHighlighter = HighlightFill.GetInstance(); 
+            }
+            else
+            {
+                a.edgeHighlighter = HighlightImmediate.GetInstance(); 
             }
         }
 

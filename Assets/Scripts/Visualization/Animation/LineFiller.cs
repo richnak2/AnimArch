@@ -15,9 +15,12 @@ namespace Visualization.Animation
         List<Vector2> addedPoints;
         float step = 0.5f;
         int index = 1;
-        public IEnumerator AnimateFlow(Vector2[] targetPoints, bool shouldFlip, Func<bool> highlightEdgeCallback = null)
+        public IEnumerator AnimateFlow(Vector2[] targetPoints, bool shouldFlip, Func<bool> highlightEdgeCallback = null, bool isObjectDiagram = false)
         {
             float animSpeed = AnimationData.Instance.AnimSpeed / (5*targetPoints.Length);
+            if (isObjectDiagram) {
+                animSpeed /= 5;
+            }
             this.targetPoints = targetPoints;
             if (targetPoints != null && targetPoints.Length >= 2)
             {

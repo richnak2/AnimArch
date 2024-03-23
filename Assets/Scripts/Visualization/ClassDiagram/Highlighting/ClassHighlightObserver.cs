@@ -21,8 +21,7 @@ public class ClassHighlightObserver : HighlightObserver
             if (s.HighlightInt == 1)
             {
                 a.HighlightClass(s.ClassName,true);
-                a.RunAnimateFill(s.InvocationInfo);
-                // a.HighlightEdge(s.InvocationInfo.Relation?.RelationshipName, true, s.InvocationInfo);
+                a.edgeHighlighter.Highligt(s.InvocationInfo);
             }
             else if (s.HighlightInt == 0)
             {
