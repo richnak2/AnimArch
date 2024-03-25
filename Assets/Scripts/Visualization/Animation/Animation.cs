@@ -54,14 +54,13 @@ namespace Visualization.Animation
             classDiagram = GameObject.Find("ClassDiagram").GetComponent<ClassDiagram.Diagrams.ClassDiagram>();
             objectDiagram = GameObject.Find("ObjectDiagram").GetComponent<ObjectDiagram>();
             standardPlayMode = true;
+            edgeHighlighter = HighlightImmediate.GetInstance();
         }
 
 
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
         public IEnumerator Animate()
         {
-
-            edgeHighlighter = HighlightImmediate.GetInstance();
             Fillers = new List<GameObject>();
 
             if (AnimationIsRunning)
