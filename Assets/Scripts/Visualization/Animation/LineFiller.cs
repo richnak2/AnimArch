@@ -38,8 +38,8 @@ namespace Visualization.Animation
             }
             while (addedPoints.Count < targetPoints.Length)
             {
-                if (!Animation.Instance.isPaused)
-                {
+                // if (!Animation.Instance.isPaused)
+                // {
                     if (Mathf.Abs(nextPoint.x - currentPosition.x) > step / animSpeed)
                     {
                         if (nextPoint.x > currentPosition.x)
@@ -101,7 +101,7 @@ namespace Visualization.Animation
                 //     Destroy(this.gameObject);
                 // }
 
-            }
+            // }
 
             if (highlightEdgeCallback != null)
             {

@@ -147,6 +147,8 @@ namespace Visualization.Animation
 
         public IEnumerator AnimateCommand(EXECommand CurrentCommand, AnimationThread AnimationThread, bool Animate = true, bool AnimateNewObjects = true)
         {
+            yield return new WaitUntil(() => !isPaused);
+
             if (CurrentCommand.GetType() == typeof(EXECommandCall))
             {
                 EXECommandCall exeCommandCall = (EXECommandCall)CurrentCommand;
@@ -334,7 +336,7 @@ namespace Visualization.Animation
                     {
                         if (isPaused)
                         {
-                            yield return new WaitForFixedUpdate();
+                            // yield return new WaitForFixedUpdate();
                         }
                         else
                         {
@@ -804,10 +806,7 @@ namespace Visualization.Animation
         {
             Debug.Log(Call.ToString());
 
-            if (isPaused)
-            {
-                yield return new WaitForFixedUpdate();
-            }
+            // yield return new WaitUntil(() => !isPaused);
 
             Class called = classDiagram.FindClassByName(Call.CalledMethod.OwningClass.Name).ParsedClass;
             Method calledMethod = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
@@ -826,10 +825,7 @@ namespace Visualization.Animation
         {
             float timeModifier = 1f;
 
-            if (isPaused)
-            {
-                yield return new WaitForFixedUpdate();
-            }
+            // yield return new WaitUntil(() => !isPaused);
 
             Class called = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
             Method calledMethod = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
@@ -837,11 +833,6 @@ namespace Visualization.Animation
 
             calledMethod.HighlightSubject.DecrementHighlightLevel();
             calledMethod.HighlightObjectSubject.DecrementHighlightLevel();
-            // if (callInfo.CallerMethod != null)
-            // {
-            //     Method callerMethod = classDiagram.FindMethodByName(callInfo.CallerMethod.OwningClass.Name, callInfo.CallerMethod.Name);
-            //     callerMethod.CallerObjectSubject.DecrementHighlightLevel();
-            // }
 
             called.HighlightSubject.DecrementHighlightLevel();
 
