@@ -41,6 +41,38 @@ namespace Assets.UnitTests.AnimationControl
         }
 
         [Test]
+        public void HappyDay_01_While_InfiniteLoop()
+        {
+            CommandTest Test = new CommandTest();
+
+            // Arrange
+            string _methodSourceCode = "x = 0;\r\ni = 0;\r\nwhile(True)\r\nif(i > 20)\r\nbreak;\r\nend if;\r\nx = x + 2;\r\ni = i + 1;\r\nend while;";
+
+            OALProgram programInstance = new OALProgram();
+            CDClass owningClass = programInstance.ExecutionSpace.SpawnClass("Class1");
+
+            CDMethod owningMethod = new CDMethod(owningClass, "Method1", "");
+            owningClass.AddMethod(owningMethod);
+
+            // Act
+            EXEScopeMethod methodScope = OALParserBridge.Parse(_methodSourceCode);
+            owningMethod.ExecutableCode = methodScope;
+            programInstance.SuperScope = methodScope;
+
+            EXEExecutionResult _executionResult = PerformExecution(programInstance);
+
+            // Assert
+            Test.Declare(methodScope, _executionResult);
+
+            Test.Variables
+                    .ExpectVariable("x", new EXEValueInt(42))
+                    .ExpectVariable("i", new EXEValueInt(21))
+                    .ExpectVariable("self", methodScope.OwningObject);
+
+            Test.PerformAssertion();
+        }
+
+        [Test]
         public void HappyDay_02_Foreach_01_CheckByLocalVariable()
         {
             CommandTest Test = new CommandTest();
