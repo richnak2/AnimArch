@@ -17,7 +17,7 @@ namespace OALProgramControl
 
             if (startNewIteration)
             {
-                OALProgram.CommandStack.Enqueue(this);
+                this.CommandStack.Enqueue(this);
                 AddCommandsToStack
                 (
                     this.Commands.Select(command => command.CreateClone()).ToList()
