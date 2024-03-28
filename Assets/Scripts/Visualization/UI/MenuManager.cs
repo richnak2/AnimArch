@@ -462,8 +462,8 @@ namespace Visualization.UI
 
         public static void SetAnimationButtonsActive(bool active)
         {
-            GameObject.Find("AnimationSettings/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
-            GameObject.Find("AnimationSettings/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
+            GameObject.Find("AnimationPanel/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
+            GameObject.Find("AnimationPanel/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("GenerateToPythonButton").GetComponentInChildren<Button>().interactable = active;
             // generatePythonBtn.interactable = true; // TODO co je lepsie? takto by sme museli zmenit funciu zo static
         }
