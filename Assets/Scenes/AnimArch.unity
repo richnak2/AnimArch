@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5445,6 +5445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _persistent: 0
   animationScreen: {fileID: 325653980}
+  mainScreen: {fileID: 1739363760}
   saveBtn: {fileID: 1940610321}
   diagramPathLabel: {fileID: 448004524}
   diagramRemoveBtn: {fileID: 448004523}
@@ -5473,8 +5474,6 @@ MonoBehaviour:
   PanelInteractiveCompleted: {fileID: 890052688}
   speedSlider: {fileID: 373190888}
   speedLabel: {fileID: 641744831}
-  mainScreen: {fileID: 1739363760}
-  creationPanel: {fileID: 1936282282}
   panelAnimationPlay: {fileID: 311521134}
   panelStepMode: {fileID: 1515429650}
   panelPlayMode: {fileID: 1006772527}
@@ -5482,6 +5481,7 @@ MonoBehaviour:
   classTxt: {fileID: 278422380}
   methodTxt: {fileID: 1565561562}
   hideRelToggle: {fileID: 1656337406}
+  fillEdgeToggle: {fileID: 1792262357}
   PanelChooseAnimationStartMethod: {fileID: 2098846307}
   PanelSourceCodeAnimation: {fileID: 1792605010}
   ShowErrorBtn: {fileID: 874806523}
@@ -61540,7 +61540,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &1792262358
 MonoBehaviour:
   m_ObjectHideFlags: 0

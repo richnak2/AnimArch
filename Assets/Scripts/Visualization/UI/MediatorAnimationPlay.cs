@@ -57,7 +57,7 @@ namespace Visualization.UI
         }
         private void OnToggleValueChanged()
         {
-            // TODOm toggle button
+            MenuManager.Instance.ChangeEdgeHighlighting();
         }
         private void OnShowErrorBtnClicked()
         {

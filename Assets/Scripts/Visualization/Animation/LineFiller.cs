@@ -38,86 +38,67 @@ namespace Visualization.Animation
             }
             while (addedPoints.Count < targetPoints.Length)
             {
-                // if (!Animation.Instance.isPaused)
-                // {
-                    if (Mathf.Abs(nextPoint.x - currentPosition.x) > step / animSpeed)
+                if (Mathf.Abs(nextPoint.x - currentPosition.x) > step / animSpeed)
+                {
+                    if (nextPoint.x > currentPosition.x)
                     {
-                        if (nextPoint.x > currentPosition.x)
-                        {
-                            currentPosition += new Vector2(step / animSpeed, 0);
-                        }
-                        else if (nextPoint.x < currentPosition.x)
-                        {
-                            currentPosition -= new Vector2(step / animSpeed, 0);
-                        }
+                        currentPosition += new Vector2(step / animSpeed, 0);
                     }
-                    if (Mathf.Abs(nextPoint.y - currentPosition.y) > step / animSpeed)
+                    else if (nextPoint.x < currentPosition.x)
                     {
-                        if (nextPoint.y > currentPosition.y)
-                        {
-                            currentPosition += new Vector2(0, step / animSpeed);
-                        }
-                        else if (nextPoint.y < currentPosition.y)
-                        {
-                            currentPosition -= new Vector2(0, step / animSpeed);
-                        }
+                        currentPosition -= new Vector2(step / animSpeed, 0);
                     }
-                    if (Mathf.Abs(nextPoint.y - currentPosition.y) < step / animSpeed && Mathf.Abs(nextPoint.x - currentPosition.x) < step / animSpeed)
+                }
+                if (Mathf.Abs(nextPoint.y - currentPosition.y) > step / animSpeed)
+                {
+                    if (nextPoint.y > currentPosition.y)
                     {
-                        currentPosition = nextPoint;
-                        addedPoints.Add(currentPosition);
-                        Points = addedPoints.ToArray();
-                        if (addedPoints.Count < targetPoints.Length)
-                        {
-                            index++;
-                            nextPoint = targetPoints[index];
-                        }
-                        else
-                        {
-                            // StartCoroutine(DelayedDestroy(AnimationData.Instance.AnimSpeed * 2.75f));
-                            //Flip back
-                            if (shouldFlip)
-                            {
-                                System.Array.Reverse(targetPoints);
-                            }
-                            break;
-                        }
+                        currentPosition += new Vector2(0, step / animSpeed);
+                    }
+                    else if (nextPoint.y < currentPosition.y)
+                    {
+                        currentPosition -= new Vector2(0, step / animSpeed);
+                    }
+                }
+                if (Mathf.Abs(nextPoint.y - currentPosition.y) < step / animSpeed && Mathf.Abs(nextPoint.x - currentPosition.x) < step / animSpeed)
+                {
+                    currentPosition = nextPoint;
+                    addedPoints.Add(currentPosition);
+                    Points = addedPoints.ToArray();
+                    if (addedPoints.Count < targetPoints.Length)
+                    {
+                        index++;
+                        nextPoint = targetPoints[index];
                     }
                     else
                     {
-                        List<Vector2> tempPoints = new List<Vector2>(addedPoints);
-                        tempPoints.Add(currentPosition);
-                        Points = tempPoints.ToArray();
-
+                        //Flip back
+                        if (shouldFlip)
+                        {
+                            System.Array.Reverse(targetPoints);
+                        }
+                        break;
                     }
+                }
+                else
+                {
+                    List<Vector2> tempPoints = new List<Vector2>(addedPoints);
+                    tempPoints.Add(currentPosition);
+                    Points = tempPoints.ToArray();
 
                 }
+
                 if (Animation.Instance.AnimationIsRunning)
                 {
                     yield return new WaitForFixedUpdate();
                 }
-                // else
-                // {
-                //     Destroy(this.gameObject);
-                // }
 
-            // }
+            }
 
             if (highlightEdgeCallback != null)
             {
                 highlightEdgeCallback();
             }
         }
-        // IEnumerator DelayedDestroy(float delayedTime)
-        // {
-        //     float time = 0;
-        //     while (time < delayedTime && Animation.Instance.AnimationIsRunning)
-        //     {
-        //         time += Time.deltaTime;
-        //         yield return new WaitForFixedUpdate();
-        //     }
-        //     Destroy(this.gameObject);
-        // }
-
     }
 }
