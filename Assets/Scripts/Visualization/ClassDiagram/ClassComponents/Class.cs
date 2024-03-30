@@ -19,9 +19,11 @@ namespace Visualization.ClassDiagram.ClassComponents
         public string Type;
         public List<Attribute> Attributes;
         public List<Method> Methods;
+        public ClassHighlightSubject HighlightSubject { get; private set;}
 
         public Class()
         {
+            this.HighlightSubject = new ClassHighlightSubject();
         }
 
         public Class(string id)
@@ -31,6 +33,8 @@ namespace Visualization.ClassDiagram.ClassComponents
             Type = "uml:Class";
             Attributes = new List<Attribute>();
             Methods = new List<Method>();
+            this.HighlightSubject = new ClassHighlightSubject();
+
         }
         public Class(string name, string id)
         {
@@ -39,6 +43,7 @@ namespace Visualization.ClassDiagram.ClassComponents
             Type = "uml:Class";
             Attributes = new List<Attribute>();
             Methods = new List<Method>();
+            this.HighlightSubject = new ClassHighlightSubject();
         }
 
         protected bool Equals(Class other)

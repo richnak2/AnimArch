@@ -6,5 +6,6 @@ namespace OALProgramControl
     public interface IReturnCollector
     {
         void CollectReturn(EXEValueBase returnedValue);
+        CDMethod GetOriginatorData();
     }
 }

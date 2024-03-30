@@ -698,6 +698,10 @@ MonoBehaviour:
     m_Localized: "Skry\u0165 n\xE1stroje anim\xE1cie"
     m_Metadata:
       m_Items: []
+  - m_Id: 51780238778462208
+    m_Localized: "Postupn\xE9 vyplnenie hr\xE1n"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
