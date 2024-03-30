@@ -140,7 +140,7 @@ namespace Visualization.Animation
             callerMethod.HighlightObjectSubject.IncrementHighlightLevel();
 
             consoleScheduler = new ConsoleScheduler();
-            StartCoroutine(consoleScheduler.Start());
+            StartCoroutine(consoleScheduler.Start(this));
 
             AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
             yield return StartCoroutine(SuperThread.Start());
