@@ -51,7 +51,6 @@ namespace Visualization.Animation
             }
         }
 
-
         public AnimationThread(EXEExecutionStack executionStack, OALProgram currentProgramInstance, Animation animation)
         {
             this.CommandStack = executionStack;

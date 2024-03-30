@@ -40,8 +40,7 @@ namespace Visualization.Animation
         public bool nextStep = false;
         private bool prevStep = false;
         private List<GameObject> Fillers;
-        [HideInInspector]
-        public string ReadValue;
+        private ConsoleScheduler consoleScheduler;
 
         public string startClassName;
         public string startMethodName;
@@ -140,9 +139,13 @@ namespace Visualization.Animation
             callerMethod.HighlightSubject.IncrementHighlightLevel();
             callerMethod.HighlightObjectSubject.IncrementHighlightLevel();
 
+            consoleScheduler = new ConsoleScheduler();
+            StartCoroutine(consoleScheduler.Start());
+
             AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
             yield return StartCoroutine(SuperThread.Start());
 
+            consoleScheduler.Terminate();
             Debug.Log("Over");
             AnimationIsRunning = false;
         }
@@ -257,15 +260,22 @@ namespace Visualization.Animation
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandRead)))
             {
-                BarrierSize = 1;
-                CurrentBarrierFill = 0;
+                EXECommandRead readCommand = CurrentCommand as EXECommandRead;
 
-                ConsolePanel.Instance.ActivateInputField();
+                ConsoleRequestRead consoleRequest = new ConsoleRequestRead(readCommand.PromptText);
+                consoleScheduler.Enqueue(consoleRequest);
+                yield return new WaitUntil(() => consoleRequest.Done);
 
-                yield return StartCoroutine(BarrierFillCheck());
+                AnimationThread.ExecutionSuccess
+                    = ((EXECommandRead)CurrentCommand).AssignReadValue(consoleRequest.ReadValue, CurrentProgramInstance);
+            }
+            else if (CurrentCommand.GetType().Equals(typeof(EXECommandWrite)))
+            {
+                EXECommandWrite readCommand = CurrentCommand as EXECommandWrite;
 
-                AnimationThread.ExecutionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, CurrentProgramInstance);
-                this.ReadValue = null;
+                ConsoleRequestWrite consoleRequest = new ConsoleRequestWrite(readCommand.PromptText);
+                consoleScheduler.Enqueue(consoleRequest);
+                yield return new WaitUntil(() => consoleRequest.Done);
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandWait)))
             {
