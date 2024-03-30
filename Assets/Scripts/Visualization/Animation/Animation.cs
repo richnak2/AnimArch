@@ -49,6 +49,8 @@ namespace Visualization.Animation
         [HideInInspector] private OALProgram currentProgramInstance = new OALProgram();
         [HideInInspector] public OALProgram CurrentProgramInstance { get { return currentProgramInstance; } }
 
+        public bool SuperSpeed = false;
+
         private void Awake()
         {
             classDiagram = GameObject.Find("ClassDiagram").GetComponent<ClassDiagram.Diagrams.ClassDiagram>();

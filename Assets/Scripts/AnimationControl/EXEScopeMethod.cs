@@ -38,7 +38,7 @@ namespace OALProgramControl
         }
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
         {
-            AddCommandsToStack(new List<EXECommand>() {new EXECommandReturn(null)});
+            AddCommandsToStack(new List<EXECommand>() { new EXECommandReturn(null)});
             AddCommandsToStack(this.Commands);
             return Success();
         }
@@ -56,17 +56,17 @@ namespace OALProgramControl
         {
             if (this.MethodDefinition.Parameters.Select(parameter => parameter.Name).Contains(variable.Name))
             {
-                return Error(string.Format("Cannot create variable \"{0}\" as it is already name of a parameter of the current method.", variable.Name), "XEC2030");
+                return Error("XEC2030", string.Format("Cannot create variable \"{0}\" as it is already name of a parameter of the current method.", variable.Name));
             }
 
             if (this.MethodDefinition.OwningClass.GetAttributes(true).Select(attribute => attribute.Name).Contains(variable.Name))
             {
-                return Error(string.Format("Cannot create variable \"{0}\" as it is already name of an attribute of the current class.", variable.Name), "XEC2031");
+                return Error("XEC2031", string.Format("Cannot create variable \"{0}\" as it is already name of an attribute of the current class.", variable.Name));
             }
 
             if (this.MethodDefinition.OwningClass.GetMethods(true).Select(method => method.Name).Contains(variable.Name))
             {
-                return Error(string.Format("Cannot create variable \"{0}\" as it is already name of a method of the current class.", variable.Name), "XEC2032");
+                return Error("XEC2032", string.Format("Cannot create variable \"{0}\" as it is already name of a method of the current class.", variable.Name));
             }
 
             return base.AddVariable(variable);
@@ -75,12 +75,12 @@ namespace OALProgramControl
         {
             if (this.MethodDefinition.OwningClass.GetAttributes(true).Select(attribute => attribute.Name).Contains(variable.Name))
             {
-                return Error(string.Format("Cannot create variable \"{0}\" as it is already name of an attribute of the current class.", variable.Name), "XEC2031");
+                return Error("XEC2031", string.Format("Cannot create variable \"{0}\" as it is already name of an attribute of the current class.", variable.Name));
             }
 
             if (this.MethodDefinition.OwningClass.GetMethods(true).Select(method => method.Name).Contains(variable.Name))
             {
-                return Error(string.Format("Cannot create variable \"{0}\" as it is already name of a method of the current class.", variable.Name), "XEC2032");
+                return Error("XEC2032", string.Format("Cannot create variable \"{0}\" as it is already name of a method of the current class.", variable.Name));
             }
 
             return base.AddVariable(variable);

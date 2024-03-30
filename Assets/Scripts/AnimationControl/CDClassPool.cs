@@ -117,7 +117,7 @@ namespace OALProgramControl
         {
             if (!ClassExists(className))
             {
-                return EXEExecutionResult.Error(ErrorMessage.ClassNotFound(className, this), "XEC2023");
+                return EXEExecutionResult.Error("XEC2023", ErrorMessage.ClassNotFound(className, this));
             }
 
             CDClass targetClass = getClassByName(className);

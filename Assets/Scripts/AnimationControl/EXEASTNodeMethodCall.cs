@@ -49,13 +49,13 @@ namespace OALProgramControl
             {
                 return EXEExecutionResult.Error
                     (
+                        "XEC2042",
                         string.Format
                         (
                             "Tried to retrieve value from a method that did not return anything. The method is '{0}.{1}'.",
                             this.Method.OwningClass.Name,
                             this.MethodName
-                        ),
-                        "XEC2042"
+                        )
                     );
             }
 
@@ -87,21 +87,21 @@ namespace OALProgramControl
             else
             {
                 // Method does not exist, time to raise an error
-                return EXEExecutionResult.Error(ErrorMessage.MethodNotFoundOnClass(this.MethodName, this.OwningObject.TypeName), "XEC2015");
+                return EXEExecutionResult.Error("XEC2015", ErrorMessage.MethodNotFoundOnClass(this.MethodName, this.OwningObject.TypeName));
             }
 
             if (this.Arguments.Count != this.Method.Parameters.Count)
             {
                 return EXEExecutionResult.Error
                     (
+                        "XEC2016",
                         ErrorMessage.InvalidParameterCount
                         (
                             this.Method.OwningClass.Name,
                             this.MethodName,
                             this.Method.Parameters.Count,
                             this.Arguments.Count
-                        ),
-                        "XEC2016"
+                        )
                     );
             }
 
@@ -132,14 +132,14 @@ namespace OALProgramControl
                     argumentExecutionResult.ReturnedOutput.Accept(visitor);
                     return EXEExecutionResult.Error
                     (
+                        "XEC2017",
                         ErrorMessage.InvalidParameterValue
                         (
                             this.Method.OwningClass.Name,
                             this.MethodName,
                             this.Method.Parameters[i].Name,
                             this.Method.Parameters[i].Type, visitor.GetCommandStringAndResetStateNow()
-                        ),
-                        "XEC2017"
+                        )
                     );
                 }
             }

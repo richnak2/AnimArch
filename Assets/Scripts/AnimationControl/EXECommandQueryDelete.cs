@@ -26,13 +26,13 @@ namespace OALProgramControl
             {
                 return Error
                 (
+                    "XEC2024",
                     string.Format
                     (
                         "Failed to destroy instance \"{0}\" of class \"{1}\".",
                         referencedValue.ClassInstance.UniqueID,
                         referencedValue.TypeClass.Name
-                    ),
-                    "XEC2024"
+                    )
                 );
             }
 

@@ -42,7 +42,7 @@ namespace OALProgramControl
 
             if (FileToCheckEvaluation.ReturnedOutput is not EXEValueString)
             {
-                return EXEExecutionResult.Error(string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", FileToCheckEvaluation.ReturnedOutput.ToObjectDiagramText(), FileToCheckEvaluation.ReturnedOutput.TypeName), "XEC2047");
+                return EXEExecutionResult.Error("XEC2047", string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", FileToCheckEvaluation.ReturnedOutput.ToObjectDiagramText(), FileToCheckEvaluation.ReturnedOutput.TypeName));
             }
 
             string fileToCheck = (FileToCheckEvaluation.ReturnedOutput as EXEValueString).Value;
@@ -55,7 +55,7 @@ namespace OALProgramControl
             catch (Exception e)
             {
                 string errorMessage = string.Format("Failed read from file '{0}', because of {1}:'{2}'", fileToCheck, e.GetType().Name, e.Message);
-                return EXEExecutionResult.Error(errorMessage, "XEC2048");
+                return EXEExecutionResult.Error("XEC2048", errorMessage);
             }
 
             EXEValueBool fileCheckValue = new EXEValueBool(fileExists);

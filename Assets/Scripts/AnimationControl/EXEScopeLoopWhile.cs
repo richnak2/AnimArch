@@ -40,7 +40,7 @@ namespace OALProgramControl
                 startNewIteration = false;
                 VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
                 conditionEvaluationResult.ReturnedOutput.Accept(visitor);
-                return Error(ErrorMessage.InvalidValueForType(visitor.GetCommandStringAndResetStateNow(), EXETypes.BooleanTypeName), "XEC2028");
+                return Error("XEC2028", ErrorMessage.InvalidValueForType(visitor.GetCommandStringAndResetStateNow(), EXETypes.BooleanTypeName));
             }
 
             startNewIteration = (conditionEvaluationResult.ReturnedOutput as EXEValueBool).Value;

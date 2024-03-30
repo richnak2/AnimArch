@@ -24,7 +24,7 @@ namespace OALProgramControl
                 EXEScopeMethod owningMethodScope = GetCurrentMethodScope();
                 if (!owningMethodScope.SubmitReturn(returnedExpressionEvaluationResult.ReturnedOutput, OALProgram))
                 {
-                    return Error("Failed to deliver return value to owning scope.", "XEC2014");
+                    return Error("XEC2014", "Failed to deliver return value to owning scope.");
                 }
             }
 

@@ -60,15 +60,20 @@ namespace OALProgramControl
 
             if ("not".Equals(operation))
             {
-                this.Value = !this.Value;
                 result = EXEExecutionResult.Success();
-                result.ReturnedOutput = this;
+
+                bool resultValue = !this.Value;
+                result.ReturnedOutput = new EXEValueBool(resultValue);
+
                 return result;
             }
             else if("type_name".Equals(operation))
             {
                 result = EXEExecutionResult.Success();
-                result.ReturnedOutput = new EXEValueString(string.Format(@"""{0}""", this.TypeName));
+
+                string resultValue = string.Format(@"""{0}""", this.TypeName);
+                result.ReturnedOutput = new EXEValueString(resultValue);
+                
                 return result;
             }
 
@@ -90,9 +95,11 @@ namespace OALProgramControl
                     return base.ApplyOperator(operation, operand);
                 }
 
-                this.Value = this.Value || (operand as EXEValueBool).Value;
                 result = EXEExecutionResult.Success();
-                result.ReturnedOutput = this;
+
+                bool resultValue = this.Value || (operand as EXEValueBool).Value;
+                result.ReturnedOutput = new EXEValueBool(resultValue);
+
                 return result;
             }
             else if ("and".Equals(operation.ToLower()))
@@ -102,9 +109,11 @@ namespace OALProgramControl
                     return base.ApplyOperator(operation, operand);
                 }
 
-                this.Value = this.Value && (operand as EXEValueBool).Value;
                 result = EXEExecutionResult.Success();
-                result.ReturnedOutput = this;
+
+                bool resultValue = this.Value && (operand as EXEValueBool).Value;
+                result.ReturnedOutput = new EXEValueBool(resultValue);
+
                 return result;
             }
             else if ("==".Equals(operation))
@@ -114,9 +123,11 @@ namespace OALProgramControl
                     return base.ApplyOperator(operation, operand);
                 }
 
-                this.Value = this.Value == (operand as EXEValueBool).Value;
                 result = EXEExecutionResult.Success();
-                result.ReturnedOutput = this;
+
+                bool resultValue = this.Value == (operand as EXEValueBool).Value;
+                result.ReturnedOutput = new EXEValueBool(resultValue);
+
                 return result;
             }
             else if ("!=".Equals(operation))
@@ -126,9 +137,11 @@ namespace OALProgramControl
                     return base.ApplyOperator(operation, operand);
                 }
 
-                this.Value = this.Value != (operand as EXEValueBool).Value;
                 result = EXEExecutionResult.Success();
-                result.ReturnedOutput = this;
+
+                bool resultValue = this.Value != (operand as EXEValueBool).Value;
+                result.ReturnedOutput = new EXEValueBool(resultValue);
+
                 return result;
             }
           

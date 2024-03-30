@@ -72,6 +72,14 @@ namespace Visualization.UI
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
 
+        private float SuperSpeedCoefficient
+        {
+            get
+            {
+                return Animation.Animation.Instance.SuperSpeed ? 0.0000001f : 1.0f;
+            }
+        }
+
         public void SetLanguage(int language)
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[language];
@@ -320,7 +328,7 @@ namespace Visualization.UI
         {
             if (speedSlider && speedLabel)
             {
-                AnimationData.Instance.AnimSpeed = speedSlider.value;
+                AnimationData.Instance.AnimSpeed = speedSlider.value * SuperSpeedCoefficient;
                 speedLabel.text = speedSlider.value.ToString() + "s";
             }
         }

@@ -36,7 +36,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
             {
                 if (this.ReturnedValue is not EXEValueBool)
                 {
-                    return EXEExecutionResult.Error(string.Format("Equals method of '{0}' returned '{1}' (it needs to return a bool)", owningObject.TypeName, this.ReturnedValue.TypeName), "XEC2052");
+                    return EXEExecutionResult.Error("XEC2052", string.Format("Equals method of '{0}' returned '{1}' (it needs to return a bool)", owningObject.TypeName, this.ReturnedValue.TypeName));
                 }
 
                 if ((this.ReturnedValue as EXEValueBool).Value)

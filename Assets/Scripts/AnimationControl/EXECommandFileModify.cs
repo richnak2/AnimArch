@@ -28,7 +28,7 @@ namespace OALProgramControl
 
             if (StringToWriteEvaluation.ReturnedOutput is not EXEValueString)
             {
-                return EXEExecutionResult.Error(string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", StringToWriteEvaluation.ReturnedOutput.ToObjectDiagramText(), StringToWriteEvaluation.ReturnedOutput.TypeName), "XEC2040");
+                return EXEExecutionResult.Error("XEC2040", string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", StringToWriteEvaluation.ReturnedOutput.ToObjectDiagramText(), StringToWriteEvaluation.ReturnedOutput.TypeName));
             }
 
             EXEExecutionResult FileToWriteToEvaluation = FileToWriteTo.Evaluate(this.SuperScope, OALProgram);
@@ -39,7 +39,7 @@ namespace OALProgramControl
 
             if (FileToWriteToEvaluation.ReturnedOutput is not EXEValueString)
             {
-                return EXEExecutionResult.Error(string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", FileToWriteToEvaluation.ReturnedOutput.ToObjectDiagramText(), FileToWriteToEvaluation.ReturnedOutput.TypeName), "XEC2041");
+                return EXEExecutionResult.Error("XEC2041", string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", FileToWriteToEvaluation.ReturnedOutput.ToObjectDiagramText(), FileToWriteToEvaluation.ReturnedOutput.TypeName));
             }
 
             string stringToWrite = (StringToWriteEvaluation.ReturnedOutput as EXEValueString).Value;
@@ -55,7 +55,7 @@ namespace OALProgramControl
             catch (Exception e)
             {
                 string errorMessage = string.Format("Failed to {0} to file '{1}', because of {2}:'{3}'", Append ? "Append" : "Write", fileToWriteTo, e.GetType().Name, e.Message);
-                return EXEExecutionResult.Error(errorMessage, "XEC2043");
+                return EXEExecutionResult.Error("XEC2043", errorMessage);
             }
 
             return Success();
