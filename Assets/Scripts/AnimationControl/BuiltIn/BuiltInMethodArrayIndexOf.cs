@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimArch.Extensions;
+using UnityEngine;
 
 namespace Assets.Scripts.AnimationControl.BuiltIn
 {
@@ -20,6 +21,11 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
         public void CollectReturn(EXEValueBase returnedValue)
         {
             this.ReturnedValue = returnedValue;
+        }
+
+        public CDMethod GetOriginatorData()
+        {
+            return null;
         }
 
         protected override EXEExecutionResult Evaluate(EXEValueArray owningObject, List<EXEValueBase> parameters)

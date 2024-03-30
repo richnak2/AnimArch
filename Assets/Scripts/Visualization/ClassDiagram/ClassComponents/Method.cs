@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Visualization.ClassDiagram.ClassComponents
 {
@@ -9,6 +10,8 @@ namespace Visualization.ClassDiagram.ClassComponents
         public string Id;
         public string Name;
         public string ReturnValue;
+        public MethodHighlightSubject HighlightSubject { get; private set;}
+        public ObjectHighlightSubject HighlightObjectSubject { get; private set;}
         public List<string> arguments;
         public Method(string name, string id, string returnValue, List<string> arguments)
         {
@@ -16,6 +19,8 @@ namespace Visualization.ClassDiagram.ClassComponents
             Id = id;
             ReturnValue = returnValue;
             this.arguments = arguments;
+            this.HighlightSubject = new MethodHighlightSubject();
+            this.HighlightObjectSubject = new ObjectHighlightSubject();
         }
 
         public Method(string name, string id, string returnValue)
@@ -23,8 +28,13 @@ namespace Visualization.ClassDiagram.ClassComponents
             Name = name;
             Id = id;
             ReturnValue = returnValue;
+            this.HighlightSubject = new MethodHighlightSubject();
+            this.HighlightObjectSubject = new ObjectHighlightSubject();
         }
-        public Method() { }
+        public Method() { 
+            this.HighlightSubject = new MethodHighlightSubject();
+            this.HighlightObjectSubject = new ObjectHighlightSubject();
+        }
 
         protected bool Equals(Method other)
         {

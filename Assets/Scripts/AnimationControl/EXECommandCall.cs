@@ -76,6 +76,7 @@ namespace OALProgramControl
             MethodCode.SetSuperScope(null);
             MethodCode.CommandStack = this.CommandStack;
             MethodCode.MethodCallOrigin = this.MethodCall;
+
             this.CommandStack.Enqueue(MethodCode);
 
             this.InvokedMethod = MethodCode;

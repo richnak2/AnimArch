@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using AnimArch.Extensions;
 using UnityEngine.UI;
+using Visualization.Animation;
 
 namespace Visualization.UI
 {
@@ -15,11 +16,14 @@ namespace Visualization.UI
         private TMP_InputField tmpOutpField;
         private Scrollbar tmpScrollbar;
 
+        private ConsoleRequestRead CurrentRequest;
+
         private void Awake()
         {
             tmpInpField = inputField.GetComponent<TMP_InputField>();
             tmpOutpField = outputField.GetComponent<TMP_InputField>();
             tmpScrollbar = tmpOutpField.verticalScrollbar.GetComponent<Scrollbar>();
+            this.CurrentRequest = null;
             DeActivateInputField();
         }
 
@@ -32,9 +36,10 @@ namespace Visualization.UI
             tmpScrollbar.value = 1.0f;
         }
 
-        public void ActivateInputField()
+        public void ActivateInputField(ConsoleRequestRead request)
         {
             tmpInpField.interactable = true;
+            this.CurrentRequest = request;
         }
         private void DeActivateInputField()
         {
@@ -48,8 +53,10 @@ namespace Visualization.UI
             tmpOutpField.text += enteredText + "\n";
             tmpInpField.text = "";
 
-            Visualization.Animation.Animation.Instance.ReadValue = enteredText;
-            Visualization.Animation.Animation.Instance.IncrementBarrier();
+            ConsoleRequestRead currentRequest = CurrentRequest;
+            CurrentRequest = null;
+            currentRequest.ReadValue = enteredText;
+            currentRequest.Done = true;
         }
     }
 }

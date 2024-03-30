@@ -10,10 +10,21 @@ using Visualisation.Animation;
 
 public class FileLoader : MonoBehaviour
 {
+    public static FileLoader Instance { get; private set; }
+
     private IClassDiagramBuilder _classDiagramBuilder;
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         _classDiagramBuilder = ClassDiagramBuilderFactory.Create();
     }
     private void Start()

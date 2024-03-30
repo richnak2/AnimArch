@@ -57,6 +57,7 @@ namespace Visualization.UI
         [SerializeField] private TMP_Text classTxt;
         [SerializeField] private TMP_Text methodTxt;
         [SerializeField] private Toggle hideRelToggle;
+        [SerializeField] private Toggle fillEdgeToggle;
         [SerializeField] public GameObject PanelChooseAnimationStartMethod;
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
@@ -406,6 +407,9 @@ namespace Visualization.UI
             DiagramPool.Instance.ObjectDiagram.ResetDiagram();
             DiagramPool.Instance.ObjectDiagram.LoadDiagram();
 
+            DiagramPool.Instance.ActivityDiagram.ResetDiagram();
+            DiagramPool.Instance.ActivityDiagram.LoadDiagram();
+
             Animation.Animation.Instance.UnhighlightAll();
             Animation.Animation.Instance.HighlightClass(name, true);
 
@@ -467,11 +471,23 @@ namespace Visualization.UI
                 }
             }
         }
+        public void ChangeEdgeHighlighting()
+        {
+            Animation.Animation a = Animation.Animation.Instance;
+            if (fillEdgeToggle.isOn)
+            {
+               a.edgeHighlighter = HighlightFill.GetInstance(); 
+            }
+            else
+            {
+                a.edgeHighlighter = HighlightImmediate.GetInstance(); 
+            }
+        }
 
         public static void SetAnimationButtonsActive(bool active)
         {
-            GameObject.Find("AnimationSettings/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
-            GameObject.Find("AnimationSettings/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
+            GameObject.Find("AnimationPanel/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
+            GameObject.Find("AnimationPanel/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("GenerateToPythonButton").GetComponentInChildren<Button>().interactable = active;
             // generatePythonBtn.interactable = true; // TODO co je lepsie? takto by sme museli zmenit funciu zo static
         }

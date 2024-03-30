@@ -45,6 +45,12 @@ namespace Visualization.Animation
 
         private static int IdSeed = 0;
 
+        public EXEScopeMethod CurrentMethod {
+            get {
+                return CommandStack.Peek()?.GetCurrentMethodScope();
+            }
+        }
+
         public AnimationThread(EXEExecutionStack executionStack, OALProgram currentProgramInstance, Animation animation)
         {
             this.CommandStack = executionStack;

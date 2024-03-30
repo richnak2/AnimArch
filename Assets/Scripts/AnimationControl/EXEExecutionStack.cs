@@ -62,6 +62,15 @@ namespace OALProgramControl
             return Result;
         }
 
+        public EXECommand Peek()
+        {
+            if (!HasNext())
+            {
+                return null;
+            }
+            return CommandsToBeCalled.First();
+        }
+
         public void RemoveOwnedCommands(EXEScopeMethod owningMethod)
         {
             while (HasNext() && CommandsToBeCalled.First.Value.GetCurrentMethodScope() == owningMethod)
