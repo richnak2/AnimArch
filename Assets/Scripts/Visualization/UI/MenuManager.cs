@@ -57,6 +57,7 @@ namespace Visualization.UI
         [SerializeField] private TMP_Text classTxt;
         [SerializeField] private TMP_Text methodTxt;
         [SerializeField] private Toggle hideRelToggle;
+        [SerializeField] private Toggle fillEdgeToggle;
         [SerializeField] public GameObject PanelChooseAnimationStartMethod;
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
@@ -70,6 +71,14 @@ namespace Visualization.UI
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
+
+        private float SuperSpeedCoefficient
+        {
+            get
+            {
+                return Animation.Animation.Instance.SuperSpeed ? 0.0000001f : 1.0f;
+            }
+        }
 
         public void SetLanguage(int language)
         {
@@ -319,7 +328,7 @@ namespace Visualization.UI
         {
             if (speedSlider && speedLabel)
             {
-                AnimationData.Instance.AnimSpeed = speedSlider.value;
+                AnimationData.Instance.AnimSpeed = speedSlider.value * SuperSpeedCoefficient;
                 speedLabel.text = speedSlider.value.ToString() + "s";
             }
         }
@@ -462,11 +471,23 @@ namespace Visualization.UI
                 }
             }
         }
+        public void ChangeEdgeHighlighting()
+        {
+            Animation.Animation a = Animation.Animation.Instance;
+            if (fillEdgeToggle.isOn)
+            {
+               a.edgeHighlighter = HighlightFill.GetInstance(); 
+            }
+            else
+            {
+                a.edgeHighlighter = HighlightImmediate.GetInstance(); 
+            }
+        }
 
         public static void SetAnimationButtonsActive(bool active)
         {
-            GameObject.Find("AnimationSettings/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
-            GameObject.Find("AnimationSettings/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
+            GameObject.Find("AnimationPanel/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
+            GameObject.Find("AnimationPanel/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("GenerateToPythonButton").GetComponentInChildren<Button>().interactable = active;
             // generatePythonBtn.interactable = true; // TODO co je lepsie? takto by sme museli zmenit funciu zo static
         }

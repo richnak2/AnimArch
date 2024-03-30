@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 
 namespace Visualization.Animation
@@ -13,9 +15,12 @@ namespace Visualization.Animation
         List<Vector2> addedPoints;
         float step = 0.5f;
         int index = 1;
-        public IEnumerator AnimateFlow(Vector2[] targetPoints, bool shouldFlip)
+        public IEnumerator AnimateFlow(Vector2[] targetPoints, bool shouldFlip, Func<bool> highlightEdgeCallback = null, bool isObjectDiagram = false)
         {
-            float animSpeed = AnimationData.Instance.AnimSpeed / 20;
+            float animSpeed = AnimationData.Instance.AnimSpeed / (5*targetPoints.Length);
+            if (isObjectDiagram) {
+                animSpeed /= 5;
+            }
             this.targetPoints = targetPoints;
             if (targetPoints != null && targetPoints.Length >= 2)
             {
@@ -33,83 +38,67 @@ namespace Visualization.Animation
             }
             while (addedPoints.Count < targetPoints.Length)
             {
-                if (!Animation.Instance.isPaused)
+                if (Mathf.Abs(nextPoint.x - currentPosition.x) > step / animSpeed)
                 {
-                    if (Mathf.Abs(nextPoint.x - currentPosition.x) > step / animSpeed)
+                    if (nextPoint.x > currentPosition.x)
                     {
-                        if (nextPoint.x > currentPosition.x)
-                        {
-                            currentPosition += new Vector2(step / animSpeed, 0);
-                        }
-                        else if (nextPoint.x < currentPosition.x)
-                        {
-                            currentPosition -= new Vector2(step / animSpeed, 0);
-                        }
+                        currentPosition += new Vector2(step / animSpeed, 0);
                     }
-                    if (Mathf.Abs(nextPoint.y - currentPosition.y) > step / animSpeed)
+                    else if (nextPoint.x < currentPosition.x)
                     {
-                        if (nextPoint.y > currentPosition.y)
-                        {
-                            currentPosition += new Vector2(0, step / animSpeed);
-                        }
-                        else if (nextPoint.y < currentPosition.y)
-                        {
-                            currentPosition -= new Vector2(0, step / animSpeed);
-                        }
+                        currentPosition -= new Vector2(step / animSpeed, 0);
                     }
-                    if (Mathf.Abs(nextPoint.y - currentPosition.y) < step / animSpeed && Mathf.Abs(nextPoint.x - currentPosition.x) < step / animSpeed)
+                }
+                if (Mathf.Abs(nextPoint.y - currentPosition.y) > step / animSpeed)
+                {
+                    if (nextPoint.y > currentPosition.y)
                     {
-                        currentPosition = nextPoint;
-                        addedPoints.Add(currentPosition);
-                        Points = addedPoints.ToArray();
-                        if (addedPoints.Count < targetPoints.Length)
-                        {
-                            index++;
-                            nextPoint = targetPoints[index];
-                        }
-                        else
-                        {
-                            StartCoroutine(DelayedDestroy(AnimationData.Instance.AnimSpeed * 2.75f));
-                            //Flip back
-                            if (shouldFlip)
-                            {
-                                System.Array.Reverse(targetPoints);
-                            }
-                            break;
-                        }
+                        currentPosition += new Vector2(0, step / animSpeed);
+                    }
+                    else if (nextPoint.y < currentPosition.y)
+                    {
+                        currentPosition -= new Vector2(0, step / animSpeed);
+                    }
+                }
+                if (Mathf.Abs(nextPoint.y - currentPosition.y) < step / animSpeed && Mathf.Abs(nextPoint.x - currentPosition.x) < step / animSpeed)
+                {
+                    currentPosition = nextPoint;
+                    addedPoints.Add(currentPosition);
+                    Points = addedPoints.ToArray();
+                    if (addedPoints.Count < targetPoints.Length)
+                    {
+                        index++;
+                        nextPoint = targetPoints[index];
                     }
                     else
                     {
-                        List<Vector2> tempPoints = new List<Vector2>(addedPoints);
-                        tempPoints.Add(currentPosition);
-                        Points = tempPoints.ToArray();
-
+                        //Flip back
+                        if (shouldFlip)
+                        {
+                            System.Array.Reverse(targetPoints);
+                        }
+                        break;
                     }
+                }
+                else
+                {
+                    List<Vector2> tempPoints = new List<Vector2>(addedPoints);
+                    tempPoints.Add(currentPosition);
+                    Points = tempPoints.ToArray();
 
                 }
+
                 if (Animation.Instance.AnimationIsRunning)
                 {
                     yield return new WaitForFixedUpdate();
                 }
-                else
-                {
-                    Destroy(this.gameObject);
-                }
 
             }
 
-
-        }
-        IEnumerator DelayedDestroy(float delayedTime)
-        {
-            float time = 0;
-            while (time < delayedTime && Animation.Instance.AnimationIsRunning)
+            if (highlightEdgeCallback != null)
             {
-                time += Time.deltaTime;
-                yield return new WaitForFixedUpdate();
+                highlightEdgeCallback();
             }
-            Destroy(this.gameObject);
         }
-
     }
 }

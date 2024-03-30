@@ -43,7 +43,7 @@ namespace OALProgramControl
 
             if (FileToReadFromEvaluation.ReturnedOutput is not EXEValueString)
             {
-                return EXEExecutionResult.Error(string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", FileToReadFromEvaluation.ReturnedOutput.ToObjectDiagramText(), FileToReadFromEvaluation.ReturnedOutput.TypeName), "XEC2045");
+                return EXEExecutionResult.Error("XEC2045", string.Format("Tried to write value '{0}' of type '{1}' to a file. The value needs to be a string.", FileToReadFromEvaluation.ReturnedOutput.ToObjectDiagramText(), FileToReadFromEvaluation.ReturnedOutput.TypeName));
             }
 
             string fileToReadFrom = (FileToReadFromEvaluation.ReturnedOutput as EXEValueString).Value;
@@ -59,7 +59,7 @@ namespace OALProgramControl
             catch (Exception e)
             {
                 string errorMessage = string.Format("Failed read from file '{0}', because of {1}:'{2}'", fileToReadFrom, e.GetType().Name, e.Message);
-                return EXEExecutionResult.Error(errorMessage, "XEC2046");
+                return EXEExecutionResult.Error("XEC2046", errorMessage);
             }
 
             EXEValueString readTextValue = new EXEValueString(string.Format("\"{0}\"", readText));

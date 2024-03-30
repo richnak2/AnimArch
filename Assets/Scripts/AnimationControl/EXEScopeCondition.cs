@@ -76,7 +76,7 @@ namespace OALProgramControl
                 conditionEvaluationResult.ReturnedOutput.Accept(visitor);
                 if (conditionEvaluationResult.ReturnedOutput is not EXEValueBool)
                 {
-                    return Error(ErrorMessage.InvalidValueForType(visitor.GetCommandStringAndResetStateNow(), EXETypes.BooleanTypeName), "XEC2027");
+                    return Error("XEC2027", ErrorMessage.InvalidValueForType(visitor.GetCommandStringAndResetStateNow(), EXETypes.BooleanTypeName));
                 }
 
                 if ((conditionEvaluationResult.ReturnedOutput as EXEValueBool).Value)

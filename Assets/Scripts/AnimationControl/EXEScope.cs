@@ -111,7 +111,7 @@ namespace OALProgramControl
         public void AddCommand(EXECommand Command)
         {
             this.Commands.Add(Command);
-            SetSuperScope(this);
+            Command.SetSuperScope(this);
         }
 
         public override Boolean IsComposite()

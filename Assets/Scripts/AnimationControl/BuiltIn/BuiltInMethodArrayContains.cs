@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimArch.Extensions;
+using UnityEngine;
+using Mono.Cecil;
 
 namespace Assets.Scripts.AnimationControl.BuiltIn
 {
@@ -22,6 +24,11 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
             this.ReturnedValue = returnedValue;
         }
 
+        public CDMethod GetOriginatorData()
+        {
+            return null;
+        }
+
         protected override EXEExecutionResult Evaluate(EXEValueArray owningObject, List<EXEValueBase> parameters)
         {
             // '.Equals' has been invoked, let us collect the output
@@ -29,7 +36,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
             {
                 if (this.ReturnedValue is not EXEValueBool)
                 {
-                    return EXEExecutionResult.Error(string.Format("Equals method of '{0}' returned '{1}' (it needs to return a bool)", owningObject.TypeName, this.ReturnedValue.TypeName), "XEC2052");
+                    return EXEExecutionResult.Error("XEC2052", string.Format("Equals method of '{0}' returned '{1}' (it needs to return a bool)", owningObject.TypeName, this.ReturnedValue.TypeName));
                 }
 
                 if ((this.ReturnedValue as EXEValueBool).Value)

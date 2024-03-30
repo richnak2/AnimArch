@@ -695,6 +695,10 @@ MonoBehaviour:
     m_Key: collapseAnimationKey
     m_Metadata:
       m_Items: []
+  - m_Id: 51780238778462208
+    m_Key: toggleAnimateFillKey
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
