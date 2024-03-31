@@ -15,7 +15,7 @@ namespace Visualization.Animation
 
         public override void PerformRequest()
         {
-            ConsolePanel.Instance.YieldOutput(WriteText);
+            ConsolePanel.Instance.YieldOutput(WriteText, null);
             ConsolePanel.Instance.ActivateInputField(this);
         }
     }
