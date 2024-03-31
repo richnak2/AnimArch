@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5236,6 +5236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d8e5ab3c8efd44ea7d6ff69ab69f07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offsetZ: 800
   graph: {fileID: 0}
 --- !u!1 &129736073
 GameObject:
@@ -12812,7 +12813,7 @@ MonoBehaviour:
   FullInput: {fileID: 1910928390}
   SepInput: {fileID: 612887296}
   ButtonCheck: {fileID: 2055616188}
-  ButtonSave: {fileID: 1940610321}
+  ButtonSave: {fileID: 1940610319}
 --- !u!1 &331379243
 GameObject:
   m_ObjectHideFlags: 0
@@ -19909,7 +19910,6 @@ MonoBehaviour:
   isPaused: 0
   standardPlayMode: 0
   nextStep: 0
-  ReadValue: 
   startClassName: 
   startMethodName: 
   SuperSpeed: 1
@@ -43893,6 +43893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c98af9f6035d24b92727591adad97e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offsetZ: 800
   graph: {fileID: 0}
 --- !u!1 &1164831679
 GameObject:
@@ -68350,6 +68351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ada00099e030da48a19e19caf07f42e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offsetZ: 800
   graph: {fileID: 0}
 --- !u!1 &1931080332
 GameObject:
