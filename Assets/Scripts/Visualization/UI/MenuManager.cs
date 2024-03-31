@@ -62,6 +62,8 @@ namespace Visualization.UI
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
         [SerializeField] public GameObject ErrorPanel;
+        [SerializeField] public GameObject MethodParameterPrefab;
+        [SerializeField] public GameObject EnterParameterPopUp;
 
         // [SerializeField] public TMP_Text MaskingFileLabel;
         // [SerializeField] public Button RemoveMaskingBtn;
@@ -421,20 +423,116 @@ namespace Visualization.UI
             StartingMethodPagination.FillItems(animMethods.Select(method => method.Name).ToList());
         }
 
-        public void SelectPlayMethod(int id)
+        private void ApplyPlayMethodSelection(string startMethodName)
         {
-            string startMethodName = StartingMethodPagination.GetSelectedItem(id);
-            string startClassName = Animation.Animation.Instance.startClassName;
+            Animation.Animation a = Animation.Animation.Instance;
+            string startClassName = a.startClassName;
+            a.startMethodName = startMethodName;
 
-            Animation.Animation.Instance.startMethodName = startMethodName;
             foreach (Button button in playBtns)
             {
                 button.gameObject.SetActive(false);
             }
 
             playIntroTexts.SetActive(true);
-            Debug.Log("Selected class: " + startClassName + "Selected Method: " + startMethodName);
-            Animation.Animation.Instance.HighlightClass(startClassName, false);
+            Debug.Log("Selected class: " + startClassName + " Selected Method: " + a.startMethodName);
+            a.HighlightClass(startClassName, false);
+        }
+
+        private EXEValueBase ParsePrimitiveValue(string value, string type)
+        {
+            EXEValueBase result;
+            if ("string".Equals(EXETypes.ConvertEATypeName(type)))
+            {
+                result = new EXEValueString(value);
+            }
+            else
+            {
+                result = EXETypes.DeterminePrimitiveValue(value);
+                if (!EXETypes.ConvertEATypeName(type).Equals(result.TypeName))
+                {
+                    Debug.LogErrorFormat("Wrong type received, expected: {0}, received {1}", EXETypes.ConvertEATypeName(type), result.TypeName);
+                    return null;
+                }
+            }
+            return result;
+        }
+
+        private EXEValueBase ParseUserInput(string value, string type)
+        {
+            if (EXETypes.IsValidArrayType(type))
+            {
+                List<EXEValueBase> exeList = new List<EXEValueBase>();
+                string listType = type.Substring(0, type.Length-2);
+                foreach (string listItem in value.Split(','))
+                {
+                    EXEValueBase newValue = ParsePrimitiveValue(listItem, listType);
+                    if (newValue == null)
+                    {
+                        return null;
+                    }
+                    exeList.Add(newValue);
+                }
+                return new EXEValueArray(type, exeList);
+            }
+            
+            return ParsePrimitiveValue(value, type);
+        }
+
+        public void SaveParametersForInitialMethod()
+        {
+            MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
+            string startMethodName = mediator.GetMethodLabelText();
+            Animation.Animation a = Animation.Animation.Instance;
+
+            foreach (Transform parameter in mediator.Content.transform)
+            {
+                string parameterValue = parameter.Find("ParameterValue/Text Area/Text").GetComponent<TMP_Text>().text;
+                string parameterType  = parameter.Find("ParameterType").GetComponent<TMP_Text>().text;
+
+                EXEValueBase parameterExeValue = ParseUserInput(parameterValue, parameterType);
+                if (parameterExeValue == null)
+                {
+                    return;
+                }
+            }
+        }
+
+        public void SelectPlayMethod(int id)
+        {
+            Animation.Animation a = Animation.Animation.Instance;
+            string startMethodName = StartingMethodPagination.GetSelectedItem(id);
+            string startClassName = a.startClassName;
+            List<CDParameter> parameters = a.CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName).GetMethodByName(startMethodName).Parameters;
+
+            if (parameters.Count == 0)
+            {
+                ApplyPlayMethodSelection(startMethodName);
+                return;
+            }
+
+            MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
+
+            foreach (Transform child in mediator.Content.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (CDParameter parameter in parameters)
+            {
+                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))
+                {
+                    Debug.LogErrorFormat("Initial parameters can only be primitive or arrays, not '{0}'!", parameter.Type);
+                    return;
+                }
+                GameObject parameterGo = Instantiate(MethodParameterPrefab);
+                parameterGo.transform.Find("ParameterName").GetComponent<TMP_Text>().text = parameter.Name;
+                parameterGo.transform.Find("ParameterType").GetComponent<TMP_Text>().text = parameter.Type;
+                parameterGo.transform.SetParent(mediator.Content.transform);
+            }
+
+            mediator.SetMethodLabelText(startMethodName);
+            mediator.SetActiveEnterParameterPopUp(true);
         }
 
         public void UnshowAnimation()
