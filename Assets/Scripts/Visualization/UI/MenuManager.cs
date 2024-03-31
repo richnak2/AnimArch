@@ -525,10 +525,9 @@ namespace Visualization.UI
                     Debug.LogErrorFormat("Initial parameters can only be primitive or arrays, not '{0}'!", parameter.Type);
                     return;
                 }
-                GameObject parameterGo = Instantiate(MethodParameterPrefab);
+                GameObject parameterGo = Instantiate(MethodParameterPrefab, mediator.Content.transform);
                 parameterGo.transform.Find("ParameterName").GetComponent<TMP_Text>().text = parameter.Name;
                 parameterGo.transform.Find("ParameterType").GetComponent<TMP_Text>().text = parameter.Type;
-                parameterGo.transform.SetParent(mediator.Content.transform);
             }
 
             mediator.SetMethodLabelText(startMethodName);

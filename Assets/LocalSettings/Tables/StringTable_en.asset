@@ -708,6 +708,10 @@ MonoBehaviour:
     m_Localized: Enter parameter value...
     m_Metadata:
       m_Items: []
+  - m_Id: 53234715201007616
+    m_Localized: Enter correct type of parameter!
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

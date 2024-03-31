@@ -703,6 +703,10 @@ MonoBehaviour:
     m_Key: enterParameterValue
     m_Metadata:
       m_Items: []
+  - m_Id: 53234715201007616
+    m_Key: parameterWrongTypeKey
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
