@@ -28,12 +28,17 @@ namespace Visualization.UI
         }
 
 
-        public void YieldOutput(string output)
+        public void YieldOutput(string output, ConsoleRequestWrite request)
         {
             tmpOutpField.text += output + "\n";
 
             // Scroll to bottom
             tmpScrollbar.value = 1.0f;
+
+            if (request != null)
+            {
+                request.Done = true;
+            }
         }
 
         public void ActivateInputField(ConsoleRequestRead request)
