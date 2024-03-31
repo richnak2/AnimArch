@@ -702,6 +702,10 @@ MonoBehaviour:
     m_Localized: "Postupn\xE9 vyplnenie hr\xE1n"
     m_Metadata:
       m_Items: []
+  - m_Id: 53135231578173440
+    m_Localized: "Vlo\u017Ei\u0165 hodnotu parametra..."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
