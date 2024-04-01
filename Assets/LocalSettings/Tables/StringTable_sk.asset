@@ -710,6 +710,10 @@ MonoBehaviour:
     m_Localized: "Zadaj spr\xE1vny typ parametra!"
     m_Metadata:
       m_Items: []
+  - m_Id: 53528851764604928
+    m_Localized: "Pre objekt sa pou\u017Eije default hodnota!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

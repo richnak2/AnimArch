@@ -34,7 +34,7 @@ namespace Visualization.UI
         }
         private void OnSaveButtonClicked()
         {
-            // MenuManager.Instance.SelectPlayMethod(0);
+            MenuManager.Instance.SaveParametersForInitialMethod();
         }
 
         public void SetActiveEnterParameterPopUp(bool active)

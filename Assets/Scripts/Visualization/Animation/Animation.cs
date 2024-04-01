@@ -45,6 +45,7 @@ namespace Visualization.Animation
 
         public string startClassName;
         public string startMethodName;
+        public List<EXEVariable> startMethodParameters = new List<EXEVariable>();
 
         [HideInInspector] private OALProgram currentProgramInstance = new OALProgram();
         [HideInInspector] public OALProgram CurrentProgramInstance { get { return currentProgramInstance; } }
@@ -126,7 +127,7 @@ namespace Visualization.Animation
             MethodExecutableCode.OwningObject = new EXEValueReference(startingInstance);
             objectDiagram.ShowObject(AddObjectToDiagram(" ", startingInstance));
 
-            MethodExecutableCode.InitializeVariables(currentProgramInstance);
+            MethodExecutableCode.InitializeVariables(startMethodParameters);
 
             Class caller = classDiagram.FindClassByName(startClassName).ParsedClass;
             Method callerMethod = classDiagram.FindMethodByName(startClassName, startMethodName);

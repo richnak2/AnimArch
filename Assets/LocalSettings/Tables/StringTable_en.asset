@@ -712,6 +712,10 @@ MonoBehaviour:
     m_Localized: Enter correct type of parameter!
     m_Metadata:
       m_Items: []
+  - m_Id: 53528851764604928
+    m_Localized: Default value will be used for object!
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -707,6 +707,10 @@ MonoBehaviour:
     m_Key: parameterWrongTypeKey
     m_Metadata:
       m_Items: []
+  - m_Id: 53528851764604928
+    m_Key: parameterObjectTypeKey
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

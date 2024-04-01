@@ -15,6 +15,7 @@ using UnityEngine.Localization.Settings;
 using AnimArch.Extensions;
 using UnityEditor;
 using Visualization.ClassDiagram.Editors;
+using System.Text.RegularExpressions;
 
 namespace Visualization.UI
 {
@@ -439,23 +440,34 @@ namespace Visualization.UI
             a.HighlightClass(startClassName, false);
         }
 
-        private EXEValueBase ParsePrimitiveValue(string value, string type)
+        private EXEValueBase ParseParameterValue(string value, string type)
         {
-            EXEValueBase result;
-            if ("string".Equals(EXETypes.ConvertEATypeName(type)))
-            {
-                result = new EXEValueString(value);
-            }
-            else
-            {
-                result = EXETypes.DeterminePrimitiveValue(value);
-                if (!EXETypes.ConvertEATypeName(type).Equals(result.TypeName))
+            try {
+                EXEValueBase result = null;
+                if ("string".Equals(EXETypes.ConvertEATypeName(type)))
                 {
-                    Debug.LogErrorFormat("Wrong type received, expected: {0}, received {1}", EXETypes.ConvertEATypeName(type), result.TypeName);
-                    return null;
+                    result = new EXEValueString("\"" + value + "\"");
                 }
+                else
+                {
+                    result = EXETypes.DeterminePrimitiveValue(value);
+                    if (result == null) // Non-primitive value
+                    {
+                        return EXETypes.DefaultValue(type, Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace);
+                    }
+                    if (!EXETypes.ConvertEATypeName(type).Equals(result.TypeName))
+                    {
+                        return null;
+                    }
+                }
+                return result;
+            } catch (ArgumentException e) {
+                Debug.LogError(e.ToString());
+                return null;
+            } catch (FormatException e) {
+                Debug.LogError(e.ToString());
+                return null;
             }
-            return result;
         }
 
         private EXEValueBase ParseUserInput(string value, string type)
@@ -466,7 +478,7 @@ namespace Visualization.UI
                 string listType = type.Substring(0, type.Length-2);
                 foreach (string listItem in value.Split(','))
                 {
-                    EXEValueBase newValue = ParsePrimitiveValue(listItem, listType);
+                    EXEValueBase newValue = ParseParameterValue(listItem.Trim(), listType);
                     if (newValue == null)
                     {
                         return null;
@@ -475,26 +487,42 @@ namespace Visualization.UI
                 }
                 return new EXEValueArray(type, exeList);
             }
-            
-            return ParsePrimitiveValue(value, type);
+
+            return ParseParameterValue(value, type);
         }
 
         public void SaveParametersForInitialMethod()
         {
             MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
-            string startMethodName = mediator.GetMethodLabelText();
             Animation.Animation a = Animation.Animation.Instance;
+
+            a.startMethodParameters = new List<EXEVariable>();
+            bool inputCorrect = true;
 
             foreach (Transform parameter in mediator.Content.transform)
             {
+                string parameterName  = parameter.Find("ParameterName").GetComponent<TMP_Text>().text;
                 string parameterValue = parameter.Find("ParameterValue/Text Area/Text").GetComponent<TMP_Text>().text;
                 string parameterType  = parameter.Find("ParameterType").GetComponent<TMP_Text>().text;
+                GameObject errorLabel = parameter.Find("ParameterValue/ErrorLabel").gameObject;
+                errorLabel.SetActive(false);
 
-                EXEValueBase parameterExeValue = ParseUserInput(parameterValue, parameterType);
+                EXEValueBase parameterExeValue = ParseUserInput(Regex.Replace(parameterValue, @"[^\w:/ \.,]", string.Empty), parameterType);
                 if (parameterExeValue == null)
                 {
-                    return;
+                    errorLabel.SetActive(true);
+                    inputCorrect = false;
                 }
+                else
+                {
+                    a.startMethodParameters.Add(new EXEVariable(parameterName, parameterExeValue));
+                }
+            }
+
+            if (inputCorrect)
+            {
+                mediator.SetActiveEnterParameterPopUp(false);
+                ApplyPlayMethodSelection(mediator.GetMethodLabelText());
             }
         }
 
@@ -520,14 +548,14 @@ namespace Visualization.UI
 
             foreach (CDParameter parameter in parameters)
             {
-                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))
-                {
-                    Debug.LogErrorFormat("Initial parameters can only be primitive or arrays, not '{0}'!", parameter.Type);
-                    return;
-                }
                 GameObject parameterGo = Instantiate(MethodParameterPrefab, mediator.Content.transform);
                 parameterGo.transform.Find("ParameterName").GetComponent<TMP_Text>().text = parameter.Name;
                 parameterGo.transform.Find("ParameterType").GetComponent<TMP_Text>().text = parameter.Type;
+                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))
+                {
+                    parameterGo.transform.Find("ParameterValue").GetComponent<TMP_InputField>().interactable = false;
+                    parameterGo.transform.Find("ParameterValue/WarningLabel").gameObject.SetActive(true);
+                }
             }
 
             mediator.SetMethodLabelText(startMethodName);
