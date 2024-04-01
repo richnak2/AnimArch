@@ -442,6 +442,10 @@ namespace Visualization.UI
 
         private EXEValueBase ParseParameterValue(string value, string type)
         {
+            if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(type)))
+            {
+                return EXETypes.DefaultValue(type, Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace);
+            }
             try {
                 EXEValueBase result = null;
                 if ("string".Equals(EXETypes.ConvertEATypeName(type)))
@@ -451,11 +455,7 @@ namespace Visualization.UI
                 else
                 {
                     result = EXETypes.DeterminePrimitiveValue(value);
-                    if (result == null) // Non-primitive value
-                    {
-                        return EXETypes.DefaultValue(type, Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace);
-                    }
-                    if (!EXETypes.ConvertEATypeName(type).Equals(result.TypeName))
+                    if (result == null || !EXETypes.ConvertEATypeName(type).Equals(result.TypeName))
                     {
                         return null;
                     }
