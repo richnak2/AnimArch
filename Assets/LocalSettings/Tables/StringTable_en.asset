@@ -712,6 +712,10 @@ MonoBehaviour:
     m_Localized: Select a method to start the animation.
     m_Metadata:
       m_Items: []
+  - m_Id: 53906103811616768
+    m_Localized: Pattern Catalogue
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

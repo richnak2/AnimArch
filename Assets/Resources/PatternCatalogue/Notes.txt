@@ -1,0 +1,8 @@
+Mame zoznam vzorov. Ku kazdemu vzoru je 1 alebo viac diagramov tried. Ku kazdemu diagramu tried je 0 alebo viac animacii.
+Zoznam vzorov - collapsible polozky, v kazdej polozke zoznam diagramov tried - collapsible polozky, v kazdej polozke zoznam animacii
+Je mozne CD aj animacie editovat, nie vsak prepisat existujuce subory (musim ulozit ako novy)
+Lazy loading suborov
+Ako objavit subory - konfiguracny subor(y) vs os.walk
+Po zvoleni v katalogu vzorov uvidime obrazovku, kde sa nacitavaju CD/animacia a udeje sa presne to, ako keby niekto zvolil nacitat dany diagram/animaciu
+Nastavit naklonovanym GUI prvkom nazov/rodica
+MEDIATOR, COMPOSITE, PROXY?

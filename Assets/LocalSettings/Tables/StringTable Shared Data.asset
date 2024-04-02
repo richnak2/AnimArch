@@ -727,6 +727,10 @@ MonoBehaviour:
     m_Key: New Entry 4
     m_Metadata:
       m_Items: []
+  - m_Id: 53906103811616768
+    m_Key: PatternCatalogueLabel
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
