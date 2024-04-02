@@ -45,6 +45,8 @@ namespace Visualization.Animation
         public string startClassName;
         public string startMethodName;
 
+        private const float AnimationSpeedCoefficient = 0.2f;
+
         [HideInInspector] private OALProgram currentProgramInstance = new OALProgram();
         [HideInInspector] public OALProgram CurrentProgramInstance { get { return currentProgramInstance; } }
 
@@ -93,13 +95,19 @@ namespace Visualization.Animation
             CDClass startClass = CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName);
             if (startClass == null)
             {
-                Debug.LogError(string.Format("Error, Class \"{0}\" not found", startClassName ?? "NULL"));
+                AnimationIsRunning = false;
+                isPaused = true;
+                UI.MenuManager.Instance.ShowNotSelectedPanel("class");
+                yield break;
             }
 
             CDMethod startMethod = startClass.GetMethodByName(startMethodName);
             if (startMethod == null)
             {
-                Debug.LogError(string.Format("Error, Method \"{0}\" not found", startMethodName ?? "NULL"));
+                AnimationIsRunning = false;
+                isPaused = true;
+                UI.MenuManager.Instance.ShowNotSelectedPanel("method");
+                yield break;
             }
 
             //najdeme startMethod z daneho class stringu a method stringu, ak startMethod.ExecutableCode je null tak return null alebo yield break
@@ -113,10 +121,9 @@ namespace Visualization.Animation
 
             CurrentProgramInstance.SuperScope = MethodExecutableCode; //StartMethod.ExecutableCode
             //OALProgram.Instance.SuperScope = OALParserBridge.Parse(Code); //Method.ExecutableCode dame namiesto OALParserBridge.Parse(Code) pre metodu ktora bude zacinat
-            UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(MethodExecutableCode);
+            UI.MenuManager.Instance.RefreshSourceCodePanel(MethodExecutableCode);
 
             Debug.Log("Abt to execute program");
-            int i = 0;
 
             string currentClassName = startClassName;
             string currentMethodName = startMethodName;
@@ -173,7 +180,7 @@ namespace Visualization.Animation
                     }
                 }
 
-                UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandCall.InvokedMethod);
+                UI.MenuManager.Instance.RefreshSourceCodePanel(exeCommandCall.InvokedMethod);
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandReturn))
             {
@@ -292,7 +299,8 @@ namespace Visualization.Animation
             {
                 if (Animate)
                 {
-                    yield return new WaitForSeconds(0.3f);
+                    float speedPerAnim = AnimationData.Instance.AnimSpeed;
+                    yield return new WaitForSeconds(AnimationSpeedCoefficient * speedPerAnim);
                 }
             }
 

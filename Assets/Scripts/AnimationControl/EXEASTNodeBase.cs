@@ -20,7 +20,7 @@ namespace OALProgramControl
 
         public abstract EXEExecutionResult Evaluate(EXEScope currentScope, OALProgram currentProgramInstance, EXEASTNodeAccessChainContext valueContext = null);
         public abstract EXEASTNodeBase Clone();
-        public void IncementBracketLevel()
+        public void IncrementBracketLevel()
         {
             this.BracketLevel++;
         }

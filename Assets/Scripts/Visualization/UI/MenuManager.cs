@@ -62,12 +62,15 @@ namespace Visualization.UI
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
         [SerializeField] public GameObject ErrorPanel;
+        [SerializeField] public GameObject NotSelectedToAnimatePanel;
+        [SerializeField] public GameObject notSelectedClassText;
+        [SerializeField] public GameObject notSelectedMethodText;
+        [SerializeField] public Button HideNotSelectedPanelBtn;
 
         // [SerializeField] public TMP_Text MaskingFileLabel;
         // [SerializeField] public Button RemoveMaskingBtn;
         public Anim createdAnim;
         public bool isPlaying = false;
-        public Button[] playBtns;
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
@@ -96,6 +99,11 @@ namespace Visualization.UI
         private MethodPagination SourceCodeMethodPagination;
         private MethodPagination StartingMethodPagination;
 
+        [SerializeField]
+        private ScrollableMethodList scrollableMethodListSourceCodeEdit;
+
+        [SerializeField]
+        private ScrollableMethodList scrollableMethodListAnimationPlay;
         public void ShowErrorPanel()
         {
             ShowErrorPanel(null);
@@ -123,6 +131,32 @@ namespace Visualization.UI
             ShowErrorBtn.GetComponent<Button>().interactable = false;
         }
 
+        public void ShowNotSelectedPanel(String unselectedType)
+        {
+            NotSelectedToAnimatePanel.SetActive(true);
+            HideNotSelectedPanelBtn.interactable = true;
+
+            if(unselectedType.Equals("class"))
+            {
+                notSelectedClassText.gameObject.SetActive(true);
+                notSelectedMethodText.gameObject.SetActive(false);
+            }else if(unselectedType.Equals("method"))
+            {
+                notSelectedClassText.gameObject.SetActive(false);
+                notSelectedMethodText.gameObject.SetActive(true);
+            }
+        }
+
+        public void HideNotSelectedPanel()
+        {
+            notSelectedClassText.gameObject.SetActive(true);
+            notSelectedMethodText.gameObject.SetActive(true);
+            NotSelectedToAnimatePanel.SetActive(false);
+            HideNotSelectedPanelBtn.interactable = false;
+
+            //Button exitAnimationBtn = GameObject.Find("ButtonExit").GetComponent<Button>();
+            //exitAnimationBtn.onClick.Invoke();
+        }
         class InteractiveData
         {
             public Subject<string> ClassClickedInClassDiagram;
@@ -155,10 +189,6 @@ namespace Visualization.UI
             this.interactiveData.ClassClickedInClassDiagram.Register((string value) => { ClassNameTxt.text = value; });
             this.interactiveData.CurrentMethodOwningClass.Register((string value) => { classTxt.text = value; });
             this.interactiveData.CurrentMethod.Register((string value) => { methodTxt.text = value; });
-
-            // Method button pagination
-            SourceCodeMethodPagination = new MethodPagination(methodButtons);
-            StartingMethodPagination = new MethodPagination(playBtns.Select(btn => btn.gameObject).ToList());
         }
 
         private void Start()
@@ -231,7 +261,7 @@ namespace Visualization.UI
             PanelInteractiveIntro.SetActive(false);
             
             PanelMethod.SetActive(true);
-            SourceCodeMethodPagination.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
+            scrollableMethodListSourceCodeEdit.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
 
             PanelInteractiveIntro.SetActive(false);
             PanelMethod.SetActive(true);
@@ -250,10 +280,8 @@ namespace Visualization.UI
             }
         }
 
-        public void SelectMethod(int buttonID)
+        public void SelectMethod(string methodName)
         {
-            string methodName = SourceCodeMethodPagination.GetSelectedItem(buttonID);
-
             interactiveData.CurrentMethodOwningClass.SetValue(interactiveData.ClassClickedInClassDiagram.GetValue());
             interactiveData.ClassClickedInClassDiagram.SetValue(string.Empty);
             interactiveData.CurrentMethod.SetValue(methodName);
@@ -344,10 +372,6 @@ namespace Visualization.UI
             isPlaying = true;
             panelAnimationPlay.SetActive(true);
             mainScreen.SetActive(false);
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             playIntroTexts.SetActive(true);
             if (Animation.Animation.Instance.standardPlayMode)
@@ -418,37 +442,37 @@ namespace Visualization.UI
 
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
-            StartingMethodPagination.FillItems(animMethods.Select(method => method.Name).ToList());
+            
+            if(animMethods != null)
+            {
+                scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
+            }
+            else
+            {
+                scrollableMethodListAnimationPlay.ClearItems();
+            }
         }
 
-        public void SelectPlayMethod(int id)
+        public void SelectPlayMethod(string startMethodName)
         {
-            string startMethodName = StartingMethodPagination.GetSelectedItem(id);
+            
             string startClassName = Animation.Animation.Instance.startClassName;
 
             Animation.Animation.Instance.startMethodName = startMethodName;
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             playIntroTexts.SetActive(true);
-            Debug.Log("Selected class: " + startClassName + "Selected Method: " + startMethodName);
             Animation.Animation.Instance.HighlightClass(startClassName, false);
         }
 
         public void UnshowAnimation()
         {
             Animation.Animation.Instance.UnhighlightAll();
+            scrollableMethodListAnimationPlay.ClearItems();
         }
 
         public void EndPlay()
         {
             isPlaying = false;
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             Animation.Animation.Instance.startClassName = "";
             Animation.Animation.Instance.startMethodName = "";
@@ -491,7 +515,7 @@ namespace Visualization.UI
             GameObject.Find("GenerateToPythonButton").GetComponentInChildren<Button>().interactable = active;
             // generatePythonBtn.interactable = true; // TODO co je lepsie? takto by sme museli zmenit funciu zo static
         }
-        public void AnimateSourceCodeAtMethodStart(EXEScopeMethod currentMethodScope)
+        public void RefreshSourceCodePanel(EXEScopeMethod currentMethodScope)
         {
             PanelChooseAnimationStartMethod.SetActive(false);
             PanelSourceCodeAnimation.SetActive(true);
