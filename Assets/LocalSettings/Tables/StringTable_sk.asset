@@ -702,6 +702,14 @@ MonoBehaviour:
     m_Localized: "Postupn\xE9 vyplnenie hr\xE1n"
     m_Metadata:
       m_Items: []
+  - m_Id: 47697996781969408
+    m_Localized: "Pre za\u010Datie anim\xE1cie zvo\u013Ete triedu."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47698334880620544
+    m_Localized: "Pre za\u010Datie anim\xE1cie zvo\u013Ete met\xF3du."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

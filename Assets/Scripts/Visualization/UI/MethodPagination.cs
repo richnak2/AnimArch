@@ -59,9 +59,13 @@ namespace Visualization.UI
                 i++
             )
             {
+                Debug.Log(Buttons[i].GetComponentInChildren<TMP_Text>().text);
+                Debug.Log(Buttons[i].transform.GetChild(0).gameObject.name);
                 Buttons[i].GetComponentInChildren<TMP_Text>().text
                     = Items[CurrentPage * PageSize + i] + "()";
                 Buttons[i].SetActive(true);
+                Debug.Log(Buttons[i].GetComponentInChildren<TMP_Text>().text);
+                
             }
         }
 

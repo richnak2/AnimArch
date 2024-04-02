@@ -14,7 +14,9 @@ namespace Visualization.UI
         [SerializeField] private GameObject FullInput;
         [SerializeField] private GameObject SepInput;
         [SerializeField] private GameObject ButtonCheck;
-        [SerializeField] private UnityEngine.UI.Button ButtonSave;
+        [SerializeField] private GameObject ButtonSave;
+
+        private UnityEngine.UI.Button _buttonSaveButtonComponent;
 
         public override void OnClicked(GameObject gameObject)
         {
@@ -65,18 +67,19 @@ namespace Visualization.UI
         }
         private void OnFullInputSelected()
         {
-            ButtonSave.gameObject.SetActive(false);
+            SetInteractableButtonSave(false);
             FullInput.GetComponent<CodeHighlighter>().RemoveColors();
         }
         private void OnSepInputSelected()
         {
-            ButtonSave.gameObject.SetActive(false);
+            SetInteractableButtonSave(false);
             SepInput.GetComponent<CodeHighlighter>().RemoveColors();
         }
         private void OnButtonCheckClicked()
         {
             CodePanel.GetComponent<CheckScript>().CheckScriptCode();
             FullInput.GetComponent<CodeHighlighter>().UpdateColors();
+            SetInteractableButtonSave(true);
         }
         private void OnButtonSaveClicked()
         {
@@ -89,7 +92,12 @@ namespace Visualization.UI
         }
         public void SetInteractableButtonSave(bool active)
         {
-            ButtonSave.interactable = active;
+            if (_buttonSaveButtonComponent == null)
+            {
+                _buttonSaveButtonComponent = ButtonSave.GetComponent<UnityEngine.UI.Button>();
+            }
+
+            _buttonSaveButtonComponent.interactable = active;
         }
         
     }
