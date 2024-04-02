@@ -14,15 +14,25 @@ namespace OALProgramControl
 
         public EXECommandCall(EXEASTNodeAccessChain methodAccessChain, EXEASTNodeMethodCall methodCall)
         {
-            VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
-            methodAccessChain.Accept(visitor);
+            if (methodAccessChain == null)
+            {
+                methodAccessChain = new EXEASTNodeAccessChain();
+                methodAccessChain.AddElement(new EXEASTNodeLeaf(EXETypes.SelfReferenceName));
+            }
 
             this.MethodAccessChain = methodAccessChain;
             this.MethodCall = methodCall;
             this.ReturnedValue = null;
             this.CallInfo = null;
             this.CalledObject = null;
-            this.MethodAccessChainS = visitor.GetCommandStringAndResetStateNow();
+
+            this.MethodAccessChainS = null;
+            if (methodAccessChain != null)
+            {
+                VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                methodAccessChain.Accept(visitor);
+                this.MethodAccessChainS = visitor.GetCommandStringAndResetStateNow();
+            }
         }
         public EXECommandCall(EXEValueBase methodOwningObject, string accessChain, EXEASTNodeMethodCall methodCall)
         {
@@ -36,7 +46,7 @@ namespace OALProgramControl
 
         public override EXECommand CreateClone()
         {
-            return new EXECommandCall(this.MethodAccessChain.Clone() as EXEASTNodeAccessChain, this.MethodCall.Clone() as EXEASTNodeMethodCall);
+            return new EXECommandCall(this.MethodAccessChain?.Clone() as EXEASTNodeAccessChain, this.MethodCall.Clone() as EXEASTNodeMethodCall);
         }
 
         protected override EXEExecutionResult Execute(OALProgram OALProgram)
@@ -76,6 +86,7 @@ namespace OALProgramControl
             MethodCode.SetSuperScope(null);
             MethodCode.CommandStack = this.CommandStack;
             MethodCode.MethodCallOrigin = this.MethodCall;
+
             this.CommandStack.Enqueue(MethodCode);
 
             this.InvokedMethod = MethodCode;

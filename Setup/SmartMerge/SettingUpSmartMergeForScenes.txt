@@ -1,0 +1,13 @@
+1. Install Perforce P4V (https://www.perforce.com/downloads/helix-visual-client-p4v)
+2. Add C:\Program Files\Unity\Hub\Editor\2019.4.12f1\Editor\Data\Tools to your Path variable. Change the path to your installation folder. It needs to contain file UnityYAMLMerge.exe.
+3. Modify .git/config file by appending (pay attention to indentation).
+[merge]
+    tool = unityyamlmerge
+[mergetool "unityyamlmerge"]
+    trustExitCode = false
+    cmd = 'UnityYAMLMerge.exe' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
+4. Modify C:\Program Files\Unity\Hub\Editor\2019.4.12f1\Editor\Data\Tools\mergespecfile.txt so that:
+    4a. Entire line beginning with 'unity use' will be changed to P4V installation path (from step 1), such as: unity use "D:\Program Files\Perforce\p4merge.exe" "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+    4b. Entire line beginning with 'prefab use' will be changed to P4V installation path (from step 1), such as: prefab use "D:\Program Files\Perforce\p4merge.exe" "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+    4c. Line under '# Perforce merge', e.g. '* use "%programs%\Perforce\p4merge.exe" "%b" "%r" "%l" "%d"' will be changed to P4V installation path, such as: * use "D:\Program Files\Perforce\p4merge.exe.exe" "%b" "%r" "%l" "%d"
+5. When merging locally, and you have some conflicting scene/prefab files, run 'git mergetool --tool=unityyamlmerge'. You can modify the command to specify which files should be handled.

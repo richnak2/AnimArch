@@ -18,6 +18,7 @@ using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;
 using Visualization.UI;
 using AnimArch.Extensions;
+using UnityEngine.AI;
 
 namespace Visualization.Animation
 {
@@ -32,32 +33,37 @@ namespace Visualization.Animation
         public GameObject LineFill;
         private int BarrierSize;
         private int CurrentBarrierFill;
+        public HighlightEdgeState edgeHighlighter;
         [HideInInspector] public bool AnimationIsRunning = false;
         [HideInInspector] public bool isPaused = false;
         [HideInInspector] public bool standardPlayMode = true;
         public bool nextStep = false;
         private bool prevStep = false;
         private List<GameObject> Fillers;
-        [HideInInspector]
-        public string ReadValue;
+        private ConsoleScheduler consoleScheduler;
 
         public string startClassName;
         public string startMethodName;
 
+        private const float AnimationSpeedCoefficient = 0.2f;
+
         [HideInInspector] private OALProgram currentProgramInstance = new OALProgram();
         [HideInInspector] public OALProgram CurrentProgramInstance { get { return currentProgramInstance; } }
+
+        public bool SuperSpeed = false;
 
         private void Awake()
         {
             classDiagram = GameObject.Find("ClassDiagram").GetComponent<ClassDiagram.Diagrams.ClassDiagram>();
             objectDiagram = GameObject.Find("ObjectDiagram").GetComponent<ObjectDiagram>();
             standardPlayMode = true;
+            edgeHighlighter = HighlightImmediate.GetInstance();
         }
+
 
         // Main Couroutine for compiling the OAL of Animation script and then starting the visualisation of Animation
         public IEnumerator Animate()
         {
-
             Fillers = new List<GameObject>();
 
             if (AnimationIsRunning)
@@ -89,13 +95,19 @@ namespace Visualization.Animation
             CDClass startClass = CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName);
             if (startClass == null)
             {
-                Debug.LogError(string.Format("Error, Class \"{0}\" not found", startClassName ?? "NULL"));
+                AnimationIsRunning = false;
+                isPaused = true;
+                UI.MenuManager.Instance.ShowNotSelectedPanel("class");
+                yield break;
             }
 
             CDMethod startMethod = startClass.GetMethodByName(startMethodName);
             if (startMethod == null)
             {
-                Debug.LogError(string.Format("Error, Method \"{0}\" not found", startMethodName ?? "NULL"));
+                AnimationIsRunning = false;
+                isPaused = true;
+                UI.MenuManager.Instance.ShowNotSelectedPanel("method");
+                yield break;
             }
 
             //najdeme startMethod z daneho class stringu a method stringu, ak startMethod.ExecutableCode je null tak return null alebo yield break
@@ -112,7 +124,6 @@ namespace Visualization.Animation
             UI.MenuManager.Instance.RefreshSourceCodePanel(MethodExecutableCode);
 
             Debug.Log("Abt to execute program");
-            int i = 0;
 
             string currentClassName = startClassName;
             string currentMethodName = startMethodName;
@@ -123,9 +134,25 @@ namespace Visualization.Animation
 
             MethodExecutableCode.InitializeVariables(currentProgramInstance);
 
+            Class caller = classDiagram.FindClassByName(startClassName).ParsedClass;
+            Method callerMethod = classDiagram.FindMethodByName(startClassName, startMethodName);
+
+            MethodInvocationInfo CallerCall = MethodInvocationInfo.CreateCallerOnlyInstance(startMethod, startingInstance);
+            MethodInvocationInfo CalledCall = MethodInvocationInfo.CreateCalledOnlyInstance(startMethod, startingInstance);
+            assignCallInfoToAllHighlightSubjects(caller, callerMethod, CallerCall, CallerCall.CallerMethod);
+            callerMethod.HighlightObjectSubject.InvocationInfo = CalledCall;
+
+            caller.HighlightSubject.IncrementHighlightLevel();
+            callerMethod.HighlightSubject.IncrementHighlightLevel();
+            callerMethod.HighlightObjectSubject.IncrementHighlightLevel();
+
+            consoleScheduler = new ConsoleScheduler();
+            StartCoroutine(consoleScheduler.Start(this));
+
             AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
             yield return StartCoroutine(SuperThread.Start());
 
+            consoleScheduler.Terminate();
             Debug.Log("Over");
             AnimationIsRunning = false;
         }
@@ -154,6 +181,51 @@ namespace Visualization.Animation
                 }
 
                 UI.MenuManager.Instance.RefreshSourceCodePanel(exeCommandCall.InvokedMethod);
+            }
+            else if (CurrentCommand.GetType() == typeof(EXECommandReturn))
+            {
+                EXECommandReturn exeCommandReturn = (EXECommandReturn)CurrentCommand;
+
+                if (Animate)
+                {
+                    EXEScopeMethod exeScopeMethod = exeCommandReturn.GetCurrentMethodScope();
+
+                    if (exeScopeMethod != null)
+                    {
+                        CDMethod calledMethod = exeScopeMethod.MethodDefinition;
+                        EXEScopeMethod exeScopeCaller = AnimationThread.CurrentMethod;
+                        CDMethod callerMethod = exeScopeCaller?.MethodDefinition;
+
+                        if
+                        (
+                            exeScopeCaller != null && callerMethod !=  null &&
+                            exeScopeCaller.OwningObject != null && exeScopeCaller.OwningObject is EXEValueReference &&
+                            exeScopeMethod.OwningObject != null && exeScopeMethod.OwningObject is EXEValueReference
+                        )
+                        {
+                            CDClass caller = callerMethod.OwningClass;
+                            CDClass called = calledMethod.OwningClass;
+                            CDRelationship relation = CurrentProgramInstance.RelationshipSpace.GetRelationshipByClasses(caller.Name, called.Name);
+
+                            CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
+                            CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
+
+                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
+                        }
+                        else if
+                        (
+                            exeScopeCaller == null &&
+                            exeScopeMethod.OwningObject != null && exeScopeMethod.OwningObject is EXEValueReference
+                        )
+                        {
+                            CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
+
+                            StartCoroutine(ResolveReturn(MethodInvocationInfo.CreateCalledOnlyInstance(calledMethod, calledInstance)));
+                        }
+                    }
+                }
+
+                //UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(exeCommandReturn.InvokedMethod); // TODO -> should this happen?
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandQueryCreate))
             {
@@ -195,15 +267,22 @@ namespace Visualization.Animation
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandRead)))
             {
-                BarrierSize = 1;
-                CurrentBarrierFill = 0;
+                EXECommandRead readCommand = CurrentCommand as EXECommandRead;
 
-                ConsolePanel.Instance.ActivateInputField();
+                ConsoleRequestRead consoleRequest = new ConsoleRequestRead(readCommand.PromptText);
+                consoleScheduler.Enqueue(consoleRequest);
+                yield return new WaitUntil(() => consoleRequest.Done);
 
-                yield return StartCoroutine(BarrierFillCheck());
+                AnimationThread.ExecutionSuccess
+                    = ((EXECommandRead)CurrentCommand).AssignReadValue(consoleRequest.ReadValue, CurrentProgramInstance);
+            }
+            else if (CurrentCommand.GetType().Equals(typeof(EXECommandWrite)))
+            {
+                EXECommandWrite readCommand = CurrentCommand as EXECommandWrite;
 
-                AnimationThread.ExecutionSuccess = ((EXECommandRead)CurrentCommand).AssignReadValue(this.ReadValue, CurrentProgramInstance);
-                this.ReadValue = null;
+                ConsoleRequestWrite consoleRequest = new ConsoleRequestWrite(readCommand.PromptText);
+                consoleScheduler.Enqueue(consoleRequest);
+                yield return new WaitUntil(() => consoleRequest.Done);
             }
             else if (CurrentCommand.GetType().Equals(typeof(EXECommandWait)))
             {
@@ -220,9 +299,12 @@ namespace Visualization.Animation
             {
                 if (Animate)
                 {
-                    yield return new WaitForSeconds(0.3f);
+                    float speedPerAnim = AnimationData.Instance.AnimSpeed;
+                    yield return new WaitForSeconds(AnimationSpeedCoefficient * speedPerAnim);
                 }
             }
+
+            yield return new WaitUntil(() => !isPaused);
         }
 
         private void ResolveAssignment(EXECommand currentCommand)
@@ -272,62 +354,55 @@ namespace Visualization.Animation
                     float timeModifier = 1f;
                     while (step < 7)
                     {
-                        if (isPaused)
+                        switch (step)
                         {
-                            yield return new WaitForFixedUpdate();
+                            case 0:
+                                HighlightClass(createdObject.OwningClass.Name, true);
+                                break;
+                            case 1:
+                                // yield return StartCoroutine(AnimateFillInterGraph(relation));
+                                timeModifier = 0f;
+                                break;
+                            case 3:
+                                // relation.Show();
+                                // relation.Highlight();
+                                timeModifier = 1f;
+                                break;
+                            case 2:
+                                objectDiagram.ShowObject(objectInDiagram);
+                                timeModifier = 0.5f;
+                                break;
+                            case 6:
+                                HighlightClass(createdObject.OwningClass.Name, false);
+                                relation.UnHighlight();
+                                timeModifier = 1f;
+                                break;
                         }
+
+                        step++;
+                        if (standardPlayMode)
+                        {
+                            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
+                        }
+                        //Else means we are working with step animation
                         else
                         {
-                            switch (step)
+                            if (step == 1) step = 2;
+                            nextStep = false;
+                            prevStep = false;
+                            yield return new WaitUntil(() => nextStep);
+                            if (prevStep)
                             {
-                                case 0:
-                                    HighlightClass(createdObject.OwningClass.Name, true);
-                                    break;
-                                case 1:
-                                    // yield return StartCoroutine(AnimateFillInterGraph(relation));
-                                    timeModifier = 0f;
-                                    break;
-                                case 3:
-                                    // relation.Show();
-                                    // relation.Highlight();
-                                    timeModifier = 1f;
-                                    break;
-                                case 2:
-                                    objectDiagram.ShowObject(objectInDiagram);
-                                    timeModifier = 0.5f;
-                                    break;
-                                case 6:
-                                    HighlightClass(createdObject.OwningClass.Name, false);
-                                    relation.UnHighlight();
-                                    timeModifier = 1f;
-                                    break;
+                                if (step > 0) step--;
+                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+
+                                if (step > -1) step--;
+                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
                             }
 
-                            step++;
-                            if (standardPlayMode)
-                            {
-                                yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
-                            }
-                            //Else means we are working with step animation
-                            else
-                            {
-                                if (step == 1) step = 2;
-                                nextStep = false;
-                                prevStep = false;
-                                yield return new WaitUntil(() => nextStep);
-                                if (prevStep)
-                                {
-                                    if (step > 0) step--;
-                                    step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
-
-                                    if (step > -1) step--;
-                                    step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
-                                }
-
-                                yield return new WaitForFixedUpdate();
-                                nextStep = false;
-                                prevStep = false;
-                            }
+                            yield return new WaitForFixedUpdate();
+                            nextStep = false;
+                            prevStep = false;
                         }
                     }
 
@@ -426,10 +501,16 @@ namespace Visualization.Animation
             HighlightEdge(relationshipName, false, call);
         }
 
+        public void RunAnimateFill(MethodInvocationInfo Call)
+        {
+            StartCoroutine(AnimateFill(Call));
+        }
+
         public IEnumerator AnimateFill(MethodInvocationInfo Call)
         {
-            //Debug.Log("Filip, hrana: " + Call.RelationshipName); //Filip
-            GameObject edge = classDiagram.FindEdge(Call.Relation.RelationshipName);
+            RelationInDiagram relationInDiagram = classDiagram.FindEdgeInfo(Call.Relation?.RelationshipName);
+            GameObject edge = relationInDiagram?.VisualObject;
+
             if (edge != null)
             {
                 if (edge.CompareTag("Generalization") || edge.CompareTag("Implements") ||
@@ -451,32 +532,36 @@ namespace Visualization.Animation
             GameObject newFiller = Instantiate(LineFill);
             Fillers.Add(newFiller);
 
-            newFiller.transform.position = classDiagram.graph.units.GetChild(0).transform.position;
-            newFiller.transform.SetParent(classDiagram.graph.units);
+            newFiller.transform.position = edge.transform.position;
+            newFiller.transform.SetParent(edge.transform);
             newFiller.transform.localScale = new Vector3(1, 1, 1);
-
-
-            GameObject newFiller1 = Instantiate(LineFill);
-            Fillers.Add(newFiller1);
-
-            newFiller1.transform.position = objectDiagram.graph.units.GetChild(0).transform.position;
-            newFiller1.transform.SetParent(objectDiagram.graph.units);
-            newFiller1.transform.localScale = new Vector3(1, 1, 1);
 
             LineFiller lf = newFiller.GetComponent<LineFiller>();
             bool flip = ownerOfRelation.Equals(calledClassName);
 
-            LineFiller lf1 = newFiller1.GetComponent<LineFiller>();
-            var classInDiagram = DiagramPool.Instance.ClassDiagram.FindClassByName(Call.CallerMethod.OwningClass.Name);
-            foreach (var callerInstance in classInDiagram.ClassInfo.Instances)
-            {
-                var objectRelation =
-                    DiagramPool.Instance.ObjectDiagram.FindRelation(callerInstance.UniqueID, Call.CalledObject.UniqueID)
-                        .GameObject;
-                lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GetComponent<UILineRenderer>().Points, false));
-            }
+            var callerInstance = Call.CallerObject;
+            var objectRelation = DiagramPool.Instance.ObjectDiagram.FindRelation(callerInstance.UniqueID, Call.CalledObject.UniqueID);
+            GameObject newFiller1 = Instantiate(LineFill);
+            Fillers.Add(newFiller1);
 
-            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip));
+            newFiller1.transform.position = objectRelation.GameObject.transform.position;
+            newFiller1.transform.SetParent(objectRelation.GameObject.transform);
+            newFiller1.transform.localScale = new Vector3(1, 1, 1);
+
+            LineFiller lf1 = newFiller1.GetComponent<LineFiller>();
+
+
+            Func<bool> highlightEdgeCallback = () => {
+                HighlightEdge(Call.Relation.RelationshipName, true, Call);
+                Destroy(lf1.gameObject);
+                Destroy(lf.gameObject);
+                return false;
+            };
+
+
+            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false, null, true));
+
+            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip, highlightEdgeCallback));
         }
 
         private GameObject classGameObject(string className)
@@ -609,7 +694,7 @@ namespace Visualization.Animation
             }
         }
 
-        private void HighlightInstancesMethod(MethodInvocationInfo call, bool isToBeHighlighted)
+        public void HighlightInstancesMethod(MethodInvocationInfo call, bool isToBeHighlighted)
         {
             foreach (CDClassInstance cdClassInstance in call.CallerMethod.OwningClass.Instances)
             {
@@ -617,7 +702,7 @@ namespace Visualization.Animation
             }
         }
 
-        private void HighlightObjectMethod(string methodName, long cdClassInstanceId, bool isToBeHighlighted)
+        public void HighlightObjectMethod(string methodName, long cdClassInstanceId, bool isToBeHighlighted)
         {
             if (!DiagramPool.Instance.ObjectDiagram.ObjectExists(cdClassInstanceId))
             {
@@ -720,93 +805,50 @@ namespace Visualization.Animation
             }
         }
 
+        private void assignCallInfoToAllHighlightSubjects(Class c, Method m, MethodInvocationInfo Call, CDMethod method) {
+            c.HighlightSubject.ClassName = method.OwningClass.Name;
+            c.HighlightSubject.InvocationInfo = Call;
+            m.HighlightSubject.MethodName = method.Name;
+            m.HighlightSubject.ClassName = method.OwningClass.Name;
+            m.HighlightObjectSubject.InvocationInfo = Call;
+        }
+
         // Couroutine used to Resolve one OALCall consisting of Caller class, caller method, edge, called class, called method
         // Same coroutine is called for play or step mode
         public IEnumerator ResolveCallFunct(MethodInvocationInfo Call)
         {
             Debug.Log(Call.ToString());
-            int step = 0;
-            float speedPerAnim = AnimationData.Instance.AnimSpeed;
-            float timeModifier = 1f;
-            while (step < 7)
-            {
-                if (isPaused)
-                {
-                    yield return new WaitForFixedUpdate();
-                }
-                else
-                {
-                    switch (step)
-                    {
-                        case 0:
-                            HighlightClass(Call.CallerMethod.OwningClass.Name, true);
-                            HighlightObjects(Call, true);
-                            break;
-                        case 1:
-                            HighlightMethod(Call.CallerMethod, true);
-                            HighlightInstancesMethod(Call, true);
-                            break;
-                        case 2:
-                            //yield return StartCoroutine(AnimateFill(Call)); // Lukas - commented this out to prevent unwanted extra line artifact
-                            timeModifier = 0f;
-                            break;
-                        case 3:
-                            HighlightEdge(Call.Relation?.RelationshipName, true, Call);
-                            timeModifier = 0.5f;
-                            break;
-                        case 4:
-                            HighlightClass(Call.CalledMethod.OwningClass.Name, true, Call.CalledObject.UniqueID);
-                            HighlightObject(Call.CalledObject.UniqueID, true);
-                            timeModifier = 1f;
-                            break;
-                        case 5:
-                            HighlightMethod(Call.CalledMethod, true);
-                            HighlightObjectMethod(Call.CalledMethod.Name, Call.CalledObject.UniqueID, true);
-                            timeModifier = 1.25f;
-                            break;
-                        case 6:
-                            HighlightClass(Call.CallerMethod.OwningClass.Name, false);
-                            HighlightObjects(Call, false);
-                            HighlightMethod(Call.CallerMethod, false);
-                            HighlightInstancesMethod(Call, false);
-                            HighlightClass(Call.CalledMethod.OwningClass.Name, false, Call.CalledObject.UniqueID);
-                            HighlightObject(Call.CalledObject.UniqueID, false);
-                            HighlightMethod(Call.CalledMethod, false);
-                            HighlightObjectMethod(Call.CalledMethod.Name, Call.CalledObject.UniqueID, false);
-                            HighlightEdge(Call.Relation?.RelationshipName, false, Call);
-                            timeModifier = 1f;
-                            break;
-                    }
 
-                    step++;
-                    if (standardPlayMode)
-                    {
-                        yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
-                    }
-                    //Else means we are working with step animation
-                    else
-                    {
-                        if (step == 2) step = 3;
-                        nextStep = false;
-                        prevStep = false;
-                        yield return new WaitUntil(() => nextStep);
-                        if (prevStep)
-                        {
-                            if (step > 0) step--;
-                            step = UnhighlightAllStepAnimation(Call, step);
+            Class called = classDiagram.FindClassByName(Call.CalledMethod.OwningClass.Name).ParsedClass;
+            Method calledMethod = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
 
-                            if (step > -1) step--;
-                            step = UnhighlightAllStepAnimation(Call, step);
-                        }
+            assignCallInfoToAllHighlightSubjects(called, calledMethod, Call, Call.CalledMethod);
 
-                        yield return new WaitForFixedUpdate();
-                        nextStep = false;
-                        prevStep = false;
-                    }
-                }
-            }
+            calledMethod.HighlightObjectSubject.IncrementHighlightLevel();
+            called.HighlightSubject.IncrementHighlightLevel();
+            calledMethod.HighlightSubject.IncrementHighlightLevel();
+            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * 1.25f);
 
             IncrementBarrier();
+        }
+
+        public IEnumerator ResolveReturn(MethodInvocationInfo callInfo)
+        {
+            float timeModifier = 1f;
+
+            Class called = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
+            Method calledMethod = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
+            assignCallInfoToAllHighlightSubjects(called, calledMethod, callInfo, callInfo.CalledMethod);
+
+            calledMethod.HighlightSubject.DecrementHighlightLevel();
+            calledMethod.HighlightObjectSubject.DecrementHighlightLevel();
+
+            called.HighlightSubject.DecrementHighlightLevel();
+
+            if (standardPlayMode)
+            {
+                yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
+            }
         }
 
         private int UnhighlightAllStepAnimation(MethodInvocationInfo Call, int step)
@@ -887,14 +929,7 @@ namespace Visualization.Animation
 
         public void Pause()
         {
-            if (isPaused)
-            {
-                isPaused = false;
-            }
-            else
-            {
-                isPaused = true;
-            }
+            isPaused = !isPaused;
         }
 
         public void NextStep()

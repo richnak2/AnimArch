@@ -31,7 +31,7 @@ namespace OALProgramControl
 
             if (!this.SubmitReturn(result.ReturnedOutput, OALProgram))
             {
-                return Error("Failed to deliver return value to owning scope.", "XEC2044");
+                return Error("XEC2044", "Failed to deliver return value to owning scope.");
             }
 
             return Success();

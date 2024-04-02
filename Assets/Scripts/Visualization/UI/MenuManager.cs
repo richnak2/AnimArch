@@ -57,10 +57,15 @@ namespace Visualization.UI
         [SerializeField] private TMP_Text classTxt;
         [SerializeField] private TMP_Text methodTxt;
         [SerializeField] private Toggle hideRelToggle;
+        [SerializeField] private Toggle fillEdgeToggle;
         [SerializeField] public GameObject PanelChooseAnimationStartMethod;
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
         [SerializeField] public GameObject ErrorPanel;
+        [SerializeField] public GameObject NotSelectedToAnimatePanel;
+        [SerializeField] public GameObject notSelectedClassText;
+        [SerializeField] public GameObject notSelectedMethodText;
+        [SerializeField] public Button HideNotSelectedPanelBtn;
 
         // [SerializeField] public TMP_Text MaskingFileLabel;
         // [SerializeField] public Button RemoveMaskingBtn;
@@ -69,6 +74,14 @@ namespace Visualization.UI
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
+
+        private float SuperSpeedCoefficient
+        {
+            get
+            {
+                return Animation.Animation.Instance.SuperSpeed ? 0.0000001f : 1.0f;
+            }
+        }
 
         public void SetLanguage(int language)
         {
@@ -118,6 +131,32 @@ namespace Visualization.UI
             ShowErrorBtn.GetComponent<Button>().interactable = false;
         }
 
+        public void ShowNotSelectedPanel(String unselectedType)
+        {
+            NotSelectedToAnimatePanel.SetActive(true);
+            HideNotSelectedPanelBtn.interactable = true;
+
+            if(unselectedType.Equals("class"))
+            {
+                notSelectedClassText.gameObject.SetActive(true);
+                notSelectedMethodText.gameObject.SetActive(false);
+            }else if(unselectedType.Equals("method"))
+            {
+                notSelectedClassText.gameObject.SetActive(false);
+                notSelectedMethodText.gameObject.SetActive(true);
+            }
+        }
+
+        public void HideNotSelectedPanel()
+        {
+            notSelectedClassText.gameObject.SetActive(true);
+            notSelectedMethodText.gameObject.SetActive(true);
+            NotSelectedToAnimatePanel.SetActive(false);
+            HideNotSelectedPanelBtn.interactable = false;
+
+            //Button exitAnimationBtn = GameObject.Find("ButtonExit").GetComponent<Button>();
+            //exitAnimationBtn.onClick.Invoke();
+        }
         class InteractiveData
         {
             public Subject<string> ClassClickedInClassDiagram;
@@ -317,7 +356,7 @@ namespace Visualization.UI
         {
             if (speedSlider && speedLabel)
             {
-                AnimationData.Instance.AnimSpeed = speedSlider.value;
+                AnimationData.Instance.AnimSpeed = speedSlider.value * SuperSpeedCoefficient;
                 speedLabel.text = speedSlider.value.ToString() + "s";
             }
         }
@@ -392,6 +431,9 @@ namespace Visualization.UI
             DiagramPool.Instance.ObjectDiagram.ResetDiagram();
             DiagramPool.Instance.ObjectDiagram.LoadDiagram();
 
+            DiagramPool.Instance.ActivityDiagram.ResetDiagram();
+            DiagramPool.Instance.ActivityDiagram.LoadDiagram();
+
             Animation.Animation.Instance.UnhighlightAll();
             Animation.Animation.Instance.HighlightClass(name, true);
 
@@ -401,7 +443,14 @@ namespace Visualization.UI
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
             
-            scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
+            if(animMethods != null)
+            {
+                scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
+            }
+            else
+            {
+                scrollableMethodListAnimationPlay.ClearItems();
+            }
         }
 
         public void SelectPlayMethod(string startMethodName)
@@ -446,11 +495,23 @@ namespace Visualization.UI
                 }
             }
         }
+        public void ChangeEdgeHighlighting()
+        {
+            Animation.Animation a = Animation.Animation.Instance;
+            if (fillEdgeToggle.isOn)
+            {
+               a.edgeHighlighter = HighlightFill.GetInstance(); 
+            }
+            else
+            {
+                a.edgeHighlighter = HighlightImmediate.GetInstance(); 
+            }
+        }
 
         public static void SetAnimationButtonsActive(bool active)
         {
-            GameObject.Find("AnimationSettings/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
-            GameObject.Find("AnimationSettings/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
+            GameObject.Find("AnimationPanel/Buttons/Edit").GetComponentInChildren<Button>().interactable = active; 
+            GameObject.Find("AnimationPanel/Buttons/Play").GetComponentInChildren<Button>().interactable = active;
             GameObject.Find("GenerateToPythonButton").GetComponentInChildren<Button>().interactable = active;
             // generatePythonBtn.interactable = true; // TODO co je lepsie? takto by sme museli zmenit funciu zo static
         }

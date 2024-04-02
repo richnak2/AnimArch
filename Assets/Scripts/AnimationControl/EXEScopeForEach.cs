@@ -44,7 +44,7 @@ namespace OALProgramControl
             iterableEvaluationResult.ReturnedOutput.Accept(visitor2);
             if (iterableEvaluationResult.ReturnedOutput is not EXEValueArray)
             {
-                return Error(ErrorMessage.IsNotIterable(visitor2.GetCommandStringAndResetStateNow()), "XEC2028");
+                return Error("XEC2028", ErrorMessage.IsNotIterable(visitor2.GetCommandStringAndResetStateNow()));
             }
 
             EXEValueArray iterableValue = iterableEvaluationResult.ReturnedOutput as EXEValueArray;
@@ -53,7 +53,7 @@ namespace OALProgramControl
             iterableValue.Accept(visitor3);
             if (EXETypes.UnitializedName.Equals(visitor3.GetCommandStringAndResetStateNow()))
             {
-                return Error("Cannot iterate over uninitialized collection.", "XEC2027");
+                return Error("XEC2027", "Cannot iterate over uninitialized collection.");
             }
 
             EXEVariable iteratorVariable = this.SuperScope.FindVariable(this.IteratorName);
@@ -104,7 +104,7 @@ namespace OALProgramControl
             }
             else
             {
-                return Error("Unexpected modification of iterator variable during foreach loop execution.", "XEC2034");
+                return Error("XEC2034", "Unexpected modification of iterator variable during foreach loop execution.");
             };
 
 

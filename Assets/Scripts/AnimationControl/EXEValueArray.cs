@@ -29,7 +29,7 @@ namespace OALProgramControl
         {
             if (!EXETypes.IsValidArrayType(type))
             {
-                return EXEExecutionResult.Error(string.Format("Cannot create an array. \"{0}\" is not a valid array type.", type), "XEC2033");
+                return EXEExecutionResult.Error("XEC2033", string.Format("Cannot create an array. \"{0}\" is not a valid array type.", type));
             }
 
             EXEExecutionResult result = EXEExecutionResult.Success();
@@ -60,15 +60,15 @@ namespace OALProgramControl
             UInt32 indexValue = index;
             if (indexValue < 0)
             {
-                return EXEExecutionResult.Error("Index value cannot be lower than 0!", "XEC3004");
+                return EXEExecutionResult.Error("XEC3004", "Index value cannot be lower than 0!");
             }
             if (Elements == null)
             {
-                return EXEExecutionResult.Error("Cannot get the value of an array that is null!", "XEC3005");
+                return EXEExecutionResult.Error("XEC3005", "Cannot get the value of an array that is null!");
             }
             if (indexValue >= Elements.Count)
             {
-                return EXEExecutionResult.Error("Index " + indexValue + " is out of range (" + Elements.Count + ")!", "XEC3006");
+                return EXEExecutionResult.Error("XEC3006", "Index " + indexValue + " is out of range (" + Elements.Count + ")!");
             }
             
             EXEExecutionResult result = EXEExecutionResult.Success();
@@ -129,7 +129,7 @@ namespace OALProgramControl
 
             if (this.Elements == null)
             {
-                return EXEExecutionResult.Error("Tried to remove an element from an uninitialized array.", "XEC2027");
+                return EXEExecutionResult.Error("XEC2027", "Tried to remove an element from an uninitialized array.");
             }
 
             this.Elements.RemoveAll(element => element.Equals(removedElement));

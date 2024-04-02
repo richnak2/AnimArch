@@ -14,6 +14,7 @@ namespace Visualization.Animation
         public EXEExecutionResult ExecutionSuccess;
         protected AnimationThread ParentThread;
         protected readonly List<AnimationThread> ChildThreads;
+        private readonly int ID;
 
         protected bool IsOver;
 
@@ -42,6 +43,14 @@ namespace Visualization.Animation
             }
         }
 
+        private static int IdSeed = 0;
+
+        public EXEScopeMethod CurrentMethod {
+            get {
+                return CommandStack.Peek()?.GetCurrentMethodScope();
+            }
+        }
+
         public AnimationThread(EXEExecutionStack executionStack, OALProgram currentProgramInstance, Animation animation)
         {
             this.CommandStack = executionStack;
@@ -53,6 +62,9 @@ namespace Visualization.Animation
             this.ChildThreads = new List<AnimationThread>();
             this._animate = true;
             this._animateNewObjects = true;
+
+            IdSeed++;
+            this.ID = IdSeed;
         }
 
         public IEnumerator Start()
@@ -69,7 +81,7 @@ namespace Visualization.Animation
 
                 ExecutionSuccess = CurrentCommand.PerformExecution(CurrentProgramInstance);
 
-                Debug.Log("Command " + i++ + ExecutionSuccess.ToString());
+                Debug.LogFormat("Thread {2}. Command {0}:{1}", i++, ExecutionSuccess.ToString(), this.ID);
 
                 if (!ExecutionSuccess.IsSuccess)
                 {
@@ -92,6 +104,11 @@ namespace Visualization.Animation
 
                 yield return Animation.AnimateCommand(CurrentCommand, this, Animate, AnimateNewObjects);
 
+                if (!ExecutionSuccess.IsSuccess)
+                {
+                    ShowError(ExecutionSuccess);
+                    break;
+                }
 
                 if (CurrentCommand is EXEScopeParallel)
                 {
@@ -100,6 +117,7 @@ namespace Visualization.Animation
                 }
             }
 
+            Debug.LogFormat("Thread {0} is over.", this.ID);
             IsOver = true;
         }
 

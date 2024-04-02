@@ -700,6 +700,18 @@ MonoBehaviour:
     m_Localized: Collapse animation tools
     m_Metadata:
       m_Items: []
+  - m_Id: 51780238778462208
+    m_Localized: Gradual edge filling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47697996781969408
+    m_Localized: Select a class to start the animation.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47698334880620544
+    m_Localized: Select a method to start the animation.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

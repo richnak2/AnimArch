@@ -27,7 +27,7 @@ namespace OALProgramControl
 
             if (this.FirstElement == null)
             {
-                return EXEExecutionResult.Error("Access chain with no elements.", "XEC2000", null);
+                return EXEExecutionResult.Error("XEC2000", "Access chain with no elements.", null);
             }
 
             valueContext = valueContext ?? new EXEASTNodeAccessChainContext();

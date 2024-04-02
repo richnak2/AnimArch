@@ -11,6 +11,7 @@ namespace OALProgramControl
         public String AssignmentType { get; }
         public EXEASTNodeAccessChain AssignmentTarget { get; }
         public EXEASTNodeBase Prompt { get; }  // Must be String type
+        public string PromptText { get; private set; }
 
         public EXECommandRead(String assignmentType, EXEASTNodeAccessChain assignmentTarget, EXEASTNodeBase prompt)
         {
@@ -42,7 +43,7 @@ namespace OALProgramControl
 
             if (promptEvaluationResult.ReturnedOutput is not EXEValueString)
             {
-                return Error(string.Format("Tried to read from console with prompt that is not string. Instead, it is \"{0}\".", promptEvaluationResult.ReturnedOutput.TypeName), "XEC2025");
+                return Error("XEC2025", string.Format("Tried to read from console with prompt that is not string. Instead, it is \"{0}\".", promptEvaluationResult.ReturnedOutput.TypeName));
             }
 
             string prompt = string.Empty;
@@ -53,7 +54,7 @@ namespace OALProgramControl
                 prompt = visitor.GetCommandStringAndResetStateNow();
             }
 
-            ConsolePanel.Instance.YieldOutput(prompt);
+            this.PromptText = prompt;
 
             return Success();
         }
@@ -64,7 +65,7 @@ namespace OALProgramControl
 
             if (readValueType == EPrimitiveType.NotPrimitive)
             {
-                return Error(ErrorMessage.InvalidValueForType(Value, this.AssignmentType), "XEC2026");
+                return Error("XEC2026", ErrorMessage.InvalidValueForType(Value, this.AssignmentType));
             }
 
             EXEValuePrimitive readValue = EXETypes.DeterminePrimitiveValue(Value);

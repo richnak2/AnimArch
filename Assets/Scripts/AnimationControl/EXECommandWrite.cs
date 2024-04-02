@@ -10,6 +10,7 @@ namespace OALProgramControl
     public class EXECommandWrite : EXECommand
     {
         public List<EXEASTNodeBase> Arguments { get; }
+        public string PromptText { get; private set; }
         public EXECommandWrite() : this(new List<EXEASTNodeBase>()) {}
         public EXECommandWrite(List<EXEASTNodeBase> Arguments)
         {
@@ -35,7 +36,7 @@ namespace OALProgramControl
                         return visitor.GetCommandStringAndResetStateNow();
             }));
 
-            ConsolePanel.Instance.YieldOutput(result);
+            this.PromptText = result;
 
             return Success();
         }

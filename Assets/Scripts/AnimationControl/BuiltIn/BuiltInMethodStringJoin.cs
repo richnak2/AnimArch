@@ -14,7 +14,7 @@ namespace Assets.Scripts.AnimationControl.BuiltIn
 
             if (nonStringValues.Any())
             {
-                return EXEExecutionResult.Error(string.Format("The provided list needs to contains string values only. Instead, it contains '{0}' of type '{1}'.", nonStringValues.First().ToObjectDiagramText(), nonStringValues.First().TypeName), "XEC2050");
+                return EXEExecutionResult.Error("XEC2050", string.Format("The provided list needs to contains string values only. Instead, it contains '{0}' of type '{1}'.", nonStringValues.First().ToObjectDiagramText(), nonStringValues.First().TypeName));
             }
 
             string delimiter = owningObject.Value;

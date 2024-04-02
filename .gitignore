@@ -9,6 +9,8 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+UserSettings/
+./UserSettings/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -28,6 +30,9 @@
 
 # Vscode config directory
 .vscode/
+
+# History directory
+.history/
 
 # Gradle cache directory
 .gradle/
