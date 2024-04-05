@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using OALProgramControl;
 using UnityEngine;
 
-public interface IVisitable {
-    void Accept(Visitor v);
-}
-
-public abstract class Visitor
+public abstract class Visitor : IValueVisitor
 {
     public abstract void VisitExeCommandCall(EXECommandCall command);
     public abstract void VisitExeCommandBreak(EXECommandBreak command);

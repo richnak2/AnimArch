@@ -130,7 +130,7 @@ namespace Visualization.Animation
 
             CDClassInstance startingInstance = MethodExecutableCode.MethodDefinition.OwningClass.CreateClassInstance();
             MethodExecutableCode.OwningObject = new EXEValueReference(startingInstance);
-            objectDiagram.ShowObject(AddObjectToDiagram(" ", startingInstance));
+            objectDiagram.ShowObject(AddObjectToDiagram(startingInstance));
 
             MethodExecutableCode.InitializeVariables(currentProgramInstance);
 
@@ -257,7 +257,7 @@ namespace Visualization.Animation
                     if (appendedInstance != null)
                     {
                         objectDiagram.AddRelation(listOwnerInstance, appendedInstance, "ASSOCIATION");
-                        objectDiagram.AddListAttributeValue(listOwnerInstance);
+                        objectDiagram.UpdateAttributeValues(listOwnerInstance);
                     }
                     else
                     {
@@ -317,12 +317,11 @@ namespace Visualization.Animation
         {
             if (classInstance == null) return;
 
-            objectDiagram.AddAttributeValue(classInstance);
+            objectDiagram.UpdateAttributeValues(classInstance);
         }
-        private ObjectInDiagram AddObjectToDiagram(string name, CDClassInstance newObject)
+        private ObjectInDiagram AddObjectToDiagram(CDClassInstance newObject, string name = null)
         {
             ObjectInDiagram objectInDiagram = objectDiagram.AddObjectInDiagram(name, newObject);
-            DiagramPool.Instance.ObjectDiagram.AddObject(objectInDiagram);
             return objectInDiagram;
         }
         private IEnumerator ResolveCreateObject(EXECommand currentCommand, bool Animate = true, bool AnimateNewObjects = true)
@@ -333,11 +332,16 @@ namespace Visualization.Animation
 
                 CDClassInstance callerObject = (currentCommand.GetCurrentMethodScope().OwningObject as EXEValueReference).ClassInstance;
                 CDClassInstance createdObject = createCommand.GetCreatedInstance();
-                VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
-                createCommand.Accept(visitor);
-                string targetVariableName = visitor.GetCommandStringAndResetStateNow();
 
-                var objectInDiagram = AddObjectToDiagram(targetVariableName, createdObject);
+                string targetVariableName = null;
+                if (createCommand.AssignmentTarget != null)
+                {
+                    VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                    createCommand.AssignmentTarget.Accept(visitor);
+                    targetVariableName = visitor.GetCommandStringAndResetStateNow();
+                }
+
+                var objectInDiagram = AddObjectToDiagram(createdObject, targetVariableName);
                 var relation = FindInterGraphRelation(createdObject.UniqueID);
 
                 if (!Animate)

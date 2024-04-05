@@ -36,7 +36,7 @@ namespace OALProgramControl
             return new EXEValueReal(this);
         }
 
-        public override void Accept(Visitor v)
+        public override void Accept(IValueVisitor v)
         {
             v.VisitExeValueReal(this);
         }
