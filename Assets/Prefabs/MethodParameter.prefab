@@ -81,7 +81,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParameterName: {fileID: 3316421912117434948}
   ParameterType: {fileID: 260378923425353014}
-  ParameterValue: {fileID: 8020709777620059757}
+  ParameterValue: {fileID: 6363927464829452438}
+  ParameterValueText: {fileID: 8020709777620059757}
   ErrorLabel: {fileID: 4424955484424701147}
   WarningLabel: {fileID: 8770260422535475345}
 --- !u!1 &260378923425353014

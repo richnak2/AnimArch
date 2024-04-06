@@ -476,14 +476,17 @@ namespace Visualization.UI
             {
                 List<EXEValueBase> exeList = new List<EXEValueBase>();
                 string listType = type.Substring(0, type.Length-2);
-                foreach (string listItem in value.Split(','))
+                if (value.Length > 0)
                 {
-                    EXEValueBase newValue = ParseParameterValue(listItem.Trim(), listType);
-                    if (newValue == null)
+                    foreach (string listItem in value.Split(','))
                     {
-                        return null;
+                        EXEValueBase newValue = ParseParameterValue(listItem.Trim(), listType);
+                        if (newValue == null)
+                        {
+                            return null;
+                        }
+                        exeList.Add(newValue);
                     }
-                    exeList.Add(newValue);
                 }
                 return new EXEValueArray(type, exeList);
             }
@@ -504,9 +507,10 @@ namespace Visualization.UI
         {
             MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
             Animation.Animation a = Animation.Animation.Instance;
-
-            a.startMethodParameters = new List<EXEVariable>();
+            string startMethodName = mediator.GetMethodLabelText();
             bool inputCorrect = true;
+
+            List<EXEVariable> newParameters = new List<EXEVariable>();
 
             foreach (Transform parameter in parameterHolder)
             {
@@ -524,14 +528,15 @@ namespace Visualization.UI
                 }
                 else
                 {
-                    a.startMethodParameters.Add(new EXEVariable(parameterName, parameterExeValue));
+                    newParameters.Add(new EXEVariable(parameterName, parameterExeValue));
                 }
             }
 
             if (inputCorrect)
             {
+                a.startMethodParameters[startMethodName] = newParameters;
                 mediator.SetActiveEnterParameterPopUp(false);
-                ApplyPlayMethodSelection(mediator.GetMethodLabelText());
+                ApplyPlayMethodSelection(startMethodName);
             }
         }
 
@@ -555,15 +560,32 @@ namespace Visualization.UI
                 Destroy(child.gameObject);
             }
 
-            foreach (CDParameter parameter in parameters)
+            for (int i = 0; i < parameters.Count; i++)
             {
+                CDParameter parameter = parameters[i];
                 GameObject parameterGo = Instantiate(MethodParameterPrefab, mediator.Content.transform);
                 parameterGo.GetComponent<MethodParameterManager>().ParameterName.GetComponent<TMP_Text>().text = parameter.Name;
                 parameterGo.GetComponent<MethodParameterManager>().ParameterType.GetComponent<TMP_Text>().text = parameter.Type;
-                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))    
+                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))
                 {
                     parameterGo.GetComponent<MethodParameterManager>().ParameterValue.GetComponent<TMP_InputField>().interactable = false;
                     parameterGo.GetComponent<MethodParameterManager>().WarningLabel.gameObject.SetActive(true);
+                }
+                else
+                {
+                    VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+
+                    if (a.startMethodParameters.ContainsKey(startMethodName))
+                    {
+                        a.startMethodParameters[startMethodName][i].Value.Accept(visitor);
+                    }
+                    else
+                    {
+                        EXETypes.DefaultValue(parameter.Type, a.CurrentProgramInstance.ExecutionSpace).Accept(visitor);
+                    }
+
+                    string parameterValue = visitor.GetCommandStringAndResetStateNow();
+                    parameterGo.GetComponent<MethodParameterManager>().ParameterValue.GetComponent<TMP_InputField>().text = parameterValue;
                 }
             }
 
