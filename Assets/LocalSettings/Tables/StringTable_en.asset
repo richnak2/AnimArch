@@ -709,7 +709,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 53234715201007616
-    m_Localized: Enter correct type of parameter!
+    m_Localized: Wrong type of input!
     m_Metadata:
       m_Items: []
   - m_Id: 53528851764604928

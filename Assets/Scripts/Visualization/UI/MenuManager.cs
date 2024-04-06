@@ -491,6 +491,15 @@ namespace Visualization.UI
             return ParseParameterValue(value, type);
         }
 
+        private Transform parameterHolder
+        { 
+            get 
+            {
+                MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
+                return mediator.Content.transform;
+            } 
+        }
+
         public void SaveParametersForInitialMethod()
         {
             MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
@@ -499,12 +508,12 @@ namespace Visualization.UI
             a.startMethodParameters = new List<EXEVariable>();
             bool inputCorrect = true;
 
-            foreach (Transform parameter in mediator.Content.transform)
+            foreach (Transform parameter in parameterHolder)
             {
-                string parameterName  = parameter.Find("ParameterName").GetComponent<TMP_Text>().text;
-                string parameterValue = parameter.Find("ParameterValue/Text Area/Text").GetComponent<TMP_Text>().text;
-                string parameterType  = parameter.Find("ParameterType").GetComponent<TMP_Text>().text;
-                GameObject errorLabel = parameter.Find("ParameterValue/ErrorLabel").gameObject;
+                string parameterName  = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterName.GetComponent<TMP_Text>().text;
+                string parameterValue = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterValueText.GetComponent<TMP_Text>().text;
+                string parameterType = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterType.GetComponent<TMP_Text>().text;
+                GameObject errorLabel = parameter.gameObject.GetComponent<MethodParameterManager>().ErrorLabel.gameObject;
                 errorLabel.SetActive(false);
 
                 EXEValueBase parameterExeValue = ParseUserInput(Regex.Replace(parameterValue, @"[^\w:/ \.,]", string.Empty), parameterType);
@@ -549,12 +558,12 @@ namespace Visualization.UI
             foreach (CDParameter parameter in parameters)
             {
                 GameObject parameterGo = Instantiate(MethodParameterPrefab, mediator.Content.transform);
-                parameterGo.transform.Find("ParameterName").GetComponent<TMP_Text>().text = parameter.Name;
-                parameterGo.transform.Find("ParameterType").GetComponent<TMP_Text>().text = parameter.Type;
-                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))
+                parameterGo.GetComponent<MethodParameterManager>().ParameterName.GetComponent<TMP_Text>().text = parameter.Name;
+                parameterGo.GetComponent<MethodParameterManager>().ParameterType.GetComponent<TMP_Text>().text = parameter.Type;
+                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))    
                 {
-                    parameterGo.transform.Find("ParameterValue").GetComponent<TMP_InputField>().interactable = false;
-                    parameterGo.transform.Find("ParameterValue/WarningLabel").gameObject.SetActive(true);
+                    parameterGo.GetComponent<MethodParameterManager>().ParameterValue.GetComponent<TMP_InputField>().interactable = false;
+                    parameterGo.GetComponent<MethodParameterManager>().WarningLabel.gameObject.SetActive(true);
                 }
             }
 
