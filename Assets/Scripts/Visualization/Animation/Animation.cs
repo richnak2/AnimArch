@@ -319,27 +319,30 @@ namespace Visualization.Animation
 
             objectDiagram.UpdateAttributeValues(classInstance);
         }
-        private ObjectInDiagram AddObjectToDiagram(CDClassInstance newObject, string name = null)
+        private ObjectInDiagram AddObjectToDiagram(CDClassInstance newObject, string name = null, bool showNewObject = true)
         {
-            ObjectInDiagram objectInDiagram = objectDiagram.AddObjectInDiagram(name, newObject);
+            ObjectInDiagram objectInDiagram = objectDiagram.AddObjectInDiagram(name, newObject, showNewObject);
             return objectInDiagram;
         }
         private IEnumerator ResolveCreateObject(EXECommand currentCommand, bool Animate = true, bool AnimateNewObjects = true)
         {
+            EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
+
+            CDClassInstance callerObject = (currentCommand.GetCurrentMethodScope().OwningObject as EXEValueReference).ClassInstance;
+            CDClassInstance createdObject = createCommand.GetCreatedInstance();
+
+            string targetVariableName = null;
+            if (createCommand.AssignmentTarget != null)
+            {
+                VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+                createCommand.AssignmentTarget.Accept(visitor);
+                targetVariableName = visitor.GetCommandStringAndResetStateNow();
+            }
+
             if (AnimateNewObjects)
             {
-                EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
 
-                CDClassInstance callerObject = (currentCommand.GetCurrentMethodScope().OwningObject as EXEValueReference).ClassInstance;
-                CDClassInstance createdObject = createCommand.GetCreatedInstance();
-
-                string targetVariableName = null;
-                if (createCommand.AssignmentTarget != null)
-                {
-                    VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
-                    createCommand.AssignmentTarget.Accept(visitor);
-                    targetVariableName = visitor.GetCommandStringAndResetStateNow();
-                }
+                
 
                 var objectInDiagram = AddObjectToDiagram(createdObject, targetVariableName);
                 var relation = FindInterGraphRelation(createdObject.UniqueID);
@@ -414,6 +417,10 @@ namespace Visualization.Animation
 
                     objectDiagram.AddRelation(callerObject, createdObject, "ASSOCIATION");
                 }
+            }
+            else
+            {
+                AddObjectToDiagram(createdObject, targetVariableName, false);
             }
                 
             IncrementBarrier();

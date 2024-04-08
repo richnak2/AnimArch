@@ -12,6 +12,8 @@ using Visualization.ClassDiagram.ClassComponents;
 using Visualization.ClassDiagram.ComponentsInDiagram;
 using Visualization.ClassDiagram.Diagrams;
 using Visualization.ClassDiagram.Relations;
+using Visualization.Animation;
+using Animation = Visualization.Animation.Animation;
 
 namespace AnimArch.Visualization.Diagrams
 {
@@ -21,6 +23,7 @@ namespace AnimArch.Visualization.Diagrams
         public List<ObjectInDiagram> Objects { get; private set; }
         public List<ObjectRelation> Relations { get; private set; }
         private Dictionary<long, string> ObjectNamesInDiagram = new Dictionary<long, string>();
+
 
         ObjectDiagramValueVisitor visitor = new ObjectDiagramValueVisitor();
 
@@ -184,7 +187,7 @@ namespace AnimArch.Visualization.Diagrams
 
         private void AddObject(ObjectInDiagram Object)
         {
-            if (ObjectExists(Object.Instance.UniqueID))
+            if (ObjectNamesInDiagram.ContainsKey(Object.Instance.UniqueID))
             {
                 string message = string.Format("Tried to add an already existing object to object diagram with id:'{0}'.", Object.Instance.UniqueID);
                 throw new Exception(message);
@@ -206,6 +209,10 @@ namespace AnimArch.Visualization.Diagrams
             }
 
             ObjectNamesInDiagram.Add(Object.Instance.UniqueID, Object.VariableName);
+        }
+
+        private void AddVisualPartOfObject(ObjectInDiagram Object)
+        {
             Objects.Add(Object);
             GenerateObject(Object);
             graph.Layout();
@@ -242,7 +249,7 @@ namespace AnimArch.Visualization.Diagrams
             graph.Layout();
         }
 
-        public ObjectInDiagram AddObjectInDiagram(string variableName, CDClassInstance instance)
+        public ObjectInDiagram AddObjectInDiagram(string variableName, CDClassInstance instance, bool visible = true)
         {
             ObjectInDiagram objectInDiagram = new ObjectInDiagram
             {
@@ -253,6 +260,11 @@ namespace AnimArch.Visualization.Diagrams
             };
 
             AddObject(objectInDiagram);
+
+            if (visible)
+            {
+                AddVisualPartOfObject(objectInDiagram);
+            }
 
             return objectInDiagram;
         }
@@ -296,15 +308,13 @@ namespace AnimArch.Visualization.Diagrams
         }
         public string GetObjectName(long instanceID)
         {
-            ObjectInDiagram objectInDiagram = FindByID(instanceID);
-
-            if (objectInDiagram == null)
+            if (!ObjectNamesInDiagram.ContainsKey(instanceID))
             {
-                string message = string.Format("Tried to get name of object with non-existent id:'0'", instanceID);
+                string message = string.Format("Tried to get name of object with non-existent id:'{0}'", instanceID);
                 throw new Exception(message);
             }
 
-            return objectInDiagram.VariableName;
+            return ObjectNamesInDiagram[instanceID];
         }
 
         public bool UpdateAttributeValues(CDClassInstance classInstance)
