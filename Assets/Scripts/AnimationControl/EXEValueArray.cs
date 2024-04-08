@@ -52,7 +52,7 @@ namespace OALProgramControl
         {
             return new EXEValueArray(this.TypeName, this.Elements.Select(element => element.DeepClone()).ToList());
         }
-        public override void Accept(Visitor v) {
+        public override void Accept(IValueVisitor v) {
             v.VisitExeValueArray(this);
         }
         public override EXEExecutionResult GetValueAt(UInt32 index)

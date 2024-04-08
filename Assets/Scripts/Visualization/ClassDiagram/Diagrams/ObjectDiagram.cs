@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using OALProgramControl;
 using TMPro;
 using UMSAGL.Scripts;
@@ -17,6 +20,9 @@ namespace AnimArch.Visualization.Diagrams
         public Graph graph;
         public List<ObjectInDiagram> Objects { get; private set; }
         public List<ObjectRelation> Relations { get; private set; }
+        private Dictionary<long, string> ObjectNamesInDiagram = new Dictionary<long, string>();
+
+        ObjectDiagramValueVisitor visitor = new ObjectDiagramValueVisitor();
 
         private void Awake()
         {
@@ -26,6 +32,8 @@ namespace AnimArch.Visualization.Diagrams
 
         public void ResetDiagram()
         {
+            ObjectNamesInDiagram.Clear();
+
             if (DiagramPool.Instance.ClassDiagram && DiagramPool.Instance.ClassDiagram.Classes != null)
             {
                 foreach (var classDiagramClass in DiagramPool.Instance.ClassDiagram.Classes)
@@ -174,11 +182,58 @@ namespace AnimArch.Visualization.Diagrams
             // InterGraphLine.GetComponent<InterGraphRelation>().Hide();
         }
 
-        public void AddObject(ObjectInDiagram Object)
+        private void AddObject(ObjectInDiagram Object)
         {
+            if (ObjectExists(Object.Instance.UniqueID))
+            {
+                string message = string.Format("Tried to add an already existing object to object diagram with id:'{0}'.", Object.Instance.UniqueID);
+                throw new Exception(message);
+            }
+
+            if (Object.VariableName == null)
+            {
+                string className = Object.Instance.OwningClass.Name;
+                string objectNamePrefix
+                    = className.Substring(0, 1).ToLower() + className.Substring(1);
+                string newObjectNameName = CreateObjectName(objectNamePrefix, Object.Instance.UniqueID);
+                Object.VariableName = newObjectNameName;
+            }
+            else if (AllObjectNames().Contains(Object.VariableName))
+            {
+                string objectNamePrefix = Object.VariableName;
+                string newObjectNameName = CreateObjectName(objectNamePrefix, Object.Instance.UniqueID);
+                Object.VariableName = newObjectNameName;
+            }
+
+            ObjectNamesInDiagram.Add(Object.Instance.UniqueID, Object.VariableName);
             Objects.Add(Object);
             GenerateObject(Object);
             graph.Layout();
+        }
+
+        private IEnumerable<string> AllObjectNames()
+        {
+            return ObjectNamesInDiagram.Values;
+        }
+        private string CreateObjectName(string variableNamePrefix, long objectId)
+        {
+            string variableName = null;
+            for (int i = 1; i < int.MaxValue; i++)
+            {
+                variableName = string.Format("{0}_{1}", variableNamePrefix, i.ToString());
+                if (!AllObjectNames().Contains(variableName))
+                {
+                    break;
+                }
+            }
+
+            if (variableName == null)
+            {
+                string message = string.Format("Failed to create name for object with id:'0'.", objectId);
+                throw new Exception(message);
+            }
+
+            return variableName;
         }
 
         public void ShowObject(ObjectInDiagram Object)
@@ -189,12 +244,6 @@ namespace AnimArch.Visualization.Diagrams
 
         public ObjectInDiagram AddObjectInDiagram(string variableName, CDClassInstance instance)
         {
-            var dcba = instance.OwningClass;
-            var edcba = instance.OwningClass.Name;
-            var cba = DiagramPool.Instance;
-            var ba = DiagramPool.Instance.ClassDiagram;
-            var a = DiagramPool.Instance.ClassDiagram.FindClassByName(instance.OwningClass.Name);
-
             ObjectInDiagram objectInDiagram = new ObjectInDiagram
             {
                 Class = DiagramPool.Instance.ClassDiagram.FindClassByName(instance.OwningClass.Name),
@@ -202,6 +251,9 @@ namespace AnimArch.Visualization.Diagrams
                 VisualObject = null,
                 VariableName = variableName
             };
+
+            AddObject(objectInDiagram);
+
             return objectInDiagram;
         }
 
@@ -242,8 +294,20 @@ namespace AnimArch.Visualization.Diagrams
         {
             return FindByID(instanceID) != null;
         }
+        public string GetObjectName(long instanceID)
+        {
+            ObjectInDiagram objectInDiagram = FindByID(instanceID);
 
-        public bool AddAttributeValue(CDClassInstance classInstance)
+            if (objectInDiagram == null)
+            {
+                string message = string.Format("Tried to get name of object with non-existent id:'0'", instanceID);
+                throw new Exception(message);
+            }
+
+            return objectInDiagram.VariableName;
+        }
+
+        public bool UpdateAttributeValues(CDClassInstance classInstance)
         {
             ObjectInDiagram objectInDiagram = FindByID(classInstance.UniqueID);
             if (objectInDiagram == null)
@@ -253,24 +317,34 @@ namespace AnimArch.Visualization.Diagrams
 
             var background = objectInDiagram.VisualObject.transform.Find("Background");
             var attributes = background.Find("Attributes");
-            attributes.GetComponent<TextMeshProUGUI>().text = classInstance.AttributeValuesForClassDiagram();
+            attributes.GetComponent<TextMeshProUGUI>().text = CreateAttributeValueText(classInstance);
 
             return true;
         }
 
-        public bool AddListAttributeValue(CDClassInstance classInstance)
+        private string CreateAttributeValueText(CDClassInstance instance)
         {
-            ObjectInDiagram objectInDiagram = FindByID(classInstance.UniqueID);
-            if (objectInDiagram == null)
-            {
-                return false;
-            }
+            IEnumerable<string> values
+                = instance.State.Keys
+                    .Select
+                    (
+                        key =>
+                        {
+                            instance.State[key].Accept(visitor);
+                            return visitor.Result;
+                        }
+                    );
+            IEnumerable<string> attributeValueTexts
+                = instance.State.Keys.Select(key => string.Format("{0} = {1}", key, CreateValueText(instance.State[key])));
+            string attributeValueText
+                = string.Join("\n", attributeValueTexts);
 
-            var background = objectInDiagram.VisualObject.transform.Find("Background");
-            var attributes = background.Find("Attributes");
-            attributes.GetComponent<TextMeshProUGUI>().text = classInstance.AttributeValuesForClassDiagram();
-
-            return true;
+            return attributeValueText;
+        }
+        private string CreateValueText(EXEValueBase value)
+        {
+            value.Accept(visitor);
+            return visitor.Result;
         }
 
         private bool ContainsObjectRelation(ObjectRelation objectRelation)
