@@ -127,7 +127,9 @@ namespace Visualization.Animation
             MethodExecutableCode.OwningObject = new EXEValueReference(startingInstance);
             objectDiagram.ShowObject(AddObjectToDiagram(" ", startingInstance));
 
-            MethodExecutableCode.InitializeVariables(startMethodParameters[startMethodName]);
+            MethodExecutableCode.InitializeVariables(startMethodParameters.ContainsKey(startMethodName) ?
+                startMethodParameters[startMethodName] :
+                new List<EXEVariable>());
 
             Class caller = classDiagram.FindClassByName(startClassName).ParsedClass;
             Method callerMethod = classDiagram.FindMethodByName(startClassName, startMethodName);
