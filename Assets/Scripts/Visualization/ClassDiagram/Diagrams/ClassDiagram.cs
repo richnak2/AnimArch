@@ -103,6 +103,12 @@ namespace Visualization.ClassDiagram.Diagrams
                 .FirstOrDefault(relation => string.Equals(relationshipName, relation.RelationInfo.RelationshipName));
         }
 
+        public void AddRelation(RelationInDiagram relation)
+        {
+            Relations.Add(relation);
+            relation.HighlightSubject = new EdgeHighlightSubject();
+        }
+
         public string FindOwnerOfRelation(string relationName)
         {
             return Relations
