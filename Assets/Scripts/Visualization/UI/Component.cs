@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Visualization.UI
 {
-    class Component : MonoBehaviour
+    public class Component : MonoBehaviour
     {
         public string ComponentName;
 
@@ -17,6 +18,14 @@ namespace Visualization.UI
         public virtual void Operation(){}
         public virtual void Add(Component component){}
         public virtual void Remove(Component component){}
+        public virtual string GetName()
+        {
+            return ComponentName;
+        }
+        public virtual List<Component> GetChildren()
+        {
+            return null;
+        }
         public virtual Component GetChild(int index)
         {
             return null;

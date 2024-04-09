@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Visualization.UI
 {
-    class Composite : Component
+    public class Composite : Component
     {
         private List<Component> children = new List<Component>();
         public string CompositeName;
@@ -33,6 +33,14 @@ namespace Visualization.UI
         public override Component GetChild(int index)
         {
             return children[index];
+        }
+        public override string GetName()
+        {
+            return CompositeName;
+        }
+        public override List<Component> GetChildren()
+        {
+            return children;
         }
     }
 }
