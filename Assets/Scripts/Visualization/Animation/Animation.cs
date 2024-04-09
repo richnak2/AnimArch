@@ -25,7 +25,7 @@ namespace Visualization.Animation
     //Controls the entire animation process
     public class Animation : Singleton<Animation>
     {
-        private ClassDiagram.Diagrams.ClassDiagram classDiagram;
+        public ClassDiagram.Diagrams.ClassDiagram classDiagram  {get; private set;}
         private ObjectDiagram objectDiagram;
         public Color classColor;
         public Color methodColor;
@@ -498,30 +498,23 @@ namespace Visualization.Animation
 
             if (edge != null)
             {
+                EdgeHighlightSubject.EdgesDrawingFinishedFlag finishedFlag = classDiagram.FindEdgeInfo(Call.Relation.RelationshipName).HighlightSubject.finishedFlag;
                 if (edge.CompareTag("Generalization") || edge.CompareTag("Implements") ||
                     edge.CompareTag("Realisation"))
                 {
+                    finishedFlag.InitDrawingFinishedFlag();
                     HighlightEdge(Call.Relation.RelationshipName, true, Call);
                     yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed / 2);
                 }
                 else
                 {
-                    EdgesDrawingFinishedFlag finishedFlag = classDiagram.FindEdgeInfo(Call.Relation.RelationshipName).HighlightSubject.finishedFlag;
-                    finishedFlag.SetFlag(0);
                     yield return FillNewFiller(classDiagram.FindOwnerOfRelation(Call.Relation.RelationshipName),
                         Call.CalledMethod.OwningClass.Name, edge, Call, finishedFlag);
                 }
             }
         }
 
-        public class EdgesDrawingFinishedFlag {
-            private int flag;
-
-            public int GetFlag() {return flag;}
-            public void SetFlag(int newFlag) {flag = newFlag;}
-        }
-
-        private object FillNewFiller(string ownerOfRelation, string calledClassName, GameObject edge, MethodInvocationInfo Call, EdgesDrawingFinishedFlag finishedEdges)
+        private object FillNewFiller(string ownerOfRelation, string calledClassName, GameObject edge, MethodInvocationInfo Call, EdgeHighlightSubject.EdgesDrawingFinishedFlag finishedEdges)
         {
             GameObject newFiller = Instantiate(LineFill);
             Fillers.Add(newFiller);
@@ -546,8 +539,8 @@ namespace Visualization.Animation
 
 
             Func<bool> highlightEdgeCallback = () => {
-                finishedEdges.SetFlag(finishedEdges.GetFlag()+1);
-                if (finishedEdges.GetFlag() == 2)
+                finishedEdges.IncrementFlag();
+                if (finishedEdges.IsDrawingFinished())
                 {
                     HighlightEdge(Call.Relation.RelationshipName, true, Call);
                     Destroy(lf1.gameObject);
@@ -557,8 +550,8 @@ namespace Visualization.Animation
             };
 
 
-            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false, highlightEdgeCallback));
-            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip, highlightEdgeCallback));
+            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false, highlightEdgeCallback, true));
+            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip, highlightEdgeCallback, false));
         }
 
         private GameObject classGameObject(string className)
@@ -811,8 +804,6 @@ namespace Visualization.Animation
             if (relation != null)
             {
                 relation.HighlightSubject.InvocationInfo = Call;
-                relation.HighlightSubject.finishedFlag = new EdgesDrawingFinishedFlag();
-                relation.HighlightSubject.finishedFlag.SetFlag(2);
             }
         }
 
@@ -828,15 +819,20 @@ namespace Visualization.Animation
 
             assignCallInfoToAllHighlightSubjects(called, calledMethod, relation, Call, Call.CalledMethod);
 
-            relation?.HighlightSubject.IncrementHighlightLevel();
             if (relation != null)
             {
-                yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.GetFlag() == 2);
+                yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.IsUnhighlightingFinished());
+                relation?.HighlightSubject.IncrementHighlightLevel();
+                yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.IsDrawingFinished());
             }
             calledMethod.HighlightObjectSubject.IncrementHighlightLevel();
             called.HighlightSubject.IncrementHighlightLevel();
             calledMethod.HighlightSubject.IncrementHighlightLevel();
             yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * 1.25f);
+            if (relation != null)
+            {
+                relation.HighlightSubject.finishedFlag.IncrementFlag();
+            }
 
             IncrementBarrier();
         }
@@ -850,10 +846,21 @@ namespace Visualization.Animation
             RelationInDiagram relation = classDiagram.FindEdgeInfo(callInfo.Relation?.RelationshipName);
             assignCallInfoToAllHighlightSubjects(called, calledMethod, relation, callInfo, callInfo.CalledMethod);
 
+
+            if (relation != null)
+            {
+                yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.IsHighlightingFinished());
+            }
+
             calledMethod.HighlightSubject.DecrementHighlightLevel();
             calledMethod.HighlightObjectSubject.DecrementHighlightLevel();
             called.HighlightSubject.DecrementHighlightLevel();
             relation?.HighlightSubject.DecrementHighlightLevel();
+
+            if (relation != null)
+            {
+                relation.HighlightSubject.finishedFlag.IncrementFlag();
+            }
 
             if (standardPlayMode)
             {
