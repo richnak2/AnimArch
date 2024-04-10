@@ -28,6 +28,7 @@ namespace Visualization.UI
             foreach (Component child in children)
             {
                 child.Operation();
+                // child.gameObject;
             }
         }
         public override Component GetChild(int index)

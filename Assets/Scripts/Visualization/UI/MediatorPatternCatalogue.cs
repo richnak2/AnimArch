@@ -46,6 +46,12 @@ namespace Visualization.UI
         }
 
         //TODO Not assigning the children in the scene correctly
+        // ukladať referencie detí, a setactive podla kliku na parenta
+        // dvakrat načítanie katalogu - naloaduje ich moc moc
+        // premenovať composite, component a leaf - na nejaké krajšie nech je jasné
+        // kde-čo-ako sa nachadzajú
+        // method pagination = inšpirácia na priradovanie parenta
+        // priradit parent do atribútu
         private void RecursiveCreatePatternPrefabs(GameObject parent, Component patternCatalogueComponent)
         {
             foreach(Component child in patternCatalogueComponent.GetComposite().GetChildren())

@@ -6,6 +6,7 @@ namespace Visualization.UI
     public class Component : MonoBehaviour
     {
         public string ComponentName;
+        public GameObject parent;
 
         public Component(string name)
         {
@@ -18,6 +19,10 @@ namespace Visualization.UI
         public virtual void Operation(){}
         public virtual void Add(Component component){}
         public virtual void Remove(Component component){}
+        
+        public void Awake(){
+            // tu setovať parenta
+        }
         public virtual string GetName()
         {
             return ComponentName;
