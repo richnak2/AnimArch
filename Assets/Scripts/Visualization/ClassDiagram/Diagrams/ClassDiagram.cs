@@ -125,6 +125,13 @@ namespace Visualization.ClassDiagram.Diagrams
                     relation.ParsedRelation.PropertiesEaType == type);
         }
 
+        public IEnumerable<RelationInDiagram> FindRelationsByClass(string classInDiagram)
+        {
+            return Relations
+                .FindAll(relation => 
+                    (relation.RelationInfo.FromClass == classInDiagram  || relation.RelationInfo.ToClass == classInDiagram));
+        }
+
 
         public IEnumerable<Class> GetClassList()
         {

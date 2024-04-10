@@ -324,6 +324,7 @@ namespace Visualization.Animation
 
                 var objectInDiagram = AddObjectToDiagram(targetVariableName, createdObject);
                 var relation = FindInterGraphRelation(createdObject.UniqueID);
+                IEnumerable<RelationInDiagram> relationsOfClass = classDiagram.FindRelationsByClass(createdObject.OwningClass.Name);
 
                 if (!Animate)
                 {
@@ -337,12 +338,19 @@ namespace Visualization.Animation
                     int step = 0;
                     float speedPerAnim = AnimationData.Instance.AnimSpeed;
                     float timeModifier = 1f;
+                    foreach (RelationInDiagram rel in relationsOfClass)
+                    {
+                        yield return new WaitUntil(() => rel.HighlightSubject.finishedFlag.IsUnhighlightingFinished());
+                    }
+                    Class highlightedClass = classDiagram.FindClassByName(createdObject.OwningClass.Name).ParsedClass;
+                    highlightedClass.HighlightSubject.ClassName = highlightedClass.Name;
                     while (step < 7)
                     {
                         switch (step)
                         {
                             case 0:
-                                HighlightClass(createdObject.OwningClass.Name, true);
+                                highlightedClass.HighlightSubject.IncrementHighlightLevel();
+                                //HighlightClass(createdObject.OwningClass.Name, true);
                                 break;
                             case 1:
                                 // yield return StartCoroutine(AnimateFillInterGraph(relation));
@@ -358,7 +366,8 @@ namespace Visualization.Animation
                                 timeModifier = 0.5f;
                                 break;
                             case 6:
-                                HighlightClass(createdObject.OwningClass.Name, false);
+                                highlightedClass.HighlightSubject.DecrementHighlightLevel();
+                                //HighlightClass(createdObject.OwningClass.Name, false);
                                 relation.UnHighlight();
                                 timeModifier = 1f;
                                 break;
@@ -797,7 +806,6 @@ namespace Visualization.Animation
 
         private void assignCallInfoToAllHighlightSubjects(Class c, Method m, RelationInDiagram relation, MethodInvocationInfo Call, CDMethod method) {
             c.HighlightSubject.ClassName = method.OwningClass.Name;
-            c.HighlightSubject.InvocationInfo = Call;
             m.HighlightSubject.MethodName = method.Name;
             m.HighlightSubject.ClassName = method.OwningClass.Name;
             m.HighlightObjectSubject.InvocationInfo = Call;

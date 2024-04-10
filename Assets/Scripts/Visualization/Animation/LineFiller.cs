@@ -50,8 +50,8 @@ namespace Visualization.Animation
                 nextPoint = targetPoints[1];
                 addedPoints = new List<Vector2>();
                 addedPoints.Add(currentPosition);
-                color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
-                // color = createLineFillerColor();
+                //color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+                color = Animation.Instance.methodColor;
             }
             while (addedPoints.Count < targetPoints.Length)
             {

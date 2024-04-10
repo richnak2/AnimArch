@@ -19,7 +19,7 @@ public class EdgeHighlightSubject : HighlightSubject
 
         private FlagStatus flag;
 
-        public void InitDehighlightingFinished() {flag = FlagStatus.unhighlightingFinished;}
+        public void InitUnhighlightingFinished() {flag = FlagStatus.unhighlightingFinished;}
         public void InitDrawingFinishedFlag() {flag = FlagStatus.drawingFinished;}
         public void InitWaitingFlag() {flag = FlagStatus.waiting;}
         public void IncrementFlag() {
@@ -42,7 +42,7 @@ public class EdgeHighlightSubject : HighlightSubject
         EdgeHighlightObserver o = new EdgeHighlightObserver(this);
         this.Attach(o);
         finishedFlag = new EdgesDrawingFinishedFlag();
-        finishedFlag.InitDehighlightingFinished();
+        finishedFlag.InitUnhighlightingFinished();
     }
 
 }
