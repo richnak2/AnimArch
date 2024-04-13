@@ -516,6 +516,10 @@ namespace Visualization.UI
             {
                 string parameterName  = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterName.GetComponent<TMP_Text>().text;
                 string parameterValue = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterValueText.GetComponent<TMP_Text>().text;
+                if (Regex.Replace(parameterValue, @"[^\w:/ \.,]", string.Empty).Length == 0)
+                {
+                    parameterValue = parameter.gameObject.GetComponent<MethodParameterManager>().PlaceholderText.GetComponent<TMP_Text>().text;
+                }
                 string parameterType = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterType.GetComponent<TMP_Text>().text;
                 GameObject errorLabel = parameter.gameObject.GetComponent<MethodParameterManager>().ErrorLabel.gameObject;
                 errorLabel.SetActive(false);
@@ -523,6 +527,7 @@ namespace Visualization.UI
                 EXEValueBase parameterExeValue = ParseUserInput(Regex.Replace(parameterValue, @"[^\w:/ \.,]", string.Empty), parameterType);
                 if (parameterExeValue == null)
                 {
+                    parameter.gameObject.GetComponent<MethodParameterManager>().SetErrorLabelText(parameterType);
                     errorLabel.SetActive(true);
                     inputCorrect = false;
                 }
@@ -566,10 +571,13 @@ namespace Visualization.UI
                 GameObject parameterGo = Instantiate(MethodParameterPrefab, mediator.Content.transform);
                 parameterGo.GetComponent<MethodParameterManager>().ParameterName.GetComponent<TMP_Text>().text = parameter.Name;
                 parameterGo.GetComponent<MethodParameterManager>().ParameterType.GetComponent<TMP_Text>().text = parameter.Type;
+                string parameterValue;
+
                 if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))
                 {
                     parameterGo.GetComponent<MethodParameterManager>().ParameterValue.GetComponent<TMP_InputField>().interactable = false;
                     parameterGo.GetComponent<MethodParameterManager>().WarningLabel.gameObject.SetActive(true);
+                    parameterValue = " ";
                 }
                 else
                 {
@@ -583,10 +591,11 @@ namespace Visualization.UI
                     {
                         EXETypes.DefaultValue(parameter.Type, a.CurrentProgramInstance.ExecutionSpace).Accept(visitor);
                     }
-
-                    string parameterValue = visitor.GetCommandStringAndResetStateNow();
-                    parameterGo.GetComponent<MethodParameterManager>().ParameterValue.GetComponent<TMP_InputField>().text = parameterValue;
+                    
+                    parameterValue = visitor.GetCommandStringAndResetStateNow();
                 }
+
+                parameterGo.GetComponent<MethodParameterManager>().SetPlaceholderText(parameterValue);
             }
 
             mediator.SetMethodLabelText(startMethodName);
