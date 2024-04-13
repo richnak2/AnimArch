@@ -86,6 +86,10 @@ namespace Visualization.Animation
                 foreach (AnimMethod methodItem in classItem.Methods)
                 {
                     CDMethod Method = Class.GetMethodByName(methodItem.Name);
+                    if (Method == null)
+                    {
+                        continue;
+                    }
 
                     EXEScopeMethod MethodBody = OALParserBridge.Parse(methodItem.Code);
                     Method.ExecutableCode = MethodBody;
@@ -289,8 +293,22 @@ namespace Visualization.Animation
                 if (Animate)
                 {
                     EXECommandWait waitCommand = CurrentCommand as EXECommandWait;
-                    EXEValueReal secondsToWaitValue = waitCommand.WaitTime.EvaluationResult.ReturnedOutput as EXEValueReal;
-                    float secondsToWait = (float)secondsToWaitValue.Value;
+
+                    float secondsToWait;
+                    if (waitCommand.WaitTime.EvaluationResult.ReturnedOutput is EXEValueReal)
+                    {
+                        EXEValueReal secondsToWaitValue = waitCommand.WaitTime.EvaluationResult.ReturnedOutput as EXEValueReal;
+                        secondsToWait = (float)secondsToWaitValue.Value;
+                    }
+                    else if (waitCommand.WaitTime.EvaluationResult.ReturnedOutput is EXEValueInt)
+                    {
+                        EXEValueInt secondsToWaitValue = waitCommand.WaitTime.EvaluationResult.ReturnedOutput as EXEValueInt;
+                        secondsToWait = (float)secondsToWaitValue.Value;
+                    }
+                    else
+                    {
+                        throw new Exception(string.Format("Tried to wait for some seconds. The value type is {0}", waitCommand.WaitTime.EvaluationResult.ReturnedOutput.TypeName));
+                    }
 
                     yield return new WaitForSeconds(secondsToWait);
                 }
@@ -345,7 +363,7 @@ namespace Visualization.Animation
                 
 
                 var objectInDiagram = AddObjectToDiagram(createdObject, targetVariableName);
-                var relation = FindInterGraphRelation(createdObject.UniqueID);
+                //var relation = FindInterGraphRelation(createdObject.UniqueID);
 
                 if (!Animate)
                 {
@@ -381,7 +399,7 @@ namespace Visualization.Animation
                                 break;
                             case 6:
                                 HighlightClass(createdObject.OwningClass.Name, false);
-                                relation.UnHighlight();
+                                //relation.UnHighlight();
                                 timeModifier = 1f;
                                 break;
                         }
@@ -401,10 +419,10 @@ namespace Visualization.Animation
                             if (prevStep)
                             {
                                 if (step > 0) step--;
-                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram);
 
                                 if (step > -1) step--;
-                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram);
                             }
 
                             yield return new WaitForFixedUpdate();
@@ -446,8 +464,7 @@ namespace Visualization.Animation
             return relation;
         }
 
-        private int UnhighlightObjectCreationStepAnimation(int step, string className, ObjectInDiagram od,
-            InterGraphRelation relation)
+        private int UnhighlightObjectCreationStepAnimation(int step, string className, ObjectInDiagram od)
         {
             if (step == 1) step = 2;
             switch (step)
@@ -456,7 +473,7 @@ namespace Visualization.Animation
                     HighlightClass(className, false);
                     break;
                 case 2:
-                    relation.UnHighlight();
+                    //relation.UnHighlight();
                     break;
                 case 3:
                     break;
