@@ -42,7 +42,22 @@ namespace OALProgramControl
         {
             return PrimitiveNames.Contains(typeName.ToLower());
         }
-
+        public static bool IsValidIntName(string typeName)
+        {
+            return IntNames.Contains(typeName.ToLower());
+        }
+        public static bool IsValidRealName(string typeName)
+        {
+            return RealNames.Contains(typeName.ToLower());
+        }
+        public static bool IsValidBoolName(string typeName)
+        {
+            return BoolNames.Contains(typeName.ToLower());
+        }
+        public static bool IsValidStringName(string typeName)
+        {
+            return StringNames.Contains(typeName.ToLower());
+        }
         public static EPrimitiveType DeterminePrimitiveType(string value)
         {
             if (IsValidIntValue(value))

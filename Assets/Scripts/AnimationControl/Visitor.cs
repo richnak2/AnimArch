@@ -15,6 +15,7 @@ public abstract class Visitor : IValueVisitor
     public abstract void VisitExeCommandFileExists(EXECommandFileExists command);
     public abstract void VisitExeCommandFileRead(EXECommandFileRead command);
     public abstract void VisitExeCommandFileWrite(EXECommandFileWrite command);
+    public virtual void VisitExeCommandPragma(EXECommandPragma command) { }
     public abstract void VisitExeCommandQueryCreate(EXECommandQueryCreate command);
     public abstract void VisitExeCommandQueryDelete(EXECommandQueryDelete command);
     public abstract void VisitExeCommandRead(EXECommandRead command);
