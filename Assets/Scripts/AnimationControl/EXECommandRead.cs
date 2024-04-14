@@ -11,6 +11,7 @@ namespace OALProgramControl
         public String AssignmentType { get; }
         public EXEASTNodeAccessChain AssignmentTarget { get; }
         public EXEASTNodeBase Prompt { get; }  // Must be String type
+        public string PromptText { get; private set; }
 
         public EXECommandRead(String assignmentType, EXEASTNodeAccessChain assignmentTarget, EXEASTNodeBase prompt)
         {
@@ -53,7 +54,7 @@ namespace OALProgramControl
                 prompt = visitor.GetCommandStringAndResetStateNow();
             }
 
-            ConsolePanel.Instance.YieldOutput(prompt);
+            this.PromptText = prompt;
 
             return Success();
         }

@@ -10,7 +10,6 @@ namespace OALProgramControl
 {
     public class EXETypes
     {
-        //TODO add type_name change type comparison to finding the type name in the list of correct types
         public static String IntegerTypeName = "integer";
         public const String RealTypeName = "real";
         public const String BooleanTypeName = "boolean";
@@ -43,7 +42,22 @@ namespace OALProgramControl
         {
             return PrimitiveNames.Contains(typeName.ToLower());
         }
-
+        public static bool IsValidIntName(string typeName)
+        {
+            return IntNames.Contains(typeName.ToLower());
+        }
+        public static bool IsValidRealName(string typeName)
+        {
+            return RealNames.Contains(typeName.ToLower());
+        }
+        public static bool IsValidBoolName(string typeName)
+        {
+            return BoolNames.Contains(typeName.ToLower());
+        }
+        public static bool IsValidStringName(string typeName)
+        {
+            return StringNames.Contains(typeName.ToLower());
+        }
         public static EPrimitiveType DeterminePrimitiveType(string value)
         {
             if (IsValidIntValue(value))
@@ -125,7 +139,7 @@ namespace OALProgramControl
         }
         public static bool IsValidStringValue(string value)
         {
-            return value[0] == '"' && value[value.Length - 1] == '"';
+            return value.Length > 1 && value[0] == '"' && value[value.Length - 1] == '"';
         }
         public static bool IsValidArrayType(string typeName)
         {

@@ -15,6 +15,7 @@ using UnityEngine.Localization.Settings;
 using AnimArch.Extensions;
 using UnityEditor;
 using Visualization.ClassDiagram.Editors;
+using System.Text.RegularExpressions;
 
 namespace Visualization.UI
 {
@@ -62,12 +63,17 @@ namespace Visualization.UI
         [SerializeField] public GameObject PanelSourceCodeAnimation;
         [SerializeField] public GameObject ShowErrorBtn;
         [SerializeField] public GameObject ErrorPanel;
+        [SerializeField] public GameObject NotSelectedToAnimatePanel;
+        [SerializeField] public GameObject notSelectedClassText;
+        [SerializeField] public GameObject notSelectedMethodText;
+        [SerializeField] public Button HideNotSelectedPanelBtn;
+        [SerializeField] public GameObject MethodParameterPrefab;
+        [SerializeField] public GameObject EnterParameterPopUp;
 
         // [SerializeField] public TMP_Text MaskingFileLabel;
         // [SerializeField] public Button RemoveMaskingBtn;
         public Anim createdAnim;
         public bool isPlaying = false;
-        public Button[] playBtns;
         public GameObject playIntroTexts;
         public List<AnimMethod> animMethods;
         public bool isSelectingNode;
@@ -96,6 +102,11 @@ namespace Visualization.UI
         private MethodPagination SourceCodeMethodPagination;
         private MethodPagination StartingMethodPagination;
 
+        [SerializeField]
+        private ScrollableMethodList scrollableMethodListSourceCodeEdit;
+
+        [SerializeField]
+        private ScrollableMethodList scrollableMethodListAnimationPlay;
         public void ShowErrorPanel()
         {
             ShowErrorPanel(null);
@@ -123,6 +134,32 @@ namespace Visualization.UI
             ShowErrorBtn.GetComponent<Button>().interactable = false;
         }
 
+        public void ShowNotSelectedPanel(String unselectedType)
+        {
+            NotSelectedToAnimatePanel.SetActive(true);
+            HideNotSelectedPanelBtn.interactable = true;
+
+            if(unselectedType.Equals("class"))
+            {
+                notSelectedClassText.gameObject.SetActive(true);
+                notSelectedMethodText.gameObject.SetActive(false);
+            }else if(unselectedType.Equals("method"))
+            {
+                notSelectedClassText.gameObject.SetActive(false);
+                notSelectedMethodText.gameObject.SetActive(true);
+            }
+        }
+
+        public void HideNotSelectedPanel()
+        {
+            notSelectedClassText.gameObject.SetActive(true);
+            notSelectedMethodText.gameObject.SetActive(true);
+            NotSelectedToAnimatePanel.SetActive(false);
+            HideNotSelectedPanelBtn.interactable = false;
+
+            //Button exitAnimationBtn = GameObject.Find("ButtonExit").GetComponent<Button>();
+            //exitAnimationBtn.onClick.Invoke();
+        }
         class InteractiveData
         {
             public Subject<string> ClassClickedInClassDiagram;
@@ -155,10 +192,6 @@ namespace Visualization.UI
             this.interactiveData.ClassClickedInClassDiagram.Register((string value) => { ClassNameTxt.text = value; });
             this.interactiveData.CurrentMethodOwningClass.Register((string value) => { classTxt.text = value; });
             this.interactiveData.CurrentMethod.Register((string value) => { methodTxt.text = value; });
-
-            // Method button pagination
-            SourceCodeMethodPagination = new MethodPagination(methodButtons);
-            StartingMethodPagination = new MethodPagination(playBtns.Select(btn => btn.gameObject).ToList());
         }
 
         private void Start()
@@ -231,7 +264,7 @@ namespace Visualization.UI
             PanelInteractiveIntro.SetActive(false);
             
             PanelMethod.SetActive(true);
-            SourceCodeMethodPagination.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
+            scrollableMethodListSourceCodeEdit.FillItems(selectedClass.Methods.Select(method => method.Name).ToList());
 
             PanelInteractiveIntro.SetActive(false);
             PanelMethod.SetActive(true);
@@ -250,10 +283,8 @@ namespace Visualization.UI
             }
         }
 
-        public void SelectMethod(int buttonID)
+        public void SelectMethod(string methodName)
         {
-            string methodName = SourceCodeMethodPagination.GetSelectedItem(buttonID);
-
             interactiveData.CurrentMethodOwningClass.SetValue(interactiveData.ClassClickedInClassDiagram.GetValue());
             interactiveData.ClassClickedInClassDiagram.SetValue(string.Empty);
             interactiveData.CurrentMethod.SetValue(methodName);
@@ -344,10 +375,6 @@ namespace Visualization.UI
             isPlaying = true;
             panelAnimationPlay.SetActive(true);
             mainScreen.SetActive(false);
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             playIntroTexts.SetActive(true);
             if (Animation.Animation.Instance.standardPlayMode)
@@ -418,37 +445,209 @@ namespace Visualization.UI
 
             Class selectedClass = DiagramPool.Instance.ClassDiagram.FindClassByName(name).ParsedClass;
             animMethods = AnimationData.Instance.selectedAnim.GetMethodsByClassName(name);
-            StartingMethodPagination.FillItems(animMethods.Select(method => method.Name).ToList());
+            
+            if(animMethods != null)
+            {
+                scrollableMethodListAnimationPlay.FillItems(animMethods.Select(method => method.Name).ToList(), false);
+            }
+            else
+            {
+                scrollableMethodListAnimationPlay.ClearItems();
+            }
+        }
+
+        public void SelectPlayMethod(string startMethodName)
+        {
+            
+            string startClassName = Animation.Animation.Instance.startClassName;
+
+            Animation.Animation.Instance.startMethodName = startMethodName;
+
+            playIntroTexts.SetActive(true);
+            Animation.Animation.Instance.HighlightClass(startClassName, false);
+        }
+        private void ApplyPlayMethodSelection(string startMethodName)
+        {
+            Animation.Animation a = Animation.Animation.Instance;
+            string startClassName = a.startClassName;
+            a.startMethodName = startMethodName;
+
+            playIntroTexts.SetActive(true);
+            Debug.Log("Selected class: " + startClassName + " Selected Method: " + a.startMethodName);
+            a.HighlightClass(startClassName, false);
+        }
+
+        private EXEValueBase ParseParameterValue(string value, string type)
+        {
+            if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(type)))
+            {
+                return EXETypes.DefaultValue(type, Animation.Animation.Instance.CurrentProgramInstance.ExecutionSpace);
+            }
+            try {
+                EXEValueBase result = null;
+                if ("string".Equals(EXETypes.ConvertEATypeName(type)))
+                {
+                    result = new EXEValueString("\"" + value + "\"");
+                }
+                else
+                {
+                    result = EXETypes.DeterminePrimitiveValue(value);
+                    if (result == null || !EXETypes.ConvertEATypeName(type).Equals(result.TypeName))
+                    {
+                        return null;
+                    }
+                }
+                return result;
+            } catch (ArgumentException e) {
+                Debug.LogError(e.ToString());
+                return null;
+            } catch (FormatException e) {
+                Debug.LogError(e.ToString());
+                return null;
+            }
+        }
+
+        private EXEValueBase ParseUserInput(string value, string type)
+        {
+            if (EXETypes.IsValidArrayType(type))
+            {
+                List<EXEValueBase> exeList = new List<EXEValueBase>();
+                string listType = type.Substring(0, type.Length-2);
+                if (value.Length > 0)
+                {
+                    foreach (string listItem in value.Split(','))
+                    {
+                        EXEValueBase newValue = ParseParameterValue(listItem.Trim(), listType);
+                        if (newValue == null)
+                        {
+                            return null;
+                        }
+                        exeList.Add(newValue);
+                    }
+                }
+                return new EXEValueArray(type, exeList);
+            }
+
+            return ParseParameterValue(value, type);
+        }
+
+        private Transform parameterHolder
+        { 
+            get 
+            {
+                MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
+                return mediator.Content.transform;
+            } 
+        }
+
+        public void SaveParametersForInitialMethod()
+        {
+            MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
+            Animation.Animation a = Animation.Animation.Instance;
+            string startMethodName = mediator.GetMethodLabelText();
+            bool inputCorrect = true;
+
+            List<EXEVariable> newParameters = new List<EXEVariable>();
+
+            foreach (Transform parameter in parameterHolder)
+            {
+                string parameterName  = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterName.GetComponent<TMP_Text>().text;
+                string parameterValue = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterValueText.GetComponent<TMP_Text>().text;
+                if (Regex.Replace(parameterValue, @"[^\w:/ \.,]", string.Empty).Length == 0)
+                {
+                    parameterValue = parameter.gameObject.GetComponent<MethodParameterManager>().PlaceholderText.GetComponent<TMP_Text>().text;
+                }
+                string parameterType = parameter.gameObject.GetComponent<MethodParameterManager>().ParameterType.GetComponent<TMP_Text>().text;
+                GameObject errorLabel = parameter.gameObject.GetComponent<MethodParameterManager>().ErrorLabel.gameObject;
+                errorLabel.SetActive(false);
+
+                EXEValueBase parameterExeValue = ParseUserInput(Regex.Replace(parameterValue, @"[^\w:/ \.,]", string.Empty), parameterType);
+                if (parameterExeValue == null)
+                {
+                    parameter.gameObject.GetComponent<MethodParameterManager>().SetErrorLabelText(parameterType);
+                    errorLabel.SetActive(true);
+                    inputCorrect = false;
+                }
+                else
+                {
+                    newParameters.Add(new EXEVariable(parameterName, parameterExeValue));
+                }
+            }
+
+            if (inputCorrect)
+            {
+                a.startMethodParameters[startMethodName] = newParameters;
+                mediator.SetActiveEnterParameterPopUp(false);
+                ApplyPlayMethodSelection(startMethodName);
+            }
         }
 
         public void SelectPlayMethod(int id)
         {
+            Animation.Animation a = Animation.Animation.Instance;
             string startMethodName = StartingMethodPagination.GetSelectedItem(id);
-            string startClassName = Animation.Animation.Instance.startClassName;
+            string startClassName = a.startClassName;
+            List<CDParameter> parameters = a.CurrentProgramInstance.ExecutionSpace.getClassByName(startClassName).GetMethodByName(startMethodName).Parameters;
 
-            Animation.Animation.Instance.startMethodName = startMethodName;
-            foreach (Button button in playBtns)
+            if (parameters.Count == 0)
             {
-                button.gameObject.SetActive(false);
+                ApplyPlayMethodSelection(startMethodName);
+                return;
             }
 
-            playIntroTexts.SetActive(true);
-            Debug.Log("Selected class: " + startClassName + "Selected Method: " + startMethodName);
-            Animation.Animation.Instance.HighlightClass(startClassName, false);
+            MediatorEnterParameterPopUp mediator = EnterParameterPopUp.GetComponent<MediatorEnterParameterPopUp>();
+
+            foreach (Transform child in mediator.Content.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                CDParameter parameter = parameters[i];
+                GameObject parameterGo = Instantiate(MethodParameterPrefab, mediator.Content.transform);
+                parameterGo.GetComponent<MethodParameterManager>().ParameterName.GetComponent<TMP_Text>().text = parameter.Name;
+                parameterGo.GetComponent<MethodParameterManager>().ParameterType.GetComponent<TMP_Text>().text = parameter.Type;
+                string parameterValue;
+
+                if (!EXETypes.IsPrimitive(EXETypes.ConvertEATypeName(parameter.Type.Replace("[]", ""))))
+                {
+                    parameterGo.GetComponent<MethodParameterManager>().ParameterValue.GetComponent<TMP_InputField>().interactable = false;
+                    parameterGo.GetComponent<MethodParameterManager>().WarningLabel.gameObject.SetActive(true);
+                    parameterValue = " ";
+                }
+                else
+                {
+                    VisitorCommandToString visitor = VisitorCommandToString.BorrowAVisitor();
+
+                    if (a.startMethodParameters.ContainsKey(startMethodName))
+                    {
+                        a.startMethodParameters[startMethodName][i].Value.Accept(visitor);
+                    }
+                    else
+                    {
+                        EXETypes.DefaultValue(parameter.Type, a.CurrentProgramInstance.ExecutionSpace).Accept(visitor);
+                    }
+                    
+                    parameterValue = visitor.GetCommandStringAndResetStateNow();
+                }
+
+                parameterGo.GetComponent<MethodParameterManager>().SetPlaceholderText(parameterValue);
+            }
+
+            mediator.SetMethodLabelText(startMethodName);
+            mediator.SetActiveEnterParameterPopUp(true);
         }
 
         public void UnshowAnimation()
         {
             Animation.Animation.Instance.UnhighlightAll();
+            scrollableMethodListAnimationPlay.ClearItems();
         }
 
         public void EndPlay()
         {
             isPlaying = false;
-            foreach (Button button in playBtns)
-            {
-                button.gameObject.SetActive(false);
-            }
 
             Animation.Animation.Instance.startClassName = "";
             Animation.Animation.Instance.startMethodName = "";
@@ -491,7 +690,7 @@ namespace Visualization.UI
             GameObject.Find("GenerateToPythonButton").GetComponentInChildren<Button>().interactable = active;
             // generatePythonBtn.interactable = true; // TODO co je lepsie? takto by sme museli zmenit funciu zo static
         }
-        public void AnimateSourceCodeAtMethodStart(EXEScopeMethod currentMethodScope)
+        public void RefreshSourceCodePanel(EXEScopeMethod currentMethodScope)
         {
             PanelChooseAnimationStartMethod.SetActive(false);
             PanelSourceCodeAnimation.SetActive(true);

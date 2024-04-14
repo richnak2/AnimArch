@@ -51,7 +51,6 @@ namespace Visualization.Animation
             }
         }
 
-
         public AnimationThread(EXEExecutionStack executionStack, OALProgram currentProgramInstance, Animation animation)
         {
             this.CommandStack = executionStack;
@@ -99,7 +98,7 @@ namespace Visualization.Animation
                 {
                     CurrentCommand.ToggleActiveRecursiveBottomUp(true);
                     EXEScopeMethod CurrentMethodScope = CurrentCommand.GetCurrentMethodScope();
-                    UI.MenuManager.Instance.AnimateSourceCodeAtMethodStart(CurrentMethodScope);
+                    UI.MenuManager.Instance.RefreshSourceCodePanel(CurrentMethodScope);
                     CurrentCommand.ToggleActiveRecursiveBottomUp(false);
                 }
 
