@@ -139,7 +139,7 @@ namespace OALProgramControl
         }
         public static bool IsValidStringValue(string value)
         {
-            return value[0] == '"' && value[value.Length - 1] == '"';
+            return value.Length > 1 && value[0] == '"' && value[value.Length - 1] == '"';
         }
         public static bool IsValidArrayType(string typeName)
         {
