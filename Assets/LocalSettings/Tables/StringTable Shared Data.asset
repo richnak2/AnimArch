@@ -727,6 +727,18 @@ MonoBehaviour:
     m_Key: New Entry 4
     m_Metadata:
       m_Items: []
+  - m_Id: 53135231578173440
+    m_Key: enterParameterValue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 53234715201007616
+    m_Key: parameterWrongTypeKey
+    m_Metadata:
+      m_Items: []
+  - m_Id: 53528851764604928
+    m_Key: parameterObjectTypeKey
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
