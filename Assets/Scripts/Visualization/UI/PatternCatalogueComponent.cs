@@ -3,22 +3,24 @@ using UnityEngine;
 
 namespace Visualization.UI
 {
-    public class Component : MonoBehaviour
+    public class PatternCatalogueComponent : MonoBehaviour
     {
         public string ComponentName;
         public GameObject parent;
+        public string ComponentPath{get; set;}
 
-        public Component(string name)
+        public PatternCatalogueComponent(string path, string name)
         {
             ComponentName = name;
+            ComponentPath = path;
         }
-        public virtual Composite GetComposite()
+        public virtual PatternCatalogueComponent GetComponent()
         {
             return null;
         }
         public virtual void Operation(){}
-        public virtual void Add(Component component){}
-        public virtual void Remove(Component component){}
+        public virtual void Add(PatternCatalogueComponent component){}
+        public virtual void Remove(PatternCatalogueComponent component){}
         
         public void Awake(){
             // tu setovať parenta
@@ -27,11 +29,11 @@ namespace Visualization.UI
         {
             return ComponentName;
         }
-        public virtual List<Component> GetChildren()
+        public virtual List<PatternCatalogueComponent> GetChildren()
         {
             return null;
         }
-        public virtual Component GetChild(int index)
+        public virtual PatternCatalogueComponent GetChild(int index)
         {
             return null;
         }

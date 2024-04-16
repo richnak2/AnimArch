@@ -2,12 +2,18 @@ using UnityEngine;
 
 namespace Visualization.UI
 {
-    public class Leaf : Component
+    public class PatternCatalogueLeaf : PatternCatalogueComponent
     {
         public string LeafName;
-        public Leaf(string name) : base(name)
+        public string LeafPath{get; set;}
+        public PatternCatalogueLeaf(string path, string name) : base(path,name)
         {
             LeafName = name;
+            LeafPath = path;
+        }
+        public override PatternCatalogueComponent GetComponent()
+        {
+            return this;
         }
         public override void Operation()
         {

@@ -5,6 +5,8 @@ using Visualization.Animation;
 using Visualization.TODO;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using System.IO;
 
 namespace Visualization.UI
 {
@@ -18,9 +20,10 @@ namespace Visualization.UI
         [SerializeField] private GameObject PrefabCanvas;
         [SerializeField] private GameObject PrefabPattern;
         [SerializeField] private GameObject PrefabLeaf;
+        private List<(PatternCatalogueComponent, GameObject)> PatternNodes = new List<(PatternCatalogueComponent, GameObject)>();
         private PatternCatalogueCompositeLoader patternCatalogueLoader = new PatternCatalogueCompositeLoader();
         public MediatorMainPanel MediatorMainPanel;
-        Component patternCatalogueComponent = new Composite("PatternCatalogue");
+        PatternCatalogueComponent patternCatalogueComponentRoot = new PatternCatalogueComposite("null","PatternCatalogue");
         public override void OnClicked(GameObject ButtonExit)
         {
             if (ReferenceEquals(ButtonExit, ButtonExit))
@@ -28,9 +31,47 @@ namespace Visualization.UI
                 OnButtonExitClicked();
             }
         }
+
+        public void OnPatternClicked(GameObject patternNode)
+        {
+            foreach (Transform child in patternNode.transform)
+            {
+                if (!child.name.Equals("Panel"))
+                {
+                    child.gameObject.SetActive(!child.gameObject.activeSelf);
+                }else{
+                    GameObject arrow = child.gameObject.transform.GetChild(1).gameObject;
+                    if(arrow.transform.rotation.z == 0)
+                    {
+                        arrow.transform.Rotate(0,0,90);
+                    }else{  
+                        arrow.transform.Rotate(0,0,-90);
+                    }                    
+                }
+                
+            }
+        }
+
+        public void OnLeafClicked(GameObject leafNode)
+        {
+            Debug.Log(leafNode.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+
+            foreach (var node in PatternNodes)
+            {
+                if (leafNode.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text == node.Item1.GetName()){
+                    AnimationData.Instance.SetDiagramPath(node.Item1.GetComponent().ComponentPath);
+                    MenuManager.Instance.SetDiagramPath(node.Item1.GetComponent().ComponentPath);
+                    FileLoader.Instance.OpenDiagram();
+                    //TODO> nacitaj diagram a animaciu
+                }
+            }
+        }
+
         private void OnButtonExitClicked()
         {
+            DestroyAllNodes();
             MediatorMainPanel.UnshowPatternCatalogue();
+            ButtonExit.SetActive(false);
         }
 
         public void SetActivePatternCataloguePanel(bool active)
@@ -40,8 +81,9 @@ namespace Visualization.UI
             UpperSeparator.SetActive(active);
             PatternCatalogueLabel.SetActive(active);
             ButtonExit.SetActive(active);
-            patternCatalogueLoader.Browse(patternCatalogueComponent);
-            RecursiveCreatePatternPrefabs(PrefabCanvas,patternCatalogueComponent);
+            patternCatalogueComponentRoot = new PatternCatalogueComposite("null","PatternCatalogue");
+            patternCatalogueLoader.Browse(patternCatalogueComponentRoot);
+            RecursiveCreatePatternPrefabs(PrefabCanvas,patternCatalogueComponentRoot,0.0f);
             //CreatePatternPrefabsIteratively(PrefabCanvas, patternCatalogueComponent);
         }
 
@@ -52,54 +94,44 @@ namespace Visualization.UI
         // kde-čo-ako sa nachadzajú
         // method pagination = inšpirácia na priradovanie parenta
         // priradit parent do atribútu
-        private void RecursiveCreatePatternPrefabs(GameObject parent, Component patternCatalogueComponent)
+        private void RecursiveCreatePatternPrefabs(GameObject parent, PatternCatalogueComponent patternCatalogueComponent, float rightOffset)
         {
-            foreach(Component child in patternCatalogueComponent.GetComposite().GetChildren())
+            float currentRigthOffset = rightOffset;
+            foreach(PatternCatalogueComponent child in patternCatalogueComponent.GetComponent().GetChildren())
             {
-                if(child is Composite)
+                if(child is PatternCatalogueComposite)
                 {
                     GameObject newParent = Instantiate(PrefabPattern);
-                    newParent.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = child.GetName();
+                    PatternNodes.Add((child.GetComponent(), newParent));
+                    
+                    //newParent.transform.position += new Vector3(rightOffset, 0, 0);
+                    GameObject panel = newParent.transform.Find("Panel").gameObject;
                     newParent.transform.SetParent(parent.transform, false);
-                    RecursiveCreatePatternPrefabs(newParent, child.GetComposite());
+                    panel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = child.GetName();
+
+                    panel.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => OnPatternClicked(newParent));
+                  
+                    RecursiveCreatePatternPrefabs(newParent, child.GetComponent(), currentRigthOffset+1);
                 }
-                else if(child is Leaf)
+                else if(child is PatternCatalogueLeaf)
                 {
                     GameObject newPattern = Instantiate(PrefabLeaf);
+                    PatternNodes.Add((child.GetComponent(), newPattern));
                     newPattern.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = child.GetName();
                     newPattern.transform.SetParent(parent.transform, false);
+                    newPattern.transform.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => OnLeafClicked(newPattern));
+                    newPattern.SetActive(false);
                 }
             }
         }
 
-        private void CreatePatternPrefabsIteratively(GameObject parent, Component patternCatalogueComponent)
+        private void DestroyAllNodes()
         {
-            Stack<(GameObject, Component)> stack = new Stack<(GameObject, Component)>();
-            stack.Push((parent, patternCatalogueComponent));
-
-            while (stack.Count > 0)
+            foreach(var node in PatternNodes)
             {
-                (GameObject currentParent, Component currentComponent) = stack.Pop();
-
-                foreach (Component child in currentComponent.GetComposite().GetChildren())
-                {
-                    if (child is Composite)
-                    {
-                        GameObject newParent = new GameObject();
-                        newParent.transform.SetParent(currentParent.transform);
-                        newParent = Instantiate(PrefabPattern, newParent.transform);
-                        newParent.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = child.GetName();
-                        stack.Push((newParent, child.GetComposite()));
-                    }
-                    else if (child is Leaf)
-                    {
-                        GameObject newPattern = new GameObject();
-                        newPattern.transform.SetParent(currentParent.transform);
-                        newPattern = Instantiate(PrefabLeaf, newPattern.transform);
-                        newPattern.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = child.GetName();
-                    }
-                }
+                Destroy(node.Item2);
             }
+            PatternNodes = new List<(PatternCatalogueComponent, GameObject)>();
         }
 
     }
