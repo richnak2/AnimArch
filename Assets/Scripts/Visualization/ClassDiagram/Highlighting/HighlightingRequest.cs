@@ -9,11 +9,13 @@ namespace Visualization.Animation
     {
         protected bool Done { get; set; }
         protected MethodInvocationInfo callInfo;
+        public int threadId {get; protected set; }
 
-        public HighlightingRequest(MethodInvocationInfo call)
+        public HighlightingRequest(MethodInvocationInfo call, int threadId)
         {
             this.Done = false;
             this.callInfo = call;
+            this.threadId = threadId;
         }
 
         public bool IsDone()

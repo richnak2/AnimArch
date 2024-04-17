@@ -10,7 +10,7 @@ namespace Visualization.Animation
 {
     public class HighlightingCreateObjectRequest : HighlightingRequest
     {
-        public HighlightingCreateObjectRequest(MethodInvocationInfo call) : base(call)
+        public HighlightingCreateObjectRequest(MethodInvocationInfo call, int threadId) : base(call, threadId)
         {}
 
         public override IEnumerator PerformRequest()
@@ -24,7 +24,7 @@ namespace Visualization.Animation
 
             foreach (RelationInDiagram rel in relationsOfClass)
             {
-                yield return new WaitUntil(() => rel.HighlightSubject.finishedFlag.IsUnhighlightingFinished());
+                yield return new WaitUntil(() => rel.HighlightSubject.finishedFlag.IsDrawingFinished());
             }
             Class highlightedClass = a.classDiagram.FindClassByName(info.CalledObject.OwningClass.Name).ParsedClass;
             highlightedClass.HighlightSubject.ClassName = highlightedClass.Name;

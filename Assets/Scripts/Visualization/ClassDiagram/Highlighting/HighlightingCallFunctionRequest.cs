@@ -9,7 +9,7 @@ namespace Visualization.Animation
 {
     public class HighlightingCallFunctionRequest : HighlightingRequest
     {
-        public HighlightingCallFunctionRequest(MethodInvocationInfo call) : base(call)
+        public HighlightingCallFunctionRequest(MethodInvocationInfo call, int threadId) : base(call, threadId)
         {}
 
         public override IEnumerator PerformRequest()
@@ -23,7 +23,7 @@ namespace Visualization.Animation
 
             if (relation != null)
             {
-                yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.IsUnhighlightingFinished());
+                yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.IsDrawingFinished());
                 relation?.HighlightSubject.IncrementHighlightLevel();
                 yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.IsDrawingFinished());
             }
@@ -31,10 +31,6 @@ namespace Visualization.Animation
             called.HighlightSubject.IncrementHighlightLevel();
             calledMethod.HighlightSubject.IncrementHighlightLevel();
             yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * 1.25f);
-            if (relation != null)
-            {
-                relation.HighlightSubject.finishedFlag.IncrementFlag();
-            }
 
             Done = true;
         }

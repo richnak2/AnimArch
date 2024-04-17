@@ -157,7 +157,6 @@ namespace Visualization.Animation
             consoleScheduler = new ConsoleScheduler();
             highlightScheduler = new HighlightingScheduler();
             StartCoroutine(consoleScheduler.Start(this));
-            StartCoroutine(highlightScheduler.Start());
 
             AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
             yield return StartCoroutine(SuperThread.Start());
@@ -185,7 +184,7 @@ namespace Visualization.Animation
 
                         objectDiagram.AddRelation(methodCallInfo.CallerObject, methodCallInfo.CalledObject, "ASSOCIATION");
 
-                        StartCoroutine(ResolveCallFunct(methodCallInfo));
+                        StartCoroutine(ResolveCallFunct(methodCallInfo, AnimationThread.ID));
 
                         yield return StartCoroutine(BarrierFillCheck());
                     }
@@ -221,7 +220,7 @@ namespace Visualization.Animation
                             CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
                             CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
 
-                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
+                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance), AnimationThread.ID));
                         }
                         else if
                         (
@@ -231,7 +230,7 @@ namespace Visualization.Animation
                         {
                             CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
 
-                            StartCoroutine(ResolveReturn(MethodInvocationInfo.CreateCalledOnlyInstance(calledMethod, calledInstance)));
+                            StartCoroutine(ResolveReturn(MethodInvocationInfo.CreateCalledOnlyInstance(calledMethod, calledInstance), AnimationThread.ID));
                         }
                     }
                 }
@@ -245,12 +244,12 @@ namespace Visualization.Animation
 
                 if (Animate)
                 {
-                    StartCoroutine(ResolveCreateObject(CurrentCommand, true, AnimateNewObjects));
+                    StartCoroutine(ResolveCreateObject(CurrentCommand, AnimationThread.ID, true, AnimateNewObjects));
                     yield return StartCoroutine(BarrierFillCheck());
                 }
                 else
                 {
-                    yield return ResolveCreateObject(CurrentCommand, false, AnimateNewObjects);
+                    yield return ResolveCreateObject(CurrentCommand, AnimationThread.ID, false, AnimateNewObjects);
                 }
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandAssignment))
@@ -349,7 +348,7 @@ namespace Visualization.Animation
             ObjectInDiagram objectInDiagram = objectDiagram.AddObjectInDiagram(name, newObject, showNewObject);
             return objectInDiagram;
         }
-        private IEnumerator ResolveCreateObject(EXECommand currentCommand, bool Animate = true, bool AnimateNewObjects = true)
+        private IEnumerator ResolveCreateObject(EXECommand currentCommand, int threadId, bool Animate = true, bool AnimateNewObjects = true)
         {
             EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
 
@@ -378,7 +377,7 @@ namespace Visualization.Animation
                 {
                     #region Object creation animation
 
-                    HighlightingCreateObjectRequest r = new HighlightingCreateObjectRequest(new ObjectCreationInfo(callerObject, createdObject, objectInDiagram));
+                    HighlightingCreateObjectRequest r = new HighlightingCreateObjectRequest(new ObjectCreationInfo(callerObject, createdObject, objectInDiagram), threadId);
                     highlightScheduler.Enqueue(r);
 
                     int step = 0;
@@ -826,11 +825,11 @@ namespace Visualization.Animation
 
         // Couroutine used to Resolve one OALCall consisting of Caller class, caller method, edge, called class, called method
         // Same coroutine is called for play or step mode
-        public IEnumerator ResolveCallFunct(MethodInvocationInfo Call)
+        public IEnumerator ResolveCallFunct(MethodInvocationInfo Call, int threadId)
         {
             Debug.Log(Call.ToString());
 
-            HighlightingCallFunctionRequest r = new HighlightingCallFunctionRequest(Call);
+            HighlightingCallFunctionRequest r = new HighlightingCallFunctionRequest(Call, threadId);
             highlightScheduler.Enqueue(r);
 
             yield return new WaitUntil(() => r.IsDone());
@@ -838,35 +837,12 @@ namespace Visualization.Animation
             IncrementBarrier();
         }
 
-        public IEnumerator ResolveReturn(MethodInvocationInfo callInfo)
+        public IEnumerator ResolveReturn(MethodInvocationInfo callInfo, int threadId)
         {
-            float timeModifier = 1f;
+            HighlightingReturnRequest r = new HighlightingReturnRequest(callInfo, threadId);
+            highlightScheduler.Enqueue(r);
 
-            Class called = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
-            Method calledMethod = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
-            RelationInDiagram relation = classDiagram.FindEdgeInfo(callInfo.Relation?.RelationshipName);
-            assignCallInfoToAllHighlightSubjects(called, calledMethod, relation, callInfo, callInfo.CalledMethod);
-
-
-            if (relation != null)
-            {
-                yield return new WaitUntil(() => relation.HighlightSubject.finishedFlag.IsHighlightingFinished());
-            }
-
-            calledMethod.HighlightSubject.DecrementHighlightLevel();
-            calledMethod.HighlightObjectSubject.DecrementHighlightLevel();
-            called.HighlightSubject.DecrementHighlightLevel();
-            relation?.HighlightSubject.DecrementHighlightLevel();
-
-            if (relation != null)
-            {
-                relation.HighlightSubject.finishedFlag.IncrementFlag();
-            }
-
-            if (standardPlayMode)
-            {
-                yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
-            }
+            yield return new WaitUntil(() => r.IsDone());
         }
 
         private int UnhighlightAllStepAnimation(MethodInvocationInfo Call, int step)

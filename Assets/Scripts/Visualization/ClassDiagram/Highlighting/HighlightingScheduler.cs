@@ -8,70 +8,46 @@ namespace Visualization.Animation
 {
     public class HighlightingScheduler
     {
-        private readonly Queue<HighlightingRequest> requestQueue;
+        private readonly Dictionary<int, Queue<HighlightingRequest>> requestQueues;
 
-        private readonly List<HighlightingRequest> currentRequests;
         private bool Over;
 
         public HighlightingScheduler()
         {
-            this.requestQueue = new Queue<HighlightingRequest>();
-            this.currentRequests = new List<HighlightingRequest>();
+            requestQueues = new Dictionary<int, Queue<HighlightingRequest>>();
             this.Over = false;
         }
 
-        private void scheduleRequest(HighlightingRequest requestToSchedule)
+        private IEnumerator QueueLoop(Queue<HighlightingRequest> queue)
         {
-            currentRequests.Add(requestToSchedule);
-            Animation.Instance.StartCoroutine(requestToSchedule.PerformRequest());
-        }
-
-        public IEnumerator Start()
-        {
+            HighlightingRequest currentRequest;
             while (true)
             {
-                yield return new WaitUntil(() => requestQueue.Any() || Over);
+                yield return new WaitUntil(() => queue.Any() || Over);
 
                 if (Over) { break; }
 
-                HighlightingRequest request = requestQueue.Peek();
-                if (currentRequests.Count != 0)
-                {
-                    if (request.GetType() == currentRequests.First().GetType())
-                    {
-                        scheduleRequest(requestQueue.Dequeue());
-                    }
-                    else
-                    {
-                        foreach (HighlightingRequest r in currentRequests)
-                        {
-                            yield return new WaitUntil(() => r.IsDone());
-                        }
-                        currentRequests.Clear();
-                    }
-                }
-                else
-                {
-                    scheduleRequest(requestQueue.Dequeue());
-                }
+                currentRequest = queue.Dequeue();
+                Animation.Instance.StartCoroutine(currentRequest.PerformRequest());
 
+                yield return new WaitUntil(() => currentRequest.IsDone());
             }
-
-            yield return new WaitForFixedUpdate();
         }
 
-        public void Enqueue(HighlightingCallFunctionRequest request)
+        public void Enqueue(HighlightingRequest request)
         {
-            this.requestQueue.Enqueue(request);
-        }
-        public void Enqueue(HighlightingCreateObjectRequest request)
-        {
-            this.requestQueue.Enqueue(request);
+            if (!this.requestQueues.ContainsKey(request.threadId))
+            {
+                Queue<HighlightingRequest> newQueue = new Queue<HighlightingRequest>();
+                this.requestQueues.Add(request.threadId, newQueue);
+                Animation.Instance.StartCoroutine(QueueLoop(newQueue));
+            }
+            this.requestQueues[request.threadId].Enqueue(request);
         }
 
         public void Terminate()
         {
-            this.Over = true;
+            // this.Over = true;
         }
     }
 }
