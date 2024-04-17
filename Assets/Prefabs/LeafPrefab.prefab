@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 6583606973103800350}
   - component: {fileID: 8217174607727933947}
   - component: {fileID: 4398273929774993785}
+  - component: {fileID: 8040429612018962361}
   m_Layer: 0
   m_Name: LeafPrefab
-  m_TagString: Untagged
+  m_TagString: LeafNode
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,6 +123,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8040429612018962361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3741087322950803797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a65a3f8b699c1149a1144f54bac8d72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ComponentName: 
+  parent: {fileID: 0}
+  LeafName: 
 --- !u!1 &6398849187033255833
 GameObject:
   m_ObjectHideFlags: 0

@@ -37,5 +37,6 @@ namespace Visualization.UI
         {
             return null;
         }
+        //TODO pridaj label atribut a drag and dropni ho v editore z prefabu
     }
 }

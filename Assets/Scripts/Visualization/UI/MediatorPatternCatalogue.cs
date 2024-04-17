@@ -24,12 +24,23 @@ namespace Visualization.UI
         private PatternCatalogueCompositeLoader patternCatalogueLoader = new PatternCatalogueCompositeLoader();
         public MediatorMainPanel MediatorMainPanel;
         PatternCatalogueComponent patternCatalogueComponentRoot = new PatternCatalogueComposite("null","PatternCatalogue");
-        public override void OnClicked(GameObject ButtonExit)
+        public override void OnClicked(GameObject Button)
         {
-            if (ReferenceEquals(ButtonExit, ButtonExit))
+            if (ReferenceEquals(Button, ButtonExit))
             {
                 OnButtonExitClicked();
+            } else if (Button.CompareTag("PatternNode"))
+            {
+                OnPatternClicked(Button);
+                Debug.Log("PatternNode MEDIATOR CLICKED");
+            } else if (Button.CompareTag("LeafNode"))
+            {
+                OnLeafClicked(Button);
+                Debug.Log("LeafNode MEDIATOR CLICKED");
+            }else{
+                Debug.Log("Uknown MEDIATOR CLICKED");
             }
+            //TODO pridaj onclick na button a posli mediatora, prekonaj podla typu componentu
         }
 
         public void OnPatternClicked(GameObject patternNode)
@@ -81,7 +92,7 @@ namespace Visualization.UI
             UpperSeparator.SetActive(active);
             PatternCatalogueLabel.SetActive(active);
             ButtonExit.SetActive(active);
-            patternCatalogueComponentRoot = new PatternCatalogueComposite("null","PatternCatalogue");
+            patternCatalogueComponentRoot =  new PatternCatalogueComposite("null","PatternCatalogue");
             patternCatalogueLoader.Browse(patternCatalogueComponentRoot);
             RecursiveCreatePatternPrefabs(PrefabCanvas,patternCatalogueComponentRoot,0.0f);
             //CreatePatternPrefabsIteratively(PrefabCanvas, patternCatalogueComponent);
@@ -94,6 +105,7 @@ namespace Visualization.UI
         // kde-čo-ako sa nachadzajú
         // method pagination = inšpirácia na priradovanie parenta
         // priradit parent do atribútu
+        // schoval vytvaranie strruktuy za builder
         private void RecursiveCreatePatternPrefabs(GameObject parent, PatternCatalogueComponent patternCatalogueComponent, float rightOffset)
         {
             float currentRigthOffset = rightOffset;

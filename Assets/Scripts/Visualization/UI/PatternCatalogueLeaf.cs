@@ -24,5 +24,8 @@ namespace Visualization.UI
         {
             return LeafName;
         }
+        //TODO pridaj leaf masking a diagram
+        //TODO pridaj sipka atribut a drag and dropni ho v editore z prefabu
+
     }
 }

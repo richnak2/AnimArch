@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6260577402518236954}
   m_Layer: 0
   m_Name: Panel
-  m_TagString: Untagged
+  m_TagString: PatternNode
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 9147520873521795911}
   - component: {fileID: 7765483932968990509}
   - component: {fileID: 7208841362031014604}
+  - component: {fileID: 2594123946673157675}
   m_Layer: 0
   m_Name: PatternPrefab
   m_TagString: Untagged
@@ -420,7 +421,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9147520873521795905}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -495,3 +496,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2594123946673157675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9147520873521795905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4cabdf88719c0428b160b72f2413f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ComponentName: 
+  parent: {fileID: 0}
+  CompositeName: 
