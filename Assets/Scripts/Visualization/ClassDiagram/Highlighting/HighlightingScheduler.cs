@@ -9,13 +9,19 @@ namespace Visualization.Animation
     public class HighlightingScheduler
     {
         private readonly Dictionary<int, Queue<HighlightingRequest>> requestQueues;
-
-        private bool Over;
+        private bool wantsToterminate;
+        private int runningThreads;
 
         public HighlightingScheduler()
         {
             requestQueues = new Dictionary<int, Queue<HighlightingRequest>>();
-            this.Over = false;
+            wantsToterminate = false;
+            runningThreads = 0;
+        }
+
+        public bool IsOver()
+        {
+            return wantsToterminate && runningThreads == 0;
         }
 
         private IEnumerator QueueLoop(Queue<HighlightingRequest> queue)
@@ -23,11 +29,14 @@ namespace Visualization.Animation
             HighlightingRequest currentRequest;
             while (true)
             {
-                yield return new WaitUntil(() => queue.Any() || Over);
-
-                if (Over) { break; }
+                yield return new WaitUntil(() => queue.Any() || IsOver());
 
                 currentRequest = queue.Dequeue();
+                if (currentRequest == null)
+                {
+                    this.runningThreads--;
+                    break;
+                }
                 Animation.Instance.StartCoroutine(currentRequest.PerformRequest());
 
                 yield return new WaitUntil(() => currentRequest.IsDone());
@@ -40,6 +49,7 @@ namespace Visualization.Animation
             {
                 Queue<HighlightingRequest> newQueue = new Queue<HighlightingRequest>();
                 this.requestQueues.Add(request.threadId, newQueue);
+                this.runningThreads++;
                 Animation.Instance.StartCoroutine(QueueLoop(newQueue));
             }
             this.requestQueues[request.threadId].Enqueue(request);
@@ -47,7 +57,11 @@ namespace Visualization.Animation
 
         public void Terminate()
         {
-            // this.Over = true;
+            wantsToterminate = true;
+            foreach(var pair in this.requestQueues) {
+                pair.Value.Enqueue(null);
+            }
+            
         }
     }
 }

@@ -163,6 +163,7 @@ namespace Visualization.Animation
 
             consoleScheduler.Terminate();
             highlightScheduler.Terminate();
+            yield return new WaitUntil(() => highlightScheduler.IsOver());
             Debug.Log("Over");
             AnimationIsRunning = false;
         }
