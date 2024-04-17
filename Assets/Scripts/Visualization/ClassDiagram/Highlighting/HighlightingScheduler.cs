@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,20 +9,30 @@ namespace Visualization.Animation
 {
     public class HighlightingScheduler
     {
-        private readonly Dictionary<int, Queue<HighlightingRequest>> requestQueues;
+        private enum ThreadStatus {
+            RUNNING = 0,
+            TERMINATED = 1
+        };
+
+        private struct ThreadQueue {
+            public Queue<HighlightingRequest> queue;
+            public ThreadStatus status;
+        };
+
+        private Dictionary<int, ThreadQueue> requestQueues;
         private bool wantsToterminate;
-        private int runningThreads;
+        // private int runningThreads;
 
         public HighlightingScheduler()
         {
-            requestQueues = new Dictionary<int, Queue<HighlightingRequest>>();
+            requestQueues = new Dictionary<int, ThreadQueue>();
             wantsToterminate = false;
-            runningThreads = 0;
+            // runningThreads = 0;
         }
 
         public bool IsOver()
         {
-            return wantsToterminate && runningThreads == 0;
+            return wantsToterminate && this.requestQueues.Values.All((q) => q.status == ThreadStatus.TERMINATED);
         }
 
         private IEnumerator QueueLoop(Queue<HighlightingRequest> queue)
@@ -34,7 +45,7 @@ namespace Visualization.Animation
                 currentRequest = queue.Dequeue();
                 if (currentRequest == null)
                 {
-                    this.runningThreads--;
+                    // this.runningThreads--;
                     break;
                 }
                 Animation.Instance.StartCoroutine(currentRequest.PerformRequest());
@@ -48,18 +59,26 @@ namespace Visualization.Animation
             if (!this.requestQueues.ContainsKey(request.threadId))
             {
                 Queue<HighlightingRequest> newQueue = new Queue<HighlightingRequest>();
-                this.requestQueues.Add(request.threadId, newQueue);
-                this.runningThreads++;
+                this.requestQueues.Add(request.threadId, new ThreadQueue { 
+                    queue = newQueue,
+                    status = ThreadStatus.RUNNING
+                });
+                // this.runningThreads++;
                 Animation.Instance.StartCoroutine(QueueLoop(newQueue));
             }
-            this.requestQueues[request.threadId].Enqueue(request);
+            this.requestQueues[request.threadId].queue.Enqueue(request);
         }
 
         public void Terminate()
         {
             wantsToterminate = true;
             foreach(var pair in this.requestQueues) {
-                pair.Value.Enqueue(null);
+                pair.Value.queue.Enqueue(new HighlightingTerminateRequest(null, pair.Key, () => {
+                    ThreadQueue q = requestQueues[pair.Key];
+                    q.status = ThreadStatus.TERMINATED;
+                    requestQueues[pair.Key] = q;
+                    return true;
+                }));
             }
             
         }
