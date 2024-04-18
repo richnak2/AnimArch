@@ -81,6 +81,12 @@ namespace Visualization.UI
             MediatorMainPanel.SetActiveMainPanel(true);
             MediatorMainPanel.SetActiveCreationPanel(false);
         }
+        //TODO sprav z toho template method, zopakovat onloadbuttonclicked,
+        //Fileloader metoda vynechas tri riadky a das tam cestu z leafu
+        //sekvencia krokov sa bude opakovagt viackrat
+        // pri nacitani diagramu: vsetko okrem troch riadkov z fileloadera
+        // nahlad pri hover: nebudeme schovavat tooltip ani panely, ani unshow animation a z fileloadera iba classdiagrambuilder.loaddiagram
+        //
         private void OnEditButtonClicked()
         {
             TooltipManager.Instance.HideTooltip();
