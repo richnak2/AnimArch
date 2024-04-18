@@ -135,7 +135,7 @@ namespace OALProgramControl
         }
         public static bool IsValidRealValue(string value)
         {
-            return Regex.IsMatch(value, @"^(-)?(((0)|([1-9]+[0-9]*))\.[0-9]+)$");
+            return Regex.IsMatch(value, @"^(-)?(((0)|([1-9]+[0-9]*))[\.\,][0-9]+)$");
         }
         public static bool IsValidStringValue(string value)
         {
