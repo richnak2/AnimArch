@@ -25,8 +25,8 @@ namespace Visualization.Animation
     //Controls the entire animation process
     public class Animation : Singleton<Animation>
     {
-        private ClassDiagram.Diagrams.ClassDiagram classDiagram;
-        private ObjectDiagram objectDiagram;
+        public ClassDiagram.Diagrams.ClassDiagram classDiagram {get; private set;}
+        public ObjectDiagram objectDiagram {get; private set;}
         public Color classColor;
         public Color methodColor;
         public Color relationColor;
@@ -41,9 +41,11 @@ namespace Visualization.Animation
         private bool prevStep = false;
         private List<GameObject> Fillers;
         private ConsoleScheduler consoleScheduler;
+        private HighlightingScheduler highlightScheduler;
 
         public string startClassName;
         public string startMethodName;
+        public Dictionary<string, List<EXEVariable>> startMethodParameters = new Dictionary<string, List<EXEVariable>>();
 
         private const float AnimationSpeedCoefficient = 0.2f;
 
@@ -86,6 +88,10 @@ namespace Visualization.Animation
                 foreach (AnimMethod methodItem in classItem.Methods)
                 {
                     CDMethod Method = Class.GetMethodByName(methodItem.Name);
+                    if (Method == null)
+                    {
+                        continue;
+                    }
 
                     EXEScopeMethod MethodBody = OALParserBridge.Parse(methodItem.Code);
                     Method.ExecutableCode = MethodBody;
@@ -132,14 +138,16 @@ namespace Visualization.Animation
             MethodExecutableCode.OwningObject = new EXEValueReference(startingInstance);
             objectDiagram.ShowObject(AddObjectToDiagram(startingInstance));
 
-            MethodExecutableCode.InitializeVariables(currentProgramInstance);
+            MethodExecutableCode.InitializeVariables(startMethodParameters.ContainsKey(startMethodName) ?
+                startMethodParameters[startMethodName] :
+                new List<EXEVariable>());
 
             Class caller = classDiagram.FindClassByName(startClassName).ParsedClass;
             Method callerMethod = classDiagram.FindMethodByName(startClassName, startMethodName);
 
             MethodInvocationInfo CallerCall = MethodInvocationInfo.CreateCallerOnlyInstance(startMethod, startingInstance);
             MethodInvocationInfo CalledCall = MethodInvocationInfo.CreateCalledOnlyInstance(startMethod, startingInstance);
-            assignCallInfoToAllHighlightSubjects(caller, callerMethod, CallerCall, CallerCall.CallerMethod);
+            assignCallInfoToAllHighlightSubjects(caller, callerMethod, null, CallerCall, CallerCall.CallerMethod);
             callerMethod.HighlightObjectSubject.InvocationInfo = CalledCall;
 
             caller.HighlightSubject.IncrementHighlightLevel();
@@ -147,12 +155,15 @@ namespace Visualization.Animation
             callerMethod.HighlightObjectSubject.IncrementHighlightLevel();
 
             consoleScheduler = new ConsoleScheduler();
+            highlightScheduler = new HighlightingScheduler();
             StartCoroutine(consoleScheduler.Start(this));
 
             AnimationThread SuperThread = new AnimationThread(currentProgramInstance.CommandStack, currentProgramInstance, this);
             yield return StartCoroutine(SuperThread.Start());
 
             consoleScheduler.Terminate();
+            highlightScheduler.Terminate();
+            yield return new WaitUntil(() => highlightScheduler.IsOver());
             Debug.Log("Over");
             AnimationIsRunning = false;
         }
@@ -174,7 +185,7 @@ namespace Visualization.Animation
 
                         objectDiagram.AddRelation(methodCallInfo.CallerObject, methodCallInfo.CalledObject, "ASSOCIATION");
 
-                        StartCoroutine(ResolveCallFunct(methodCallInfo));
+                        StartCoroutine(ResolveCallFunct(methodCallInfo, AnimationThread.ID));
 
                         yield return StartCoroutine(BarrierFillCheck());
                     }
@@ -210,7 +221,7 @@ namespace Visualization.Animation
                             CDClassInstance callerInstance = (exeScopeCaller.OwningObject as EXEValueReference).ClassInstance;
                             CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
 
-                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance)));
+                            StartCoroutine(ResolveReturn(new MethodInvocationInfo(callerMethod, calledMethod, relation, callerInstance, calledInstance), AnimationThread.ID));
                         }
                         else if
                         (
@@ -220,7 +231,7 @@ namespace Visualization.Animation
                         {
                             CDClassInstance calledInstance = (exeScopeMethod.OwningObject as EXEValueReference).ClassInstance;
 
-                            StartCoroutine(ResolveReturn(MethodInvocationInfo.CreateCalledOnlyInstance(calledMethod, calledInstance)));
+                            StartCoroutine(ResolveReturn(MethodInvocationInfo.CreateCalledOnlyInstance(calledMethod, calledInstance), AnimationThread.ID));
                         }
                     }
                 }
@@ -234,12 +245,12 @@ namespace Visualization.Animation
 
                 if (Animate)
                 {
-                    StartCoroutine(ResolveCreateObject(CurrentCommand, true, AnimateNewObjects));
+                    StartCoroutine(ResolveCreateObject(CurrentCommand, AnimationThread.ID, true, AnimateNewObjects));
                     yield return StartCoroutine(BarrierFillCheck());
                 }
                 else
                 {
-                    yield return ResolveCreateObject(CurrentCommand, false, AnimateNewObjects);
+                    yield return ResolveCreateObject(CurrentCommand, AnimationThread.ID, false, AnimateNewObjects);
                 }
             }
             else if (CurrentCommand.GetType() == typeof(EXECommandAssignment))
@@ -289,8 +300,22 @@ namespace Visualization.Animation
                 if (Animate)
                 {
                     EXECommandWait waitCommand = CurrentCommand as EXECommandWait;
-                    EXEValueReal secondsToWaitValue = waitCommand.WaitTime.EvaluationResult.ReturnedOutput as EXEValueReal;
-                    float secondsToWait = (float)secondsToWaitValue.Value;
+
+                    float secondsToWait;
+                    if (waitCommand.WaitTime.EvaluationResult.ReturnedOutput is EXEValueReal)
+                    {
+                        EXEValueReal secondsToWaitValue = waitCommand.WaitTime.EvaluationResult.ReturnedOutput as EXEValueReal;
+                        secondsToWait = (float)secondsToWaitValue.Value;
+                    }
+                    else if (waitCommand.WaitTime.EvaluationResult.ReturnedOutput is EXEValueInt)
+                    {
+                        EXEValueInt secondsToWaitValue = waitCommand.WaitTime.EvaluationResult.ReturnedOutput as EXEValueInt;
+                        secondsToWait = (float)secondsToWaitValue.Value;
+                    }
+                    else
+                    {
+                        throw new Exception(string.Format("Tried to wait for some seconds. The value type is {0}", waitCommand.WaitTime.EvaluationResult.ReturnedOutput.TypeName));
+                    }
 
                     yield return new WaitForSeconds(secondsToWait);
                 }
@@ -324,7 +349,7 @@ namespace Visualization.Animation
             ObjectInDiagram objectInDiagram = objectDiagram.AddObjectInDiagram(name, newObject, showNewObject);
             return objectInDiagram;
         }
-        private IEnumerator ResolveCreateObject(EXECommand currentCommand, bool Animate = true, bool AnimateNewObjects = true)
+        private IEnumerator ResolveCreateObject(EXECommand currentCommand, int threadId, bool Animate = true, bool AnimateNewObjects = true)
         {
             EXECommandQueryCreate createCommand = (EXECommandQueryCreate)currentCommand;
 
@@ -341,9 +366,6 @@ namespace Visualization.Animation
 
             if (AnimateNewObjects)
             {
-
-                
-
                 var objectInDiagram = AddObjectToDiagram(createdObject, targetVariableName);
                 var relation = FindInterGraphRelation(createdObject.UniqueID);
 
@@ -356,43 +378,14 @@ namespace Visualization.Animation
                 {
                     #region Object creation animation
 
+                    HighlightingCreateObjectRequest r = new HighlightingCreateObjectRequest(new ObjectCreationInfo(callerObject, createdObject, objectInDiagram), threadId);
+                    highlightScheduler.Enqueue(r);
+
                     int step = 0;
-                    float speedPerAnim = AnimationData.Instance.AnimSpeed;
-                    float timeModifier = 1f;
                     while (step < 7)
                     {
-                        switch (step)
-                        {
-                            case 0:
-                                HighlightClass(createdObject.OwningClass.Name, true);
-                                break;
-                            case 1:
-                                // yield return StartCoroutine(AnimateFillInterGraph(relation));
-                                timeModifier = 0f;
-                                break;
-                            case 3:
-                                // relation.Show();
-                                // relation.Highlight();
-                                timeModifier = 1f;
-                                break;
-                            case 2:
-                                objectDiagram.ShowObject(objectInDiagram);
-                                timeModifier = 0.5f;
-                                break;
-                            case 6:
-                                HighlightClass(createdObject.OwningClass.Name, false);
-                                relation.UnHighlight();
-                                timeModifier = 1f;
-                                break;
-                        }
-
                         step++;
-                        if (standardPlayMode)
-                        {
-                            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
-                        }
-                        //Else means we are working with step animation
-                        else
+                        if (!standardPlayMode)
                         {
                             if (step == 1) step = 2;
                             nextStep = false;
@@ -401,10 +394,10 @@ namespace Visualization.Animation
                             if (prevStep)
                             {
                                 if (step > 0) step--;
-                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram);
 
                                 if (step > -1) step--;
-                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram, relation);
+                                step = UnhighlightObjectCreationStepAnimation(step, createdObject.OwningClass.Name, objectInDiagram);
                             }
 
                             yield return new WaitForFixedUpdate();
@@ -413,9 +406,9 @@ namespace Visualization.Animation
                         }
                     }
 
-                    #endregion
+                    yield return new WaitUntil(() => r.IsDone());
 
-                    objectDiagram.AddRelation(callerObject, createdObject, "ASSOCIATION");
+                    #endregion
                 }
             }
             else
@@ -446,8 +439,7 @@ namespace Visualization.Animation
             return relation;
         }
 
-        private int UnhighlightObjectCreationStepAnimation(int step, string className, ObjectInDiagram od,
-            InterGraphRelation relation)
+        private int UnhighlightObjectCreationStepAnimation(int step, string className, ObjectInDiagram od)
         {
             if (step == 1) step = 2;
             switch (step)
@@ -456,7 +448,7 @@ namespace Visualization.Animation
                     HighlightClass(className, false);
                     break;
                 case 2:
-                    relation.UnHighlight();
+                    //relation.UnHighlight();
                     break;
                 case 3:
                     break;
@@ -524,21 +516,23 @@ namespace Visualization.Animation
 
             if (edge != null)
             {
+                EdgeHighlightSubject.EdgesDrawingFinishedFlag finishedFlag = classDiagram.FindEdgeInfo(Call.Relation.RelationshipName).HighlightSubject.finishedFlag;
                 if (edge.CompareTag("Generalization") || edge.CompareTag("Implements") ||
                     edge.CompareTag("Realisation"))
                 {
+                    finishedFlag.InitDrawingFinishedFlag();
                     HighlightEdge(Call.Relation.RelationshipName, true, Call);
                     yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed / 2);
                 }
                 else
                 {
                     yield return FillNewFiller(classDiagram.FindOwnerOfRelation(Call.Relation.RelationshipName),
-                        Call.CalledMethod.OwningClass.Name, edge, Call);
+                        Call.CalledMethod.OwningClass.Name, edge, Call, finishedFlag);
                 }
             }
         }
 
-        private object FillNewFiller(string ownerOfRelation, string calledClassName, GameObject edge, MethodInvocationInfo Call)
+        private object FillNewFiller(string ownerOfRelation, string calledClassName, GameObject edge, MethodInvocationInfo Call, EdgeHighlightSubject.EdgesDrawingFinishedFlag finishedEdges)
         {
             GameObject newFiller = Instantiate(LineFill);
             Fillers.Add(newFiller);
@@ -563,16 +557,19 @@ namespace Visualization.Animation
 
 
             Func<bool> highlightEdgeCallback = () => {
-                HighlightEdge(Call.Relation.RelationshipName, true, Call);
-                Destroy(lf1.gameObject);
-                Destroy(lf.gameObject);
+                finishedEdges.IncrementFlag();
+                if (finishedEdges.IsDrawingFinished())
+                {
+                    HighlightEdge(Call.Relation.RelationshipName, true, Call);
+                    Destroy(lf1.gameObject);
+                    Destroy(lf.gameObject);
+                }
                 return false;
             };
 
 
-            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false, null, true));
-
-            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip, highlightEdgeCallback));
+            lf1.StartCoroutine(lf1.AnimateFlow(objectRelation.GameObject.GetComponent<UILineRenderer>().Points, false, highlightEdgeCallback, true));
+            return lf.StartCoroutine(lf.AnimateFlow(edge.GetComponent<UILineRenderer>().Points, flip, highlightEdgeCallback, false));
         }
 
         private GameObject classGameObject(string className)
@@ -816,50 +813,37 @@ namespace Visualization.Animation
             }
         }
 
-        private void assignCallInfoToAllHighlightSubjects(Class c, Method m, MethodInvocationInfo Call, CDMethod method) {
+        public static void assignCallInfoToAllHighlightSubjects(Class c, Method m, RelationInDiagram relation, MethodInvocationInfo Call, CDMethod method) {
             c.HighlightSubject.ClassName = method.OwningClass.Name;
-            c.HighlightSubject.InvocationInfo = Call;
             m.HighlightSubject.MethodName = method.Name;
             m.HighlightSubject.ClassName = method.OwningClass.Name;
             m.HighlightObjectSubject.InvocationInfo = Call;
+            if (relation != null)
+            {
+                relation.HighlightSubject.InvocationInfo = Call;
+            }
         }
 
         // Couroutine used to Resolve one OALCall consisting of Caller class, caller method, edge, called class, called method
         // Same coroutine is called for play or step mode
-        public IEnumerator ResolveCallFunct(MethodInvocationInfo Call)
+        public IEnumerator ResolveCallFunct(MethodInvocationInfo Call, int threadId)
         {
             Debug.Log(Call.ToString());
 
-            Class called = classDiagram.FindClassByName(Call.CalledMethod.OwningClass.Name).ParsedClass;
-            Method calledMethod = classDiagram.FindMethodByName(Call.CalledMethod.OwningClass.Name, Call.CalledMethod.Name);
+            HighlightingCallFunctionRequest r = new HighlightingCallFunctionRequest(Call, threadId);
+            highlightScheduler.Enqueue(r);
 
-            assignCallInfoToAllHighlightSubjects(called, calledMethod, Call, Call.CalledMethod);
-
-            calledMethod.HighlightObjectSubject.IncrementHighlightLevel();
-            called.HighlightSubject.IncrementHighlightLevel();
-            calledMethod.HighlightSubject.IncrementHighlightLevel();
-            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * 1.25f);
+            yield return new WaitUntil(() => r.IsDone());
 
             IncrementBarrier();
         }
 
-        public IEnumerator ResolveReturn(MethodInvocationInfo callInfo)
+        public IEnumerator ResolveReturn(MethodInvocationInfo callInfo, int threadId)
         {
-            float timeModifier = 1f;
+            HighlightingReturnRequest r = new HighlightingReturnRequest(callInfo, threadId);
+            highlightScheduler.Enqueue(r);
 
-            Class called = classDiagram.FindClassByName(callInfo.CalledMethod.OwningClass.Name).ParsedClass;
-            Method calledMethod = classDiagram.FindMethodByName(callInfo.CalledMethod.OwningClass.Name, callInfo.CalledMethod.Name);
-            assignCallInfoToAllHighlightSubjects(called, calledMethod, callInfo, callInfo.CalledMethod);
-
-            calledMethod.HighlightSubject.DecrementHighlightLevel();
-            calledMethod.HighlightObjectSubject.DecrementHighlightLevel();
-
-            called.HighlightSubject.DecrementHighlightLevel();
-
-            if (standardPlayMode)
-            {
-                yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * timeModifier);
-            }
+            yield return new WaitUntil(() => r.IsDone());
         }
 
         private int UnhighlightAllStepAnimation(MethodInvocationInfo Call, int step)
