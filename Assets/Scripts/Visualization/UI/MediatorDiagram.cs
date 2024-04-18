@@ -75,6 +75,7 @@ namespace Visualization.UI
         private void OnLoadButtonClicked()
         {
             TooltipManager.Instance.HideTooltip();
+            Animation.Animation.Instance.CurrentProgramInstance.Reset();
             FileLoader.Instance.OpenDiagram();
             MenuManager.Instance.UnshowAnimation();
             MediatorMainPanel.SetActiveMainPanel(true);
