@@ -9,6 +9,8 @@ namespace Visualization.Animation
 {
     public class HighlightingCallFunctionRequest : HighlightingRequest
     {
+        private const float ANIM_SPEED_QUANTIFIER = 1.25f;
+
         public HighlightingCallFunctionRequest(MethodInvocationInfo call, int threadId) : base(call, threadId)
         {}
 
@@ -30,7 +32,7 @@ namespace Visualization.Animation
             calledMethod.HighlightObjectSubject.IncrementHighlightLevel();
             called.HighlightSubject.IncrementHighlightLevel();
             calledMethod.HighlightSubject.IncrementHighlightLevel();
-            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * 1.25f);
+            yield return new WaitForSeconds(AnimationData.Instance.AnimSpeed * ANIM_SPEED_QUANTIFIER);
 
             Done = true;
         }
