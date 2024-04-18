@@ -21,13 +21,11 @@ namespace Visualization.Animation
 
         private Dictionary<int, ThreadQueue> requestQueues;
         private bool wantsToterminate;
-        // private int runningThreads;
 
         public HighlightingScheduler()
         {
             requestQueues = new Dictionary<int, ThreadQueue>();
             wantsToterminate = false;
-            // runningThreads = 0;
         }
 
         public bool IsOver()
@@ -42,12 +40,12 @@ namespace Visualization.Animation
             {
                 yield return new WaitUntil(() => queue.Any() || IsOver());
 
-                currentRequest = queue.Dequeue();
-                if (currentRequest == null)
+                if (IsOver())
                 {
-                    // this.runningThreads--;
                     break;
                 }
+
+                currentRequest = queue.Dequeue();
                 Animation.Instance.StartCoroutine(currentRequest.PerformRequest());
 
                 yield return new WaitUntil(() => currentRequest.IsDone());
@@ -63,7 +61,7 @@ namespace Visualization.Animation
                     queue = newQueue,
                     status = ThreadStatus.RUNNING
                 });
-                // this.runningThreads++;
+
                 Animation.Instance.StartCoroutine(QueueLoop(newQueue));
             }
             this.requestQueues[request.threadId].queue.Enqueue(request);

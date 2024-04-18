@@ -20,7 +20,7 @@ namespace Visualization.Animation
         public override IEnumerator PerformRequest()
         {
             terminateThread();
-            return null;
+            yield return new WaitForFixedUpdate();
         }
     }
 }
